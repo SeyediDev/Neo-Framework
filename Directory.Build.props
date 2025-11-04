@@ -17,7 +17,7 @@
     <RepositoryUrl>https://github.com/Neo-Framework/Neo-Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageIcon>icon.png</PackageIcon>
+    <!-- <PackageIcon>icon.png</PackageIcon> -->
     <PackageTags>clean-architecture;cqrs;ddd;dotnet;aspnetcore;framework;neo;persian;mediatr;fluentvalidation</PackageTags>
     <Description>Neo Framework - A modern .NET framework for building clean architecture applications with CQRS, DDD, and best practices built-in.</Description>
     
@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Condition="Exists('$(MSBuildThisFileDirectory)README.md')" />
-    <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath="\" Condition="Exists('$(MSBuildThisFileDirectory)icon.png')" />
+    <!-- <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath="\" Condition="Exists('$(MSBuildThisFileDirectory)icon.png')" /> -->
   </ItemGroup>
   
   <ItemGroup>
