@@ -172,5 +172,6 @@
     <PackageVersion Include="Ionic.Utils.Zip" Version="1.5.1.2" />
     <PackageVersion Include="EPPlus" Version="8.0.1" />
     <PackageVersion Include="Dapper" Version="2.1.28" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\Neo.Common\Neo.Common.csproj" />
+    <ProjectReference Include="..\Neo.Common.csproj" />
   </ItemGroup>
 
 </Project>

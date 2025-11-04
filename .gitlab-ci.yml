@@ -89,7 +89,7 @@ mirror:github:
     - echo "Mirroring to GitHub..."
     - git clone --mirror $CI_REPOSITORY_URL temp-repo
     - cd temp-repo
-    - git push --mirror https://$GITHUB_TOKEN@github.com/Neo-Framework/Neo-Framework.git || true
+    - git push --mirror https://$GITHUB_TOKEN@github.com/SeyediDev/Neo-Framework.git || true
   only:
     - master
     - develop
