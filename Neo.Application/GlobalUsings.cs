@@ -1,0 +1,15 @@
+﻿global using Ardalis.GuardClauses;
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
+global using Neo.Application.Exceptions;
+global using Neo.Application.Features.Outbox.Dto;
+global using Neo.Application.Features.Outbox.Implementation;
+global using Neo.Common.Extensions;
+global using Neo.Domain.Entities.Common;
+global using Neo.Domain.Features.Telementry;
+global using Neo.Domain.Repository;
+global using FluentValidation;
+global using Mapster;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;

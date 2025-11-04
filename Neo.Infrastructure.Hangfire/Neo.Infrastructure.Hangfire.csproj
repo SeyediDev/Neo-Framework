@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />-->
+	<!--<PackageReference Include="Hangfire.Pro" />
+    <PackageReference Include="Hangfire.Pro.Redis" />
+    <PackageReference Include="Hangfire.Tags.Pro.Redis" />
+    <PackageReference Include="Hangfire.Throttling"  />
+    <PackageReference Include="Hangfire.AspNetCore.Plus" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Neo.Application\Neo.Application.csproj" />
+    <ProjectReference Include="..\Neo.Domain\Neo.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

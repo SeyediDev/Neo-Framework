@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+	  <PackageReference Include="System.Drawing.Common" />
+	  <PackageReference Include="zxcvbn-core" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Extensions\HashingHelper.cs" />
+	</ItemGroup>
+</Project>
