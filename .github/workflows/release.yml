@@ -1,0 +1,71 @@
+name: Release to NuGet.org
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Test
+      run: dotnet test --configuration Release --no-build --verbosity normal
+    
+    - name: Pack NuGet packages
+      run: dotnet pack --configuration Release --no-build --output ./packages -p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+    
+    - name: Publish to NuGet.org
+      run: |
+        dotnet nuget push ./packages/*.nupkg \
+          --source https://api.nuget.org/v3/index.json \
+          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --skip-duplicate
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          Release ${{ steps.get_version.outputs.VERSION }}
+          
+          ## 📦 NuGet Packages
+          
+          - Neo.Common ${{ steps.get_version.outputs.VERSION }}
+          - Neo.Domain ${{ steps.get_version.outputs.VERSION }}
+          - Neo.Application ${{ steps.get_version.outputs.VERSION }}
+          - Neo.Infrastructure ${{ steps.get_version.outputs.VERSION }}
+          - Neo.Infrastructure.Hangfire ${{ steps.get_version.outputs.VERSION }}
+          - Neo.Endpoint ${{ steps.get_version.outputs.VERSION }}
+          
+          Install via:
+          ```bash
+          dotnet add package Neo.Application --version ${{ steps.get_version.outputs.VERSION }}
+          ```
+        draft: false
+        prerelease: false
+

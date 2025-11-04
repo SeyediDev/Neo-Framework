@@ -1,0 +1,102 @@
+stages:
+  - build
+  - test
+  - pack
+  - mirror
+
+variables:
+  DOTNET_VERSION: "8.0"
+
+# ============================================
+# BUILD STAGE
+# ============================================
+
+build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - echo "Restoring dependencies..."
+    - dotnet restore
+    - echo "Building Neo Framework..."
+    - dotnet build Neo.sln --configuration Release --no-restore
+  artifacts:
+    paths:
+      - "**/bin/Release/"
+    expire_in: 1 hour
+  tags:
+    - docker
+
+# ============================================
+# TEST STAGE
+# ============================================
+
+test:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - echo "Running tests..."
+    - dotnet test --configuration Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+  dependencies:
+    - build
+  artifacts:
+    when: always
+    paths:
+      - "**/TestResults/**/*.trx"
+      - "**/TestResults/**/coverage.cobertura.xml"
+    reports:
+      junit:
+        - "**/TestResults/**/*.trx"
+      coverage_report:
+        coverage_format: cobertura
+        path: "**/TestResults/**/coverage.cobertura.xml"
+  coverage: '/TOTAL_COVERAGE=(\d+\.\d+)%/'
+  tags:
+    - docker
+  allow_failure: true  # Allow failure if no tests yet
+
+# ============================================
+# PACK NUGET
+# ============================================
+
+pack:
+  stage: pack
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - echo "Packing NuGet packages..."
+    - dotnet pack --configuration Release --no-build --output ./packages
+    - echo "Packages created:"
+    - ls -lh ./packages/
+  dependencies:
+    - build
+  artifacts:
+    paths:
+      - ./packages/*.nupkg
+    expire_in: 7 days
+  tags:
+    - docker
+  only:
+    - master
+    - develop
+
+# ============================================
+# MIRROR TO GITHUB
+# ============================================
+
+mirror:github:
+  stage: mirror
+  image: alpine/git
+  script:
+    - echo "Mirroring to GitHub..."
+    - git clone --mirror $CI_REPOSITORY_URL temp-repo
+    - cd temp-repo
+    - git push --mirror https://$GITHUB_TOKEN@github.com/Neo-Framework/Neo-Framework.git || true
+  only:
+    - master
+    - develop
+  when: on_success
+  allow_failure: true
+  tags:
+    - docker
+  variables:
+    GITHUB_TOKEN: $GITHUB_MIRROR_TOKEN
+
