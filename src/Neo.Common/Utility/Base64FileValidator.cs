@@ -23,7 +23,7 @@ public static class Base64FileValidator
         if (!IsFileSizeValid(fileBytes, maxSizeInMegabyte))
             return (false, null, null, "File too large");
 
-        string mimeType = CandoMimeTypes.GetMimeType(fileBytes); 
+        string mimeType = NeoMimeTypes.GetMimeType(fileBytes); 
         if (mimeType == "application/octet-stream")
             return (false, null, null, "Unsupported file type");
 

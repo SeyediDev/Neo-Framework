@@ -13,7 +13,7 @@ namespace Neo.Infrastructure.Features.Client;
 
 public static class DependencyInjection
 {
-    public static AuthenticationBuilder AddCandoAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static AuthenticationBuilder AddNeoAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var authenticationBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
         authenticationBuilder.AddJwtBearer(options =>
@@ -72,7 +72,7 @@ public static class DependencyInjection
         });
         return authenticationBuilder;
     }
-    public static IServiceCollection AddCandoAuthorization(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoAuthorization(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<AuthTokenHandler>();
 

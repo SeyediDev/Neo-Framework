@@ -2,7 +2,7 @@
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoHangfireServices(this IServiceCollection services)
+    public static IServiceCollection AddNeoHangfireServices(this IServiceCollection services)
     {
         return services;
     }

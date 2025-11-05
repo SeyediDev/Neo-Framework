@@ -4,7 +4,7 @@ internal sealed class HangfireOptions
 {
     public string Storage { get; set; } = "SqlServer"; // یا Redis
     public string ConnectionString { get; set; } = string.Empty;
-    public string RedisPrefix { get; set; } = "hangfire:cando";
+    public string RedisPrefix { get; set; } = "hangfire:neo";
     public string[] Queues { get; set; } = ["default"];
     public int WorkerCount { get; set; } = 20;
 

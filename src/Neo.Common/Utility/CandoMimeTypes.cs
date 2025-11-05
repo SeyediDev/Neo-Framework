@@ -2,7 +2,7 @@
 
 namespace Neo.Common.Utility;
 
-public static class CandoMimeTypes
+public static class NeoMimeTypes
 {
     private static readonly Lazy<IDictionary<string, string>> _mappings = new(BuildMappings);
 
@@ -636,7 +636,7 @@ public static class CandoMimeTypes
             {".z", "application/x-compress"},
             {".zip", "application/zip"},
 
-            #region added by Cando
+            #region added by Neo
             {".mkv", "video/x-matroska"},
             #endregion
 

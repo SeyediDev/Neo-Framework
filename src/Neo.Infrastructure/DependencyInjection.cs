@@ -18,13 +18,13 @@ namespace Neo.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
         
         AddFeatureServices(services);
-        services.AddCandoAuthorization(configuration);
+        services.AddNeoAuthorization(configuration);
         
         services.AddSingleton(TimeProvider.System);
         

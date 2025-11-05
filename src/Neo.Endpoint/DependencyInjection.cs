@@ -10,7 +10,7 @@ namespace Neo.Endpoint;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoControllerServices(this IServiceCollection services, string apiName)
+    public static IServiceCollection AddNeoControllerServices(this IServiceCollection services, string apiName)
     {
         services.AddExceptionHandler<CustomExceptionHandler>();
         // Customize default API behavior

@@ -6,21 +6,21 @@ namespace Neo.Infrastructure.Features.Cache;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoMemoryCacheServices(this IServiceCollection services)
+    public static IServiceCollection AddNeoMemoryCacheServices(this IServiceCollection services)
     {
         services.AddMemoryCache();
         services.AddScoped<ICacheService, MemoryCacheService>();
         return services;
     }
     
-    public static IServiceCollection AddCandoMemoryCacheServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoMemoryCacheServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMemoryCache();
         services.AddScoped<ICacheService, MemoryCacheService>();
         return services;
     }
     
-    public static IServiceCollection AddCandoRedisCacheServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoRedisCacheServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ICacheService, CacheService>();
         services.AddStackExchangeRedisCache(options => options.Configuration = configuration.GetConnectionString("Redis"));

@@ -10,7 +10,7 @@ namespace Neo.Infrastructure.Features.Queue.Hangfire;
 
 public static class HangfireServiceCollectionExtensions
 {
-    public static IServiceCollection AddCandoHangfire(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoHangfire(this IServiceCollection services, IConfiguration configuration)
     {
         var options = configuration.GetSection("Hangfire").Get<HangfireOptions>()
                       ?? throw new InvalidOperationException("Hangfire configuration section is missing");

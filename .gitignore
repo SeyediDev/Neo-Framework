@@ -36,11 +36,11 @@ dlldata.c
 # .NET Core
 project.lock.json
 project.fragment.lock.json
-artifacts/
+#artifacts/
 
 # NuGet Packages
-*.nupkg
-*.snupkg
+#*.nupkg
+#*.snupkg
 **/packages/*
 !**/packages/build/
 

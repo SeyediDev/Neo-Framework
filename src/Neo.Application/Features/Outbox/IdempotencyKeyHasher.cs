@@ -9,7 +9,7 @@ namespace Neo.Application.Features.Outbox;
 /// </summary>
 public static class IdempotencyKeyHasher
 {
-    private const string SaltPrefix = "CandoIdempotency";
+    private const string SaltPrefix = "NeoIdempotency";
     
     /// <summary>
     /// Creates a composite key from tenantId and idempotencyKey, then hashes it.

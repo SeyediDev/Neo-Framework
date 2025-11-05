@@ -8,7 +8,7 @@ namespace Neo.Domain;
 
 public static class DependencyInjectionExtension
 {
-    public static IServiceCollection AddCandoDomainServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoDomainServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IMultiLingualService, MultiLingualService>();
 

@@ -7,7 +7,7 @@ namespace Neo.Infrastructure.Features.Queue.Hangfire;
 
 public static class HangfireApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseCandoHangfireDashboard(
+    public static IApplicationBuilder UseNeoHangfireDashboard(
         this IApplicationBuilder app, IConfiguration configuration, IHostEnvironment env,
         string path = "/hangfire", bool readOnly = false, 
         string? username = null, string? password = null)

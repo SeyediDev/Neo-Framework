@@ -7,7 +7,7 @@ namespace Neo.Infrastructure.Features.Outbox;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoOutboxWithMongo(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoOutboxWithMongo(this IServiceCollection services, IConfiguration configuration)
     {
         // Connection string & DB name from config
         var connectionString = configuration.GetConnectionString("MongoOutbox")
@@ -32,7 +32,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddCandoOutboxWithCatch(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoOutboxWithCatch(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped(typeof(IIdempotencyStore<>), typeof(IdempotencyStoreWithCacheService<>));
 

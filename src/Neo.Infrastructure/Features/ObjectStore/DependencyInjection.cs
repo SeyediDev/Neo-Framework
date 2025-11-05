@@ -7,7 +7,7 @@ namespace Neo.Infrastructure.Features.ObjectStore;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoMinIo(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoMinIo(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMinio(configureClient =>
                     configureClient.WithEndpoint(configuration["Minio:Url"]!, int.Parse(configuration["Minio:Port"]!))

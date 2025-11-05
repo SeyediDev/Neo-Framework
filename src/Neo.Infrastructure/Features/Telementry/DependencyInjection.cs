@@ -11,7 +11,7 @@ namespace Neo.Infrastructure.Features.Telementry;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoOpenTelementry(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoOpenTelementry(this IServiceCollection services, IConfiguration configuration)
     {
         TelemetryOptions openTelemetryOptions = configuration.Get<TelemetryOptions>() ?? new();
         _ = services.AddOpenTelemetry()
@@ -64,7 +64,7 @@ public static class DependencyInjection
         return services;
     }
     
-    public static void AddCandoSerilog(this IHostBuilder builder)
+    public static void AddNeoSerilog(this IHostBuilder builder)
     {
         builder.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
     }

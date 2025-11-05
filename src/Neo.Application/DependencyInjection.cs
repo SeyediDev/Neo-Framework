@@ -13,7 +13,7 @@ namespace Neo.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCandoApplicationServices(this IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
+    public static IServiceCollection AddNeoApplicationServices(this IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
     {
         List<Assembly> assembliesList = [.. assemblies, typeof(DependencyInjection).Assembly];
         assembliesList.Add(typeof(DependencyInjection).Assembly);
