@@ -195,3 +195,4 @@ Write-Host "  1. cd $ProjectPath" -ForegroundColor Gray
 Write-Host "  2. dotnet restore" -ForegroundColor Gray
 Write-Host "  3. dotnet run" -ForegroundColor Gray
 
+

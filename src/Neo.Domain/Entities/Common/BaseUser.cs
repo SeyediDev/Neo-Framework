@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Neo.Domain.Entities.Common;
 
-public abstract partial class BaseUser : BaseCoreCommonAuditableEntity<int>, IUser<int>
+public abstract partial class BaseUser : BaseCoreAuditableEntity<int>, IUser<int>
 {
     [InDisplayString]
     public long Mobile { get; set; }

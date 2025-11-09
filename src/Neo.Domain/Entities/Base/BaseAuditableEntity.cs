@@ -25,14 +25,6 @@ public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IBaseAuditab
     public int? LastModifiedById { get; set; }
 }
 
-[Schema(nameof(DomainSchema.CoreCommon))]
-[FileGroup(nameof(DomainSchema.CoreCommon))]
-[ArchivePartition(nameof(DomainSchema.CoreCommon))]
-public abstract class BaseCoreCommonAuditableEntity<TKey> : BaseAuditableEntity<TKey>
-    where TKey : struct
-{
-}
-
 [Schema(nameof(DomainSchema.CoreConfig))]
 [FileGroup(nameof(DomainSchema.CoreConfig))]
 [ArchivePartition(nameof(DomainSchema.CoreConfig))]

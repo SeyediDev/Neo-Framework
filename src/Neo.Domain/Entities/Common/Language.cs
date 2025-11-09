@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Neo.Domain.Entities.Common;
 
-public class Language : BaseCoreCommonAuditableEntity<int>
+public class Language : BaseCoreConfigAuditableEntity<int>
 {
     [InDisplayString]
     [MaxLength(5)]

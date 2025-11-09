@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Neo.Domain.Entities.Common;
 
-public partial class CultureTerm : BaseCoreCommonAuditableEntity<int>
+public partial class CultureTerm : BaseCoreConfigAuditableEntity<int>
 {
     [MaxLength(50)]
     public string SubjectTitle { get; set; } = null!;

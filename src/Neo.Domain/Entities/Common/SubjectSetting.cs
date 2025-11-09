@@ -1,6 +1,6 @@
 ﻿namespace Neo.Domain.Entities.Common;
 
-public class SubjectSetting : BaseCoreCommonAuditableEntity<long>
+public class SubjectSetting : BaseCoreConfigAuditableEntity<long>
 {
     public string SubjectTitle { get; set; } = null!;//Folder
     public string SubjectId { get; set; } = null!;

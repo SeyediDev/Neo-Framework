@@ -3,7 +3,7 @@ using Neo.Common.Attributes;
 
 namespace Neo.Domain.Entities.Base;
 public enum DomainProvider { Domain }
-public enum DomainSchema { CoreCommon, CoreConfig, Core, CoreLog }
+public enum DomainSchema { CoreConfig, Core, CoreLog }
 
 [DataProvider(nameof(DomainProvider.Domain))]
 public abstract class BaseEntity<TKey> : IEntity<TKey>, IDomainEventEntity
