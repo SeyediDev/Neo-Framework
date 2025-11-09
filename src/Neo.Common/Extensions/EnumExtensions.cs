@@ -1,5 +1,6 @@
 ﻿using Neo.Common.Attributes;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Neo.Common.Extensions;
 
@@ -14,28 +15,36 @@ public static class EnumExtensions
     }
     public static string? ToName(this Enum value)
     {
-        DescriptionAttribute attribute = value.GetAttribute<DescriptionAttribute>()!;
-        return attribute == null ? value.GetAttribute<EnumDescriptionAttribute>()?.Name ?? value?.ToString() : attribute.Description;
+        DescriptionAttribute descriptionAttribute = value.GetAttribute<DescriptionAttribute>()!;
+        if (descriptionAttribute != null) 
+        {
+            return descriptionAttribute.Description;
+        }
+
+        EnumDescriptionAttribute enumDescriptionAttribute = value.GetAttribute<EnumDescriptionAttribute>()!;
+        if (enumDescriptionAttribute != null)
+        {
+            return enumDescriptionAttribute.Name;
+        }
+        DisplayAttribute displayAttribute = value.GetAttribute<DisplayAttribute>()!;
+        if (displayAttribute != null)
+        {
+            return displayAttribute.Name;
+        }
+
+        return value?.ToString();
     }
     public static string? GetTitle(this Enum value)
     {
         var attribute = value.GetAttribute<TitleAttribute>();
         return attribute == null ? value.ToString() : attribute.Title;
     }
-    public static string? PersianName(this Enum value)
-    {
-        return value.GetAttribute<EnumDescriptionAttribute>()?.Name ?? value?.ToString();
-    }
-    public static string? EnglishName(this Enum value)
-    {
-        return value.GetAttribute<EnumDescriptionAttribute>()?.EnName ?? value?.ToString();
-    }
     public static int ToInt(this Enum value)
     {
         return Convert.ToInt32(value);
     }
     
-    public static TEnum ToEnum<TEnum>(this object value, TEnum defualtValue)
+    public static TEnum ToEnum<TEnum>(this object value, TEnum defaultValue)
         where TEnum : Enum
     {
         switch(value)
@@ -45,11 +54,11 @@ public static class EnumExtensions
             case string str:
                 if (Enum.TryParse(typeof(TEnum), str, true, out var v))
                     return (TEnum)v;
-                return defualtValue;
+                return defaultValue;
             case byte or int or long or uint or ulong or short:
                 return (TEnum)value;
             default:
-                return defualtValue;
+                return defaultValue;
         }
     }
 }
