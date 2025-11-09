@@ -1,7 +1,8 @@
-﻿namespace Neo.Domain.Repository;
+namespace Neo.Domain.Repository;
 public interface IUnitOfWork
 {
     object SetEntity<TEntity>() where TEntity : class, new();
+    object SetEntity(Type entity);
     void ExecuteSqlInterpolatedCommand(FormattableString query);
     void ExecuteSqlRawCommand(string query, params object[] parameters);
     Task ExecuteSqlRawCommandAsync(string query, params object[] parameters);

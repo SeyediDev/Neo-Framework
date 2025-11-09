@@ -1,4 +1,4 @@
-﻿using Neo.Common.Attributes;
+using Neo.Common.Attributes;
 using Neo.Common.Extensions;
 using Neo.Common.Utility;
 using Neo.Domain.Entities.Base;
@@ -107,6 +107,26 @@ public abstract partial class EfDbContext<TContext>(DbContextOptions<TContext> o
     public object SetEntity<TEntity>() where TEntity : class, new()
     {
         return Set<TEntity>();
+    }
+
+    public object SetEntity(Type entityType)
+    {
+        MethodInfo? genericSet = null;
+        foreach (MethodInfo method in typeof(DbContext).GetMethods(BindingFlags.Instance | BindingFlags.Public))
+        {
+            if (method.Name == nameof(Set) && method.IsGenericMethodDefinition && method.GetParameters().Length == 0)
+            {
+                genericSet = method;
+                break;
+            }
+        }
+
+        if (genericSet == null)
+        {
+            throw new InvalidOperationException($"Unable to locate generic {nameof(Set)} method on {nameof(DbContext)}.");
+        }
+
+        return genericSet.MakeGenericMethod(entityType).Invoke(this, null)!;
     }
 
     private IDbContextTransaction? _transaction;
@@ -295,3 +315,4 @@ public abstract partial class EfDbContext<TContext>(DbContextOptions<TContext> o
         base.Dispose();
     }
 }
+
