@@ -51,5 +51,10 @@ public enum SBVRModality
     /// پیش‌بینی شده
     /// </summary>
     [Description("پیش‌بینی شده")]
-    Predicted
+    Predicted,
+    /// <summary>
+    /// اختیاری
+    /// </summary>
+    [Description("اختیاری")]
+    Optional
 }
