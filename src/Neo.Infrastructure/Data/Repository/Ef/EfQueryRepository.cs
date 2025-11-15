@@ -2,6 +2,9 @@
 using Neo.Domain.Repository;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Neo.Infrastructure.Data.Repository.Ef;
@@ -59,13 +62,7 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
         int? skip = null, int? take = null)
     {
         IQueryable<TEntity> query = _dbSet;
-        if (includes != null)
-        {
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-        }
+        query = ApplyIncludes(query, includes?.Cast<LambdaExpression>());
         if (predicate != null)
             query = query.Where(predicate);
         if (orderBy != null)
@@ -130,13 +127,7 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
     {
         IQueryable<TEntity> query = _dbSet;
-        if (includes != null)
-        {
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-        }
+        query = ApplyIncludes(query, includes?.Cast<LambdaExpression>());
         if (predicate != null)
             query = query.Where(predicate);
         if (orderBy != null)
@@ -222,19 +213,72 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
     }
 
     public async Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
-      IEnumerable<Expression<Func<TEntity, object>>> includes, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
+      IEnumerable<Expression<Func<TEntity, object?>>> includes, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
     {
         IQueryable<TEntity> query = _dbSet;
-        if (includes != null)
-        {
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-        }
+        query = ApplyIncludes(query, includes?.Cast<LambdaExpression>());
         if (orderBy != null)
             query = orderBy(query);
         return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
+
+    private static IQueryable<TEntity> ApplyIncludes(IQueryable<TEntity> query,
+        IEnumerable<LambdaExpression>? includes)
+    {
+        if (includes == null)
+        {
+            return query;
+        }
+
+        foreach (LambdaExpression include in includes)
+        {
+            if (include == null)
+            {
+                continue;
+            }
+
+            if (!TryExtractIncludePath(include.Body, out string? includePath) || string.IsNullOrWhiteSpace(includePath))
+            {
+                throw new InvalidOperationException("Include expression must be a simple property access.");
+            }
+
+            query = query.Include(includePath);
+        }
+
+        return query;
+    }
+
+    private static bool TryExtractIncludePath(Expression expression, out string? path)
+    {
+        path = null;
+        Expression? current = expression;
+
+        if (current is UnaryExpression unary && unary.NodeType == ExpressionType.Convert)
+        {
+            current = unary.Operand;
+        }
+
+        List<string> members = [];
+        while (current is MemberExpression member)
+        {
+            members.Add(member.Member.Name);
+            current = member.Expression;
+
+            if (current is UnaryExpression nestedUnary && nestedUnary.NodeType == ExpressionType.Convert)
+            {
+                current = nestedUnary.Operand;
+            }
+        }
+
+        if (current is ParameterExpression && members.Count > 0)
+        {
+            members.Reverse();
+            path = string.Join(".", members);
+            return true;
+        }
+
+        return false;
+    }
 }
+

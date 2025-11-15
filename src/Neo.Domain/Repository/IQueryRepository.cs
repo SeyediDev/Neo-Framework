@@ -52,6 +52,6 @@ public interface IQueryRepository<TEntity, TKey> : IRepository<TEntity, TKey>
         Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
     Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
-      IEnumerable<Expression<Func<TEntity, object>>> includes, Expression<Func<TEntity, bool>> predicate, 
+      IEnumerable<Expression<Func<TEntity, object?>>> includes, Expression<Func<TEntity, bool>> predicate, 
       CancellationToken cancellationToken, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy=null);
 }
