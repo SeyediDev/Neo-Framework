@@ -28,7 +28,7 @@ public class Result
 
     public static Result Failure(string error)
     {
-        return new Result(false, new[] { error });
+        return new Result(false, [error]);
     }
 }
 
@@ -62,6 +62,6 @@ public class Result<T>
 
     public static Result<T> Failure(string error)
     {
-        return new Result<T>(false, default, new[] { error });
+        return new Result<T>(false, default, [error]);
     }
 }
