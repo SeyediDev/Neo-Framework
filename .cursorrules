@@ -1,0 +1,20 @@
+# Cursor Rules - Neo Platform
+
+## قرارداد بکک (Back Protocol)
+
+**هر وقت کاربر گفت "بکک" یعنی:**
+
+1. **بیلد بگیر** (Build the project)
+2. **مشکل داشت حل کن** (Fix any build errors/issues)
+3. **حل شد** (Confirm issues are resolved)
+4. **تست‌ها را ران کن** (Run tests)
+5. **مشکل داشت حل کن** (Fix any test failures)
+6. **حل شد** (Confirm tests pass)
+7. **کامیت کن** (Commit the changes)
+
+**نکات مهم:**
+- این فرآیند باید به ترتیب انجام شود
+- هر مرحله باید کامل شود قبل از رفتن به مرحله بعد
+- اگر در هر مرحله مشکلی بود، باید حل شود قبل از ادامه
+- فقط بعد از موفقیت همه مراحل، کامیت انجام شود
+
