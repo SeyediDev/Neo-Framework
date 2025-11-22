@@ -1,5 +1,4 @@
 ﻿namespace Neo.Domain.Entities.Base;
-
 public interface IEntity
 {
 }
