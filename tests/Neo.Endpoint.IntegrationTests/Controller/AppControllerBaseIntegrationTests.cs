@@ -31,18 +31,6 @@ public class AppControllerBaseIntegrationTests : IClassFixture<WebApplicationFac
     }
 }
 
-// Test Web Application for integration testing
-namespace TestWebApp
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            // This is a placeholder for integration test setup
-        }
-    }
-}
-
 
 
 
