@@ -18,7 +18,10 @@ public static class DependencyInjection
          options.SuppressModelStateInvalidFilter = true);
 
         services.AddControllers();
-        services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+        services.Configure<RouteOptions>(options =>
+        {
+            options.LowercaseUrls = true;
+        });
 
 
         services.AddApiVersioning(options =>
@@ -35,8 +38,16 @@ public static class DependencyInjection
        {
            options.GroupNameFormat = "'v'V";
            options.SubstituteApiVersionInUrl = true;
-       })
-       ;
+       });
+
+        // Register apiVersion constraint for route templates
+        services.Configure<RouteOptions>(options =>
+        {
+            if (!options.ConstraintMap.ContainsKey("apiVersion"))
+            {
+                options.ConstraintMap.Add("apiVersion", typeof(Asp.Versioning.Routing.ApiVersionRouteConstraint));
+            }
+        });
         services.AddEndpointsApiExplorer();
 
         services.AddOpenApiDocument((config, sp) =>
