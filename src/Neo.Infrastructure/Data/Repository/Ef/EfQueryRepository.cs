@@ -27,12 +27,6 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
         return await query.ToListAsync(cancellationToken);
     }
 
-    public IQueryable<TEntity> GetEntityAsQueryable()
-    {
-        IQueryable<TEntity> query = _dbSet;
-        return query;
-    }
-
     public async Task<IEnumerable<TEntity>> GetAllWithIncludeAsync<TProperty>(
         Expression<Func<TEntity, TProperty>> include, CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
@@ -209,7 +203,7 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
         return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
-    public async Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
+    public async Task<TEntity?> FirstOrDefaultWithIncludesAsync<TProperty>(
       IEnumerable<Expression<Func<TEntity, object?>>> includes, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
     {

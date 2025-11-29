@@ -2,13 +2,15 @@
 
 namespace Neo.Domain.Repository;
 
+public interface IQueryRepository<TEntity> : IQueryRepository<TEntity, int>
+	where TEntity : class, IEntity<int>, new()
+{ }
 public interface IQueryRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>, new()
 {
     Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken);
     Task<TDto?> GetByIdAsync<TDto>(TKey id, CancellationToken cancellationToken);
-    IQueryable<TEntity> GetEntityAsQueryable();
-    Task<TEntity?> GetByIdWithIncludeAsync<TProperty>(TKey id, Expression<Func<TEntity, TProperty>> include, CancellationToken cancellationToken);
+	Task<TEntity?> GetByIdWithIncludeAsync<TProperty>(TKey id, Expression<Func<TEntity, TProperty>> include, CancellationToken cancellationToken);
     Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken, Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         int? skip = null, int? take = null);
@@ -51,7 +53,7 @@ public interface IQueryRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(Expression<Func<TEntity, TProperty>> include,
         Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
-    Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
+    Task<TEntity?> FirstOrDefaultWithIncludesAsync<TProperty>(
       IEnumerable<Expression<Func<TEntity, object?>>> includes, Expression<Func<TEntity, bool>> predicate, 
       CancellationToken cancellationToken, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy=null);
 }

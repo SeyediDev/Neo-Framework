@@ -48,9 +48,9 @@ public abstract class EfCommandRepository<TEntity, TKey, TCommandUnitOfWork>(TCo
         return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
-    public async Task AddAsync(TEntity entity)
+    public async Task AddAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        await _dbSet.AddAsync(entity);
+        await _dbSet.AddAsync(entity, cancellationToken);
     }
 
     public void Add(TEntity entity)
@@ -68,9 +68,9 @@ public abstract class EfCommandRepository<TEntity, TKey, TCommandUnitOfWork>(TCo
         _dbSet.RemoveRange(entities);
     }
 
-    public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+    public async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
     {
-        await _dbSet.AddRangeAsync(entities);
+        await _dbSet.AddRangeAsync(entities, cancellationToken);
     }
 
     public void Update(TEntity entity)

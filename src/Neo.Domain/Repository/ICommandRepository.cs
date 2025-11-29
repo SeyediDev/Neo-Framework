@@ -3,13 +3,19 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace Neo.Domain.Repository;
 
+public interface ICommandRepository<TEntity> : ICommandRepository<TEntity, int>
+	where TEntity : class, IEntity<int>, new()
+{ 
+}
+
 public interface ICommandRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>, new()
 {
     Task<TEntity?> GetAsync(TKey id, CancellationToken cancellationToken);
     void Add(TEntity entity);
-    Task AddAsync(TEntity entity);
-    Task AddRangeAsync(IEnumerable<TEntity> entities);
+    Task AddAsync(TEntity entity)=> AddAsync(entity, CancellationToken.None);
+	Task AddAsync(TEntity entity, CancellationToken cancellationToken);
+    Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
     void Update(TEntity entity);
 
     /// <summary>
@@ -33,4 +39,5 @@ public interface ICommandRepository<TEntity, TKey> : IRepository<TEntity, TKey>
       IEnumerable<Expression<Func<TEntity, object>>> includes, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken);
     void AddRange(IEnumerable<TEntity> entities);
     void RemoveRange(IEnumerable<TEntity> entities);
+	async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)=> await UnitOfWork.SaveChangesAsync(cancellationToken);
 }

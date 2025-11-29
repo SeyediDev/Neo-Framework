@@ -13,4 +13,9 @@ public abstract class EfRepositoryBase<TEntity, TKey>(IUnitOfWork uow)
     protected readonly DbSet<TEntity> _dbSet = (DbSet<TEntity>)uow.SetEntity<TEntity>()
             ?? throw new Exception($"Can not find entity {typeof(TEntity).Name} in DbContext {uow.GetType().Name}.");
 
+	public IQueryable<TEntity> Query()
+	{
+		IQueryable<TEntity> query = _dbSet;
+		return query;
+	}
 }

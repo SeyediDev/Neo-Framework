@@ -42,7 +42,7 @@ public class OutboxStore(
 
     public async Task<MessageState?> GetStatusAsync(long outboxId, CancellationToken ct)
     {
-        return await outboxMessageRepository.GetEntityAsQueryable()
+        return await outboxMessageRepository.Query()
             .Where(x => x.Id == outboxId)
             .Select(x => new MessageState(x.OutboxState, x.JobId))
             .FirstOrDefaultAsync(ct);
@@ -50,7 +50,7 @@ public class OutboxStore(
 
     public async Task<OutboxResponse?> GetOutboxResponseAsync(long outboxId, CancellationToken ct)
     {
-        return await outboxMessageRepository.GetEntityAsQueryable()
+        return await outboxMessageRepository.Query()
             .Where(x => x.Id == outboxId)
             .Select(x => new OutboxResponse(x.Id, x.OutboxState, x.JobId, x.IdempotencyKey))
             .FirstOrDefaultAsync(ct);
