@@ -8,6 +8,7 @@ public interface IIdpService
     Task AddUserRoleAsync(string userId, string role);
 
     Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(CancellationToken cancellationToken);
+    Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, CancellationToken cancellationToken);
     Task<TokenResponseDto?> GetUserTokenAsync(string mobile, CancellationToken cancellationToken);
     Task<TokenResponseDto?> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
     Task<IdpUserResponseDto?> GetUserAsync(string mobile);

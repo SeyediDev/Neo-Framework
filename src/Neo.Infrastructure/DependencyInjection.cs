@@ -43,7 +43,7 @@ public static class DependencyInjection
         //services.AddScoped<IUserService<int>, DummyUserService>();
         services.AddScoped<IClientProfileReader, ClientProfileReaderFromConfig>();
         
-        services.AddScoped<IIdpService, IdpService>();
+        services.AddScoped<IIdpService, KeycloakIdpService>();
         
         services.AddScoped<ICaptchaProvider, CaptchaService>();
 

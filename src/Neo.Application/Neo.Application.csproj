@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Neo.Domain\Neo.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Security\" />
+  </ItemGroup>
+
 </Project>

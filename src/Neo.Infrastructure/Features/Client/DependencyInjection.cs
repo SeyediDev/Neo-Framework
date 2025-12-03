@@ -79,7 +79,7 @@ public static class DependencyInjection
         services.AddHttpClient<IdpClientCredentialService>(option =>
             option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!));
 
-        services.AddHttpClient<IIdpService, IdpService>(option =>
+        services.AddHttpClient<IIdpService, KeycloakIdpService>(option =>
             option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!))
              .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
              {

@@ -1,4 +1,4 @@
-﻿namespace Neo.Application.Security;
+﻿namespace Neo.Application.Features.Auth;
 
 /// <summary>
 /// Specifies the class this attribute is applied to requires authorization.

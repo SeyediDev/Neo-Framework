@@ -11,7 +11,7 @@ using System.Net.Http.Json;
 using System.Text;
 
 namespace Neo.Infrastructure.Features.Client.Keycloak;
-public class IdpService(HttpClient httpClient, IHttpClientFactory httpClientFactory, ILogger<IdpService> logger, IConfiguration configuration) : IIdpService
+public class KeycloakIdpService(HttpClient httpClient, IHttpClientFactory httpClientFactory, ILogger<KeycloakIdpService> logger, IConfiguration configuration) : IIdpService
 {
     private string AdminBaseUri => configuration["IdpSetting:AdminBaseUri"]!;
     private string TokenUri => configuration["IdpSetting:TokenUri"]!;
@@ -83,28 +83,33 @@ public class IdpService(HttpClient httpClient, IHttpClientFactory httpClientFact
 
     public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(CancellationToken cancellationToken)
     {
-        try
-        {
-            var content = new FormUrlEncodedContent(
-            [
-                new KeyValuePair<string, string>("client_id", ClientId!),
-                new KeyValuePair<string, string>("client_secret", ClientSecret),
-                new KeyValuePair<string, string>("grant_type", "client_credentials")
-            ]);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-            HttpResponseMessage response = await httpClient.PostAsync(TokenUri, content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync(cancellationToken);
-            return result.FromJson<IdpClientCredentialResponseDtp>();
-        }
-        catch (HttpRequestException ex)
-        {
-            logger.LogWarning("{@idp}", ex);
-            return null;
-        }
+        return await GetClientCredentialTokenAsync(ClientId, ClientSecret, cancellationToken);
     }
+	
+    public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, CancellationToken cancellationToken)
+	{
+		try
+		{
+			var content = new FormUrlEncodedContent(
+			[
+				new KeyValuePair<string, string>("client_id", clientId!),
+				new KeyValuePair<string, string>("client_secret", clientSecret),
+				new KeyValuePair<string, string>("grant_type", "client_credentials")
+			]);
+			content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+			HttpResponseMessage response = await httpClient.PostAsync(TokenUri, content, cancellationToken);
+			response.EnsureSuccessStatusCode();
+			var result = await response.Content.ReadAsStringAsync(cancellationToken);
+			return result.FromJson<IdpClientCredentialResponseDtp>();
+		}
+		catch (HttpRequestException ex)
+		{
+			logger.LogWarning("{@idp}", ex);
+			return null;
+		}
+	}
 
-    public async Task<TokenResponseDto?> GetUserTokenAsync(string mobile, CancellationToken cancellationToken)
+	public async Task<TokenResponseDto?> GetUserTokenAsync(string mobile, CancellationToken cancellationToken)
     {
         try
         {

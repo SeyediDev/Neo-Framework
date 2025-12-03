@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Neo.Infrastructure.Features.Client;
-public class IdpClientCredentialService(HttpClient httpClient, ICacheService cacheService, ILogger<IdpService> logger, IConfiguration configuration)
+public class IdpClientCredentialService(HttpClient httpClient, ICacheService cacheService, ILogger<KeycloakIdpService> logger, IConfiguration configuration)
 {
     public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialToken(CancellationToken cancellationToken)
     {

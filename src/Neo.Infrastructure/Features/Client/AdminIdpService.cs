@@ -8,7 +8,7 @@ using System.Net.Http.Json;
 
 namespace Neo.Infrastructure.Features.Client;
 
-public class AdminIdpService(HttpClient httpClient, ILogger<IdpService> logger, IConfiguration configuration) : IAdminIdpService
+public class AdminIdpService(HttpClient httpClient, ILogger<KeycloakIdpService> logger, IConfiguration configuration) : IAdminIdpService
 {
     private string AdminBaseUri => configuration["IdpSetting:Admin:BaseUri"]!;
     private string ClientId => configuration["IdpSetting:Admin:ClientId"]!;
