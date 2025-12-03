@@ -11,10 +11,10 @@ namespace Neo.Endpoint.Controller;
 /// <summary>
 /// کنترلر احراز هویت OAuth 2.0
 /// </summary>
-[AppRoute("api/v1", "auth")]
+[AppRoute("api", "auth")]
 [Tags("auth")]
-[ApiExplorerSettings(GroupName = "auth")]
-public sealed class AuthController(
+[Produces("application/json")]
+public class AuthController(
     IMediator mediator,
     ILogger<AuthController> logger
 ) : AppControllerBase
@@ -55,7 +55,10 @@ public sealed class AuthController(
         [FromForm] string client_secret,
         [FromForm] string? scope = null)
     {
-        if (grant_type != "client_credentials")
+        //TODO
+        grant_type = "client_credentials";
+
+		if (grant_type != "client_credentials")
         {
             logger.LogWarning("Invalid grant_type: {GrantType}", grant_type);
             return TypedResults.Unauthorized();

@@ -11,7 +11,9 @@ using System.Net.Http.Json;
 using System.Text;
 
 namespace Neo.Infrastructure.Features.Client.Keycloak;
-public class KeycloakIdpService(HttpClient httpClient, IHttpClientFactory httpClientFactory, ILogger<KeycloakIdpService> logger, IConfiguration configuration) : IIdpService
+public class KeycloakIdpService(
+    HttpClient httpClient, IHttpClientFactory httpClientFactory, ILogger<KeycloakIdpService> logger, IConfiguration configuration)
+    : IIdpService
 {
     private string AdminBaseUri => configuration["IdpSetting:AdminBaseUri"]!;
     private string TokenUri => configuration["IdpSetting:TokenUri"]!;

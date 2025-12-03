@@ -12,7 +12,7 @@ namespace Neo.Infrastructure.Features.Client.Keycloak;
 /// <summary>
 /// پیاده‌سازی Token Service با استفاده از Memory (برای Development)
 /// </summary>
-internal sealed class MemoryTokenService(ILogger<MemoryTokenService> logger, IConfiguration configuration) 
+public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfiguration configuration) 
     : IIdpService
 {
 	private string ClientId => configuration["IdpSetting:ClientId"]!;
