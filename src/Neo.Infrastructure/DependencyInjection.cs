@@ -1,4 +1,8 @@
-﻿using Neo.Application.Features.Queue;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Neo.Application.Features.Queue;
 using Neo.Domain.Features.Captchas;
 using Neo.Domain.Features.Client;
 using Neo.Domain.Features.Integrations;
@@ -7,26 +11,23 @@ using Neo.Domain.Features.Telementry;
 using Neo.Infrastructure.Data.Interceptors;
 using Neo.Infrastructure.Features.Captchas;
 using Neo.Infrastructure.Features.Client;
-using Neo.Infrastructure.Features.Client.Keycloak;
 using Neo.Infrastructure.Features.Integrations;
 using Neo.Infrastructure.Features.Queue;
 using Neo.Infrastructure.Features.ServiceCaller;
 using Neo.Infrastructure.Features.Sms;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Neo.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddNeoInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddNeoInfrastructureServices(
+        this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
         services.AddHttpClient();
         
-        AddFeatureServices(services);
+        AddFeatureServices(services, environment);
         services.AddNeoAuthorization(configuration);
         
         services.AddSingleton(TimeProvider.System);
@@ -34,7 +35,7 @@ public static class DependencyInjection
         return services;
     }
     
-    private static void AddFeatureServices(IServiceCollection services)
+    private static void AddFeatureServices(IServiceCollection services, IHostEnvironment environment)
     {
         services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<ISmsService, SmsService>();
@@ -42,8 +43,6 @@ public static class DependencyInjection
         
         //services.AddScoped<IUserService<int>, DummyUserService>();
         services.AddScoped<IClientProfileReader, ClientProfileReaderFromConfig>();
-        
-        services.AddScoped<IIdpService, KeycloakIdpService>();
         
         services.AddScoped<ICaptchaProvider, CaptchaService>();
 

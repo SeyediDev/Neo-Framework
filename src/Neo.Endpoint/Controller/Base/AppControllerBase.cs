@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Neo.Endpoint.Controller;
+namespace Neo.Endpoint.Controller.Base;
 
 [ApiController]
 [VersionRoute("[controller]")]

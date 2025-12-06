@@ -1,9 +1,6 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Neo.Endpoint.Controller;
 using System.Net;
-using Xunit;
 
 namespace Neo.Endpoint.IntegrationTests.Controller;
 

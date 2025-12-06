@@ -1,11 +1,11 @@
-using System.Security.Claims;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Neo.Endpoint.Controller.Base;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Neo.Endpoint.Controller;
+namespace Neo.Endpoint.Controller.Api;
 
 /// <summary>
 /// کنترلر سلامت سرویس
@@ -13,6 +13,7 @@ namespace Neo.Endpoint.Controller;
 [ApiController]
 [VersionRoute("health")]
 [ApiVersion("1")]
+[Tags("health")]
 [SwaggerTag("health", "تست سلامت سرویس")]
 public sealed class HealthController : AppControllerBase
 {

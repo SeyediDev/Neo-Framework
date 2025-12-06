@@ -1,23 +1,23 @@
-using MediatR;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Neo.Application.Features.Auth.Commands;
 using Neo.Domain.Features.Client.Dto;
+using Neo.Endpoint.Controller.Base;
 
-namespace Neo.Endpoint.Controller;
+namespace Neo.Endpoint.Controller.Api;
 
 /// <summary>
 /// کنترلر احراز هویت OAuth 2.0
 /// </summary>
-[AppRoute("api", "auth")]
+[VersionRoute("auth")]
+[ApiVersion("1")]
 [Tags("auth")]
 [Produces("application/json")]
-public class AuthController(
-    IMediator mediator,
-    ILogger<AuthController> logger
-) : AppControllerBase
+public class AuthController(ILogger<AuthController> logger) 
+    : AppControllerBase
 {
     /// <summary>
     /// دریافت توکن OAuth 2.0 با استفاده از Client Credentials Flow
@@ -73,7 +73,7 @@ public class AuthController(
         try
         {
             var command = new GetTokenCommand(client_id, client_secret);
-            var tokenResponse = await mediator.Send(command);
+            var tokenResponse = await Sender.Send(command);
 
             logger.LogInformation("Token issued for client {ClientId}", client_id);
 

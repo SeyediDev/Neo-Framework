@@ -1,12 +1,11 @@
 ﻿using Neo.Domain.Features.Client;
 using Neo.Domain.Features.Client.Dto;
-using Neo.Infrastructure.Features.Client.Keycloak;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
-namespace Neo.Infrastructure.Features.Client;
+namespace Neo.Infrastructure.Features.Client.Keycloak;
 
 public class AdminIdpService(HttpClient httpClient, ILogger<KeycloakIdpService> logger, IConfiguration configuration) : IAdminIdpService
 {

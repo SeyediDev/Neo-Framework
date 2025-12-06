@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using Neo.Infrastructure.Features.Client.Memory;
 
 namespace Neo.Infrastructure.Features.Client;
 
@@ -72,6 +73,7 @@ public static class DependencyInjection
         });
         return authenticationBuilder;
     }
+    
     public static IServiceCollection AddNeoAuthorization(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<AuthTokenHandler>();
@@ -79,24 +81,34 @@ public static class DependencyInjection
         services.AddHttpClient<IdpClientCredentialService>(option =>
             option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!));
 
-        services.AddHttpClient<IIdpService, KeycloakIdpService>(option =>
-            option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!))
-             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-             {
-                 ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
-             })
-            .AddHttpMessageHandler<AuthTokenHandler>();
-        services.AddHttpClient("client-credential-token", option =>
-              option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!))
-             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-             {
-                 ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
-             });
+		var tokenProvider = configuration["IdpSetting:TokenProvider"] ?? "Memory";
+        if (tokenProvider.Equals("Keycloak", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddScoped<IIdpService, KeycloakIdpService>();
+            services.AddHttpClient<IIdpService, KeycloakIdpService>(option =>
+                option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!))
+                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                 {
+                     ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+                 })
+                .AddHttpMessageHandler<AuthTokenHandler>();
+            services.AddHttpClient("client-credential-token", option =>
+                  option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!))
+                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                 {
+                     ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+                 });
 
-        services.AddHttpClient<IAdminIdpService, AdminIdpService>(option =>
-            option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!));
+            services.AddHttpClient<IAdminIdpService, AdminIdpService>(option =>
+                option.BaseAddress = new Uri(configuration["IdpSetting:BaseUrl"]!));
+        }
+		else
+		{
+			services.AddSingleton<IIdpService, MemoryIdpService>();
+			services.AddSingleton<IAdminIdpService, MemoryAdminIdpService>();
+		}
 
-        services.AddHttpClient<IRecaptchaService, RecaptchaService>(option =>
+		services.AddHttpClient<IRecaptchaService, RecaptchaService>(option =>
             option.BaseAddress = new Uri(configuration["Recaptcha:BaseUrl"]!));
 
         return services;

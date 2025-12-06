@@ -7,8 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Neo.Domain.Features.Client;
 using Neo.Domain.Features.Client.Dto;
 
-namespace Neo.Infrastructure.Features.Client.Keycloak;
-
+namespace Neo.Infrastructure.Features.Client.Memory;
 /// <summary>
 /// پیاده‌سازی Token Service با استفاده از Memory (برای Development)
 /// </summary>
@@ -17,7 +16,8 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 {
 	private string ClientId => configuration["IdpSetting:ClientId"]!;
 	private string ClientSecret => configuration["IdpSetting:ClientSecret"]!;
-	private readonly Dictionary<string, TokenInfo> _tokenStore = new();
+	
+	private readonly Dictionary<string, TokenInfo> _tokenStore = [];
     private readonly Dictionary<string, string> _clientSecrets = new()
     {
         // پیش‌فرض برای باجت
@@ -63,9 +63,9 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
             ),
-            Issuer = "Club.Channel.Api",
-            Audience = "Club.Channel.Api"
-        };
+            Issuer = "Club.Channel.Api",//TODO Read from setting
+            Audience = "Club.Channel.Api"//TODO Read from setting
+		};
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenString = tokenHandler.WriteToken(token);
@@ -226,4 +226,3 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
         public DateTime ExpiresAt { get; set; }
     }
 }
-

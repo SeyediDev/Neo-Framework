@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Neo.Common.Extensions;
-using System.Text.Json;
 
 namespace Neo.Common.Tests.Extensions;
 

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Neo.Endpoint.Controller;
+namespace Neo.Endpoint.Controller.Base;
 
 [AppRoute("admin", "[controller]")]
 public abstract partial class GenericCrudControllerBase<TDto, TEntity, TKey>
