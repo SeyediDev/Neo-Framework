@@ -180,7 +180,7 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
         throw new NotImplementedException();
     }
 
-	public async Task<bool> ValidateTokenAsync(string token)
+	public Task<bool> ValidateTokenAsync(string token)
 	{
 		try
 		{
@@ -189,7 +189,7 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 			{
 				if (tokenInfo.ExpiresAt > DateTime.UtcNow)
 				{
-					return true;
+					return Task.FromResult(true);
 				}
 				// حذف توکن منقضی شده
 				_tokenStore.Remove(token);
@@ -212,11 +212,11 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 			};
 
 			tokenHandler.ValidateToken(token, validationParameters, out _);
-			return true;
+			return Task.FromResult(true);
 		}
 		catch
 		{
-			return false;
+			return Task.FromResult(false);
 		}
 	}
 
