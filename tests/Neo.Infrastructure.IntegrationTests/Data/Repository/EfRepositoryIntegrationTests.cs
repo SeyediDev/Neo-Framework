@@ -140,7 +140,7 @@ public class EfRepositoryIntegrationTests : IDisposable
 
         // Assert
         result.Should().HaveCount(3);
-        result.Select(e => e.Name).Should().Contain(new[] { "Entity 1", "Entity 2", "Entity 3" });
+        result.Select(e => e.Name).Should().Contain(["Entity 1", "Entity 2", "Entity 3"]);
     }
 
     [Fact]

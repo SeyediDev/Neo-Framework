@@ -29,7 +29,7 @@ public class SplitExtensionsTests
 
         // Assert
         result.Should().HaveCount(1);
-        result[0].Should().BeEquivalentTo(new[] { 1, 2, 3 });
+        result[0].Should().BeEquivalentTo([1, 2, 3]);
     }
 
     [Fact]
