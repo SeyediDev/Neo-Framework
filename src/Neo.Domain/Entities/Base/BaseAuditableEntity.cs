@@ -8,7 +8,6 @@ public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IBaseAuditab
 {
     [DisplayName("تاریخ ایجاد")]
     public DateTime CreateDate { get; set; } = DateTime.Now;
-	public DateTime CreatedAt => CreateDate;
 
 	[DisplayName("تاریخ حذف")]
     public DateTime? ExpireDate { get; set; }
