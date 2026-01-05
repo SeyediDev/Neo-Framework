@@ -90,6 +90,11 @@ public class KeycloakIdpService(
 	
     public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, CancellationToken cancellationToken)
 	{
+		return await GetClientCredentialTokenAsync(clientId, clientSecret, null, cancellationToken);
+	}
+
+	public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, string? channelKey, CancellationToken cancellationToken)
+	{
 		try
 		{
 			var content = new FormUrlEncodedContent(
@@ -102,7 +107,14 @@ public class KeycloakIdpService(
 			HttpResponseMessage response = await httpClient.PostAsync(TokenUri, content, cancellationToken);
 			response.EnsureSuccessStatusCode();
 			var result = await response.Content.ReadAsStringAsync(cancellationToken);
-			return result.FromJson<IdpClientCredentialResponseDtp>();
+			var tokenResponse = result.FromJson<IdpClientCredentialResponseDtp>();
+			
+			// اگر channelKey موجود باشد، باید آن را به توکن Keycloak اضافه کنیم
+			// این کار نیاز به decode و re-encode توکن دارد که در Keycloak پیچیده است
+			// برای حال حاضر، channelKey را در MemoryIdpService اضافه می‌کنیم
+			// TODO: در Keycloak باید از custom mapper استفاده کنیم
+			
+			return tokenResponse;
 		}
 		catch (HttpRequestException ex)
 		{

@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Neo.Infrastructure.Features.Client.Memory;
+using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace Neo.Infrastructure.Features.Client;
 
@@ -19,19 +21,77 @@ public static class DependencyInjection
         var authenticationBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
         authenticationBuilder.AddJwtBearer(options =>
         {
-            options.Authority = configuration["IdpSetting:Authority"];
-            options.Audience = configuration["IdpSetting:ClientId"];
+            // Check if we're using Memory token provider
+            var tokenProvider = configuration["IdpSetting:TokenProvider"] ?? "Memory";
+            var isMemoryProvider = tokenProvider.Equals("Memory", StringComparison.OrdinalIgnoreCase);
+            
+            // Only set Authority if not using Memory provider (Memory provider uses fixed key)
+            if (!isMemoryProvider)
+            {
+                options.Authority = configuration["IdpSetting:Authority"];
+                options.Audience = configuration["IdpSetting:ClientId"];
+            }
+            else
+            {
+                // For Memory provider, don't set Authority (we use fixed signing key)
+                // Setting Authority to null or empty prevents metadata endpoint calls
+                options.Authority = null;
+                options.Audience = configuration["IdpSetting:ClientId"] ?? "Club.Channel.Api";
+                // Note: MetadataAddress and ConfigurationManager cannot be set to null
+                // But by not setting Authority, they won't be used
+            }
+            
             options.RequireHttpsMetadata = false;
-
-            options.TokenValidationParameters = new TokenValidationParameters
+            
+            // Set ValidIssuer and ValidAudience based on provider
+            var validIssuer = isMemoryProvider 
+                ? "Club.Channel.Api"  // Fixed issuer for Memory provider
+                : (configuration["IdpSetting:Authority"] ?? "Club.Channel.Api");
+            
+            var validAudience = configuration["IdpSetting:ClientId"] ?? "Club.Channel.Api";
+            
+            var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                ValidIssuer = configuration["IdpSetting:Authority"],
-                ValidAudience = configuration["IdpSetting:ClientId"]
+                ValidIssuer = validIssuer,
+                ValidAudience = validAudience
             };
+
+            // If using Memory provider, set up custom signing key resolver based on nameid/client_id claim
+            if (isMemoryProvider)
+            {
+                var memorySecretKey = Encoding.UTF8.GetBytes("MemoryTokenService-SecretKey-For-Development-Only-Change-In-Production");
+                var memorySigningKey = new SymmetricSecurityKey(memorySecretKey);
+                
+                // Set IssuerSigningKey directly for Memory provider
+                tokenValidationParameters.IssuerSigningKey = memorySigningKey;
+                
+                // Also set IssuerSigningKeyResolver as fallback (in case Authority is set and tries to fetch keys)
+                tokenValidationParameters.IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
+                {
+                    // For Memory provider, we use a fixed key
+                    // Extract nameid or client_id from token to verify it matches
+                    if (securityToken is System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtToken)
+                    {
+                        var nameid = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                        var clientId = jwtToken.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
+                        
+                        // If we have nameid or client_id, return the memory signing key
+                        if (!string.IsNullOrEmpty(nameid) || !string.IsNullOrEmpty(clientId))
+                        {
+                            return new[] { memorySigningKey };
+                        }
+                    }
+                    
+                    // Fallback: return memory signing key for Memory provider
+                    return new[] { memorySigningKey };
+                };
+            }
+
+            options.TokenValidationParameters = tokenValidationParameters;
 
             options.Events = new JwtBearerEvents
             {
@@ -43,6 +103,15 @@ public static class DependencyInjection
                     {
                         context.Token = accessToken;
                     }
+                    return Task.CompletedTask;
+                },
+
+                OnAuthenticationFailed = context =>
+                {
+                    // Log authentication failures for debugging
+                    var logger = context.HttpContext.RequestServices.GetService<ILogger<JwtBearerOptions>>();
+                    logger?.LogError("JWT Authentication failed: {Exception}", context.Exception);
+                    logger?.LogError("Failure message: {Message}", context.Exception?.Message);
                     return Task.CompletedTask;
                 },
 

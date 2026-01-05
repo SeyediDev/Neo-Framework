@@ -8,7 +8,8 @@ namespace Neo.Application.Features.Auth.Commands;
 /// </summary>
 public sealed record GetTokenCommand(
     string ClientId,
-    string ClientSecret
+    string ClientSecret,
+    string? ChannelKey = null
 ) : IRequest<TokenResponseDto>;
 
 internal sealed class GetTokenCommandHandler(
@@ -17,7 +18,7 @@ internal sealed class GetTokenCommandHandler(
 {
     public async Task<TokenResponseDto> Handle(GetTokenCommand request, CancellationToken cancellationToken)
     {
-        var rs = await tokenService.GetClientCredentialTokenAsync(request.ClientId, request.ClientSecret, cancellationToken);
+        var rs = await tokenService.GetClientCredentialTokenAsync(request.ClientId, request.ClientSecret, request.ChannelKey, cancellationToken);
         if (rs != null)
         {
 

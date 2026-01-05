@@ -43,6 +43,7 @@ public class AuthController(ILogger<AuthController> logger)
     /// <param name="client_id">شناسه کلاینت</param>
     /// <param name="client_secret">رمز کلاینت</param>
     /// <param name="scope">دامنه دسترسی (اختیاری)</param>
+    /// <param name="channelKey">کلید کانال (اختیاری - از query parameter)</param>
     /// <returns>Token response شامل access_token و expires_in</returns>
     /// <response code="200">توکن با موفقیت دریافت شد</response>
     /// <response code="401">اعتبارسنجی ناموفق بود</response>
@@ -53,7 +54,8 @@ public class AuthController(ILogger<AuthController> logger)
         [FromForm] string grant_type,
         [FromForm] string client_id,
         [FromForm] string client_secret,
-        [FromForm] string? scope = null)
+        [FromForm] string? scope = null,
+        [FromQuery] string? channelKey = null)
     {
         //TODO
         grant_type = "client_credentials";
@@ -72,10 +74,10 @@ public class AuthController(ILogger<AuthController> logger)
 
         try
         {
-            var command = new GetTokenCommand(client_id, client_secret);
+            var command = new GetTokenCommand(client_id, client_secret, channelKey);
             var tokenResponse = await Sender.Send(command);
 
-            logger.LogInformation("Token issued for client {ClientId}", client_id);
+            logger.LogInformation("Token issued for client {ClientId} with channelKey {ChannelKey}", client_id, channelKey ?? "N/A");
 
             return TypedResults.Ok(tokenResponse);
         }

@@ -9,6 +9,7 @@ public interface IIdpService
 
     Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(CancellationToken cancellationToken);
     Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, CancellationToken cancellationToken);
+    Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, string? channelKey, CancellationToken cancellationToken);
     Task<TokenResponseDto?> GetUserTokenAsync(string mobile, CancellationToken cancellationToken);
     Task<TokenResponseDto?> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
     Task<IdpUserResponseDto?> GetUserAsync(string mobile);

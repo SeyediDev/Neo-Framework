@@ -19,5 +19,9 @@
     <ProjectReference Include="..\Neo.Common\Neo.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
+
 
 </Project>

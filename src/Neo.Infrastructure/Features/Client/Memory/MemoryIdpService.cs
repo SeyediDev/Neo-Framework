@@ -94,6 +94,11 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 
 	public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, CancellationToken cancellationToken)
 	{
+		return await GetClientCredentialTokenAsync(clientId, clientSecret, null, cancellationToken);
+	}
+
+	public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, string? channelKey, CancellationToken cancellationToken)
+	{
 		// اعتبارسنجی Client Credentials
 		if (!_clientSecrets.TryGetValue(clientId, out var storedSecret) || storedSecret != clientSecret)
 		{
@@ -112,6 +117,12 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 			new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 			new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
 		};
+
+		// اضافه کردن channelKey به claims اگر موجود باشد
+		if (!string.IsNullOrWhiteSpace(channelKey))
+		{
+			claims.Add(new Claim("channel_key", channelKey));
+		}
 
 		var tokenDescriptor = new SecurityTokenDescriptor
 		{
