@@ -6,6 +6,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using Serilog.Configuration;
 
 namespace Neo.Infrastructure.Features.Telementry;
 
@@ -35,7 +36,7 @@ public static class DependencyInjection
                     })
                     .AddConsoleExporter()   // خروجی در کنسول
                     .AddOtlpExporter();
-                if (string.IsNullOrEmpty(openTelemetryOptions.JaegerExporterHost))
+                if (!string.IsNullOrEmpty(openTelemetryOptions.JaegerExporterHost))
                 {
                     _ = tracing.AddJaegerExporter(o =>
                     {
@@ -43,7 +44,7 @@ public static class DependencyInjection
                         o.AgentPort = openTelemetryOptions.JaegerExporterPort;// 6831;
                     });
                 }
-                if (string.IsNullOrEmpty(openTelemetryOptions.ZipkinExporterUri))
+                if (!string.IsNullOrEmpty(openTelemetryOptions.ZipkinExporterUri))
                 {
                     _ = tracing.AddZipkinExporter(o =>
                     {
@@ -57,7 +58,8 @@ public static class DependencyInjection
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
-                    .AddConsoleExporter();
+                    .AddConsoleExporter()
+                    .AddOtlpExporter();
             })
             //.WithLogging() با توجه به استفاده از سریلاگ نیازی به این نیست
             ;
@@ -66,6 +68,23 @@ public static class DependencyInjection
     
     public static void AddNeoSerilog(this IHostBuilder builder)
     {
-        builder.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
+        builder.UseSerilog((context, loggerConfig) =>
+        {
+            loggerConfig.ReadFrom.Configuration(context.Configuration);
+            
+            // If MonitoringApiUrl is configured, add sink to send logs to admin panel
+            var monitoringApiUrl = context.Configuration["TelemetryOptions:MonitoringApiUrl"];
+            if (!string.IsNullOrWhiteSpace(monitoringApiUrl))
+            {
+                var minLevel = context.Configuration.GetValue<Serilog.Events.LogEventLevel>(
+                    "TelemetryOptions:MonitoringLogLevel", 
+                    Serilog.Events.LogEventLevel.Information);
+                
+                // Use the extension method from MonitoringSerilogSinkExtensions
+                loggerConfig.WriteTo.Sink(
+                    new NeoMonitoringSerilogSink(monitoringApiUrl, null, minLevel),
+                    minLevel);
+            }
+        });
     }
 }
