@@ -1,29 +1,61 @@
 ﻿using Asp.Versioning;
 using Neo.Endpoint.Controller;
+using Neo.Endpoint.Controller.Api;
+using Neo.Endpoint.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using NSwag;
 using NSwag.Generation.Processors.Security;
+using System.Reflection;
 
 namespace Neo.Endpoint;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddNeoControllerServices(this IServiceCollection services, string apiName)
+    public static IServiceCollection AddNeoControllerServices(this IServiceCollection services, string apiName, bool includeViews = false, IMvcBuilder? existingMvcBuilder = null)
     {
         services.AddExceptionHandler<CustomExceptionHandler>();
         // Customize default API behavior
         services.Configure<ApiBehaviorOptions>(options =>
          options.SuppressModelStateInvalidFilter = true);
 
-        services.AddControllers();
+        // بررسی می‌کنیم که آیا قبلاً Controllers اضافه شده‌اند یا نه
+        // اگر AddControllersWithViews قبلاً فراخوانی شده (که ITempDataDictionaryFactory را اضافه می‌کند)، نیازی به اضافه کردن دوباره نیست
+        var tempDataFactoryRegistered = services.Any(s => 
+            s.ServiceType == typeof(Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataDictionaryFactory));
+        
+        IMvcBuilder? mvcBuilder = existingMvcBuilder;
+        
+        if (mvcBuilder == null && !tempDataFactoryRegistered)
+        {
+            // اگر builder موجود نیست و services هم ثبت نشده‌اند، باید اضافه کنیم
+            if (includeViews)
+            {
+                mvcBuilder = services.AddControllersWithViews();
+            }
+            else
+            {
+                mvcBuilder = services.AddControllers();
+            }
+        }
+        else if (mvcBuilder == null && tempDataFactoryRegistered)
+        {
+            // اگر services ثبت شده اما builder نداریم، باید یک builder ایجاد کنیم
+            // اما چون services قبلاً ثبت شده، این فقط یک reference برمی‌گرداند
+            mvcBuilder = services.AddControllersWithViews();
+        }
         services.Configure<RouteOptions>(options =>
         {
             options.LowercaseUrls = true;
         });
 
 
+        // استفاده از API Versioning - AddMvc() فقط MVC را configure می‌کند و services را override نمی‌کند
         services.AddApiVersioning(options =>
         {
             options.DefaultApiVersion = new ApiVersion(1);
@@ -33,7 +65,7 @@ public static class DependencyInjection
                 new UrlSegmentApiVersionReader(),
                 new HeaderApiVersionReader("X-Api-Version"));
         })
-       .AddMvc() // This is needed for controllers
+       .AddMvc() // This is needed for controllers - doesn't override existing services
        .AddApiExplorer(options =>
        {
            options.GroupNameFormat = "'v'V";
@@ -78,5 +110,75 @@ public static class DependencyInjection
 
         //services.AddRazorPages(); 
         return services;
+    }
+
+    /// <summary>
+    /// اضافه کردن پشتیبانی از Views برای Monitoring
+    /// این متد باید در API هایی که می‌خواهند Views را نمایش دهند فراخوانی شود
+    /// </summary>
+    public static IMvcBuilder AddNeoMonitoringViews(this IServiceCollection services, IWebHostEnvironment? environment = null)
+    {
+        // بررسی می‌کنیم که آیا قبلاً AddControllersWithViews فراخوانی شده یا نه
+        // اگر AddControllers فراخوانی شده، باید آن را به AddControllersWithViews تبدیل کنیم
+        var mvcBuilder = services.AddControllersWithViews();
+
+        // اضافه کردن View Location Expander برای پیدا کردن Views در Neo.Endpoint
+        services.Configure<RazorViewEngineOptions>(options =>
+        {
+            options.ViewLocationExpanders.Add(new NeoMonitoringViewLocationExpander());
+        });
+
+        // اضافه کردن مسیر Views از Neo.Endpoint برای Runtime Compilation
+        if (environment != null && environment.IsDevelopment())
+        {
+            mvcBuilder.AddRazorRuntimeCompilation(options =>
+            {
+                // پاک کردن FileProvider های پیش‌فرض برای جلوگیری از کامپایل View های دیگر پروژه‌ها
+                // فقط مسیرهای Neo.Endpoint را اضافه می‌کنیم
+                options.FileProviders.Clear();
+                
+                // اضافه کردن مسیر Views از Neo.Endpoint
+                var neoEndpointAssembly = typeof(MonitoringController).Assembly;
+                var assemblyLocation = neoEndpointAssembly.Location;
+                
+                // اول بررسی مسیر output directory
+                if (!string.IsNullOrEmpty(assemblyLocation))
+                {
+                    var outputViewsPath = Path.Combine(Path.GetDirectoryName(assemblyLocation) ?? "", "Views");
+                    
+                    if (Directory.Exists(outputViewsPath))
+                    {
+                        options.FileProviders.Add(new PhysicalFileProvider(outputViewsPath));
+                    }
+                }
+                
+                // سپس بررسی مسیر source directory (برای Development)
+                // پیدا کردن مسیر source از assembly location
+                if (!string.IsNullOrEmpty(assemblyLocation))
+                {
+                    // مسیر assembly: D:\Projects\Neo\src\Neo.Endpoint\bin\Debug\net8.0\Neo.Endpoint.dll
+                    // مسیر project: D:\Projects\Neo\src\Neo.Endpoint
+                    var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? ""; // bin\Debug\net8.0
+                    
+                    // استفاده از مسیر نسبی برای پیدا کردن Views (قابل اعتمادتر)
+                    var relativeViewsPath = Path.GetFullPath(Path.Combine(assemblyDir, "..", "..", "..", "Views"));
+                    
+                    if (Directory.Exists(relativeViewsPath))
+                    {
+                        options.FileProviders.Add(new PhysicalFileProvider(relativeViewsPath));
+                    }
+                }
+            });
+        }
+
+        // غیرفعال کردن BrowserLink برای Views Monitoring
+        // BrowserLink فقط در Development فعال است و باعث خطاهای CSP می‌شود
+        services.Configure<Microsoft.AspNetCore.Mvc.MvcOptions>(options =>
+        {
+            // BrowserLink به صورت خودکار در Development inject می‌شود
+            // برای غیرفعال کردن باید از UseBrowserLink استفاده نکنیم
+        });
+
+		return mvcBuilder;
     }
 }

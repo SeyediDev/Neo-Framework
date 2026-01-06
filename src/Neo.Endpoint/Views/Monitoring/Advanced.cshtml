@@ -1,0 +1,372 @@
+@{
+    ViewData["Title"] = "مانیتورینگ پیشرفته";
+    // بدون Layout - View مستقل است
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+    html {
+        direction: rtl;
+    }
+    
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+    
+    /* هاید کردن menu2 (منوی همبرگری) با CSS */
+    #menu2,
+    nav#menu2,
+    [id="menu2"],
+    [id*="menu2"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+    }
+    
+    .monitoring-container {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 120px);
+        min-height: 600px;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #0f172a;
+    }
+
+    .monitoring-frame {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .monitoring-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding: 0 4px;
+    }
+
+    .monitoring-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .monitoring-title h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .monitoring-badge {
+        padding: 4px 12px;
+        background: linear-gradient(135deg, #0ea5e9, #6366f1);
+        color: white;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .monitoring-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-monitoring {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #374151;
+    }
+
+    .btn-monitoring:hover {
+        background: #f3f4f6;
+    }
+
+    .btn-monitoring.primary {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        color: white;
+        border: none;
+    }
+
+    .btn-monitoring.primary:hover {
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+    }
+
+    .loading-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #0f172a;
+        z-index: 10;
+        transition: opacity 0.3s;
+    }
+
+    .loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .loading-spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid #1e293b;
+        border-top-color: #0ea5e9;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+        margin-top: 16px;
+        color: #94a3b8;
+        font-size: 0.875rem;
+    }
+
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    </style>
+</head>
+<body>
+<div class="content-wrapper">
+    <div class="monitoring-header">
+        <div class="monitoring-title">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        <div class="monitoring-actions">
+            <a href="/Monitoring/Index" class="btn-monitoring">
+                نسخه ساده
+            </a>
+            <button onclick="refreshDashboard()" class="btn-monitoring primary">
+                بروزرسانی
+            </button>
+        </div>
+    </div>
+
+    <div class="monitoring-container">
+        <div class="loading-overlay" id="loading">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">در حال بارگذاری داشبورد...</p>
+        </div>
+        <iframe 
+            id="monitoring-frame"
+            class="monitoring-frame" 
+            src="/monitoring/index.html"
+            onload="hideLoading()"
+            title="داشبورد مانیتورینگ">
+        </iframe>
+    </div>
+</div>
+
+<script>
+    function hideLoading() {
+        document.getElementById('loading').classList.add('hidden');
+    }
+
+    function refreshDashboard() {
+        var frame = document.getElementById('monitoring-frame');
+        document.getElementById('loading').classList.remove('hidden');
+        frame.src = frame.src;
+    }
+
+    // Fallback: hide loading after 5 seconds if iframe doesn't load
+    setTimeout(function() {
+        hideLoading();
+    }, 5000);
+    
+    // حذف فایل‌های layout.min.js و BrowserLink که ممکن است از static files لود شده باشند
+    (function() {
+        // حذف script های layout.min.js (قبل از لود شدن)
+        function removeLayoutScripts() {
+            // حذف script های layout.min.js
+            document.querySelectorAll('script[src*="layout.min.js"], script[src*="layout"], script[src*="Layout"]').forEach(function(script) {
+                script.remove();
+            });
+            
+            // حذف BrowserLink scripts
+            document.querySelectorAll('script[src*="browserLink"], script[src*="BrowserLink"]').forEach(function(script) {
+                script.remove();
+            });
+            
+            // حذف aspnetcore-browser-refresh scripts
+            document.querySelectorAll('script[src*="aspnetcore-browser-refresh"], script[src*="browser-refresh"]').forEach(function(script) {
+                script.remove();
+            });
+            
+            // حذف عناصر BrowserLink از DOM
+            document.querySelectorAll('[id*="browserLink"], [class*="browserLink"], [id*="BrowserLink"], [class*="BrowserLink"]').forEach(function(el) {
+                el.remove();
+            });
+            
+            // جلوگیری از لود شدن BrowserLink در آینده
+            if (window.browserLink) {
+                delete window.browserLink;
+            }
+            if (window.BrowserLink) {
+                delete window.BrowserLink;
+            }
+            
+            // جلوگیری از ایجاد BrowserLink
+            Object.defineProperty(window, 'browserLink', {
+                value: undefined,
+                writable: false,
+                configurable: false
+            });
+        }
+        
+        // اجرای فوری
+        removeLayoutScripts();
+        
+        // اجرا بعد از DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', removeLayoutScripts);
+        }
+        
+        // اجرا بعد از window.load
+        window.addEventListener('load', removeLayoutScripts);
+        
+        // اجرا با تاخیر برای اطمینان
+        setTimeout(removeLayoutScripts, 50);
+        setTimeout(removeLayoutScripts, 100);
+        setTimeout(removeLayoutScripts, 500);
+        
+        // استفاده از MutationObserver برای رصد و حذف script های جدید
+        var scriptObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.tagName === 'SCRIPT') {
+                                var src = node.src || node.getAttribute('src') || '';
+                                if (src.includes('layout.min.js') || src.includes('browserLink') || src.includes('aspnetcore-browser-refresh')) {
+                                    node.remove();
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        // شروع رصد تغییرات DOM برای script ها
+        scriptObserver.observe(document.head, {
+            childList: true,
+            subtree: true
+        });
+        scriptObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        // تابع برای هاید کردن menu2
+        function hideMenu2() {
+            // هاید کردن menu2 با روش‌های مختلف
+            var menu2 = document.getElementById('menu2');
+            if (menu2) {
+                menu2.style.display = 'none';
+                menu2.style.visibility = 'hidden';
+                menu2.style.opacity = '0';
+                menu2.style.height = '0';
+                menu2.style.width = '0';
+                menu2.style.overflow = 'hidden';
+                menu2.setAttribute('hidden', 'true');
+            }
+            // همچنین با querySelector برای اطمینان
+            document.querySelectorAll('#menu2, [id="menu2"], nav#menu2, [id*="menu2"]').forEach(function(el) {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+                el.style.opacity = '0';
+                el.style.height = '0';
+                el.style.width = '0';
+                el.style.overflow = 'hidden';
+                el.setAttribute('hidden', 'true');
+            });
+        }
+        
+        // اجرای فوری
+        hideMenu2();
+        
+        // اجرا بعد از DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', hideMenu2);
+        }
+        
+        // اجرا بعد از window.load
+        window.addEventListener('load', hideMenu2);
+        
+        // اجرا با تاخیر برای اطمینان
+        setTimeout(hideMenu2, 100);
+        setTimeout(hideMenu2, 500);
+        setTimeout(hideMenu2, 1000);
+        setTimeout(hideMenu2, 2000);
+        
+        // استفاده از MutationObserver برای رصد تغییرات DOM
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.id === 'menu2' || node.querySelector && node.querySelector('#menu2')) {
+                                hideMenu2();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        // شروع رصد تغییرات DOM
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        // حذف عناصر BrowserLink از DOM
+        document.querySelectorAll('[id*="browserLink"], [class*="browserLink"]').forEach(function(el) {
+            el.remove();
+        });
+        
+        // جلوگیری از لود شدن BrowserLink در آینده
+        if (window.browserLink) {
+            delete window.browserLink;
+        }
+        
+        // جلوگیری از console.log های BrowserLink
+        var originalLog = console.log;
+        console.log = function() {
+            var args = Array.prototype.slice.call(arguments);
+            if (args.length > 0 && typeof args[0] === 'string' && 
+                (args[0].includes('browserLink') || args[0].includes('layout.min.js') || 
+                 args[0].includes('JQMIGRATE') || args[0].includes('Select2ChangeHandler'))) {
+                return; // لاگ نکن
+            }
+            originalLog.apply(console, args);
+        };
+    })();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,3576 @@
+@{
+    ViewData["Title"] = "مانیتورینگ سیستم";
+    // بدون Layout - View مستقل است
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+<style>
+    /* Monitoring Dashboard Styles */
+    html {
+        direction: rtl;
+    }
+    
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+    
+    /* هاید کردن menu2 (منوی همبرگری) با CSS */
+    #menu2,
+    nav#menu2,
+    [id="menu2"],
+    [id*="menu2"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+    }
+    
+    /* هاید کردن overlay/backdrop مربوط به Mmenu */
+    .mm-wrapper__blocker,
+    .mm-menu,
+    .mm-menu--opened,
+    .mm-wrapper--opened,
+    .mm-wrapper--position-right.mm-wrapper--opened,
+    .mm-menu--opened.mm-menu--position-right {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    
+    /* هاید کردن hamburger menu icon و link */
+    .modern-hamburger-menu,
+    .hamburger-link,
+    .hamburger-icon {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    
+    .monitoring-dashboard {
+        padding: 20px;
+        direction: rtl;
+    }
+    
+    .monitoring-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .btn-advanced {
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #0ea5e9, #6366f1);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .btn-advanced:hover {
+        background: linear-gradient(135deg, #0284c7, #4f46e5);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .monitoring-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .monitoring-title svg {
+        width: 32px;
+        height: 32px;
+        stroke: #06B6D4;
+    }
+    
+    .health-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .health-healthy { background: #dcfce7; color: #166534; }
+    .health-warning { background: #fef3c7; color: #92400e; }
+    .health-critical { background: #fee2e2; color: #991b1b; }
+    
+    .health-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+    
+    .health-healthy .health-dot { background: #22c55e; }
+    .health-warning .health-dot { background: #f59e0b; }
+    .health-critical .health-dot { background: #ef4444; }
+    
+    @@keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+    
+    .metric-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .metric-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+    
+    .metric-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .metric-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: white;
+    }
+    
+    .metric-icon.blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .metric-icon.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .metric-icon.amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .metric-icon.red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .metric-icon.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    .metric-icon.cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    
+    .metric-trend {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 12px;
+    }
+    
+    .trend-up { background: #dcfce7; color: #166534; }
+    .trend-down { background: #fee2e2; color: #991b1b; }
+    .trend-stable { background: #f3f4f6; color: #6b7280; }
+    
+    .metric-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 4px;
+        direction: ltr;
+        text-align: right;
+    }
+    
+    .metric-label {
+        font-size: 14px;
+        color: #6b7280;
+    }
+    
+    .metric-sublabel {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-top: 4px;
+        direction: ltr;
+        text-align: right;
+    }
+    
+    /* Charts Section */
+    .charts-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+    
+    .chart-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    
+    .chart-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    .chart-container {
+        height: 200px;
+        position: relative;
+    }
+    
+    /* Logs Section */
+    .logs-section {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .logs-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    
+    .logs-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    .log-filter-buttons {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .log-filter-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .log-filter-btn:hover {
+        background: #f3f4f6;
+    }
+    
+    .log-filter-btn.active {
+        background: #06b6d4;
+        color: white;
+        border-color: #06b6d4;
+    }
+    
+    .logs-table {
+        width: 100%;
+        font-size: 13px;
+    }
+    
+    .logs-table th {
+        text-align: right;
+        padding: 12px 8px;
+        border-bottom: 2px solid #e5e7eb;
+        color: #6b7280;
+        font-weight: 600;
+    }
+    
+    .logs-table td {
+        padding: 10px 8px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .log-level {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .log-level.trace { background: #f3f4f6; color: #6b7280; }
+    .log-level.debug { background: #dbeafe; color: #1e40af; }
+    .log-level.info { background: #dcfce7; color: #166534; }
+    .log-level.warning { background: #fef3c7; color: #92400e; }
+    .log-level.error { background: #fee2e2; color: #991b1b; }
+    .log-level.critical { background: #fce7f3; color: #9d174d; }
+    
+    .log-time {
+        color: #9ca3af;
+        font-family: monospace;
+    }
+    
+    .log-source {
+        color: #6b7280;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .log-message {
+        max-width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    /* Log Filter Inputs */
+    .log-filter-input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+    
+    .log-filter-input::placeholder {
+        color: #9ca3af;
+    }
+    
+    /* Log Filter Select (Combobox) */
+    .log-filter-input select,
+    select.log-filter-input {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: left 8px center;
+    }
+    
+    .log-filter-input select:focus,
+    select.log-filter-input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+    
+    /* Metric Prefix Tabs */
+    .metric-prefix-tabs {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        padding: 0 4px;
+    }
+    
+    .metric-prefix-tab {
+        padding: 6px 12px;
+        border-radius: 6px 6px 0 0;
+        border: 1px solid #e5e7eb;
+        border-bottom: none;
+        background: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+    
+    .metric-prefix-tab:hover {
+        background: #f3f4f6;
+        color: #374151;
+    }
+    
+    .metric-prefix-tab.active {
+        background: white;
+        color: #0ea5e9;
+        border-color: #0ea5e9;
+        border-bottom-color: white;
+        margin-bottom: -1px;
+    }
+    
+    .metric-prefix-tab-badge {
+        margin-right: 4px;
+        padding: 2px 6px;
+        background: #e5e7eb;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 600;
+    }
+    
+    .metric-prefix-tab.active .metric-prefix-tab-badge {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+    
+    .metrics-content {
+        display: none !important;
+    }
+    
+    .metrics-content.active {
+        display: block !important;
+    }
+    
+    /* Compact Metrics Table */
+    .metrics-table-compact {
+        width: 100%;
+        font-size: 12px;
+        border-collapse: collapse;
+    }
+    
+    .metrics-table-compact th {
+        text-align: right;
+        padding: 8px 6px;
+        border-bottom: 1px solid #e5e7eb;
+        color: #6b7280;
+        font-weight: 600;
+        font-size: 11px;
+        background: #f9fafb;
+    }
+    
+    .metrics-table-compact td {
+        padding: 6px;
+        border-bottom: 1px solid #f3f4f6;
+        font-size: 12px;
+    }
+    
+    .metrics-table-compact tr:hover {
+        background: #f9fafb;
+    }
+    
+    .metrics-table-compact .metric-name {
+        direction: ltr;
+        text-align: left;
+        font-family: monospace;
+        font-size: 11px;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .metrics-table-compact .metric-type {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .metrics-table-compact .metric-value {
+        direction: ltr;
+        text-align: right;
+        font-family: monospace;
+        font-size: 11px;
+    }
+    
+    /* Loading State */
+    .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        color: #6b7280;
+    }
+    
+    .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid #e5e7eb;
+        border-top-color: #06b6d4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 12px;
+    }
+    
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Auto-refresh indicator */
+    .refresh-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #6b7280;
+    }
+    
+    .refresh-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+    
+    .refresh-dot.paused {
+        background: #f59e0b;
+        animation: none;
+    }
+    
+    .btn-pause {
+        padding: 6px 12px;
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    
+    .btn-pause:hover {
+        background: #e5e7eb;
+    }
+    
+    .btn-pause.paused {
+        background: #fef3c7;
+        border-color: #f59e0b;
+        color: #92400e;
+    }
+    
+    .btn-pause svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    /* ===== Tabs Styles ===== */
+    .data-tabs-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 24px;
+        overflow: hidden;
+    }
+    
+    .data-tabs-header {
+        display: flex;
+        border-bottom: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+    
+    .data-tab {
+        padding: 14px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6b7280;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        position: relative;
+    }
+    
+    .data-tab:hover {
+        color: #374151;
+        background: #f3f4f6;
+    }
+    
+    .data-tab.active {
+        color: #0ea5e9;
+        background: white;
+    }
+    
+    .data-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+    }
+    
+    .data-tab-badge {
+        padding: 2px 8px;
+        background: #e5e7eb;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .data-tab.active .data-tab-badge {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+    
+    .data-tab svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .data-tab-content {
+        display: none;
+        padding: 20px;
+    }
+    
+    .data-tab-content.active {
+        display: block;
+    }
+    
+    /* ===== Jaeger-like Trace Styles ===== */
+    .traces-section {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 24px;
+    }
+    
+    .traces-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    
+    .traces-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .traces-title svg {
+        color: #8b5cf6;
+    }
+    
+    .trace-stats {
+        display: flex;
+        gap: 16px;
+        font-size: 12px;
+        color: #6b7280;
+    }
+    
+    .trace-stat {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .trace-stat-value {
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    /* Trace List */
+    .trace-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .trace-item {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.2s;
+    }
+    
+    .trace-item:hover {
+        border-color: #8b5cf6;
+        box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+    }
+    
+    .trace-item-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        cursor: pointer;
+        gap: 16px;
+    }
+    
+    .trace-service {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 140px;
+    }
+    
+    .trace-service-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    
+    .trace-service-name {
+        font-weight: 600;
+        font-size: 13px;
+        color: #1f2937;
+    }
+    
+    .trace-operation {
+        flex: 1;
+        font-size: 13px;
+        color: #4b5563;
+        font-family: monospace;
+        direction: ltr;
+        text-align: left;
+    }
+    
+    .trace-meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 12px;
+        color: #6b7280;
+    }
+    
+    .trace-duration {
+        font-weight: 600;
+        color: #1f2937;
+        font-family: monospace;
+        direction: ltr;
+    }
+    
+    .trace-span-count {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .trace-time {
+        color: #9ca3af;
+        font-family: monospace;
+        direction: ltr;
+    }
+    
+    .trace-status {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .trace-status.ok { background: #dcfce7; color: #166534; }
+    .trace-status.error { background: #fee2e2; color: #991b1b; }
+    .trace-status.unset { background: #f3f4f6; color: #6b7280; }
+    
+    /* Trace Timeline (Jaeger-style) */
+    .trace-timeline {
+        display: none;
+        padding: 16px;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .trace-item.expanded .trace-timeline {
+        display: block;
+    }
+    
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .timeline-scale {
+        display: flex;
+        gap: 4px;
+        font-size: 10px;
+        color: #9ca3af;
+        font-family: monospace;
+        direction: ltr;
+    }
+    
+    .timeline-scale span {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .span-row {
+        display: flex;
+        align-items: center;
+        padding: 6px 0;
+        gap: 8px;
+    }
+    
+    .span-service {
+        min-width: 120px;
+        font-size: 11px;
+        color: #6b7280;
+        text-align: left;
+        direction: ltr;
+    }
+    
+    .span-operation-name {
+        min-width: 180px;
+        font-size: 11px;
+        font-family: monospace;
+        color: #1f2937;
+        text-align: left;
+        direction: ltr;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .span-timeline-container {
+        flex: 1;
+        height: 20px;
+        background: #f3f4f6;
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .span-bar {
+        position: absolute;
+        height: 100%;
+        border-radius: 4px;
+        min-width: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 4px;
+    }
+    
+    .span-bar.internal { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+    .span-bar.server { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+    .span-bar.client { background: linear-gradient(90deg, #22c55e, #4ade80); }
+    .span-bar.producer { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .span-bar.consumer { background: linear-gradient(90deg, #ec4899, #f472b6); }
+    .span-bar.error { background: linear-gradient(90deg, #ef4444, #f87171); }
+    
+    .span-duration-label {
+        font-size: 9px;
+        color: white;
+        font-weight: 600;
+        font-family: monospace;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    .span-details {
+        margin-top: 12px;
+        padding: 12px;
+        background: #f9fafb;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+    
+    .span-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .span-tag {
+        background: white;
+        border: 1px solid #e5e7eb;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 11px;
+        direction: ltr;
+    }
+    
+    .span-tag-key {
+        color: #6b7280;
+    }
+    
+    .span-tag-value {
+        color: #1f2937;
+        font-weight: 500;
+    }
+    
+    .no-traces {
+        text-align: center;
+        padding: 40px;
+        color: #6b7280;
+    }
+    
+    /* Service Colors */
+    .service-color-1 { background: #8b5cf6; }
+    .service-color-2 { background: #0ea5e9; }
+    .service-color-3 { background: #22c55e; }
+    .service-color-4 { background: #f59e0b; }
+    .service-color-5 { background: #ec4899; }
+    .service-color-6 { background: #06b6d4; }
+    
+    /* ===== Trace Tree Styles ===== */
+    .span-tree-indicator {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-width: 16px;
+    }
+    
+    .tree-line {
+        position: absolute;
+        top: 0;
+        bottom: 50%;
+        width: 1px;
+        background: #d1d5db;
+    }
+    
+    .tree-branch {
+        position: absolute;
+        top: 50%;
+        width: 12px;
+        height: 1px;
+        background: #d1d5db;
+    }
+    
+    .tree-expand {
+        font-size: 8px;
+        color: #9ca3af;
+        cursor: pointer;
+        margin-left: 4px;
+    }
+    
+    .span-service-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-left: 6px;
+    }
+    
+    .span-duration-text {
+        min-width: 60px;
+        text-align: left;
+        font-size: 11px;
+        color: #6b7280;
+        font-family: monospace;
+        direction: ltr;
+    }
+    
+    .span-row {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.15s;
+    }
+    
+    .span-row:hover {
+        background: #f9fafb;
+    }
+    
+    .span-row.depth-1 { background: rgba(59, 130, 246, 0.02); }
+    .span-row.depth-2 { background: rgba(139, 92, 246, 0.02); }
+    .span-row.depth-3 { background: rgba(236, 72, 153, 0.02); }
+    .span-row.depth-4 { background: rgba(245, 158, 11, 0.02); }
+    
+    .span-service {
+        min-width: 120px;
+        max-width: 150px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .span-operation-name {
+        min-width: 200px;
+        max-width: 300px;
+        font-size: 12px;
+        color: #6b7280;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0 12px;
+    }
+    
+    .span-timeline-container {
+        flex: 1;
+        height: 20px;
+        background: #f3f4f6;
+        border-radius: 4px;
+        position: relative;
+        min-width: 200px;
+    }
+    
+    .span-bar {
+        position: absolute;
+        top: 3px;
+        height: 14px;
+        border-radius: 3px;
+        transition: opacity 0.2s;
+    }
+    
+    .span-bar:hover {
+        opacity: 0.85;
+    }
+    
+    .span-bar.server { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .span-bar.client { background: linear-gradient(90deg, #22c55e, #4ade80); }
+    .span-bar.internal { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+    .span-bar.producer { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .span-bar.consumer { background: linear-gradient(90deg, #ec4899, #f472b6); }
+    .span-bar.error { background: linear-gradient(90deg, #ef4444, #f87171); }
+    
+    .span-duration-label {
+        position: absolute;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 9px;
+        color: white;
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        direction: ltr;
+    }
+    
+    .timeline-header {
+        padding: 8px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .timeline-scale {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: #9ca3af;
+        padding: 0 16px;
+        direction: ltr;
+    }
+    
+    /* ===== Metric Drill-Down Modal Styles ===== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .drilldown-modal {
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .modal-header h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        color: #6b7280;
+        transition: all 0.2s;
+    }
+    
+    .modal-close:hover {
+        background: #f3f4f6;
+        color: #1f2937;
+    }
+    
+    .modal-body {
+        padding: 24px;
+    }
+    
+    .drilldown-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .drilldown-stat {
+        background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+    }
+    
+    .stat-label {
+        display: block;
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 4px;
+    }
+    
+    .stat-value {
+        display: block;
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f2937;
+        direction: ltr;
+    }
+    
+    .drilldown-chart-section {
+        margin-bottom: 24px;
+    }
+    
+    .drilldown-chart-section h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 12px;
+    }
+    
+    .drilldown-time-selector {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .dd-time-btn {
+        padding: 6px 12px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        border-radius: 6px;
+        font-size: 12px;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .dd-time-btn:hover {
+        border-color: #8b5cf6;
+        color: #8b5cf6;
+    }
+    
+    .dd-time-btn.active {
+        background: #8b5cf6;
+        border-color: #8b5cf6;
+        color: white;
+    }
+    
+    .drilldown-chart-container {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 16px;
+        position: relative;
+        min-height: 200px;
+    }
+    
+    .drilldown-chart {
+        width: 100%;
+        height: 180px;
+    }
+    
+    .chart-loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #6b7280;
+        font-size: 14px;
+    }
+    
+    .drilldown-info {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 16px;
+    }
+    
+    .info-row {
+        display: flex;
+        padding: 8px 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-size: 13px;
+        color: #6b7280;
+        min-width: 80px;
+    }
+    
+    .info-value {
+        font-size: 13px;
+        color: #1f2937;
+        direction: ltr;
+    }
+    
+    .metric-row.clickable {
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    
+    .metric-row.clickable:hover {
+        background: #f0f9ff;
+    }
+    
+    /* ===== Advanced Charts Styles ===== */
+    .charts-section {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 24px;
+    }
+    
+    .charts-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    
+    .charts-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .charts-title svg {
+        color: #0ea5e9;
+    }
+    
+    .time-range-selector {
+        display: flex;
+        gap: 4px;
+        background: #f3f4f6;
+        padding: 4px;
+        border-radius: 8px;
+    }
+    
+    .time-range-btn {
+        padding: 6px 12px;
+        border: none;
+        background: transparent;
+        color: #6b7280;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+    
+    .time-range-btn:hover {
+        color: #374151;
+        background: rgba(255,255,255,0.5);
+    }
+    
+    .time-range-btn.active {
+        background: white;
+        color: #0ea5e9;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    @@media (max-width: 1024px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .chart-card {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 16px;
+    }
+    
+    .chart-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    
+    .chart-card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    .chart-card-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f2937;
+        direction: ltr;
+    }
+    
+    .chart-container {
+        height: 120px;
+        position: relative;
+    }
+    
+    .chart-canvas {
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* Simple SVG Chart Styles */
+    .line-chart {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .chart-line {
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    
+    .chart-area {
+        opacity: 0.1;
+    }
+    
+    .chart-dot {
+        r: 3;
+    }
+    
+    .chart-grid-line {
+        stroke: #e5e7eb;
+        stroke-width: 1;
+        stroke-dasharray: 4,4;
+    }
+    
+    .chart-label {
+        font-size: 10px;
+        fill: #9ca3af;
+        font-family: monospace;
+    }
+    
+    /* Color themes for charts */
+    .chart-cpu .chart-line { stroke: #06b6d4; }
+    .chart-cpu .chart-area { fill: #06b6d4; }
+    .chart-cpu .chart-dot { fill: #06b6d4; }
+    
+    .chart-memory .chart-line { stroke: #8b5cf6; }
+    .chart-memory .chart-area { fill: #8b5cf6; }
+    .chart-memory .chart-dot { fill: #8b5cf6; }
+    
+    .chart-requests .chart-line { stroke: #22c55e; }
+    .chart-requests .chart-area { fill: #22c55e; }
+    .chart-requests .chart-dot { fill: #22c55e; }
+    
+    .chart-errors .chart-line { stroke: #ef4444; }
+    .chart-errors .chart-area { fill: #ef4444; }
+    .chart-errors .chart-dot { fill: #ef4444; }
+    
+    .chart-no-data {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #9ca3af;
+        font-size: 12px;
+    }
+</style>
+</head>
+<body>
+<div class="monitoring-dashboard">
+    <div class="monitoring-header">
+        <h1 class="monitoring-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            مانیتورینگ سیستم
+        </h1>
+        <div class="header-actions">
+            <a href="/Monitoring/Advanced" class="btn-advanced">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                نسخه پیشرفته
+            </a>
+            <button id="btn-pause" class="btn-pause" onclick="togglePause()">
+                <svg id="pause-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="6" y="4" width="4" height="16" rx="1"/>
+                    <rect x="14" y="4" width="4" height="16" rx="1"/>
+                </svg>
+                <svg id="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span id="pause-text">توقف</span>
+            </button>
+            <div class="refresh-indicator">
+                <span id="refresh-dot" class="refresh-dot"></span>
+                <span id="refresh-status">بروزرسانی خودکار</span>
+            </div>
+            <div id="health-status" class="health-badge health-healthy">
+                <span class="health-dot"></span>
+                <span>سالم</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- System Metrics -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon cyan">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                </div>
+                <span id="cpu-trend" class="metric-trend trend-stable">ثابت</span>
+            </div>
+            <div id="cpu-value" class="metric-value">--</div>
+            <div class="metric-label">مصرف CPU</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h.01M7 12h.01M7 17h.01M12 7h.01M12 12h.01M12 17h.01M17 7h.01M17 12h.01M17 17h.01"/>
+                    </svg>
+                </div>
+                <span id="memory-trend" class="metric-trend trend-stable">ثابت</span>
+            </div>
+            <div id="memory-value" class="metric-value">--</div>
+            <div class="metric-label">مصرف حافظه</div>
+            <div id="memory-detail" class="metric-sublabel">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                </div>
+                <span id="requests-trend" class="metric-trend trend-up">+12%</span>
+            </div>
+            <div id="requests-value" class="metric-value">--</div>
+            <div class="metric-label">درخواست‌ها در ثانیه</div>
+            <div id="requests-detail" class="metric-sublabel">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <span id="response-trend" class="metric-trend trend-stable">ثابت</span>
+            </div>
+            <div id="response-value" class="metric-value">--</div>
+            <div class="metric-label">میانگین زمان پاسخ</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon amber">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </div>
+                <span id="active-trend" class="metric-trend trend-stable">ثابت</span>
+            </div>
+            <div id="active-value" class="metric-value">--</div>
+            <div class="metric-label">درخواست‌های فعال</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon red">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <span id="error-trend" class="metric-trend trend-stable">ثابت</span>
+            </div>
+            <div id="error-value" class="metric-value">--</div>
+            <div class="metric-label">نرخ موفقیت</div>
+            <div id="error-detail" class="metric-sublabel">--</div>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="charts-header">
+            <h3 class="charts-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                </svg>
+                نمودار تاریخچه
+            </h3>
+            <div class="time-range-selector">
+                <button class="time-range-btn active" data-range="5" onclick="setTimeRange(5)">5 دقیقه</button>
+                <button class="time-range-btn" data-range="15" onclick="setTimeRange(15)">15 دقیقه</button>
+                <button class="time-range-btn" data-range="30" onclick="setTimeRange(30)">30 دقیقه</button>
+                <button class="time-range-btn" data-range="60" onclick="setTimeRange(60)">1 ساعت</button>
+            </div>
+        </div>
+        <div class="charts-grid">
+            <div class="chart-card chart-cpu">
+                <div class="chart-card-header">
+                    <span class="chart-card-title">مصرف CPU</span>
+                    <span id="cpu-chart-value" class="chart-card-value">--%</span>
+                </div>
+                <div class="chart-container">
+                    <svg id="cpu-chart" class="line-chart" viewBox="0 0 400 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="cpu-gradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="chart-area" fill="url(#cpu-gradient)"/>
+                        <path class="chart-line"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="chart-card chart-memory">
+                <div class="chart-card-header">
+                    <span class="chart-card-title">مصرف حافظه</span>
+                    <span id="memory-chart-value" class="chart-card-value">--%</span>
+                </div>
+                <div class="chart-container">
+                    <svg id="memory-chart" class="line-chart" viewBox="0 0 400 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="memory-gradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="chart-area" fill="url(#memory-gradient)"/>
+                        <path class="chart-line"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="chart-card chart-requests">
+                <div class="chart-card-header">
+                    <span class="chart-card-title">درخواست‌ها/ثانیه</span>
+                    <span id="requests-chart-value" class="chart-card-value">--</span>
+                </div>
+                <div class="chart-container">
+                    <svg id="requests-chart" class="line-chart" viewBox="0 0 400 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="requests-gradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#22c55e" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="chart-area" fill="url(#requests-gradient)"/>
+                        <path class="chart-line"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="chart-card chart-errors">
+                <div class="chart-card-header">
+                    <span class="chart-card-title">نرخ خطا</span>
+                    <span id="errors-chart-value" class="chart-card-value">--%</span>
+                </div>
+                <div class="chart-container">
+                    <svg id="errors-chart" class="line-chart" viewBox="0 0 400 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="errors-gradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#ef4444" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="chart-area" fill="url(#errors-gradient)"/>
+                        <path class="chart-line"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabbed Data Sections -->
+    <div class="data-tabs-container">
+        <div class="data-tabs-header">
+            <button class="data-tab active" data-tab="metrics" onclick="switchTab('metrics')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h.01M7 12h.01M7 17h.01M12 7h.01M12 12h.01M12 17h.01M17 7h.01M17 12h.01M17 17h.01"/>
+                </svg>
+                متریک‌ها
+                <span id="metrics-tab-badge" class="data-tab-badge">--</span>
+            </button>
+            <button class="data-tab" data-tab="traces" onclick="switchTab('traces')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                Traces
+                <span id="traces-tab-badge" class="data-tab-badge">--</span>
+            </button>
+            <button class="data-tab" data-tab="logs" onclick="switchTab('logs')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+                لاگ‌ها
+                <span id="logs-tab-badge" class="data-tab-badge">--</span>
+            </button>
+        </div>
+        
+        <!-- Metrics Tab Content -->
+        <div id="tab-metrics" class="data-tab-content active">
+            <!-- Metric Prefix Tabs -->
+            <div class="metric-prefix-tabs-container" style="margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
+                <div class="metric-prefix-tabs" id="metric-prefix-tabs" style="display: flex; gap: 4px; flex-wrap: wrap;">
+                    <!-- Tabs will be generated dynamically -->
+                </div>
+            </div>
+            
+            <div id="collected-metrics-container">
+                <div id="collected-metrics-body">
+                    <div class="loading">
+                        <span class="spinner"></span>
+                        در حال بارگذاری...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Traces Tab Content -->
+        <div id="tab-traces" class="data-tab-content">
+            <div class="traces-header" style="margin-bottom: 16px;">
+                <h3 class="traces-title" style="font-size: 14px; color: #6b7280;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                    ردیابی درخواست‌ها
+                </h3>
+                <div class="trace-stats">
+                    <div class="trace-stat">
+                        <span>کل:</span>
+                        <span id="trace-total" class="trace-stat-value">--</span>
+                    </div>
+                    <div class="trace-stat">
+                        <span>خطا:</span>
+                        <span id="trace-errors" class="trace-stat-value" style="color: #ef4444;">--</span>
+                    </div>
+                    <div class="trace-stat">
+                        <span>میانگین:</span>
+                        <span id="trace-avg" class="trace-stat-value">--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trace Filters -->
+            <div class="trace-filters" style="margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">بازه زمانی</label>
+                        <select 
+                            id="trace-time-filter" 
+                            class="log-filter-input" 
+                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right;"
+                            onchange="handleTraceFilterChange()"
+                        >
+                            <option value="5">آخرین 5 دقیقه</option>
+                            <option value="15">آخرین 15 دقیقه</option>
+                            <option value="30">آخرین 30 دقیقه</option>
+                            <option value="60">آخرین 1 ساعت</option>
+                            <option value="1440">آخرین 24 ساعت</option>
+                            <option value="0">همه</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">نوع (Service)</label>
+                        <select 
+                            id="trace-service-filter" 
+                            class="log-filter-input" 
+                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right;"
+                            onchange="handleTraceFilterChange()"
+                        >
+                            <option value="">همه سرویس‌ها</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">طبقه‌بندی (Kind)</label>
+                        <select 
+                            id="trace-kind-filter" 
+                            class="log-filter-input" 
+                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right;"
+                            onchange="handleTraceFilterChange()"
+                        >
+                            <option value="">همه انواع</option>
+                            <option value="0">Internal</option>
+                            <option value="1">Server</option>
+                            <option value="2">Client</option>
+                            <option value="3">Producer</option>
+                            <option value="4">Consumer</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">وضعیت</label>
+                        <select 
+                            id="trace-status-filter" 
+                            class="log-filter-input" 
+                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right;"
+                            onchange="handleTraceFilterChange()"
+                        >
+                            <option value="">همه وضعیت‌ها</option>
+                            <option value="1">موفق</option>
+                            <option value="2">خطا</option>
+                            <option value="0">نامشخص</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">زمان اجرا</label>
+                        <select 
+                            id="trace-duration-filter" 
+                            class="log-filter-input" 
+                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right;"
+                            onchange="handleTraceFilterChange()"
+                        >
+                            <option value="">همه</option>
+                            <option value="lt10">کمتر از 10ms</option>
+                            <option value="lt50">کمتر از 50ms</option>
+                            <option value="lt100">کمتر از 100ms</option>
+                            <option value="lt500">کمتر از 500ms</option>
+                            <option value="lt1000">کمتر از 1s</option>
+                            <option value="gte1000">بیشتر از 1s</option>
+                            <option value="range50-100">بین 50ms تا 100ms</option>
+                            <option value="range100-500">بین 100ms تا 500ms</option>
+                            <option value="range500-1000">بین 500ms تا 1s</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: flex-end; gap: 8px;">
+                        <button 
+                            onclick="clearTraceFilters()" 
+                            class="log-filter-clear-btn"
+                            style="padding: 6px 12px; border: 1px solid #d1d5db; background: white; border-radius: 6px; font-size: 12px; cursor: pointer; color: #6b7280; transition: all 0.2s;"
+                            onmouseover="this.style.background='#f3f4f6'"
+                            onmouseout="this.style.background='white'"
+                        >
+                            پاک کردن
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: #9ca3af;">
+                    <span id="trace-filter-status">فیلترها اعمال نشده</span>
+                </div>
+            </div>
+            
+            <div id="traces-container" class="trace-list">
+                <div class="loading">
+                    <span class="spinner"></span>
+                    در حال بارگذاری...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logs Tab Content -->
+        <div id="tab-logs" class="data-tab-content">
+            <div class="logs-header" style="margin-bottom: 16px;">
+                <h3 class="logs-title" style="font-size: 14px; color: #6b7280;">لاگ‌های اخیر</h3>
+                <div class="log-filter-buttons">
+                    <button class="log-filter-btn active" data-level="all">همه</button>
+                    <button class="log-filter-btn" data-level="error">خطا</button>
+                    <button class="log-filter-btn" data-level="warning">هشدار</button>
+                    <button class="log-filter-btn" data-level="info">اطلاعات</button>
+                </div>
+            </div>
+            
+            <!-- Log Filters -->
+            <div class="log-text-filters" style="margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">منبع</label>
+                        <select 
+                            id="log-source-filter" 
+                            class="log-filter-input" 
+                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right;"
+                            onchange="handleLogFilterChange()"
+                        >
+                            <option value="">همه منابع</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">Correlation ID</label>
+                        <input 
+                            type="text" 
+                            id="log-correlation-filter" 
+                            class="log-filter-input" 
+                            placeholder="جستجوی Correlation ID..."
+                            style="width: 100%; padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; font-family: monospace;"
+                            onkeyup="handleLogFilterChange()"
+                        />
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">جستجوی متن</label>
+                        <input 
+                            type="text" 
+                            id="log-text-filter" 
+                            class="log-filter-input" 
+                            placeholder="جستجو در متن لاگ..."
+                            style="width: 100%; padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px;"
+                            onkeyup="handleLogFilterChange()"
+                        />
+                    </div>
+                    <div style="display: flex; align-items: flex-end; gap: 8px;">
+                        <button 
+                            onclick="clearLogFilters()" 
+                            class="log-filter-clear-btn"
+                            style="padding: 6px 12px; border: 1px solid #d1d5db; background: white; border-radius: 6px; font-size: 12px; cursor: pointer; color: #6b7280; transition: all 0.2s;"
+                            onmouseover="this.style.background='#f3f4f6'"
+                            onmouseout="this.style.background='white'"
+                        >
+                            پاک کردن
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: #9ca3af;">
+                    <span id="log-filter-status">فیلترها اعمال نشده</span>
+                </div>
+            </div>
+            
+            <div id="logs-container">
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 140px;">زمان</th>
+                            <th style="width: 80px;">سطح</th>
+                            <th style="width: 200px;">منبع</th>
+                            <th style="width: 180px;">Correlation ID</th>
+                            <th>پیام</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-body">
+                        <tr>
+                            <td colspan="5" class="loading">
+                                <span class="spinner"></span>
+                                در حال بارگذاری...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Metric Drill-Down Modal -->
+<div id="metric-drilldown-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content drilldown-modal">
+        <div class="modal-header">
+            <h3 id="drilldown-title">جزئیات متریک</h3>
+            <button class="modal-close" onclick="closeMetricDrillDown()">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="drilldown-stats-grid">
+                <div class="drilldown-stat">
+                    <span class="stat-label">مقدار فعلی</span>
+                    <span id="dd-current" class="stat-value">--</span>
+                </div>
+                <div class="drilldown-stat">
+                    <span class="stat-label">میانگین</span>
+                    <span id="dd-avg" class="stat-value">--</span>
+                </div>
+                <div class="drilldown-stat">
+                    <span class="stat-label">حداقل</span>
+                    <span id="dd-min" class="stat-value">--</span>
+                </div>
+                <div class="drilldown-stat">
+                    <span class="stat-label">حداکثر</span>
+                    <span id="dd-max" class="stat-value">--</span>
+                </div>
+                <div class="drilldown-stat">
+                    <span class="stat-label">مجموع</span>
+                    <span id="dd-sum" class="stat-value">--</span>
+                </div>
+                <div class="drilldown-stat">
+                    <span class="stat-label">تعداد</span>
+                    <span id="dd-count" class="stat-value">--</span>
+                </div>
+            </div>
+            <div class="drilldown-chart-section">
+                <h4>نمودار زمانی</h4>
+                <div class="drilldown-time-selector">
+                    <button class="dd-time-btn active" data-minutes="5" onclick="loadDrillDownChart(5)">5 دقیقه</button>
+                    <button class="dd-time-btn" data-minutes="15" onclick="loadDrillDownChart(15)">15 دقیقه</button>
+                    <button class="dd-time-btn" data-minutes="60" onclick="loadDrillDownChart(60)">1 ساعت</button>
+                </div>
+                <div class="drilldown-chart-container">
+                    <svg id="drilldown-chart" class="drilldown-chart" viewBox="0 0 600 200" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="dd-gradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="dd-chart-area" fill="url(#dd-gradient)"/>
+                        <path class="dd-chart-line" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+                    </svg>
+                    <div id="drilldown-chart-loading" class="chart-loading">در حال بارگذاری...</div>
+                </div>
+            </div>
+            <div class="drilldown-info">
+                <div class="info-row">
+                    <span class="info-label">نوع:</span>
+                    <span id="dd-type" class="info-value">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">واحد:</span>
+                    <span id="dd-unit" class="info-value">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">توضیحات:</span>
+                    <span id="dd-description" class="info-value">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Monitoring Dashboard JavaScript
+    (function() {
+        const API_BASE = '/api/monitoring';
+        let currentLogLevel = 'all';
+        let isPaused = false;
+        let refreshIntervals = [];
+        let currentDrillDownMetric = null;
+        
+        // Metric Drill-Down functions
+        window.showMetricDrillDown = async function(index) {
+            const metric = window.metricsData && window.metricsData[index];
+            if (!metric) return;
+            
+            currentDrillDownMetric = getProp(metric, 'Name');
+            const stats = getProp(metric, 'Stats') || {};
+            
+            // Set modal title
+            document.getElementById('drilldown-title').textContent = currentDrillDownMetric;
+            
+            // Set stats
+            const unit = getProp(metric, 'Unit') || '';
+            document.getElementById('dd-current').textContent = formatStatValue(getProp(stats, 'CurrentValue'), unit);
+            document.getElementById('dd-avg').textContent = formatStatValue(getProp(stats, 'AvgValue'), unit);
+            document.getElementById('dd-min').textContent = formatStatValue(getProp(stats, 'MinValue'), unit);
+            document.getElementById('dd-max').textContent = formatStatValue(getProp(stats, 'MaxValue'), unit);
+            document.getElementById('dd-sum').textContent = formatStatValue(getProp(stats, 'SumValue'), unit);
+            document.getElementById('dd-count').textContent = (getProp(stats, 'Count') || 0).toLocaleString();
+            
+            // Set info
+            document.getElementById('dd-type').textContent = getProp(metric, 'Type') || '-';
+            document.getElementById('dd-unit').textContent = unit || 'بدون واحد';
+            document.getElementById('dd-description').textContent = getProp(metric, 'Description') || '-';
+            
+            // Show modal
+            document.getElementById('metric-drilldown-modal').style.display = 'flex';
+            
+            // Load chart with default time range
+            loadDrillDownChart(5);
+        };
+        
+        window.closeMetricDrillDown = function() {
+            document.getElementById('metric-drilldown-modal').style.display = 'none';
+            currentDrillDownMetric = null;
+        };
+        
+        window.loadDrillDownChart = async function(minutes) {
+            if (!currentDrillDownMetric) return;
+            
+            // Update button states
+            document.querySelectorAll('.dd-time-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.minutes) === minutes);
+            });
+            
+            const loading = document.getElementById('drilldown-chart-loading');
+            loading.style.display = 'block';
+            
+            try {
+                const from = new Date(Date.now() - minutes * 60 * 1000).toISOString();
+                const response = await fetch(`${API_BASE}/metrics/${encodeURIComponent(currentDrillDownMetric)}/timeseries?from=${from}`);
+                
+                if (!response.ok) throw new Error('Failed to fetch');
+                const data = await response.json();
+                
+                const dataPoints = getProp(data, 'DataPoints') || [];
+                
+                if (dataPoints.length < 2) {
+                    loading.textContent = 'داده کافی برای نمایش نمودار وجود ندارد';
+                    document.querySelector('.dd-chart-line').setAttribute('d', '');
+                    document.querySelector('.dd-chart-area').setAttribute('d', '');
+                    return;
+                }
+                
+                loading.style.display = 'none';
+                
+                // Draw chart
+                const width = 600;
+                const height = 200;
+                const padding = 20;
+                
+                const values = dataPoints.map(p => getProp(p, 'Value') || 0);
+                const maxVal = Math.max(...values, 1);
+                const minVal = Math.min(...values, 0);
+                const range = maxVal - minVal || 1;
+                
+                const points = dataPoints.map((p, i) => {
+                    const x = padding + (i / (dataPoints.length - 1)) * (width - padding * 2);
+                    const y = height - padding - ((getProp(p, 'Value') - minVal) / range) * (height - padding * 2);
+                    return { x, y };
+                });
+                
+                const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+                const areaPath = linePath + ` L ${points[points.length-1].x} ${height - padding} L ${points[0].x} ${height - padding} Z`;
+                
+                document.querySelector('.dd-chart-line').setAttribute('d', linePath);
+                document.querySelector('.dd-chart-area').setAttribute('d', areaPath);
+                
+            } catch (error) {
+                console.error('Error loading drill-down chart:', error);
+                loading.textContent = 'خطا در بارگذاری نمودار';
+            }
+        };
+        
+        function formatStatValue(value, unit) {
+            if (value === null || value === undefined) return '--';
+            const formatted = typeof value === 'number' ? value.toFixed(2) : value;
+            return unit ? `${formatted} ${unit}` : formatted;
+        }
+        
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMetricDrillDown();
+            }
+        });
+        
+        // Close modal on backdrop click
+        document.getElementById('metric-drilldown-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMetricDrillDown();
+            }
+        });
+        
+        // Tab switching
+        window.switchTab = function(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.data-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            // Update tab content
+            document.querySelectorAll('.data-tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === 'tab-' + tabName);
+            });
+        };
+        
+        // ===== Chart Data & Functions =====
+        let currentTimeRange = 5; // minutes
+        const chartData = {
+            cpu: [],
+            memory: [],
+            requests: [],
+            errors: []
+        };
+        const maxDataPoints = 60;
+        
+        // Time range selector
+        window.setTimeRange = function(minutes) {
+            currentTimeRange = minutes;
+            document.querySelectorAll('.time-range-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.range) === minutes);
+            });
+            // Clear old data and fetch new
+            Object.keys(chartData).forEach(key => chartData[key] = []);
+            fetchChartsData();
+        };
+        
+        // Draw SVG line chart
+        function drawLineChart(svgId, data, maxValue) {
+            const svg = document.getElementById(svgId);
+            if (!svg) {
+                console.warn('SVG element not found:', svgId);
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                // Clear chart if no data
+                const areaEl = svg.querySelector('.chart-area');
+                const lineEl = svg.querySelector('.chart-line');
+                if (areaEl) areaEl.setAttribute('d', '');
+                if (lineEl) lineEl.setAttribute('d', '');
+                return;
+            }
+            
+            const width = 400;
+            const height = 120;
+            const padding = 5;
+            
+            // Normalize data
+            const max = maxValue || Math.max(...data.map(d => d.value || 0), 1);
+            
+            if (max <= 0) {
+                // Clear chart if invalid max value
+                const areaEl = svg.querySelector('.chart-area');
+                const lineEl = svg.querySelector('.chart-line');
+                if (areaEl) areaEl.setAttribute('d', '');
+                if (lineEl) lineEl.setAttribute('d', '');
+                return;
+            }
+            
+            // Create points
+            const points = data.map((d, i) => {
+                const value = d.value || 0;
+                const x = padding + (i / (data.length - 1 || 1)) * (width - padding * 2);
+                const y = height - padding - (value / max) * (height - padding * 2);
+                return { x, y };
+            });
+            
+            if (points.length < 2) {
+                // Need at least 2 points to draw a line
+                const areaEl = svg.querySelector('.chart-area');
+                const lineEl = svg.querySelector('.chart-line');
+                if (areaEl) areaEl.setAttribute('d', '');
+                if (lineEl) lineEl.setAttribute('d', '');
+                return;
+            }
+            
+            // Create SVG path
+            const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');
+            const areaPath = linePath + ` L ${points[points.length-1].x.toFixed(2)} ${height} L ${points[0].x.toFixed(2)} ${height} Z`;
+            
+            // Update SVG elements
+            const areaEl = svg.querySelector('.chart-area');
+            const lineEl = svg.querySelector('.chart-line');
+            
+            if (areaEl) {
+                areaEl.setAttribute('d', areaPath);
+            } else {
+                console.warn('Chart area element not found in:', svgId);
+            }
+            
+            if (lineEl) {
+                lineEl.setAttribute('d', linePath);
+            } else {
+                console.warn('Chart line element not found in:', svgId);
+            }
+        }
+        
+        // Record new data point
+        function recordDataPoint(type, value) {
+            const now = Date.now();
+            chartData[type].push({ time: now, value: value || 0 });
+            
+            // Keep only data within time range
+            const cutoff = now - currentTimeRange * 60 * 1000;
+            chartData[type] = chartData[type].filter(d => d.time >= cutoff);
+            
+            // Limit max points
+            if (chartData[type].length > maxDataPoints) {
+                chartData[type] = chartData[type].slice(-maxDataPoints);
+            }
+        }
+        
+        // Update charts from current data
+        function updateCharts() {
+            // CPU chart
+            const cpuEl = document.getElementById('cpu-chart-value');
+            if (chartData.cpu.length > 0) {
+                const lastCpu = chartData.cpu[chartData.cpu.length - 1].value;
+                if (cpuEl) cpuEl.textContent = lastCpu.toFixed(1) + '%';
+                drawLineChart('cpu-chart', chartData.cpu, 100);
+            } else if (cpuEl) {
+                cpuEl.textContent = '--%';
+            }
+            
+            // Memory chart
+            const memEl = document.getElementById('memory-chart-value');
+            if (chartData.memory.length > 0) {
+                const lastMem = chartData.memory[chartData.memory.length - 1].value;
+                if (memEl) memEl.textContent = lastMem.toFixed(1) + '%';
+                drawLineChart('memory-chart', chartData.memory, 100);
+            } else if (memEl) {
+                memEl.textContent = '--%';
+            }
+            
+            // Requests chart
+            const reqEl = document.getElementById('requests-chart-value');
+            if (chartData.requests.length > 0) {
+                const lastReq = chartData.requests[chartData.requests.length - 1].value;
+                if (reqEl) reqEl.textContent = lastReq.toFixed(2);
+                drawLineChart('requests-chart', chartData.requests, null);
+            } else if (reqEl) {
+                reqEl.textContent = '--';
+            }
+            
+            // Errors chart
+            const errEl = document.getElementById('errors-chart-value');
+            if (chartData.errors.length > 0) {
+                const lastErr = chartData.errors[chartData.errors.length - 1].value;
+                if (errEl) errEl.textContent = lastErr.toFixed(1) + '%';
+                drawLineChart('errors-chart', chartData.errors, 100);
+            } else if (errEl) {
+                errEl.textContent = '--%';
+            }
+        }
+        
+        // Fetch chart data from API
+        async function fetchChartsData() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard`);
+                if (!response.ok) return;
+                const data = await response.json();
+                
+                const system = getProp(data, 'System') || {};
+                const app = getProp(data, 'Application') || {};
+                
+                const cpuVal = getProp(system, 'CpuUsagePercent') || 0;
+                const memVal = getProp(system, 'MemoryUsagePercent') || 0;
+                const reqVal = getProp(app, 'RequestsPerSecond') || 0;
+                const successRate = getProp(app, 'SuccessRate') || 100;
+                const errorRate = 100 - successRate;
+                
+                recordDataPoint('cpu', cpuVal);
+                recordDataPoint('memory', memVal);
+                recordDataPoint('requests', reqVal);
+                recordDataPoint('errors', errorRate);
+                
+                updateCharts();
+            } catch (error) {
+                console.error('Error fetching chart data:', error);
+            }
+        }
+        
+        // Pause/Resume toggle
+        window.togglePause = function() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('btn-pause');
+            const pauseIcon = document.getElementById('pause-icon');
+            const playIcon = document.getElementById('play-icon');
+            const pauseText = document.getElementById('pause-text');
+            const refreshDot = document.getElementById('refresh-dot');
+            const refreshStatus = document.getElementById('refresh-status');
+            
+            if (isPaused) {
+                btn.classList.add('paused');
+                pauseIcon.style.display = 'none';
+                playIcon.style.display = 'block';
+                pauseText.textContent = 'ادامه';
+                refreshDot.classList.add('paused');
+                refreshStatus.textContent = 'متوقف شده';
+            } else {
+                btn.classList.remove('paused');
+                pauseIcon.style.display = 'block';
+                playIcon.style.display = 'none';
+                pauseText.textContent = 'توقف';
+                refreshDot.classList.remove('paused');
+                refreshStatus.textContent = 'بروزرسانی خودکار';
+                // Immediately refresh when resuming
+                fetchDashboard();
+                fetchHealth();
+                fetchLogs(currentLogLevel);
+                fetchCollectedMetrics();
+                fetchTraces();
+            }
+        };
+        
+        // Helper to get property (handles both PascalCase and camelCase)
+        function getProp(obj, ...keys) {
+            for (const key of keys) {
+                const camel = key.charAt(0).toLowerCase() + key.slice(1);
+                const pascal = key.charAt(0).toUpperCase() + key.slice(1);
+                if (obj[camel] !== undefined) return obj[camel];
+                if (obj[pascal] !== undefined) return obj[pascal];
+            }
+            return null;
+        }
+        
+        // Format bytes to human readable
+        function formatBytes(bytes) {
+            if (!bytes || bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        // Format duration
+        function formatDuration(ms) {
+            if (!ms || ms < 1) return '<1 ms';
+            if (ms < 1000) return ms.toFixed(0) + ' ms';
+            return (ms / 1000).toFixed(2) + ' s';
+        }
+        
+        // Format time
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        
+        // Get log level badge
+        function getLogLevelBadge(level) {
+            const levels = {
+                0: { class: 'trace', text: 'Trace' },
+                1: { class: 'debug', text: 'Debug' },
+                2: { class: 'info', text: 'Info' },
+                3: { class: 'warning', text: 'Warning' },
+                4: { class: 'error', text: 'Error' },
+                5: { class: 'critical', text: 'Critical' }
+            };
+            const l = levels[level] || { class: 'info', text: 'Info' };
+            return `<span class="log-level ${l.class}">${l.text}</span>`;
+        }
+        
+        // Update health status
+        function updateHealthStatus(status) {
+            const badge = document.getElementById('health-status');
+            if (!badge) return;
+            badge.className = 'health-badge health-' + status.toLowerCase();
+            const text = { 'healthy': 'سالم', 'warning': 'هشدار', 'critical': 'بحرانی' };
+            badge.innerHTML = `<span class="health-dot"></span><span>${text[status.toLowerCase()] || status}</span>`;
+        }
+        
+        // Fetch dashboard data
+        async function fetchDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard`);
+                if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
+                const data = await response.json();
+                
+                // Get system and application objects (handle both cases)
+                const system = getProp(data, 'System') || data.System || data.system || {};
+                const application = getProp(data, 'Application') || data.Application || data.application || {};
+                
+                // Update system metrics
+                const cpuVal = getProp(system, 'CpuUsagePercent');
+                const memPercent = getProp(system, 'MemoryUsagePercent');
+                const memUsed = getProp(system, 'MemoryUsedBytes');
+                const memTotal = getProp(system, 'MemoryTotalBytes');
+                
+                document.getElementById('cpu-value').textContent = cpuVal !== null ? cpuVal.toFixed(1) + '%' : '--';
+                document.getElementById('memory-value').textContent = memPercent !== null ? memPercent.toFixed(1) + '%' : '--';
+                document.getElementById('memory-detail').textContent = 
+                    memUsed && memTotal ? `${formatBytes(memUsed)} / ${formatBytes(memTotal)}` : '--';
+                
+                // Update application metrics
+                const reqPerSec = getProp(application, 'RequestsPerSecond');
+                const totalReq = getProp(application, 'TotalRequests');
+                const avgResp = getProp(application, 'AverageResponseTimeMs');
+                const activeReq = getProp(application, 'ActiveRequests');
+                const successRate = getProp(application, 'SuccessRate');
+                const failedReq = getProp(application, 'FailedRequests');
+                
+                document.getElementById('requests-value').textContent = reqPerSec !== null ? reqPerSec.toFixed(2) : '--';
+                document.getElementById('requests-detail').textContent = 
+                    totalReq !== null ? `کل: ${totalReq.toLocaleString('fa-IR')}` : '--';
+                document.getElementById('response-value').textContent = formatDuration(avgResp);
+                document.getElementById('active-value').textContent = activeReq !== null ? activeReq : '--';
+                document.getElementById('error-value').textContent = successRate !== null ? successRate.toFixed(1) + '%' : '--';
+                document.getElementById('error-detail').textContent = 
+                    failedReq !== null ? `خطا: ${failedReq.toLocaleString('fa-IR')}` : '--';
+                
+            } catch (error) {
+                console.error('Error fetching dashboard:', error);
+            }
+        }
+        
+        // Fetch health status
+        async function fetchHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/health`);
+                if (!response.ok) throw new Error('Failed to fetch');
+                const data = await response.json();
+                const status = getProp(data, 'Status') || 'Healthy';
+                updateHealthStatus(status);
+            } catch (error) {
+                console.error('Error fetching health:', error);
+            }
+        }
+        
+        // Fetch logs
+        async function fetchLogs(level) {
+            try {
+                let url = `${API_BASE}/logs/recent?limit=50`;
+                if (level && level !== 'all') {
+                    // Map string log levels to numeric values
+                    const levelMap = {
+                        'trace': 0,
+                        'debug': 1,
+                        'info': 2,
+                        'warning': 3,
+                        'error': 4,
+                        'critical': 5
+                    };
+                    const numericLevel = levelMap[level.toLowerCase()] !== undefined 
+                        ? levelMap[level.toLowerCase()] 
+                        : level; // If already numeric, use as-is
+                    url += `&minLevel=${numericLevel}`;
+                }
+                
+                // Add correlation ID filter
+                const correlationId = document.getElementById('log-correlation-filter')?.value?.trim();
+                if (correlationId) {
+                    url += `&correlationId=${encodeURIComponent(correlationId)}`;
+                }
+                
+                // Add source filter
+                const sourceFilter = document.getElementById('log-source-filter')?.value?.trim();
+                if (sourceFilter) {
+                    url += `&source=${encodeURIComponent(sourceFilter)}`;
+                }
+                
+                // Add text search filter
+                const textFilter = document.getElementById('log-text-filter')?.value?.trim();
+                if (textFilter) {
+                    url += `&textSearch=${encodeURIComponent(textFilter)}`;
+                }
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to fetch');
+                const logs = await response.json();
+                
+                const tbody = document.getElementById('logs-body');
+                
+                // Extract unique sources and populate combobox
+                const uniqueSources = new Set();
+                (logs || []).forEach(log => {
+                    const source = getProp(log, 'SourceContext') || getProp(log, 'CategoryName') || '';
+                    if (source) {
+                        uniqueSources.add(source);
+                    }
+                });
+                
+                // Update source filter combobox
+                const sourceSelect = document.getElementById('log-source-filter');
+                if (sourceSelect) {
+                    const currentValue = sourceSelect.value;
+                    const options = Array.from(uniqueSources).sort();
+                    
+                    // Keep "همه منابع" option and add unique sources
+                    sourceSelect.innerHTML = '<option value="">همه منابع</option>';
+                    options.forEach(source => {
+                        const option = document.createElement('option');
+                        option.value = source;
+                        option.textContent = source;
+                        sourceSelect.appendChild(option);
+                    });
+                    
+                    // Restore previous selection if it still exists
+                    if (currentValue && options.includes(currentValue)) {
+                        sourceSelect.value = currentValue;
+                    }
+                }
+                
+                // Apply client-side text filter if needed (for cases where API doesn't support it)
+                let filteredLogs = logs || [];
+                if (textFilter && !url.includes('textSearch=')) {
+                    const searchLower = textFilter.toLowerCase();
+                    filteredLogs = filteredLogs.filter(log => {
+                        const message = (getProp(log, 'Message') || '').toLowerCase();
+                        const source = (getProp(log, 'SourceContext') || getProp(log, 'CategoryName') || '').toLowerCase();
+                        const correlation = (getProp(log, 'CorrelationId') || getProp(log, 'CorrelationID') || '').toLowerCase();
+                        return message.includes(searchLower) || source.includes(searchLower) || correlation.includes(searchLower);
+                    });
+                }
+                
+                // Apply client-side correlation ID filter if needed
+                if (correlationId && !url.includes('correlationId=')) {
+                    const correlationLower = correlationId.toLowerCase();
+                    filteredLogs = filteredLogs.filter(log => {
+                        const logCorrelation = (getProp(log, 'CorrelationId') || getProp(log, 'CorrelationID') || '').toLowerCase();
+                        return logCorrelation.includes(correlationLower);
+                    });
+                }
+                
+                // Apply client-side source filter if needed
+                if (sourceFilter && !url.includes('source=')) {
+                    filteredLogs = filteredLogs.filter(log => {
+                        const logSource = getProp(log, 'SourceContext') || getProp(log, 'CategoryName') || '';
+                        return logSource === sourceFilter;
+                    });
+                }
+                
+                document.getElementById('logs-tab-badge').textContent = filteredLogs ? filteredLogs.length : 0;
+                
+                // Update filter status
+                updateLogFilterStatus(sourceFilter, correlationId, textFilter, filteredLogs.length, logs ? logs.length : 0);
+                
+                if (!filteredLogs || filteredLogs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #6b7280;">لاگی یافت نشد</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = filteredLogs.map(log => {
+                    const timestamp = getProp(log, 'Timestamp');
+                    const level = getProp(log, 'Level');
+                    const source = getProp(log, 'SourceContext') || getProp(log, 'CategoryName') || '';
+                    const message = getProp(log, 'Message') || '';
+                    const correlationId = getProp(log, 'CorrelationId') || getProp(log, 'CorrelationID') || '';
+                    return `
+                    <tr>
+                        <td class="log-time">${formatTime(timestamp)}</td>
+                        <td>${getLogLevelBadge(level)}</td>
+                        <td class="log-source" title="${source}">${source || '-'}</td>
+                        <td class="log-correlation" style="font-family: monospace; font-size: 11px; color: #6b7280; direction: ltr; text-align: left;" title="${correlationId}">${correlationId || '-'}</td>
+                        <td class="log-message" title="${message}">${message}</td>
+                    </tr>
+                `}).join('');
+                
+            } catch (error) {
+                console.error('Error fetching logs:', error);
+                document.getElementById('logs-body').innerHTML = 
+                    '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #ef4444;">خطا در بارگذاری لاگ‌ها</td></tr>';
+            }
+        }
+        
+        // Handle log filter changes
+        window.handleLogFilterChange = function() {
+            const activeLevel = document.querySelector('.log-filter-btn.active')?.dataset.level || 'all';
+            fetchLogs(activeLevel);
+        };
+        
+        // Clear log filters
+        window.clearLogFilters = function() {
+            document.getElementById('log-source-filter').value = '';
+            document.getElementById('log-correlation-filter').value = '';
+            document.getElementById('log-text-filter').value = '';
+            const activeLevel = document.querySelector('.log-filter-btn.active')?.dataset.level || 'all';
+            fetchLogs(activeLevel);
+        };
+        
+        // Update log filter status
+        function updateLogFilterStatus(sourceFilter, correlationId, textFilter, filteredCount, totalCount) {
+            const statusEl = document.getElementById('log-filter-status');
+            if (!statusEl) return;
+            
+            const filters = [];
+            if (sourceFilter) filters.push('منبع: ' + sourceFilter);
+            if (correlationId) filters.push('Correlation ID: ' + correlationId);
+            if (textFilter) filters.push('متن: ' + textFilter);
+            
+            if (filters.length > 0) {
+                statusEl.textContent = `فیلترها: ${filters.join(' | ')} | نمایش ${filteredCount} از ${totalCount} لاگ`;
+                statusEl.style.color = '#0ea5e9';
+            } else {
+                statusEl.textContent = 'فیلترها اعمال نشده';
+                statusEl.style.color = '#9ca3af';
+            }
+        }
+        
+        // Extract prefix from metric name (e.g., "System.Cpu" -> "System")
+        function getMetricPrefix(name) {
+            if (!name) return 'Other';
+            const parts = name.split(/[._-]/);
+            return parts.length > 1 ? parts[0] : 'Other';
+        }
+        
+        // Fetch collected metrics
+        async function fetchCollectedMetrics() {
+            try {
+                const response = await fetch(`${API_BASE}/metrics/all`);
+                if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
+                const data = await response.json();
+                
+                const totalMetrics = getProp(data, 'TotalMetrics') || 0;
+                const metrics = getProp(data, 'Metrics') || [];
+                
+                document.getElementById('metrics-tab-badge').textContent = totalMetrics;
+                
+                if (!metrics || metrics.length === 0) {
+                    document.getElementById('collected-metrics-body').innerHTML = 
+                        '<div style="text-align: center; padding: 20px; color: #6b7280;">متریکی جمع‌آوری نشده است</div>';
+                    return;
+                }
+                
+                // Store metric data for drill-down
+                window.metricsData = window.metricsData || [];
+                window.metricsData = [];
+                
+                // Group metrics by prefix
+                const groupedMetrics = {};
+                metrics.forEach(function(metric, index) {
+                    window.metricsData[index] = metric;
+                    const name = getProp(metric, 'Name') || '-';
+                    const prefix = getMetricPrefix(name);
+                    
+                    if (!groupedMetrics[prefix]) {
+                        groupedMetrics[prefix] = [];
+                    }
+                    groupedMetrics[prefix].push({ metric: metric, index: index });
+                });
+                
+                // Sort prefixes alphabetically
+                const sortedPrefixes = Object.keys(groupedMetrics).sort();
+                
+                // Sort metrics within each prefix group by name
+                sortedPrefixes.forEach(function(prefix) {
+                    groupedMetrics[prefix].sort(function(a, b) {
+                        const nameA = getProp(a.metric, 'Name') || '';
+                        const nameB = getProp(b.metric, 'Name') || '';
+                        return nameA.localeCompare(nameB);
+                    });
+                });
+                
+                // Generate prefix tabs
+                const tabsContainer = document.getElementById('metric-prefix-tabs');
+                tabsContainer.innerHTML = sortedPrefixes.map(function(prefix, tabIndex) {
+                    const count = groupedMetrics[prefix].length;
+                    const isActive = tabIndex === 0 ? 'active' : '';
+                    return '<button class="metric-prefix-tab ' + isActive + '" data-prefix="' + prefix + '" onclick="switchMetricPrefix(\'' + prefix + '\')">' +
+                        '<span class="metric-prefix-tab-badge">' + count + '</span>' +
+                        prefix +
+                        '</button>';
+                }).join('');
+                
+                // Generate metric tables for each prefix
+                const metricsContainer = document.getElementById('collected-metrics-body');
+                if (!metricsContainer) {
+                    console.error('collected-metrics-body element not found');
+                    return;
+                }
+                
+                if (sortedPrefixes.length === 0) {
+                    metricsContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #6b7280;">متریکی جمع‌آوری نشده است</div>';
+                    return;
+                }
+                
+                metricsContainer.innerHTML = sortedPrefixes.map(function(prefix, tabIndex) {
+                    const isActive = tabIndex === 0 ? 'active' : '';
+                    const prefixMetrics = groupedMetrics[prefix];
+                    
+                    const tableRows = prefixMetrics.map(function(item) {
+                        const metric = item.metric;
+                        const index = item.index;
+                        const name = getProp(metric, 'Name') || '-';
+                        const type = getProp(metric, 'Type') || '-';
+                        const desc = getProp(metric, 'Description') || '-';
+                        const unit = getProp(metric, 'Unit') || '';
+                        const stats = getProp(metric, 'Stats');
+                        const count = stats ? (getProp(stats, 'Count') || 0) : 0;
+                        const current = stats ? (getProp(stats, 'CurrentValue') || 0) : 0;
+                        const avg = stats ? (getProp(stats, 'AvgValue') || 0) : 0;
+                        
+                        return '<tr class="metric-row clickable" onclick="showMetricDrillDown(' + index + ')" title="کلیک برای جزئیات">' +
+                            '<td class="metric-name">' + name + '</td>' +
+                            '<td><span class="metric-type">' + type + '</span></td>' +
+                            '<td class="metric-value">' + count.toLocaleString() + '</td>' +
+                            '<td class="metric-value">' + (typeof current === 'number' ? current.toFixed(2) : current) + (unit ? ' ' + unit : '') + '</td>' +
+                            '<td class="metric-value">' + (typeof avg === 'number' ? avg.toFixed(2) : avg) + (unit ? ' ' + unit : '') + '</td>' +
+                            '<td style="font-size: 11px; color: #6b7280; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + (desc || '-') + '</td>' +
+                        '</tr>';
+                    }).join('');
+                    
+                    return '<div class="metrics-content ' + isActive + '" id="metrics-prefix-' + prefix + '">' +
+                        '<table class="metrics-table-compact">' +
+                        '<thead>' +
+                        '<tr>' +
+                        '<th style="width: 200px;">نام متریک</th>' +
+                        '<th style="width: 80px;">نوع</th>' +
+                        '<th style="width: 80px;">تعداد</th>' +
+                        '<th style="width: 100px;">فعلی</th>' +
+                        '<th style="width: 100px;">میانگین</th>' +
+                        '<th>توضیحات</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                        tableRows +
+                        '</tbody>' +
+                        '</table>' +
+                        '</div>';
+                }).join('');
+                
+                // Ensure first tab is visible after rendering
+                setTimeout(function() {
+                    const firstContent = document.querySelector('.metrics-content.active');
+                    if (firstContent) {
+                        firstContent.style.display = 'block';
+                    }
+                }, 100);
+                
+            } catch (error) {
+                console.error('Error fetching collected metrics:', error);
+                document.getElementById('collected-metrics-body').innerHTML = 
+                    '<div style="text-align: center; padding: 20px; color: #ef4444;">خطا در بارگذاری متریک‌ها</div>';
+            }
+        }
+        
+        // Switch metric prefix tab
+        window.switchMetricPrefix = function(prefix) {
+            // Update tab buttons
+            document.querySelectorAll('.metric-prefix-tab').forEach(function(tab) {
+                if (tab.dataset.prefix === prefix) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Update content visibility
+            document.querySelectorAll('.metrics-content').forEach(function(content) {
+                if (content.id === 'metrics-prefix-' + prefix) {
+                    content.classList.add('active');
+                    content.style.display = 'block';
+                } else {
+                    content.classList.remove('active');
+                    content.style.display = 'none';
+                }
+            });
+        };
+        
+        // Service colors for Jaeger-like display
+        const serviceColors = {};
+        let colorIndex = 0;
+        const colorClasses = ['service-color-1', 'service-color-2', 'service-color-3', 'service-color-4', 'service-color-5', 'service-color-6'];
+        
+        function getServiceColor(serviceName) {
+            if (!serviceColors[serviceName]) {
+                serviceColors[serviceName] = colorClasses[colorIndex % colorClasses.length];
+                colorIndex++;
+            }
+            return serviceColors[serviceName];
+        }
+        
+        // Get span kind class
+        function getSpanKindClass(kind) {
+            const kinds = { 0: 'internal', 1: 'server', 2: 'client', 3: 'producer', 4: 'consumer' };
+            return kinds[kind] || 'internal';
+        }
+        
+        // Get status class
+        function getStatusClass(status) {
+            const statuses = { 0: 'unset', 1: 'ok', 2: 'error' };
+            return statuses[status] || 'unset';
+        }
+        
+        // Get status text
+        function getStatusText(status) {
+            const texts = { 0: 'نامشخص', 1: 'موفق', 2: 'خطا' };
+            return texts[status] || 'نامشخص';
+        }
+        
+        // Render trace timeline (Jaeger-style)
+        function renderTraceTimeline(trace) {
+            const spans = getProp(trace, 'Spans') || [];
+            if (spans.length === 0) return '<div class="no-traces">اسپنی یافت نشد</div>';
+            
+            const traceStart = new Date(getProp(trace, 'StartTime')).getTime();
+            const traceEnd = new Date(getProp(trace, 'EndTime')).getTime();
+            const totalDuration = traceEnd - traceStart;
+            
+            if (totalDuration <= 0) return '<div class="no-traces">مدت زمان نامعتبر</div>';
+            
+            // Build tree structure from spans
+            const spanMap = new Map();
+            const rootSpans = [];
+            
+            // First pass: index all spans by SpanId
+            spans.forEach(span => {
+                const spanId = getProp(span, 'SpanId');
+                spanMap.set(spanId, { ...span, children: [] });
+            });
+            
+            // Second pass: build parent-child relationships
+            spans.forEach(span => {
+                const spanId = getProp(span, 'SpanId');
+                const parentId = getProp(span, 'ParentSpanId');
+                const spanNode = spanMap.get(spanId);
+                
+                if (parentId && spanMap.has(parentId)) {
+                    spanMap.get(parentId).children.push(spanNode);
+                } else {
+                    rootSpans.push(spanNode);
+                }
+            });
+            
+            // Sort roots and children by start time
+            const sortByStartTime = (a, b) => 
+                new Date(getProp(a, 'StartTime')).getTime() - new Date(getProp(b, 'StartTime')).getTime();
+            rootSpans.sort(sortByStartTime);
+            spanMap.forEach(span => span.children.sort(sortByStartTime));
+            
+            // Scale marks
+            const scaleMarks = [0, 0.25, 0.5, 0.75, 1].map(pct => formatDuration(totalDuration * pct));
+            
+            let html = '<div class="timeline-header">';
+            html += '<div class="timeline-scale">';
+            scaleMarks.forEach(mark => { html += '<span>' + mark + '</span>'; });
+            html += '</div></div>';
+            
+            // Render span recursively with depth
+            function renderSpanRow(span, depth) {
+                const spanStart = new Date(getProp(span, 'StartTime')).getTime();
+                const spanEnd = new Date(getProp(span, 'EndTime')).getTime();
+                const spanDuration = spanEnd - spanStart;
+                
+                const leftPct = ((spanStart - traceStart) / totalDuration * 100).toFixed(2);
+                const widthPct = Math.max(0.5, (spanDuration / totalDuration * 100)).toFixed(2);
+                
+                const serviceName = getProp(span, 'ServiceName') || 'unknown';
+                const operationName = getProp(span, 'OperationName') || '-';
+                const kind = getProp(span, 'Kind') || 0;
+                const status = getProp(span, 'Status') || 0;
+                const children = span.children || [];
+                const hasChildren = children.length > 0;
+                
+                const kindClass = status === 2 ? 'error' : getSpanKindClass(kind);
+                const indentPx = depth * 20;
+                
+                let rowHtml = '<div class="span-row depth-' + depth + '" data-depth="' + depth + '">';
+                
+                // Tree indicator
+                rowHtml += '<div class="span-tree-indicator" style="width: ' + (indentPx + 16) + 'px;">';
+                if (depth > 0) {
+                    rowHtml += '<span class="tree-line" style="right: ' + indentPx + 'px;"></span>';
+                    rowHtml += '<span class="tree-branch" style="right: ' + (indentPx - 8) + 'px;"></span>';
+                }
+                if (hasChildren) {
+                    rowHtml += '<span class="tree-expand">▼</span>';
+                }
+                rowHtml += '</div>';
+                
+                rowHtml += '<div class="span-service" style="margin-right: ' + indentPx + 'px;">';
+                rowHtml += '<span class="span-service-dot ' + getServiceColor(serviceName) + '"></span>';
+                rowHtml += serviceName + '</div>';
+                rowHtml += '<div class="span-operation-name" title="' + operationName + '">' + operationName + '</div>';
+                rowHtml += '<div class="span-timeline-container">';
+                rowHtml += '<div class="span-bar ' + kindClass + '" style="left: ' + leftPct + '%; width: ' + widthPct + '%;">';
+                if (parseFloat(widthPct) > 5) {
+                    rowHtml += '<span class="span-duration-label">' + formatDuration(spanDuration) + '</span>';
+                }
+                rowHtml += '</div>';
+                rowHtml += '</div>';
+                rowHtml += '<div class="span-duration-text">' + formatDuration(spanDuration) + '</div>';
+                rowHtml += '</div>';
+                
+                // Render children
+                children.forEach(child => {
+                    rowHtml += renderSpanRow(child, depth + 1);
+                });
+                
+                return rowHtml;
+            }
+            
+            // Render all root spans
+            rootSpans.forEach(span => {
+                html += renderSpanRow(span, 0);
+            });
+            
+            return html;
+        }
+        
+        // Fetch traces
+        async function fetchTraces() {
+            try {
+                // Get filter values
+                const timeFilter = document.getElementById('trace-time-filter')?.value || '5';
+                const serviceFilter = document.getElementById('trace-service-filter')?.value || '';
+                const kindFilter = document.getElementById('trace-kind-filter')?.value || '';
+                const statusFilter = document.getElementById('trace-status-filter')?.value || '';
+                const durationFilter = document.getElementById('trace-duration-filter')?.value || '';
+                
+                // Build URL with filters
+                let url = `${API_BASE}/traces/recent?limit=50`;
+                if (timeFilter && timeFilter !== '0') {
+                    const minutes = parseInt(timeFilter);
+                    const fromTime = new Date(Date.now() - minutes * 60 * 1000).toISOString();
+                    url += `&from=${encodeURIComponent(fromTime)}`;
+                }
+                if (serviceFilter) {
+                    url += `&serviceName=${encodeURIComponent(serviceFilter)}`;
+                }
+                if (kindFilter !== '') {
+                    url += `&kind=${kindFilter}`;
+                }
+                if (statusFilter !== '') {
+                    url += `&status=${statusFilter}`;
+                }
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
+                const traces = await response.json();
+                
+                // Extract unique services and populate combobox
+                const uniqueServices = new Set();
+                (traces || []).forEach(trace => {
+                    const serviceName = getProp(trace, 'ServiceName') || '';
+                    if (serviceName) {
+                        uniqueServices.add(serviceName);
+                    }
+                });
+                
+                // Update service filter combobox
+                const serviceSelect = document.getElementById('trace-service-filter');
+                if (serviceSelect) {
+                    const currentValue = serviceSelect.value;
+                    const options = Array.from(uniqueServices).sort();
+                    
+                    // Keep "همه سرویس‌ها" option and add unique services
+                    serviceSelect.innerHTML = '<option value="">همه سرویس‌ها</option>';
+                    options.forEach(service => {
+                        const option = document.createElement('option');
+                        option.value = service;
+                        option.textContent = service;
+                        serviceSelect.appendChild(option);
+                    });
+                    
+                    // Restore previous selection if it still exists
+                    if (currentValue && options.includes(currentValue)) {
+                        serviceSelect.value = currentValue;
+                    }
+                }
+                
+                // Apply client-side filters
+                // Note: We apply filters client-side to ensure they work even if API doesn't support them
+                let filteredTraces = traces || [];
+                
+                // Filter by service (client-side)
+                if (serviceFilter) {
+                    filteredTraces = filteredTraces.filter(trace => {
+                        const serviceName = getProp(trace, 'ServiceName') || '';
+                        return serviceName === serviceFilter;
+                    });
+                }
+                
+                // Filter by kind (client-side)
+                if (kindFilter !== '') {
+                    const kindValue = parseInt(kindFilter);
+                    filteredTraces = filteredTraces.filter(trace => {
+                        const spans = getProp(trace, 'Spans') || [];
+                        return spans.some(span => {
+                            const spanKind = getProp(span, 'Kind') || 0;
+                            return spanKind === kindValue;
+                        });
+                    });
+                }
+                
+                // Filter by status (client-side)
+                if (statusFilter !== '') {
+                    const statusValue = parseInt(statusFilter);
+                    filteredTraces = filteredTraces.filter(trace => {
+                        const traceStatus = getProp(trace, 'Status') || 0;
+                        return traceStatus === statusValue;
+                    });
+                }
+                
+                // Filter by time (client-side)
+                if (timeFilter && timeFilter !== '0') {
+                    const minutes = parseInt(timeFilter);
+                    const cutoffTime = Date.now() - minutes * 60 * 1000;
+                    filteredTraces = filteredTraces.filter(trace => {
+                        const startTimeStr = getProp(trace, 'StartTime');
+                        if (!startTimeStr) {
+                            return false; // Skip traces without start time
+                        }
+                        const startTime = new Date(startTimeStr).getTime();
+                        if (isNaN(startTime)) {
+                            return false; // Skip traces with invalid date
+                        }
+                        return startTime >= cutoffTime;
+                    });
+                }
+                
+                // Filter by duration (client-side)
+                if (durationFilter) {
+                    filteredTraces = filteredTraces.filter(trace => {
+                        const startTimeStr = getProp(trace, 'StartTime');
+                        const endTimeStr = getProp(trace, 'EndTime');
+                        
+                        if (!startTimeStr || !endTimeStr) {
+                            return false; // Skip traces without valid times
+                        }
+                        
+                        const startTime = new Date(startTimeStr).getTime();
+                        const endTime = new Date(endTimeStr).getTime();
+                        
+                        if (isNaN(startTime) || isNaN(endTime)) {
+                            return false; // Skip traces with invalid dates
+                        }
+                        
+                        const duration = endTime - startTime; // duration in milliseconds
+                        
+                        if (duration < 0) {
+                            return false; // Skip traces with negative duration
+                        }
+                        
+                        switch (durationFilter) {
+                            case 'lt10':
+                                return duration < 10;
+                            case 'lt50':
+                                return duration < 50;
+                            case 'lt100':
+                                return duration < 100;
+                            case 'lt500':
+                                return duration < 500;
+                            case 'lt1000':
+                                return duration < 1000;
+                            case 'gte1000':
+                                return duration >= 1000;
+                            case 'range50-100':
+                                return duration >= 50 && duration < 100;
+                            case 'range100-500':
+                                return duration >= 100 && duration < 500;
+                            case 'range500-1000':
+                                return duration >= 500 && duration < 1000;
+                            default:
+                                return true;
+                        }
+                    });
+                }
+                
+                // Update filter status
+                updateTraceFilterStatus(timeFilter, serviceFilter, kindFilter, statusFilter, durationFilter, filteredTraces.length, traces ? traces.length : 0);
+                
+                // Also fetch stats
+                const statsResponse = await fetch(`${API_BASE}/traces/stats`);
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    const totalTraces = getProp(stats, 'TotalTraces') || 0;
+                    document.getElementById('trace-total').textContent = totalTraces;
+                    document.getElementById('trace-errors').textContent = getProp(stats, 'ErrorTraces') || 0;
+                    document.getElementById('trace-avg').textContent = formatDuration(getProp(stats, 'AvgDurationMs') || 0);
+                    document.getElementById('traces-tab-badge').textContent = filteredTraces.length;
+                }
+                
+                const container = document.getElementById('traces-container');
+                if (!filteredTraces || filteredTraces.length === 0) {
+                    container.innerHTML = '<div class="no-traces">ردیابی‌ای یافت نشد</div>';
+                    return;
+                }
+                
+                let html = '';
+                filteredTraces.forEach((trace, index) => {
+                    const traceId = getProp(trace, 'TraceId') || '-';
+                    const serviceName = getProp(trace, 'ServiceName') || 'unknown';
+                    const rootOperation = getProp(trace, 'RootOperationName') || '-';
+                    const startTime = getProp(trace, 'StartTime');
+                    const duration = (new Date(getProp(trace, 'EndTime')) - new Date(startTime));
+                    const status = getProp(trace, 'Status') || 0;
+                    const spanCount = getProp(trace, 'SpanCount') || 0;
+                    const errorCount = getProp(trace, 'ErrorCount') || 0;
+                    
+                    const colorClass = getServiceColor(serviceName);
+                    const statusClass = getStatusClass(status);
+                    const statusText = getStatusText(status);
+                    
+                    html += '<div class="trace-item" data-trace-index="' + index + '">';
+                    html += '<div class="trace-item-header" onclick="toggleTrace(' + index + ')">';
+                    html += '<div class="trace-service">';
+                    html += '<span class="trace-service-dot ' + colorClass + '"></span>';
+                    html += '<span class="trace-service-name">' + serviceName + '</span>';
+                    html += '</div>';
+                    html += '<div class="trace-operation">' + rootOperation + '</div>';
+                    html += '<div class="trace-meta">';
+                    html += '<span class="trace-span-count"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> ' + spanCount + '</span>';
+                    if (errorCount > 0) {
+                        html += '<span style="color: #ef4444;">' + errorCount + ' خطا</span>';
+                    }
+                    html += '<span class="trace-duration">' + formatDuration(duration) + '</span>';
+                    html += '<span class="trace-status ' + statusClass + '">' + statusText + '</span>';
+                    html += '<span class="trace-time">' + formatTime(startTime) + '</span>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<div class="trace-timeline" id="trace-timeline-' + index + '">';
+                    html += renderTraceTimeline(trace);
+                    html += '</div>';
+                    html += '</div>';
+                });
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error fetching traces:', error);
+                document.getElementById('traces-container').innerHTML = 
+                    '<div class="no-traces" style="color: #ef4444;">خطا در بارگذاری ردیابی‌ها</div>';
+            }
+        }
+        
+        // Toggle trace expand/collapse
+        window.toggleTrace = function(index) {
+            const traceItem = document.querySelector('[data-trace-index="' + index + '"]');
+            if (traceItem) {
+                traceItem.classList.toggle('expanded');
+            }
+        };
+        
+        // Handle trace filter changes
+        window.handleTraceFilterChange = function() {
+            fetchTraces();
+        };
+        
+        // Clear trace filters
+        window.clearTraceFilters = function() {
+            document.getElementById('trace-time-filter').value = '5';
+            document.getElementById('trace-service-filter').value = '';
+            document.getElementById('trace-kind-filter').value = '';
+            document.getElementById('trace-status-filter').value = '';
+            document.getElementById('trace-duration-filter').value = '';
+            fetchTraces();
+        };
+        
+        // Update trace filter status
+        function updateTraceFilterStatus(timeFilter, serviceFilter, kindFilter, statusFilter, durationFilter, filteredCount, totalCount) {
+            const statusEl = document.getElementById('trace-filter-status');
+            if (!statusEl) return;
+            
+            const filters = [];
+            if (timeFilter && timeFilter !== '0') {
+                const timeLabels = { '5': '5 دقیقه', '15': '15 دقیقه', '30': '30 دقیقه', '60': '1 ساعت', '1440': '24 ساعت' };
+                filters.push('زمان: ' + (timeLabels[timeFilter] || timeFilter + ' دقیقه'));
+            }
+            if (serviceFilter) filters.push('سرویس: ' + serviceFilter);
+            if (kindFilter !== '') {
+                const kindLabels = { '0': 'Internal', '1': 'Server', '2': 'Client', '3': 'Producer', '4': 'Consumer' };
+                filters.push('نوع: ' + (kindLabels[kindFilter] || kindFilter));
+            }
+            if (statusFilter !== '') {
+                const statusLabels = { '0': 'نامشخص', '1': 'موفق', '2': 'خطا' };
+                filters.push('وضعیت: ' + (statusLabels[statusFilter] || statusFilter));
+            }
+            if (durationFilter) {
+                const durationLabels = {
+                    'lt10': 'کمتر از 10ms',
+                    'lt50': 'کمتر از 50ms',
+                    'lt100': 'کمتر از 100ms',
+                    'lt500': 'کمتر از 500ms',
+                    'lt1000': 'کمتر از 1s',
+                    'gte1000': 'بیشتر از 1s',
+                    'range50-100': 'بین 50ms تا 100ms',
+                    'range100-500': 'بین 100ms تا 500ms',
+                    'range500-1000': 'بین 500ms تا 1s'
+                };
+                filters.push('زمان اجرا: ' + (durationLabels[durationFilter] || durationFilter));
+            }
+            
+            if (filters.length > 0) {
+                statusEl.textContent = `فیلترها: ${filters.join(' | ')} | نمایش ${filteredCount} از ${totalCount} ردیابی`;
+                statusEl.style.color = '#0ea5e9';
+            } else {
+                statusEl.textContent = 'فیلترها اعمال نشده';
+                statusEl.style.color = '#9ca3af';
+            }
+        }
+        
+        // Initialize
+        function init() {
+            // Fetch initial data
+            fetchDashboard();
+            fetchHealth();
+            fetchLogs(currentLogLevel);
+            fetchCollectedMetrics();
+            fetchTraces();
+            fetchChartsData();
+            
+            // Set up auto-refresh
+            setInterval(() => {
+                if (!isPaused) {
+                    fetchChartsData();
+                    fetchDashboard();
+                    fetchHealth();
+                }
+            }, 3000);
+            
+            setInterval(() => {
+                if (!isPaused) {
+                    fetchLogs(currentLogLevel);
+                    fetchCollectedMetrics();
+                    fetchTraces();
+                }
+            }, 5000);
+            
+            // Set up log filter buttons
+            document.querySelectorAll('.log-filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.log-filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentLogLevel = this.dataset.level;
+                    fetchLogs(currentLogLevel);
+                });
+            });
+            
+            // Set up Enter key for filter inputs
+            document.getElementById('log-correlation-filter')?.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogFilterChange();
+                }
+            });
+            
+            document.getElementById('log-text-filter')?.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogFilterChange();
+                }
+            });
+        }
+        
+        // Start when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    
+    // حذف فایل‌های layout.min.js و BrowserLink که ممکن است از static files لود شده باشند
+    (function() {
+        // تابع برای هاید کردن menu2 و overlay/backdrop Mmenu
+        function hideMenu2() {
+            // هاید کردن menu2 با روش‌های مختلف
+            var menu2 = document.getElementById('menu2');
+            if (menu2) {
+                menu2.style.display = 'none';
+                menu2.style.visibility = 'hidden';
+                menu2.style.opacity = '0';
+                menu2.style.height = '0';
+                menu2.style.width = '0';
+                menu2.style.overflow = 'hidden';
+                menu2.setAttribute('hidden', 'true');
+            }
+            // همچنین با querySelector برای اطمینان
+            document.querySelectorAll('#menu2, [id="menu2"], nav#menu2, [id*="menu2"]').forEach(function(el) {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+                el.style.opacity = '0';
+                el.style.height = '0';
+                el.style.width = '0';
+                el.style.overflow = 'hidden';
+                el.setAttribute('hidden', 'true');
+            });
+            
+            // هاید کردن overlay/backdrop مربوط به Mmenu
+            document.querySelectorAll('.mm-wrapper__blocker, .mm-menu, .mm-menu--opened, .mm-wrapper--opened').forEach(function(el) {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+                el.style.opacity = '0';
+                el.style.pointerEvents = 'none';
+            });
+            
+            // بستن منو اگر باز است (با استفاده از Mmenu API)
+            if (window.mmenuInstance) {
+                try {
+                    window.mmenuInstance.close();
+                } catch(e) {
+                    // اگر mmenuInstance وجود نداشت یا خطا داد، نادیده بگیر
+                }
+            }
+            
+            // همچنین چک کردن تمام Mmenu instances که ممکن است در DOM وجود داشته باشند
+            try {
+                // اگر Mmenu library لود شده باشد
+                if (typeof Mmenu !== 'undefined') {
+                    // پیدا کردن تمام instances
+                    var allMmenus = document.querySelectorAll('[data-mm-menu]');
+                    allMmenus.forEach(function(menuEl) {
+                        try {
+                            var instance = menuEl.mmMenu;
+                            if (instance && typeof instance.close === 'function') {
+                                instance.close();
+                            }
+                        } catch(e) {
+                            // نادیده گرفتن خطا
+                        }
+                    });
+                }
+            } catch(e) {
+                // نادیده گرفتن خطا
+            }
+            
+            // حذف کلاس‌های opened از body و wrapper
+            document.body.classList.remove('mm-wrapper--opened', 'mm-wrapper--position-right');
+            document.documentElement.classList.remove('mm-wrapper--opened', 'mm-wrapper--position-right');
+            
+            // هاید کردن hamburger menu icon
+            document.querySelectorAll('.modern-hamburger-menu, .hamburger-link, .hamburger-icon').forEach(function(el) {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+                el.style.opacity = '0';
+                el.style.pointerEvents = 'none';
+            });
+        }
+        
+        // اجرای فوری
+        hideMenu2();
+        
+        // اجرا بعد از DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', hideMenu2);
+        }
+        
+        // اجرا بعد از window.load
+        window.addEventListener('load', hideMenu2);
+        
+        // اجرا با تاخیر برای اطمینان
+        setTimeout(hideMenu2, 100);
+        setTimeout(hideMenu2, 500);
+        setTimeout(hideMenu2, 1000);
+        setTimeout(hideMenu2, 2000);
+        
+        // اضافه کردن event listener برای بستن منو با کلیک روی overlay
+        document.addEventListener('click', function(e) {
+            var target = e.target;
+            // اگر روی overlay کلیک شد، منو را ببند
+            if (target && (target.classList.contains('mm-wrapper__blocker') || 
+                target.classList.contains('mm-menu') ||
+                (target.closest && target.closest('.mm-wrapper__blocker')))) {
+                e.preventDefault();
+                e.stopPropagation();
+                hideMenu2();
+            }
+        }, true); // استفاده از capture phase برای اطمینان
+        
+        // بستن منو با کلید ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                hideMenu2();
+            }
+        });
+        
+        // جلوگیری از باز شدن منو با کلیک روی hamburger icon
+        document.addEventListener('click', function(e) {
+            var target = e.target;
+            if (target && (target.closest && target.closest('.hamburger-link') || 
+                target.closest && target.closest('.modern-hamburger-menu'))) {
+                e.preventDefault();
+                e.stopPropagation();
+                hideMenu2();
+                return false;
+            }
+        }, true);
+        
+        // چک کردن مداوم برای بستن منو (در صورت باز شدن)
+        setInterval(function() {
+            // چک کردن وجود overlay/backdrop
+            var blocker = document.querySelector('.mm-wrapper__blocker');
+            var openedMenu = document.querySelector('.mm-menu--opened');
+            var openedWrapper = document.querySelector('.mm-wrapper--opened');
+            
+            if (blocker || openedMenu || openedWrapper) {
+                hideMenu2();
+            }
+            
+            // چک کردن کلاس‌های opened در body و html
+            if (document.body.classList.contains('mm-wrapper--opened') || 
+                document.documentElement.classList.contains('mm-wrapper--opened')) {
+                hideMenu2();
+            }
+        }, 100); // چک کردن هر 100 میلی‌ثانیه
+        
+        // استفاده از MutationObserver برای رصد تغییرات DOM
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.id === 'menu2' || (node.querySelector && node.querySelector('#menu2'))) {
+                                hideMenu2();
+                            }
+                            // همچنین چک کردن overlay/backdrop Mmenu
+                            if (node.classList && (node.classList.contains('mm-wrapper__blocker') || 
+                                node.classList.contains('mm-menu') || 
+                                node.classList.contains('mm-menu--opened'))) {
+                                hideMenu2();
+                            }
+                        }
+                    });
+                }
+                // چک کردن تغییرات در کلاس‌ها (مثلاً وقتی منو باز می‌شود)
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    var target = mutation.target;
+                    if (target.classList && (target.classList.contains('mm-wrapper--opened') || 
+                        target.classList.contains('mm-menu--opened'))) {
+                        hideMenu2();
+                    }
+                }
+            });
+        });
+        
+        // شروع رصد تغییرات DOM
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // همچنین رصد تغییرات در documentElement
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // حذف script های layout.min.js (قبل از لود شدن)
+        function removeLayoutScripts() {
+            // حذف script های layout.min.js
+            document.querySelectorAll('script[src*="layout.min.js"], script[src*="layout"], script[src*="Layout"]').forEach(function(script) {
+                script.remove();
+            });
+            
+            // حذف BrowserLink scripts
+            document.querySelectorAll('script[src*="browserLink"], script[src*="BrowserLink"]').forEach(function(script) {
+                script.remove();
+            });
+            
+            // حذف aspnetcore-browser-refresh scripts
+            document.querySelectorAll('script[src*="aspnetcore-browser-refresh"], script[src*="browser-refresh"]').forEach(function(script) {
+                script.remove();
+            });
+            
+            // حذف عناصر BrowserLink از DOM
+            document.querySelectorAll('[id*="browserLink"], [class*="browserLink"], [id*="BrowserLink"], [class*="BrowserLink"]').forEach(function(el) {
+                el.remove();
+            });
+            
+            // جلوگیری از لود شدن BrowserLink در آینده
+            if (window.browserLink) {
+                delete window.browserLink;
+            }
+            if (window.BrowserLink) {
+                delete window.BrowserLink;
+            }
+            
+            // جلوگیری از ایجاد BrowserLink
+            Object.defineProperty(window, 'browserLink', {
+                value: undefined,
+                writable: false,
+                configurable: false
+            });
+        }
+        
+        // اجرای فوری
+        removeLayoutScripts();
+        
+        // اجرا بعد از DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', removeLayoutScripts);
+        }
+        
+        // اجرا بعد از window.load
+        window.addEventListener('load', removeLayoutScripts);
+        
+        // اجرا با تاخیر برای اطمینان
+        setTimeout(removeLayoutScripts, 50);
+        setTimeout(removeLayoutScripts, 100);
+        setTimeout(removeLayoutScripts, 500);
+        
+        // استفاده از MutationObserver برای رصد و حذف script های جدید
+        var scriptObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.tagName === 'SCRIPT') {
+                                var src = node.src || node.getAttribute('src') || '';
+                                if (src.includes('layout.min.js') || src.includes('browserLink') || src.includes('aspnetcore-browser-refresh')) {
+                                    node.remove();
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        // شروع رصد تغییرات DOM برای script ها
+        scriptObserver.observe(document.head, {
+            childList: true,
+            subtree: true
+        });
+        scriptObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        // جلوگیری از لود شدن BrowserLink در آینده
+        if (window.browserLink) {
+            delete window.browserLink;
+        }
+        
+        // جلوگیری از console.log های BrowserLink
+        var originalLog = console.log;
+        console.log = function() {
+            var args = Array.prototype.slice.call(arguments);
+            if (args.length > 0 && typeof args[0] === 'string' && 
+                (args[0].includes('browserLink') || args[0].includes('layout.min.js') || 
+                 args[0].includes('JQMIGRATE') || args[0].includes('Select2ChangeHandler'))) {
+                return; // لاگ نکن
+            }
+            originalLog.apply(console, args);
+        };
+    })();
+</script>
+</body>
+<link rel="stylesheet" href="~/Content/common-assets-includes/common-plugins/global/ladda/ladda-themeless.min.css" />
+<script src="~/Scripts/common-assets-includes/common-plugins/global/ladda/spin.min.js"></script>
+<script src="~/Scripts/common-assets-includes/common-plugins/global/ladda/ladda.min.js"></script>
+<script src="~/Scripts/common-assets-includes/common-plugins/global/ladda/ladda.jquery.min.js"></script>
+<partial name="Utility/I18NAwareBundle" model="CommonBundles.DatabaseMigrationTextsBundle"/>
+</html>
+
