@@ -6,7 +6,6 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
-using Serilog.Configuration;
 
 namespace Neo.Infrastructure.Features.Telementry;
 

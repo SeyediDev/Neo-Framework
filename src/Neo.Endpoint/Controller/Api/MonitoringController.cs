@@ -1,7 +1,5 @@
 using System.Globalization;
 using System.Security.Claims;
-using System.Threading;
-using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Neo.Domain.Features.Client;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Neo.Endpoint.Controller.Api;
 
@@ -18,8 +15,9 @@ namespace Neo.Endpoint.Controller.Api;
 /// این کنترلر در تمام API ها به صورت مشترک استفاده می‌شود
 /// هر API می‌تواند در مسیر /Monitoring مانیتورینگ خود را نمایش دهد
 /// </summary>
-[Route("Monitoring")]
+[Route("api/monitoring")]
 [ApiExplorerSettings(IgnoreApi = true)] // مخفی کردن از Swagger
+[Authorize] // احراز هویت اجباری برای دسترسی به مانیتورینگ
 public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
 {
     private readonly IConfiguration _configuration;
@@ -39,21 +37,44 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     /// هر API می‌تواند مانیتورینگ خود را در مسیر /Monitoring مشاهده کند.
     /// </remarks>
     /// <returns>View مانیتورینگ</returns>
-    [HttpGet]
-    [HttpGet("Index")]
-    [AllowAnonymous]
+    [HttpGet("~/Monitoring")]
+    [HttpGet("~/Monitoring/Index")]
     public IActionResult Index()
     {
-        _logger.LogInformation("Monitoring dashboard accessed");
+        // بررسی احراز هویت - اگر کاربر احراز نشده، به صفحه login هدایت می‌شود
+        if (!User.Identity?.IsAuthenticated ?? true)
+        {
+            _logger.LogWarning("Unauthenticated access attempt to monitoring dashboard");
+            return Redirect("/Monitoring/Login?returnUrl=" + Uri.EscapeDataString("/Monitoring"));
+        }
+        
+        _logger.LogInformation("Monitoring dashboard accessed by user {User}", User.Identity?.Name);
         SetPersianCulture();
         return View("Index");
+    }
+    
+    /// <summary>
+    /// صفحه ورود برای مانیتورینگ
+    /// </summary>
+    [HttpGet("~/Monitoring/Login")]
+    [AllowAnonymous]
+    public IActionResult Login(string? returnUrl = null)
+    {
+        // اگر کاربر قبلاً احراز هویت شده، به صفحه مانیتورینگ هدایت می‌شود
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            return Redirect(returnUrl ?? "/Monitoring");
+        }
+        
+        ViewBag.ReturnUrl = returnUrl ?? "/Monitoring";
+        SetPersianCulture();
+        return View("Login");
     }
 
     /// <summary>
     /// صفحه مانیتورینگ پیشرفته
     /// </summary>
-    [HttpGet("Advanced")]
-    [AllowAnonymous]
+    [HttpGet("~/Monitoring/Advanced")]
     public IActionResult Advanced()
     {
         _logger.LogInformation("Advanced monitoring dashboard accessed");
@@ -158,7 +179,6 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
 	/// <response code="200">اطلاعات API</response>
 	[HttpGet("api/info")]
     [ProducesResponseType(typeof(MonitoringApiInfo), StatusCodes.Status200OK)]
-    [AllowAnonymous]
     public IActionResult GetApiInfo()
     {
         // دریافت نام API از تنظیمات یا از ApplicationName
@@ -184,6 +204,114 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
         };
 
         return Ok(apiInfo);
+    }
+
+    /// <summary>
+    /// Dashboard data endpoint
+    /// </summary>
+    [HttpGet("dashboard")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetDashboard()
+    {
+        // Stub implementation - returns empty data structure
+        // TODO: Implement actual dashboard data collection
+        var dashboard = new
+        {
+            System = new
+            {
+                CpuUsagePercent = 0.0,
+                MemoryUsagePercent = 0.0,
+                MemoryUsedBytes = 0L,
+                MemoryTotalBytes = 0L
+            },
+            Application = new
+            {
+                RequestsPerSecond = 0.0,
+                TotalRequests = 0L,
+                AverageResponseTimeMs = 0.0,
+                ActiveRequests = 0,
+                SuccessRate = 100.0,
+                FailedRequests = 0L
+            }
+        };
+        return Ok(dashboard);
+    }
+
+    /// <summary>
+    /// Health status endpoint
+    /// </summary>
+    [HttpGet("dashboard/health")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetHealth()
+    {
+        // Stub implementation
+        var health = new { Status = "Healthy" };
+        return Ok(health);
+    }
+
+    /// <summary>
+    /// Recent logs endpoint
+    /// </summary>
+    [HttpGet("logs/recent")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetRecentLogs([FromQuery] int limit = 50, [FromQuery] int? minLevel = null)
+    {
+        // Stub implementation - returns empty array
+        // TODO: Implement actual log retrieval
+        return Ok(new object[0]);
+    }
+
+    /// <summary>
+    /// All metrics endpoint
+    /// </summary>
+    [HttpGet("metrics/all")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetAllMetrics()
+    {
+        // Stub implementation - returns empty array
+        // TODO: Implement actual metrics collection
+        return Ok(new object[0]);
+    }
+
+    /// <summary>
+    /// Metric timeseries endpoint
+    /// </summary>
+    [HttpGet("metrics/{metricName}/timeseries")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetMetricTimeseries(string metricName, [FromQuery] string from)
+    {
+        // Stub implementation - returns empty array
+        // TODO: Implement actual timeseries data
+        return Ok(new object[0]);
+    }
+
+    /// <summary>
+    /// Recent traces endpoint
+    /// </summary>
+    [HttpGet("traces/recent")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetRecentTraces([FromQuery] int limit = 50)
+    {
+        // Stub implementation - returns empty array
+        // TODO: Implement actual trace retrieval
+        return Ok(new object[0]);
+    }
+
+    /// <summary>
+    /// Trace statistics endpoint
+    /// </summary>
+    [HttpGet("traces/stats")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetTraceStats()
+    {
+        // Stub implementation
+        var stats = new
+        {
+            TotalTraces = 0,
+            AverageDuration = 0.0,
+            ErrorRate = 0.0
+        };
+        return Ok(stats);
     }
 }
 

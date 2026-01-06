@@ -41,6 +41,33 @@ public class NeoMonitoringViewLocationExpander : IViewLocationExpander
                 yield return Path.Combine(currentOutputViewsPath, "Shared", "{0}.cshtml").Replace('\\', '/');
                 yield return Path.Combine(currentOutputViewsPath, "Shared", "{0}.vbhtml").Replace('\\', '/');
             }
+            
+            // همچنین بررسی source directory پروژه فعلی (برای Development)
+            // پیدا کردن source directory از base directory
+            // baseDirectory: D:\Projects\Club\Backend\src\Channel\Club.Channel.Api\bin\Debug\net8.0
+            // source directory: D:\Projects\Club\Backend\src\Channel\Club.Channel.Api\Views
+            var baseDir = Path.GetDirectoryName(baseDirectory); // bin\Debug\net8.0
+            if (!string.IsNullOrEmpty(baseDir))
+            {
+                // رفتن به root پروژه از bin\Debug\net8.0
+                var possibleSourcePaths = new[]
+                {
+                    Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "Views")), // از bin\Debug\net8.0 به Views
+                    Path.GetFullPath(Path.Combine(baseDir, "..", "..", "Views")), // از bin\Debug به Views (اگر net8.0 نباشد)
+                };
+                
+                foreach (var sourceViewsPath in possibleSourcePaths)
+                {
+                    if (Directory.Exists(sourceViewsPath))
+                    {
+                        yield return Path.Combine(sourceViewsPath, "{1}", "{0}.cshtml").Replace('\\', '/');
+                        yield return Path.Combine(sourceViewsPath, "{1}", "{0}.vbhtml").Replace('\\', '/');
+                        yield return Path.Combine(sourceViewsPath, "Shared", "{0}.cshtml").Replace('\\', '/');
+                        yield return Path.Combine(sourceViewsPath, "Shared", "{0}.vbhtml").Replace('\\', '/');
+                        break; // فقط اولین مسیر معتبر را اضافه می‌کنیم
+                    }
+                }
+            }
         }
         
         // اولویت دوم: Views از Neo.Endpoint assembly location

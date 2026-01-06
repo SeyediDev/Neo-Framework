@@ -2006,6 +2006,55 @@
         let refreshIntervals = [];
         let currentDrillDownMetric = null;
         
+        // Helper function to get auth token
+        function getAuthToken() {
+            const token = localStorage.getItem('monitoring_token');
+            const expires = localStorage.getItem('monitoring_token_expires');
+            
+            // Check if token exists and is not expired
+            if (token && expires && Date.now() < parseInt(expires)) {
+                return token;
+            }
+            
+            // Token expired or doesn't exist
+            if (token) {
+                localStorage.removeItem('monitoring_token');
+                localStorage.removeItem('monitoring_token_expires');
+            }
+            
+            return null;
+        }
+        
+        // Helper function to make authenticated fetch requests
+        async function authenticatedFetch(url, options = {}) {
+            const token = getAuthToken();
+            
+            if (!token) {
+                // Redirect to login if no token
+                window.location.href = '/Monitoring/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                throw new Error('Unauthorized');
+            }
+            
+            // Add Authorization header
+            const headers = new Headers(options.headers || {});
+            headers.set('Authorization', 'Bearer ' + token);
+            
+            const response = await fetch(url, {
+                ...options,
+                headers: headers
+            });
+            
+            // If unauthorized, redirect to login
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem('monitoring_token');
+                localStorage.removeItem('monitoring_token_expires');
+                window.location.href = '/Monitoring/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                throw new Error('Unauthorized');
+            }
+            
+            return response;
+        }
+        
         // Metric Drill-Down functions
         window.showMetricDrillDown = async function(index) {
             const metric = window.metricsData && window.metricsData[index];
@@ -2056,7 +2105,7 @@
             
             try {
                 const from = new Date(Date.now() - minutes * 60 * 1000).toISOString();
-                const response = await fetch(`${API_BASE}/metrics/${encodeURIComponent(currentDrillDownMetric)}/timeseries?from=${from}`);
+                const response = await authenticatedFetch(`${API_BASE}/metrics/${encodeURIComponent(currentDrillDownMetric)}/timeseries?from=${from}`);
                 
                 if (!response.ok) throw new Error('Failed to fetch');
                 const data = await response.json();
@@ -2285,7 +2334,7 @@
         // Fetch chart data from API
         async function fetchChartsData() {
             try {
-                const response = await fetch(`${API_BASE}/dashboard`);
+                const response = await authenticatedFetch(`${API_BASE}/dashboard`);
                 if (!response.ok) return;
                 const data = await response.json();
                 
@@ -2401,7 +2450,7 @@
         // Fetch dashboard data
         async function fetchDashboard() {
             try {
-                const response = await fetch(`${API_BASE}/dashboard`);
+                const response = await authenticatedFetch(`${API_BASE}/dashboard`);
                 if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
                 const data = await response.json();
                 
@@ -2445,7 +2494,7 @@
         // Fetch health status
         async function fetchHealth() {
             try {
-                const response = await fetch(`${API_BASE}/dashboard/health`);
+                const response = await authenticatedFetch(`${API_BASE}/dashboard/health`);
                 if (!response.ok) throw new Error('Failed to fetch');
                 const data = await response.json();
                 const status = getProp(data, 'Status') || 'Healthy';
@@ -2493,7 +2542,7 @@
                     url += `&textSearch=${encodeURIComponent(textFilter)}`;
                 }
                 
-                const response = await fetch(url);
+                const response = await authenticatedFetch(url);
                 if (!response.ok) throw new Error('Failed to fetch');
                 const logs = await response.json();
                 
@@ -2635,7 +2684,7 @@
         // Fetch collected metrics
         async function fetchCollectedMetrics() {
             try {
-                const response = await fetch(`${API_BASE}/metrics/all`);
+                const response = await authenticatedFetch(`${API_BASE}/metrics/all`);
                 if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
                 const data = await response.json();
                 
@@ -2953,7 +3002,7 @@
                     url += `&status=${statusFilter}`;
                 }
                 
-                const response = await fetch(url);
+                const response = await authenticatedFetch(url);
                 if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
                 const traces = await response.json();
                 
@@ -3089,7 +3138,7 @@
                 updateTraceFilterStatus(timeFilter, serviceFilter, kindFilter, statusFilter, durationFilter, filteredTraces.length, traces ? traces.length : 0);
                 
                 // Also fetch stats
-                const statsResponse = await fetch(`${API_BASE}/traces/stats`);
+                const statsResponse = await authenticatedFetch(`${API_BASE}/traces/stats`);
                 if (statsResponse.ok) {
                     const stats = await statsResponse.json();
                     const totalTraces = getProp(stats, 'TotalTraces') || 0;

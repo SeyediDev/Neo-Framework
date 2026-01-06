@@ -11,7 +11,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-using System.Reflection;
 
 namespace Neo.Endpoint;
 
