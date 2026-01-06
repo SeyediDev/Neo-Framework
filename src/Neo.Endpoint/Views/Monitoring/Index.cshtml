@@ -1488,24 +1488,6 @@
         </div>
     </div>
     
-    <!-- Charts Header Section -->
-    <div class="charts-header-section">
-        <div class="charts-header">
-            <h3 class="charts-title">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
-                </svg>
-                نمودار تاریخچه
-            </h3>
-            <div class="time-range-selector">
-                <button class="time-range-btn active" data-range="5" onclick="setTimeRange(5)">5 دقیقه</button>
-                <button class="time-range-btn" data-range="15" onclick="setTimeRange(15)">15 دقیقه</button>
-                <button class="time-range-btn" data-range="30" onclick="setTimeRange(30)">30 دقیقه</button>
-                <button class="time-range-btn" data-range="60" onclick="setTimeRange(60)">1 ساعت</button>
-            </div>
-        </div>
-    </div>
-    
     <!-- System Metrics -->
     <div class="metrics-grid">
         <div class="metric-card">
@@ -1589,8 +1571,27 @@
             <div id="error-detail" class="metric-sublabel">--</div>
         </div>
     </div>
-    
-    <!-- Charts Section -->
+        <!-- Charts Header Section -->
+        <div class="charts-header-section">
+            <div class="charts-header">
+                <h3 class="charts-title">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3v18h18" />
+                        <path d="M18 17V9" />
+                        <path d="M13 17V5" />
+                        <path d="M8 17v-3" />
+                    </svg>
+                    نمودار تاریخچه
+                </h3>
+                <div class="time-range-selector">
+                    <button class="time-range-btn active" data-range="5" onclick="setTimeRange(5)">5 دقیقه</button>
+                    <button class="time-range-btn" data-range="15" onclick="setTimeRange(15)">15 دقیقه</button>
+                    <button class="time-range-btn" data-range="30" onclick="setTimeRange(30)">30 دقیقه</button>
+                    <button class="time-range-btn" data-range="60" onclick="setTimeRange(60)">1 ساعت</button>
+                </div>
+            </div>
+        </div>
+        <!-- Charts Section -->
     <div class="charts-section">
         <div class="charts-grid">
             <div class="chart-card chart-cpu">

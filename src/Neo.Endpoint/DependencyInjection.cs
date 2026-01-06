@@ -1,15 +1,19 @@
 ﻿using Asp.Versioning;
-using Neo.Endpoint.Controller;
-using Neo.Endpoint.Controller.Api;
-using Neo.Endpoint.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Neo.Endpoint.Controller;
+using Neo.Endpoint.Controller.Api;
+using Neo.Endpoint.Features.Monitoring.Hubs;
+using Neo.Endpoint.Features.Monitoring.Models;
+using Neo.Endpoint.Features.Monitoring.Services;
+using Neo.Endpoint.Infrastructure;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
@@ -17,7 +21,9 @@ namespace Neo.Endpoint;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddNeoControllerServices(this IServiceCollection services, string apiName, bool includeViews = false, IMvcBuilder? existingMvcBuilder = null)
+    public static IServiceCollection AddNeoControllerServices(
+        this IServiceCollection services, IConfiguration configuration, 
+        string apiName, bool includeViews = false, IMvcBuilder? existingMvcBuilder = null)
     {
         services.AddExceptionHandler<CustomExceptionHandler>();
         
@@ -27,9 +33,15 @@ public static class DependencyInjection
         services.Configure<ApiBehaviorOptions>(options =>
          options.SuppressModelStateInvalidFilter = true);
 
+		// Configure storage options from configuration
+		services.Configure<MonitoringStorageOptions>(
+			configuration.GetSection("Monitoring"));
+		// Register SignalR
+		services.AddSignalR();
+		
         // بررسی می‌کنیم که آیا قبلاً Controllers اضافه شده‌اند یا نه
-        // اگر AddControllersWithViews قبلاً فراخوانی شده (که ITempDataDictionaryFactory را اضافه می‌کند)، نیازی به اضافه کردن دوباره نیست
-        var tempDataFactoryRegistered = services.Any(s => 
+		// اگر AddControllersWithViews قبلاً فراخوانی شده (که ITempDataDictionaryFactory را اضافه می‌کند)، نیازی به اضافه کردن دوباره نیست
+		var tempDataFactoryRegistered = services.Any(s => 
             s.ServiceType == typeof(Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataDictionaryFactory));
         
         IMvcBuilder? mvcBuilder = existingMvcBuilder;
@@ -197,7 +209,27 @@ public static class DependencyInjection
             options.DocumentTitle = apiName;
             options.Path = path;
             // تنظیم عنوان صفحه HTML
-            options.CustomHeadContent = $"<title>{apiName}</title>";
+            var existingHeadContent = options.CustomHeadContent ?? "";
+            // اگر title tag وجود ندارد، اضافه می‌کنیم
+            if (!existingHeadContent.Contains("<title>", StringComparison.OrdinalIgnoreCase))
+            {
+                options.CustomHeadContent = $"<title>{apiName}</title>" + existingHeadContent;
+            }
+            else
+            {
+                // اگر title tag وجود دارد، با JavaScript آن را تغییر می‌دهیم
+                options.CustomHeadContent = existingHeadContent + $@"
+                    <script>
+                        (function() {{
+                            document.title = '{apiName}';
+                            var titleElement = document.querySelector('title');
+                            if (titleElement) {{
+                                titleElement.textContent = '{apiName}';
+                            }}
+                        }})();
+                    </script>
+                ";
+            }
         });
         
         return app;
@@ -215,9 +247,86 @@ public static class DependencyInjection
             options.DocumentTitle = apiName;
             options.Path = path;
             // تنظیم عنوان صفحه HTML
-            options.CustomHeadContent = $"<title>{apiName}</title>";
+            var existingHeadContent = options.CustomHeadContent ?? "";
+            // اگر title tag وجود ندارد، اضافه می‌کنیم
+            if (!existingHeadContent.Contains("<title>", StringComparison.OrdinalIgnoreCase))
+            {
+                options.CustomHeadContent = $"<title>{apiName}</title>" + existingHeadContent;
+            }
+            else
+            {
+                // اگر title tag وجود دارد، با JavaScript آن را تغییر می‌دهیم
+                options.CustomHeadContent = existingHeadContent + $@"
+                    <script>
+                        (function() {{
+                            document.title = '{apiName}';
+                            var titleElement = document.querySelector('title');
+                            if (titleElement) {{
+                                titleElement.textContent = '{apiName}';
+                            }}
+                        }})();
+                    </script>
+                ";
+            }
         });
         
         return app;
     }
+
+	public static IEndpointRouteBuilder MapNeoEndpoints(this IEndpointRouteBuilder endpoints)
+	{
+		// Map API controllers from this assembly
+		endpoints.MapControllers();
+
+		endpoints.MapHub<MonitoringHub>("/hubs/monitoring");
+
+		return endpoints;
+	}
+	/// <summary>
+	/// Add Neo monitoring services to the service collection
+	/// </summary>
+	public static IServiceCollection AddNeoMonitoringServices(
+		this IServiceCollection services, 
+		IConfiguration? configuration = null)
+	{
+		// Configure storage options from configuration if provided
+		if (configuration != null)
+		{
+			services.Configure<MonitoringStorageOptions>(
+				configuration.GetSection("Monitoring"));
+		}
+		else
+		{
+			// Use default options if configuration is not provided
+			services.Configure<MonitoringStorageOptions>(options =>
+			{
+				// Default values are already set in MonitoringStorageOptions class
+			});
+		}
+
+		// Register stores as singletons (shared state)
+		services.AddSingleton<IMetricsStore, MetricsStore>();
+		services.AddSingleton<ITraceStore, TraceStore>();
+		services.AddSingleton<ILogStore, LogStore>();
+
+		// Register collectors as hosted services
+		services.AddHostedService<MetricsCollector>();
+		services.AddHostedService<TraceCollector>();
+		services.AddHostedService<MonitoringCleanupService>();
+		services.AddHostedService<MonitoringBroadcaster>();
+
+		// Register system metrics publisher (built-in metrics)
+		services.AddHostedService<SystemMetricsPublisher>();
+
+		// Register Serilog monitoring service
+		// This adds MonitoringSerilogSink to capture logs
+		services.AddHostedService<SerilogMonitoringService>();
+
+		// OTLP endpoints are available via TracesController and MetricsController
+		// POST /api/monitoring/traces/otlp
+		// POST /api/monitoring/metrics/otlp
+		// These endpoints receive telemetry data from external APIs
+
+		return services;
+	}
 }

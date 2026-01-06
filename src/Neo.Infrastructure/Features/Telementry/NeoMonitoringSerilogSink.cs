@@ -121,31 +121,3 @@ public class NeoMonitoringSerilogSink(
         };
     }
 }
-
-/// <summary>
-/// Extension methods for adding monitoring sink to Serilog
-/// </summary>
-public static class MonitoringSerilogSinkExtensions
-{
-    /// <summary>
-    /// Add monitoring sink that sends logs to monitoring API (self-monitoring)
-    /// </summary>
-    /// <param name="sinkConfiguration">Sink configuration</param>
-    /// <param name="monitoringApiUrl">Base URL of the monitoring API (e.g., "http://localhost:8080")</param>
-    /// <param name="minimumLevel">Minimum log level to send</param>
-    /// <param name="httpClient">Optional HttpClient instance</param>
-    /// <returns>Logger configuration</returns>
-    public static LoggerConfiguration WriteTo_NeoMonitoringApi(
-        this LoggerSinkConfiguration sinkConfiguration,
-        string monitoringApiUrl,
-        LogEventLevel minimumLevel = LogEventLevel.Information,
-        HttpClient? httpClient = null)
-    {
-        if (string.IsNullOrWhiteSpace(monitoringApiUrl))
-            throw new ArgumentException("Monitoring API URL cannot be null or empty", nameof(monitoringApiUrl));
-
-        return sinkConfiguration.Sink(
-            new NeoMonitoringSerilogSink(monitoringApiUrl, httpClient, minimumLevel),
-            minimumLevel);
-    }
-}

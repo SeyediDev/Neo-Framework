@@ -74,34 +74,30 @@ public static class DependencyInjection
             
             // Self-monitoring: هر API لاگ‌های خودش را به خودش ارسال می‌کند
             // Get the current API URL for self-monitoring
-            var monitoringApiUrl = context.Configuration["TelemetryOptions:MonitoringApiUrl"];
+            string monitoringApiUrl = string.Empty;
             
             // If not configured, use self-monitoring (send logs to the same API)
+            var urls = context.Configuration["Urls"] ?? context.Configuration["Kestrel:Endpoints:Http:Url"];
+            if (!string.IsNullOrWhiteSpace(urls))
+            {
+                var firstUrl = urls.Split(';')[0].Trim();
+                if (firstUrl.StartsWith("http://") || firstUrl.StartsWith("https://"))
+                {
+                    monitoringApiUrl = firstUrl;
+                }
+                else if (int.TryParse(firstUrl, out var port))
+                {
+                    monitoringApiUrl = $"http://localhost:{port}";
+                }
+            }
+                
+            // Fallback: use ASPNETCORE_URLS environment variable
             if (string.IsNullOrWhiteSpace(monitoringApiUrl))
             {
-                // Try to get URL from configuration
-                var urls = context.Configuration["Urls"] ?? context.Configuration["Kestrel:Endpoints:Http:Url"];
-                if (!string.IsNullOrWhiteSpace(urls))
+                var aspnetcoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+                if (!string.IsNullOrWhiteSpace(aspnetcoreUrls))
                 {
-                    var firstUrl = urls.Split(';')[0].Trim();
-                    if (firstUrl.StartsWith("http://") || firstUrl.StartsWith("https://"))
-                    {
-                        monitoringApiUrl = firstUrl;
-                    }
-                    else if (int.TryParse(firstUrl, out var port))
-                    {
-                        monitoringApiUrl = $"http://localhost:{port}";
-                    }
-                }
-                
-                // Fallback: use ASPNETCORE_URLS environment variable
-                if (string.IsNullOrWhiteSpace(monitoringApiUrl))
-                {
-                    var aspnetcoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
-                    if (!string.IsNullOrWhiteSpace(aspnetcoreUrls))
-                    {
-                        monitoringApiUrl = aspnetcoreUrls.Split(';')[0].Trim();
-                    }
+                    monitoringApiUrl = aspnetcoreUrls.Split(';')[0].Trim();
                 }
             }
             
