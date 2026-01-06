@@ -18,7 +18,7 @@ public class TraceCollector : BackgroundService
         ILogger<TraceCollector> logger)
     {
         _store = store;
-        _options = options.Value;
+        _options = options?.Value ?? new MonitoringStorageOptions();
         _logger = logger;
     }
 

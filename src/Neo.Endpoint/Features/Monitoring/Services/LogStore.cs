@@ -14,7 +14,7 @@ public class LogStore : ILogStore
 
     public LogStore(IOptions<MonitoringStorageOptions> options)
     {
-        _options = options.Value;
+        _options = options?.Value ?? new MonitoringStorageOptions();
     }
 
     public void Record(LogEntry entry)

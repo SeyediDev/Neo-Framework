@@ -33,7 +33,7 @@ public class SystemMetricsPublisher : BackgroundService
         IOptions<MonitoringStorageOptions> options,
         ILogger<SystemMetricsPublisher> logger)
     {
-        _options = options.Value;
+        _options = options?.Value ?? new MonitoringStorageOptions();
         _logger = logger;
         _currentProcess = Process.GetCurrentProcess();
         _meter = new Meter("Neo.Bpms.System", "1.0.0");

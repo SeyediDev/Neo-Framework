@@ -21,7 +21,7 @@ public class MetricsStore : IMetricsStore
 
     public MetricsStore(IOptions<MonitoringStorageOptions> options)
     {
-        _options = options.Value;
+        _options = options?.Value ?? new MonitoringStorageOptions();
         _lastCpuTime = _currentProcess.TotalProcessorTime;
     }
 

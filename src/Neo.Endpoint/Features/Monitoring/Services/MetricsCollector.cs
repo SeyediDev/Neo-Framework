@@ -19,7 +19,7 @@ public class MetricsCollector : BackgroundService
         ILogger<MetricsCollector> logger)
     {
         _store = store;
-        _options = options.Value;
+        _options = options?.Value ?? new MonitoringStorageOptions();
         _logger = logger;
     }
 

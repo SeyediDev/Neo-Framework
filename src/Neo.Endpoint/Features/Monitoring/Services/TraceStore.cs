@@ -16,7 +16,7 @@ public class TraceStore : ITraceStore
 
     public TraceStore(IOptions<MonitoringStorageOptions> options)
     {
-        _options = options.Value;
+        _options = options?.Value ?? new MonitoringStorageOptions();
     }
 
     public void RecordSpan(TraceSpan span)
