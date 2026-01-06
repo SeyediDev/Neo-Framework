@@ -34,8 +34,19 @@ public static class DependencyInjection
                     {
                         options.SetDbStatementForText = true; // کوئری SQL رو هم نشون میده
                     })
-                    .AddConsoleExporter()   // خروجی در کنسول
-                    .AddOtlpExporter();
+                    .AddConsoleExporter();   // خروجی در کنسول
+                
+                // OTLP Exporter - only enable if endpoint is configured
+                if (!string.IsNullOrWhiteSpace(openTelemetryOptions.OtlpExporterEndpoint))
+                {
+                    _ = tracing.AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(openTelemetryOptions.OtlpExporterEndpoint);
+                        // Protocol is set via environment variable or defaults to grpc
+                        // For http/protobuf, set OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+                    });
+                }
+                
                 if (!string.IsNullOrEmpty(openTelemetryOptions.JaegerExporterHost))
                 {
                     _ = tracing.AddJaegerExporter(o =>
@@ -58,8 +69,16 @@ public static class DependencyInjection
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
-                    .AddConsoleExporter()
-                    .AddOtlpExporter();
+                    .AddConsoleExporter();
+                
+                // OTLP Exporter for Metrics - only enable if endpoint is configured
+                if (!string.IsNullOrWhiteSpace(openTelemetryOptions.OtlpExporterEndpoint))
+                {
+                    _ = metrics.AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(openTelemetryOptions.OtlpExporterEndpoint);
+                    });
+                }
             })
             //.WithLogging() با توجه به استفاده از سریلاگ نیازی به این نیست
             ;

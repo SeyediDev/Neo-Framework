@@ -51,7 +51,7 @@ public class MetricsCollectorService : BackgroundService
         }
     }
 
-    private async Task CollectMetrics()
+    private Task CollectMetrics()
     {
         // جمع‌آوری CPU و Memory
         var cpuUsage = GetCpuUsage();
@@ -102,6 +102,8 @@ public class MetricsCollectorService : BackgroundService
             Type = "Gauge",
             Stats = new { CurrentValue = threadCount, AvgValue = threadCount, MinValue = 0, MaxValue = threadCount * 2, SumValue = threadCount, Count = 1 }
         });
+        
+        return Task.CompletedTask;
     }
 
     private static double GetCpuUsage()

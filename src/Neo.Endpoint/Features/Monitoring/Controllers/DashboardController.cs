@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Neo.Endpoint.Features.Monitoring.Models;
 using Neo.Endpoint.Features.Monitoring.Services;
 
@@ -8,6 +9,7 @@ namespace Neo.Endpoint.Features.Monitoring.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/monitoring/dashboard")]
+[AllowAnonymous] // Allow access without authentication for monitoring
 public class DashboardController : ControllerBase
 {
     private readonly IMetricsStore _metricsStore;
@@ -35,7 +37,8 @@ public class DashboardController : ControllerBase
     {
         try
         {
-            return Ok(_metricsStore.GetDashboardData());
+            var data = _metricsStore.GetDashboardData();
+            return Ok(data);
         }
         catch (Exception ex)
         {

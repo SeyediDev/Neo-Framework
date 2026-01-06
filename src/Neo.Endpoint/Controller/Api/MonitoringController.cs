@@ -193,48 +193,8 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
         return Ok(apiInfo);
     }
 
-    /// <summary>
-    /// Dashboard data endpoint
-    /// </summary>
-    [HttpGet("dashboard")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetDashboard()
-    {
-        // Stub implementation - returns empty data structure
-        // TODO: Implement actual dashboard data collection
-        var dashboard = new
-        {
-            System = new
-            {
-                CpuUsagePercent = 0.0,
-                MemoryUsagePercent = 0.0,
-                MemoryUsedBytes = 0L,
-                MemoryTotalBytes = 0L
-            },
-            Application = new
-            {
-                RequestsPerSecond = 0.0,
-                TotalRequests = 0L,
-                AverageResponseTimeMs = 0.0,
-                ActiveRequests = 0,
-                SuccessRate = 100.0,
-                FailedRequests = 0L
-            }
-        };
-        return Ok(dashboard);
-    }
-
-    /// <summary>
-    /// Health status endpoint
-    /// </summary>
-    [HttpGet("dashboard/health")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetHealth()
-    {
-        // Stub implementation
-        var health = new { Status = "Healthy" };
-        return Ok(health);
-    }
+    // Dashboard and health endpoints are now handled by DashboardController
+    // [Route("api/monitoring/dashboard")] in Features/Monitoring/Controllers/DashboardController.cs
 
     /// <summary>
     /// دریافت لاگ‌ها از OTLP (برای Serilog Sink)
@@ -270,85 +230,14 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
         }
     }
 
-    /// <summary>
-    /// Recent logs endpoint
-    /// </summary>
-    [HttpGet("logs/recent")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetRecentLogs(
-        [FromQuery] int limit = 50, 
-        [FromQuery] int? minLevel = null,
-        [FromQuery] string? correlationId = null,
-        [FromQuery] string? source = null,
-        [FromQuery] string? textSearch = null)
-    {
-        var logs = MonitoringDataStore.GetRecentLogs(limit, minLevel, correlationId, source, textSearch);
-        return Ok(logs);
-    }
-
-    /// <summary>
-    /// All metrics endpoint
-    /// </summary>
-    [HttpGet("metrics/all")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetAllMetrics()
-    {
-        var metrics = MonitoringDataStore.GetAllMetrics();
-        return Ok(metrics);
-    }
-
-    /// <summary>
-    /// Metric timeseries endpoint
-    /// </summary>
-    [HttpGet("metrics/{metricName}/timeseries")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetMetricTimeseries(string metricName, [FromQuery] string from)
-    {
-        // فعلاً stub - می‌تواند در آینده از OpenTelemetry استفاده کند
-        var metric = MonitoringDataStore.GetMetric(metricName);
-        if (metric != null)
-        {
-            // برگرداندن داده‌های timeseries ساده
-            return Ok(new[]
-            {
-                new { Timestamp = DateTime.UtcNow, Value = 0.0 }
-            });
-        }
-        return Ok(new object[0]);
-    }
-
-    /// <summary>
-    /// Recent traces endpoint
-    /// </summary>
-    [HttpGet("traces/recent")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetRecentTraces(
-        [FromQuery] int limit = 50,
-        [FromQuery] string? from = null,
-        [FromQuery] string? serviceName = null,
-        [FromQuery] string? kind = null,
-        [FromQuery] int? status = null)
-    {
-        DateTime? fromDate = null;
-        if (!string.IsNullOrWhiteSpace(from) && DateTime.TryParse(from, out var parsedDate))
-        {
-            fromDate = parsedDate;
-        }
-        
-        var traces = MonitoringDataStore.GetRecentTraces(limit, fromDate, serviceName, kind, status);
-        return Ok(traces);
-    }
-
-    /// <summary>
-    /// Trace statistics endpoint
-    /// </summary>
-    [HttpGet("traces/stats")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetTraceStats()
-    {
-        var stats = MonitoringDataStore.GetTraceStats();
-        return Ok(stats);
-    }
+    // Logs endpoints are now handled by LogsController
+    // [Route("api/monitoring/logs")] in Features/Monitoring/Controllers/LogsController.cs
+    
+    // Metrics endpoints are now handled by MetricsController
+    // [Route("api/monitoring/metrics")] in Features/Monitoring/Controllers/MetricsController.cs
+    
+    // Traces endpoints are now handled by TracesController
+    // [Route("api/monitoring/traces")] in Features/Monitoring/Controllers/TracesController.cs
 }
 
 /// <summary>

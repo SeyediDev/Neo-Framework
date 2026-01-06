@@ -7,6 +7,8 @@ public class TelemetryOptions
     public string JaegerExporterHost { get; set; } = "localhost";
     public int JaegerExporterPort { get; set; } = 6831;
     public string ZipkinExporterUri { get; set; } = "http://localhost:9411/api/v2/spans";
+    public string? OtlpExporterEndpoint { get; set; }
+    public string OtlpExporterProtocol { get; set; } = "grpc"; // "grpc" or "http/protobuf"
     public bool InSpanExceptionSetStackTrace { get; set; } = false;
 }
 

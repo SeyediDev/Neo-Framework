@@ -835,6 +835,11 @@
         border-bottom: 1px solid #e5e7eb;
     }
     
+    .timeline-info {
+        flex: 1;
+        margin-left: 8px;
+    }
+    
     .timeline-scale {
         display: flex;
         gap: 4px;
@@ -842,6 +847,8 @@
         color: #9ca3af;
         font-family: monospace;
         direction: ltr;
+        flex: 1;
+        justify-content: flex-end;
     }
     
     .timeline-scale span {
@@ -917,6 +924,18 @@
         background: #f9fafb;
         border-radius: 6px;
         font-size: 12px;
+    }
+    
+    .span-details-toggle {
+        cursor: pointer;
+        padding: 4px 8px;
+        font-size: 14px;
+        user-select: none;
+        transition: opacity 0.2s;
+    }
+    
+    .span-details-toggle:hover {
+        opacity: 0.7;
     }
     
     .span-tags {
@@ -1005,6 +1024,20 @@
         color: #6b7280;
         font-family: monospace;
         direction: ltr;
+    }
+    
+    .span-details-toggle {
+        min-width: 30px;
+        text-align: center;
+        cursor: pointer;
+        padding: 4px 8px;
+        font-size: 14px;
+        user-select: none;
+        transition: opacity 0.2s;
+    }
+    
+    .span-details-toggle:hover {
+        opacity: 0.7;
     }
     
     .span-row {
@@ -2875,6 +2908,12 @@
             const scaleMarks = [0, 0.25, 0.5, 0.75, 1].map(pct => formatDuration(totalDuration * pct));
             
             let html = '<div class="timeline-header">';
+            html += '<div class="timeline-info">';
+            html += '<span style="color: #6b7280; font-size: 12px;">';
+            html += '<strong>زنجیره‌ها:</strong> ' + rootSpans.length + ' | ';
+            html += '<strong>کل Spans:</strong> ' + spans.length;
+            html += '</span>';
+            html += '</div>';
             html += '<div class="timeline-scale">';
             scaleMarks.forEach(mark => { html += '<span>' + mark + '</span>'; });
             html += '</div></div>';
@@ -2892,13 +2931,19 @@
                 const operationName = getProp(span, 'OperationName') || '-';
                 const kind = getProp(span, 'Kind') || 0;
                 const status = getProp(span, 'Status') || 0;
+                const statusMessage = getProp(span, 'StatusMessage') || '';
+                const tags = getProp(span, 'Tags') || {};
+                const events = getProp(span, 'Events') || [];
                 const children = span.children || [];
                 const hasChildren = children.length > 0;
+                const hasError = status === 2;
+                const hasDetails = hasError || Object.keys(tags).length > 0 || events.length > 0;
+                const spanId = getProp(span, 'SpanId') || '';
                 
-                const kindClass = status === 2 ? 'error' : getSpanKindClass(kind);
+                const kindClass = hasError ? 'error' : getSpanKindClass(kind);
                 const indentPx = depth * 20;
                 
-                let rowHtml = '<div class="span-row depth-' + depth + '" data-depth="' + depth + '">';
+                let rowHtml = '<div class="span-row depth-' + depth + '" data-depth="' + depth + '" data-span-id="' + spanId + '">';
                 
                 // Tree indicator
                 rowHtml += '<div class="span-tree-indicator" style="width: ' + (indentPx + 16) + 'px;">';
@@ -2923,7 +2968,66 @@
                 rowHtml += '</div>';
                 rowHtml += '</div>';
                 rowHtml += '<div class="span-duration-text">' + formatDuration(spanDuration) + '</div>';
+                
+                // Add expand button for spans with details
+                if (hasDetails) {
+                    rowHtml += '<div class="span-details-toggle" onclick="toggleSpanDetails(\'' + spanId + '\')" title="نمایش جزئیات">';
+                    rowHtml += hasError ? '⚠️' : 'ℹ️';
+                    rowHtml += '</div>';
+                }
+                
                 rowHtml += '</div>';
+                
+                // Add details section (initially hidden)
+                if (hasDetails) {
+                    rowHtml += '<div class="span-details" id="span-details-' + spanId + '" style="display: none;">';
+                    
+                    // Error message
+                    if (hasError && statusMessage) {
+                        rowHtml += '<div style="background: #fee2e2; border-right: 3px solid #ef4444; padding: 8px 12px; margin-bottom: 8px; border-radius: 4px;">';
+                        rowHtml += '<strong style="color: #dc2626;">خطا:</strong> ';
+                        rowHtml += '<span style="color: #991b1b; font-family: monospace;">' + escapeHtml(statusMessage) + '</span>';
+                        rowHtml += '</div>';
+                    }
+                    
+                    // Tags
+                    if (Object.keys(tags).length > 0) {
+                        rowHtml += '<div style="margin-bottom: 8px;">';
+                        rowHtml += '<strong style="color: #6b7280; font-size: 11px; display: block; margin-bottom: 4px;">برچسب‌ها:</strong>';
+                        rowHtml += '<div class="span-tags">';
+                        for (const [key, value] of Object.entries(tags)) {
+                            rowHtml += '<div class="span-tag">';
+                            rowHtml += '<span class="span-tag-key">' + escapeHtml(key) + ':</span> ';
+                            rowHtml += '<span class="span-tag-value">' + escapeHtml(String(value)) + '</span>';
+                            rowHtml += '</div>';
+                        }
+                        rowHtml += '</div>';
+                        rowHtml += '</div>';
+                    }
+                    
+                    // Events
+                    if (events.length > 0) {
+                        rowHtml += '<div>';
+                        rowHtml += '<strong style="color: #6b7280; font-size: 11px; display: block; margin-bottom: 4px;">رویدادها (' + events.length + '):</strong>';
+                        events.forEach((event, idx) => {
+                            const eventName = getProp(event, 'Name') || 'Unknown';
+                            const eventAttrs = getProp(event, 'Attributes') || {};
+                            rowHtml += '<div style="background: white; border: 1px solid #e5e7eb; padding: 6px 8px; margin-bottom: 4px; border-radius: 4px; font-size: 11px;">';
+                            rowHtml += '<strong>' + escapeHtml(eventName) + '</strong>';
+                            if (Object.keys(eventAttrs).length > 0) {
+                                rowHtml += '<div style="margin-top: 4px; padding-top: 4px; border-top: 1px solid #f3f4f6;">';
+                                for (const [key, value] of Object.entries(eventAttrs)) {
+                                    rowHtml += '<span style="color: #6b7280; margin-left: 8px;">' + escapeHtml(key) + ': <strong>' + escapeHtml(String(value)) + '</strong></span>';
+                                }
+                                rowHtml += '</div>';
+                            }
+                            rowHtml += '</div>';
+                        });
+                        rowHtml += '</div>';
+                    }
+                    
+                    rowHtml += '</div>';
+                }
                 
                 // Render children
                 children.forEach(child => {
@@ -3174,6 +3278,22 @@
                 traceItem.classList.toggle('expanded');
             }
         };
+        
+        // Toggle span details
+        window.toggleSpanDetails = function(spanId) {
+            const detailsEl = document.getElementById('span-details-' + spanId);
+            if (detailsEl) {
+                detailsEl.style.display = detailsEl.style.display === 'none' ? 'block' : 'none';
+            }
+        };
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
         
         // Handle trace filter changes
         window.handleTraceFilterChange = function() {
@@ -3574,7 +3694,7 @@
             var args = Array.prototype.slice.call(arguments);
             if (args.length > 0 && typeof args[0] === 'string' && 
                 (args[0].includes('browserLink') || args[0].includes('layout.min.js') || 
-                 args[0].includes('JQMIGRATE') || args[0].includes('Select2ChangeHandler'))) {
+                 args[0].includes('JQMIGRATE') )) {
                 return; // لاگ نکن
             }
             originalLog.apply(console, args);

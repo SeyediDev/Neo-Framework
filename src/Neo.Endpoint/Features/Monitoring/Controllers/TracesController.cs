@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Neo.Endpoint.Features.Monitoring.Models;
 using Neo.Endpoint.Features.Monitoring.Services;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Neo.Endpoint.Features.Monitoring.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/monitoring/traces")]
+[AllowAnonymous] // Allow access without authentication for monitoring
 public class TracesController : ControllerBase
 {
     private readonly ITraceStore _store;

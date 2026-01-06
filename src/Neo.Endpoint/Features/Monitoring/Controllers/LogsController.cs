@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Neo.Endpoint.Features.Monitoring.Models;
 using Neo.Endpoint.Features.Monitoring.Services;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Neo.Endpoint.Features.Monitoring.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/monitoring/logs")]
+[AllowAnonymous] // Allow access without authentication for monitoring
 public class LogsController : ControllerBase
 {
     private readonly ILogStore _store;
@@ -41,10 +43,22 @@ public class LogsController : ControllerBase
         try
         {
             Models.LogLevel? level = null;
-            if (!string.IsNullOrEmpty(minLevel) && Enum.TryParse<Models.LogLevel>(minLevel, true, out var parsed))
+            
+            if (!string.IsNullOrEmpty(minLevel))
             {
-                level = parsed;
+                // Try parsing as numeric string first (frontend sends numeric values)
+                if (int.TryParse(minLevel, out var numericValue) && 
+                    Enum.IsDefined(typeof(Models.LogLevel), numericValue))
+                {
+                    level = (Models.LogLevel)numericValue;
+                }
+                // Try parsing as enum name
+                else if (Enum.TryParse<Models.LogLevel>(minLevel, true, out var parsed))
+                {
+                    level = parsed;
+                }
             }
+            
             return Ok(_store.GetRecentLogs(limit, level));
         }
         catch (Exception ex)

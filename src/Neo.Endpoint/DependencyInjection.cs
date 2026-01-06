@@ -39,6 +39,9 @@ public static class DependencyInjection
 		// Register SignalR
 		services.AddSignalR();
 		
+		// Register monitoring services (stores, collectors, etc.)
+		services.AddNeoMonitoringServices(configuration);
+		
         // بررسی می‌کنیم که آیا قبلاً Controllers اضافه شده‌اند یا نه
 		// اگر AddControllersWithViews قبلاً فراخوانی شده (که ITempDataDictionaryFactory را اضافه می‌کند)، نیازی به اضافه کردن دوباره نیست
 		var tempDataFactoryRegistered = services.Any(s => 
