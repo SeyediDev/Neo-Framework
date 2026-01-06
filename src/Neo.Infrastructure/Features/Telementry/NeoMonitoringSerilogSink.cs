@@ -8,8 +8,8 @@ using System.Text.Json;
 namespace Neo.Infrastructure.Features.Telementry;
 
 /// <summary>
-/// Serilog sink that sends logs to the admin panel monitoring endpoint
-/// This sink is used by external APIs to send logs to the admin panel
+/// Serilog sink that sends logs to the monitoring API endpoint
+/// هر API لاگ‌های خودش را به خودش ارسال می‌کند (self-monitoring)
 /// </summary>
 public class NeoMonitoringSerilogSink(
     string monitoringApiUrl,
@@ -128,10 +128,10 @@ public class NeoMonitoringSerilogSink(
 public static class MonitoringSerilogSinkExtensions
 {
     /// <summary>
-    /// Add monitoring sink that sends logs to admin panel
+    /// Add monitoring sink that sends logs to monitoring API (self-monitoring)
     /// </summary>
     /// <param name="sinkConfiguration">Sink configuration</param>
-    /// <param name="monitoringApiUrl">Base URL of the admin panel monitoring API (e.g., "http://localhost:5000")</param>
+    /// <param name="monitoringApiUrl">Base URL of the monitoring API (e.g., "http://localhost:8080")</param>
     /// <param name="minimumLevel">Minimum log level to send</param>
     /// <param name="httpClient">Optional HttpClient instance</param>
     /// <returns>Logger configuration</returns>

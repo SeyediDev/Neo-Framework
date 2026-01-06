@@ -21,9 +21,7 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
     private readonly Dictionary<string, string> _clientSecrets = new()
     {
         // پیش‌فرض برای باجت
-        { "bajet-client", "bajet-secret" },
-        // Client برای مانیتورینگ
-        { "monitoring-client", "monitoring-secret" }
+        { "bajet-client", "bajet-secret" }
     };
 
     public Task<IdpUserResponseDto> AddUserAsync(string userId, string mobile, string role)

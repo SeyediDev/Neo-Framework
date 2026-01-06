@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Neo.Domain.Features.Client;
+using Neo.Endpoint.Infrastructure;
+using System.Text.Json;
 
 namespace Neo.Endpoint.Controller.Api;
 
@@ -17,7 +20,7 @@ namespace Neo.Endpoint.Controller.Api;
 /// </summary>
 [Route("api/monitoring")]
 [ApiExplorerSettings(IgnoreApi = true)] // مخفی کردن از Swagger
-[Authorize] // احراز هویت اجباری برای دسترسی به مانیتورینگ
+[AllowAnonymous] // فعلاً احراز هویت غیرفعال است
 public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
 {
     private readonly IConfiguration _configuration;
@@ -41,35 +44,19 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     [HttpGet("~/Monitoring/Index")]
     public IActionResult Index()
     {
-        // بررسی احراز هویت - اگر کاربر احراز نشده، به صفحه login هدایت می‌شود
-        if (!User.Identity?.IsAuthenticated ?? true)
-        {
-            _logger.LogWarning("Unauthenticated access attempt to monitoring dashboard");
-            return Redirect("/Monitoring/Login?returnUrl=" + Uri.EscapeDataString("/Monitoring"));
-        }
-        
-        _logger.LogInformation("Monitoring dashboard accessed by user {User}", User.Identity?.Name);
+        _logger.LogInformation("Monitoring dashboard accessed");
         SetPersianCulture();
+        
+        // تنظیم نام API برای View
+        var apiName = _configuration["TelemetryOptions:ApplicationName"] 
+            ?? _configuration["ApplicationName"] 
+            ?? "API";
+        ViewBag.ApiName = apiName;
+        ViewData["Title"] = $"مانیتورینگ {apiName}";
+        
         return View("Index");
     }
     
-    /// <summary>
-    /// صفحه ورود برای مانیتورینگ
-    /// </summary>
-    [HttpGet("~/Monitoring/Login")]
-    [AllowAnonymous]
-    public IActionResult Login(string? returnUrl = null)
-    {
-        // اگر کاربر قبلاً احراز هویت شده، به صفحه مانیتورینگ هدایت می‌شود
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            return Redirect(returnUrl ?? "/Monitoring");
-        }
-        
-        ViewBag.ReturnUrl = returnUrl ?? "/Monitoring";
-        SetPersianCulture();
-        return View("Login");
-    }
 
     /// <summary>
     /// صفحه مانیتورینگ پیشرفته
@@ -198,7 +185,7 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
         {
             ApiName = apiName,
             ApiVersion = apiVersion,
-            MonitoringApiUrl = _configuration["TelemetryOptions:MonitoringApiUrl"] ?? "http://localhost:5000",
+            MonitoringApiUrl = Request.Scheme + "://" + Request.Host,
             LogsAvailable = true,
             Description = description
         };
@@ -250,15 +237,53 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     }
 
     /// <summary>
+    /// دریافت لاگ‌ها از OTLP (برای Serilog Sink)
+    /// </summary>
+    [HttpPost("logs/otlp")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ReceiveLogsOtlp()
+    {
+        try
+        {
+            using var reader = new StreamReader(Request.Body);
+            var body = await reader.ReadToEndAsync();
+            
+            if (string.IsNullOrWhiteSpace(body))
+                return BadRequest("Empty request body");
+            
+            var logEntry = JsonSerializer.Deserialize<object>(body, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            
+            if (logEntry != null)
+            {
+                MonitoringDataStore.AddLog(logEntry);
+            }
+            
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Error receiving log from OTLP");
+            return BadRequest("Invalid log format");
+        }
+    }
+
+    /// <summary>
     /// Recent logs endpoint
     /// </summary>
     [HttpGet("logs/recent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetRecentLogs([FromQuery] int limit = 50, [FromQuery] int? minLevel = null)
+    public IActionResult GetRecentLogs(
+        [FromQuery] int limit = 50, 
+        [FromQuery] int? minLevel = null,
+        [FromQuery] string? correlationId = null,
+        [FromQuery] string? source = null,
+        [FromQuery] string? textSearch = null)
     {
-        // Stub implementation - returns empty array
-        // TODO: Implement actual log retrieval
-        return Ok(new object[0]);
+        var logs = MonitoringDataStore.GetRecentLogs(limit, minLevel, correlationId, source, textSearch);
+        return Ok(logs);
     }
 
     /// <summary>
@@ -268,9 +293,8 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetAllMetrics()
     {
-        // Stub implementation - returns empty array
-        // TODO: Implement actual metrics collection
-        return Ok(new object[0]);
+        var metrics = MonitoringDataStore.GetAllMetrics();
+        return Ok(metrics);
     }
 
     /// <summary>
@@ -280,8 +304,16 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetMetricTimeseries(string metricName, [FromQuery] string from)
     {
-        // Stub implementation - returns empty array
-        // TODO: Implement actual timeseries data
+        // فعلاً stub - می‌تواند در آینده از OpenTelemetry استفاده کند
+        var metric = MonitoringDataStore.GetMetric(metricName);
+        if (metric != null)
+        {
+            // برگرداندن داده‌های timeseries ساده
+            return Ok(new[]
+            {
+                new { Timestamp = DateTime.UtcNow, Value = 0.0 }
+            });
+        }
         return Ok(new object[0]);
     }
 
@@ -290,11 +322,21 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     /// </summary>
     [HttpGet("traces/recent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetRecentTraces([FromQuery] int limit = 50)
+    public IActionResult GetRecentTraces(
+        [FromQuery] int limit = 50,
+        [FromQuery] string? from = null,
+        [FromQuery] string? serviceName = null,
+        [FromQuery] string? kind = null,
+        [FromQuery] int? status = null)
     {
-        // Stub implementation - returns empty array
-        // TODO: Implement actual trace retrieval
-        return Ok(new object[0]);
+        DateTime? fromDate = null;
+        if (!string.IsNullOrWhiteSpace(from) && DateTime.TryParse(from, out var parsedDate))
+        {
+            fromDate = parsedDate;
+        }
+        
+        var traces = MonitoringDataStore.GetRecentTraces(limit, fromDate, serviceName, kind, status);
+        return Ok(traces);
     }
 
     /// <summary>
@@ -304,13 +346,7 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetTraceStats()
     {
-        // Stub implementation
-        var stats = new
-        {
-            TotalTraces = 0,
-            AverageDuration = 0.0,
-            ErrorRate = 0.0
-        };
+        var stats = MonitoringDataStore.GetTraceStats();
         return Ok(stats);
     }
 }

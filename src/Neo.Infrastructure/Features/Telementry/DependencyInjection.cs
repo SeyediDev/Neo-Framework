@@ -6,6 +6,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using System;
 
 namespace Neo.Infrastructure.Features.Telementry;
 
@@ -71,15 +72,46 @@ public static class DependencyInjection
         {
             loggerConfig.ReadFrom.Configuration(context.Configuration);
             
-            // If MonitoringApiUrl is configured, add sink to send logs to admin panel
+            // Self-monitoring: هر API لاگ‌های خودش را به خودش ارسال می‌کند
+            // Get the current API URL for self-monitoring
             var monitoringApiUrl = context.Configuration["TelemetryOptions:MonitoringApiUrl"];
+            
+            // If not configured, use self-monitoring (send logs to the same API)
+            if (string.IsNullOrWhiteSpace(monitoringApiUrl))
+            {
+                // Try to get URL from configuration
+                var urls = context.Configuration["Urls"] ?? context.Configuration["Kestrel:Endpoints:Http:Url"];
+                if (!string.IsNullOrWhiteSpace(urls))
+                {
+                    var firstUrl = urls.Split(';')[0].Trim();
+                    if (firstUrl.StartsWith("http://") || firstUrl.StartsWith("https://"))
+                    {
+                        monitoringApiUrl = firstUrl;
+                    }
+                    else if (int.TryParse(firstUrl, out var port))
+                    {
+                        monitoringApiUrl = $"http://localhost:{port}";
+                    }
+                }
+                
+                // Fallback: use ASPNETCORE_URLS environment variable
+                if (string.IsNullOrWhiteSpace(monitoringApiUrl))
+                {
+                    var aspnetcoreUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+                    if (!string.IsNullOrWhiteSpace(aspnetcoreUrls))
+                    {
+                        monitoringApiUrl = aspnetcoreUrls.Split(';')[0].Trim();
+                    }
+                }
+            }
+            
+            // Add sink to send logs to monitoring API (self-monitoring)
             if (!string.IsNullOrWhiteSpace(monitoringApiUrl))
             {
                 var minLevel = context.Configuration.GetValue<Serilog.Events.LogEventLevel>(
                     "TelemetryOptions:MonitoringLogLevel", 
                     Serilog.Events.LogEventLevel.Information);
                 
-                // Use the extension method from MonitoringSerilogSinkExtensions
                 loggerConfig.WriteTo.Sink(
                     new NeoMonitoringSerilogSink(monitoringApiUrl, null, minLevel),
                     minLevel);
