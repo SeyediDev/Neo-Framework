@@ -152,15 +152,27 @@
     
     .metrics-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        margin-bottom: 24px;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    @@media (max-width: 1400px) {
+        .metrics-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    @@media (max-width: 768px) {
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
     
     .metric-card {
         background: white;
         border-radius: 12px;
-        padding: 20px;
+        padding: 16px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         border: 1px solid #e5e7eb;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -234,10 +246,11 @@
     
     /* Charts Section */
     .charts-section {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 20px;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
+    }
+    
+    .charts-header-section {
+        margin-bottom: 12px;
     }
     
     .chart-card {
@@ -585,7 +598,8 @@
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         border: 1px solid #e5e7eb;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
+        margin-top: 16px;
         overflow: hidden;
     }
     
@@ -1275,20 +1289,12 @@
     }
     
     /* ===== Advanced Charts Styles ===== */
-    .charts-section {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        border: 1px solid #e5e7eb;
-        margin-bottom: 24px;
-    }
-    
     .charts-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
+        padding: 0;
     }
     
     .charts-title {
@@ -1298,6 +1304,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        margin: 0;
     }
     
     .charts-title svg {
@@ -1481,6 +1488,24 @@
         </div>
     </div>
     
+    <!-- Charts Header Section -->
+    <div class="charts-header-section">
+        <div class="charts-header">
+            <h3 class="charts-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                </svg>
+                نمودار تاریخچه
+            </h3>
+            <div class="time-range-selector">
+                <button class="time-range-btn active" data-range="5" onclick="setTimeRange(5)">5 دقیقه</button>
+                <button class="time-range-btn" data-range="15" onclick="setTimeRange(15)">15 دقیقه</button>
+                <button class="time-range-btn" data-range="30" onclick="setTimeRange(30)">30 دقیقه</button>
+                <button class="time-range-btn" data-range="60" onclick="setTimeRange(60)">1 ساعت</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- System Metrics -->
     <div class="metrics-grid">
         <div class="metric-card">
@@ -1567,20 +1592,6 @@
     
     <!-- Charts Section -->
     <div class="charts-section">
-        <div class="charts-header">
-            <h3 class="charts-title">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
-                </svg>
-                نمودار تاریخچه
-            </h3>
-            <div class="time-range-selector">
-                <button class="time-range-btn active" data-range="5" onclick="setTimeRange(5)">5 دقیقه</button>
-                <button class="time-range-btn" data-range="15" onclick="setTimeRange(15)">15 دقیقه</button>
-                <button class="time-range-btn" data-range="30" onclick="setTimeRange(30)">30 دقیقه</button>
-                <button class="time-range-btn" data-range="60" onclick="setTimeRange(60)">1 ساعت</button>
-            </div>
-        </div>
         <div class="charts-grid">
             <div class="chart-card chart-cpu">
                 <div class="chart-card-header">

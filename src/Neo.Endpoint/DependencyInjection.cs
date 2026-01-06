@@ -2,6 +2,7 @@
 using Neo.Endpoint.Controller;
 using Neo.Endpoint.Controller.Api;
 using Neo.Endpoint.Infrastructure;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -19,6 +20,9 @@ public static class DependencyInjection
     public static IServiceCollection AddNeoControllerServices(this IServiceCollection services, string apiName, bool includeViews = false, IMvcBuilder? existingMvcBuilder = null)
     {
         services.AddExceptionHandler<CustomExceptionHandler>();
+        
+        // اضافه کردن MetricsCollectorService برای جمع‌آوری metrics
+        services.AddHostedService<MetricsCollectorService>();
         // Customize default API behavior
         services.Configure<ApiBehaviorOptions>(options =>
          options.SuppressModelStateInvalidFilter = true);
@@ -179,5 +183,41 @@ public static class DependencyInjection
         });
 
 		return mvcBuilder;
+    }
+
+    /// <summary>
+    /// اضافه کردن Swagger UI با عنوان API در عنوان صفحه
+    /// </summary>
+    public static IApplicationBuilder UseNeoSwaggerUi(this IApplicationBuilder app, string apiName, string? path = null)
+    {
+        path ??= "swagger";
+        
+        app.UseSwaggerUi(options =>
+        {
+            options.DocumentTitle = apiName;
+            options.Path = path;
+            // تنظیم عنوان صفحه HTML
+            options.CustomHeadContent = $"<title>{apiName}</title>";
+        });
+        
+        return app;
+    }
+
+    /// <summary>
+    /// اضافه کردن Swagger UI با عنوان API در عنوان صفحه (برای WebApplication)
+    /// </summary>
+    public static WebApplication UseNeoSwaggerUi(this WebApplication app, string apiName, string? path = null)
+    {
+        path ??= "swagger";
+        
+        app.UseSwaggerUi(options =>
+        {
+            options.DocumentTitle = apiName;
+            options.Path = path;
+            // تنظیم عنوان صفحه HTML
+            options.CustomHeadContent = $"<title>{apiName}</title>";
+        });
+        
+        return app;
     }
 }

@@ -93,6 +93,22 @@ public static class MonitoringDataStore
     {
         _metrics.AddOrUpdate(name, metric, (key, oldValue) => metric);
     }
+    
+    /// <summary>
+    /// اضافه کردن metric به store (overload برای object)
+    /// </summary>
+    public static void AddMetric(object metric)
+    {
+        if (metric == null) return;
+        
+        // سعی می‌کنیم name را از object استخراج کنیم
+        var type = metric.GetType();
+        var nameProp = type.GetProperty("Name");
+        if (nameProp != null && nameProp.GetValue(metric) is string name && !string.IsNullOrWhiteSpace(name))
+        {
+            _metrics.AddOrUpdate(name, metric, (key, oldValue) => metric);
+        }
+    }
 
     /// <summary>
     /// دریافت همه metrics
