@@ -176,5 +176,14 @@ public class LogStore : ILogStore
             }
         }
     }
+
+    public void Clear()
+    {
+        while (_logs.TryDequeue(out _))
+        {
+            Interlocked.Decrement(ref _logCount);
+        }
+        _logCount = 0;
+    }
 }
 

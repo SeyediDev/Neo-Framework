@@ -116,5 +116,24 @@ public class TracesController : ControllerBase
             return Results.Problem("Error receiving traces", statusCode: 500);
         }
     }
+
+    /// <summary>
+    /// Clear all traces
+    /// </summary>
+    [HttpDelete("clear")]
+    public IActionResult Clear()
+    {
+        try
+        {
+            _store.Clear();
+            _logger.LogInformation("All traces cleared");
+            return Ok(new { message = "All traces cleared successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error clearing traces");
+            return StatusCode(500, new { error = "Failed to clear traces", message = ex.Message });
+        }
+    }
 }
 

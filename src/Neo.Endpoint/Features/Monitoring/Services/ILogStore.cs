@@ -47,5 +47,10 @@ public interface ILogStore
     /// Clear old data based on retention policy
     /// </summary>
     void Cleanup();
+
+    /// <summary>
+    /// Clear all logs
+    /// </summary>
+    void Clear();
 }
 

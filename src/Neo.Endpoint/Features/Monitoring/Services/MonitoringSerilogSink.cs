@@ -56,12 +56,50 @@ public class MonitoringSerilogSink : ILogEventSink
             spanId ??= activity.SpanId.ToString();
         }
 
+        // Format the base message
+        var baseMessage = logEvent.RenderMessage();
+        
+        // Enhance message with exception details if exception exists
+        var fullMessage = baseMessage;
+        if (logEvent.Exception != null)
+        {
+            var exception = logEvent.Exception;
+            var exceptionDetails = new System.Text.StringBuilder();
+            exceptionDetails.AppendLine(baseMessage);
+            exceptionDetails.AppendLine();
+            exceptionDetails.AppendLine($"Exception Type: {exception.GetType().FullName}");
+            exceptionDetails.AppendLine($"Exception Message: {exception.Message}");
+            
+            // Include inner exception if present
+            var innerException = exception.InnerException;
+            var depth = 0;
+            while (innerException != null && depth < 5) // Limit depth to prevent infinite loops
+            {
+                exceptionDetails.AppendLine();
+                exceptionDetails.AppendLine($"Inner Exception [{depth + 1}]:");
+                exceptionDetails.AppendLine($"  Type: {innerException.GetType().FullName}");
+                exceptionDetails.AppendLine($"  Message: {innerException.Message}");
+                innerException = innerException.InnerException;
+                depth++;
+            }
+            
+            // Include stack trace if available
+            if (!string.IsNullOrWhiteSpace(exception.StackTrace))
+            {
+                exceptionDetails.AppendLine();
+                exceptionDetails.AppendLine("Stack Trace:");
+                exceptionDetails.AppendLine(exception.StackTrace);
+            }
+            
+            fullMessage = exceptionDetails.ToString();
+        }
+
         var entry = new LogEntry
         {
             Id = Guid.NewGuid().ToString("N"),
             Timestamp = logEvent.Timestamp.UtcDateTime,
             Level = ConvertLogLevel(logEvent.Level),
-            Message = logEvent.RenderMessage(),
+            Message = fullMessage,
             MessageTemplate = logEvent.MessageTemplate.Text,
             SourceContext = sourceContext,
             TraceId = traceId,

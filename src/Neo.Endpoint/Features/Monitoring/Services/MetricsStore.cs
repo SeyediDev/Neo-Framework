@@ -1,4 +1,5 @@
 using Neo.Endpoint.Features.Monitoring.Models;
+using LogLevel = Neo.Endpoint.Features.Monitoring.Models.LogLevel;
 
 namespace Neo.Endpoint.Features.Monitoring.Services;
 
@@ -13,16 +14,18 @@ public class MetricsStore : IMetricsStore
     private readonly ConcurrentDictionary<string, int> _dataPointCounts = new();
     private readonly Stopwatch _uptime = Stopwatch.StartNew();
     private readonly Process _currentProcess = Process.GetCurrentProcess();
+    private readonly ILogStore? _logStore;
     
     // CPU calculation state
     private DateTime _lastCpuCheckTime = DateTime.UtcNow;
     private TimeSpan _lastCpuTime;
     private double _lastCpuPercent = 0;
 
-    public MetricsStore(IOptions<MonitoringStorageOptions> options)
+    public MetricsStore(IOptions<MonitoringStorageOptions> options, ILogStore? logStore = null)
     {
         _options = options?.Value ?? new MonitoringStorageOptions();
         _lastCpuTime = _currentProcess.TotalProcessorTime;
+        _logStore = logStore;
     }
 
     public void Record(MetricDataPoint dataPoint)
@@ -251,6 +254,19 @@ public class MetricsStore : IMetricsStore
 
         // Calculate requests per second (last minute)
         var oneMinuteAgo = DateTime.UtcNow.AddMinutes(-1);
+
+        // If we don't have enough metrics data, try to calculate from logs
+        if (total == 0 && _logStore != null)
+        {
+            var recentLogs = _logStore.GetRecentLogs(1000).Where(l => l.Timestamp >= oneMinuteAgo).ToList();
+            
+            // Count total requests from logs (any log entry can represent a request)
+            total = recentLogs.Count;
+            
+            // Count failures from Error and Critical level logs
+            failure = recentLogs.Count(l => l.Level == LogLevel.Error || l.Level == LogLevel.Critical);
+            success = total - failure;
+        }
         var recentCount = 0;
         
         // Try different metric names for recent request count
@@ -265,11 +281,42 @@ public class MetricsStore : IMetricsStore
             if (recentCount > 0) break;
         }
 
-        // Calculate success rate - if we have duration data but no explicit success/failure tracking
-        var successRate = 100.0;
-        if (total > 0 && failure > 0)
+        // If we still don't have recent count, use logs
+        if (recentCount == 0 && _logStore != null)
         {
-            successRate = (double)(total - failure) / total * 100;
+            var recentLogs = _logStore.GetRecentLogs(1000).Where(l => l.Timestamp >= oneMinuteAgo).ToList();
+            recentCount = recentLogs.Count;
+        }
+
+        // Calculate success rate
+        var successRate = 100.0;
+        if (total > 0)
+        {
+            if (failure > 0)
+            {
+                successRate = (double)(total - failure) / total * 100;
+            }
+            // If we have total but no explicit failure tracking, check if we can infer from logs
+            else if (_logStore != null && successStats == null && failureStats == null)
+            {
+                // Try to get error count from logs in the last minute
+                var oneMinuteAgoForErrors = DateTime.UtcNow.AddMinutes(-1);
+                var errorLogs = _logStore.Query(new LogQueryRequest
+                {
+                    From = oneMinuteAgoForErrors,
+                    MinLevel = LogLevel.Error,
+                    Limit = null
+                }).ToList();
+                
+                var errorCount = errorLogs.Count;
+                if (errorCount > 0 && total > 0)
+                {
+                    // Estimate: assume each error log represents a failed request
+                    failure = errorCount;
+                    success = Math.Max(0, total - failure);
+                    successRate = (double)(total - failure) / total * 100;
+                }
+            }
         }
 
         return new ApplicationMetrics
@@ -319,6 +366,21 @@ public class MetricsStore : IMetricsStore
                     _dataPointCounts.AddOrUpdate(metricName, 0, (_, c) => Math.Max(0, c - 1));
                 }
             }
+        }
+    }
+
+    public void Reset()
+    {
+        _dataPoints.Clear();
+        _dataPointCounts.Clear();
+        // Keep definitions but reset their timestamps
+        foreach (var metricName in _definitions.Keys.ToList())
+        {
+            _definitions[metricName] = _definitions[metricName] with
+            {
+                FirstSeen = DateTime.UtcNow,
+                LastSeen = DateTime.UtcNow
+            };
         }
     }
 

@@ -153,10 +153,23 @@ public class TelementryBehaviour(
 
         telementry.RequestDuration.Record(elapsedMs, _tags);
 
-        if (response != null)
-            telementry.RequestSuccessCounter.Add(1, _tags);
-        else
+        // Record success or failure based on exception, not just response
+        // If exception occurred, it's a failure regardless of response
+        if (ex != null)
+        {
             telementry.RequestFailureCounter.Add(1, _tags);
+            // Mark activity as failed
+            Activity.Current?.SetStatus(ActivityStatusCode.Error, ex.Message);
+        }
+        else if (response != null)
+        {
+            telementry.RequestSuccessCounter.Add(1, _tags);
+        }
+        else
+        {
+            // Response is null but no exception - treat as failure
+            telementry.RequestFailureCounter.Add(1, _tags);
+        }
 
         telementry.RequestInflights.Add(-1, _tags);
     }

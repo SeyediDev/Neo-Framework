@@ -70,6 +70,24 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     }
     
     /// <summary>
+    /// صفحه مانیتورینگ میکروفرانت (نسخه موقت برای تست)
+    /// </summary>
+    [HttpGet("~/Monitoring/Index2")]
+    public IActionResult Index2()
+    {
+        _logger.LogInformation("Micro-frontend monitoring dashboard accessed");
+        SetPersianCulture();
+        
+        var apiName = _configuration["TelemetryOptions:ApplicationName"] 
+            ?? _configuration["ApplicationName"] 
+            ?? "API";
+        ViewBag.ApiName = apiName;
+        ViewData["Title"] = $"مانیتورینگ {apiName} (میکروفرانت)";
+        
+        return View("Index2");
+    }
+    
+    /// <summary>
     /// تنظیم Culture به فارسی برای صفحه مانیتورینگ
     /// </summary>
     private void SetPersianCulture()

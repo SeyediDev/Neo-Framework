@@ -194,6 +194,13 @@ public class TraceStore : ITraceStore
         }
     }
 
+    public void Clear()
+    {
+        _traces.Clear();
+        while (_traceOrder.TryDequeue(out _)) { }
+        Interlocked.Exchange(ref _traceCount, 0);
+    }
+
     private static TraceData? BuildTrace(string traceId, List<TraceSpan> spans)
     {
         if (spans.Count == 0) return null;

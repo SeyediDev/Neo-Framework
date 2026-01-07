@@ -1,0 +1,195 @@
+@{
+    var apiName = ViewBag.ApiName as string ?? "سیستم";
+    ViewData["Title"] = $"مانیتورینگ {apiName} (میکروفرانت)";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+        }
+        
+        #monitoring-container {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #1e293b;
+            border-top-color: #0ea5e9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e293b;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 20px;
+            color: #ef4444;
+            z-index: 10000;
+            max-width: 500px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div style="text-align: center;">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">در حال بارگذاری مانیتورینگ...</div>
+        </div>
+    </div>
+    
+    <div id="error-container" style="display: none;" class="error-message">
+        <h3 style="margin-bottom: 16px;">خطا در بارگذاری مانیتورینگ</h3>
+        <div id="error-text" style="text-align: right; line-height: 1.8;"></div>
+        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+            <button onclick="location.reload()" style="padding: 8px 16px; background: #0ea5e9; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                تلاش مجدد
+            </button>
+            <button onclick="window.open('http://localhost:3001', '_blank')" style="padding: 8px 16px; background: #64748b; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                باز کردن Next.js مستقیماً
+            </button>
+        </div>
+    </div>
+    
+    <!-- Option 1: Using iframe (Simple approach for testing) -->
+    <iframe 
+        id="monitoring-container" 
+        src="http://localhost:3001" 
+        frameborder="0"
+        allowfullscreen
+        onload="handleIframeLoad()"
+        onerror="handleIframeError()"
+    ></iframe>
+    
+    <script>
+        // Configuration
+        const MONITORING_URL = 'http://localhost:3001';
+        const API_BASE = '/api/monitoring';
+        
+        function handleIframeLoad() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+        
+        function handleIframeError() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const errorContainer = document.getElementById('error-container');
+            const errorText = document.getElementById('error-text');
+            
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+            
+            if (errorContainer && errorText) {
+                errorContainer.style.display = 'block';
+                errorText.innerHTML = `
+                    نمی‌توان به سرویس مانیتورینگ متصل شد.<br><br>
+                    <strong>راه‌حل:</strong><br>
+                    1. مطمئن شوید که سرویس Next.js در حال اجرا است<br>
+                    2. دستور زیر را در ترمینال اجرا کنید:<br>
+                    <code style="background: #1e293b; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 8px;">
+                        cd D:\\Projects\\Neo.Bpms\\src\\Neo.UI.Monitoring && npm run dev
+                    </code><br><br>
+                    3. بعد از اجرای Next.js، این صفحه را refresh کنید
+                `;
+            }
+        }
+        
+        // Check if iframe loaded successfully after 5 seconds
+        let iframeLoaded = false;
+        const checkInterval = setInterval(() => {
+            const iframe = document.getElementById('monitoring-container');
+            if (iframe && !iframeLoaded) {
+                try {
+                    // Try to access iframe content (will fail if cross-origin)
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    // If we get here, it loaded
+                    iframeLoaded = true;
+                    handleIframeLoad();
+                    clearInterval(checkInterval);
+                } catch (e) {
+                    // Cross-origin, but iframe might still be loading
+                    // Check if we can see the iframe
+                    if (iframe.offsetHeight > 0 && iframe.offsetWidth > 0) {
+                        iframeLoaded = true;
+                        handleIframeLoad();
+                        clearInterval(checkInterval);
+                    }
+                }
+            }
+        }, 500);
+        
+        // Timeout after 5 seconds
+        setTimeout(() => {
+            if (!iframeLoaded) {
+                clearInterval(checkInterval);
+                handleIframeError();
+            }
+        }, 5000);
+        
+        // Listen for messages from iframe (if using postMessage)
+        window.addEventListener('message', function(event) {
+            // Verify origin for security
+            if (event.origin !== MONITORING_URL) {
+                return;
+            }
+            
+            if (event.data.type === 'monitoring-ready') {
+                handleIframeLoad();
+            } else if (event.data.type === 'monitoring-error') {
+                handleIframeError();
+            }
+        });
+    </script>
+</body>
+</html>
+

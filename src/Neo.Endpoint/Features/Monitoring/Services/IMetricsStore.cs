@@ -57,5 +57,10 @@ public interface IMetricsStore
     /// Clear old data based on retention policy
     /// </summary>
     void Cleanup();
+
+    /// <summary>
+    /// Reset all metrics (clear all data points and statistics)
+    /// </summary>
+    void Reset();
 }
 

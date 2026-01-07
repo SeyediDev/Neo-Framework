@@ -46,5 +46,10 @@ public interface ITraceStore
     /// Clear old data based on retention policy
     /// </summary>
     void Cleanup();
+
+    /// <summary>
+    /// Clear all traces
+    /// </summary>
+    void Clear();
 }
 

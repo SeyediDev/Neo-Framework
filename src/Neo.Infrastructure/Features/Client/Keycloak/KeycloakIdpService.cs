@@ -261,7 +261,7 @@ public class KeycloakIdpService(
         HttpResponseMessage response = await httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
         var clients = await response.Content.ReadFromJsonAsync<List<IdpClientResponse>>();
-        return clients?.FirstOrDefault(x => x.ClientId == "home-care-user-management");
+        return clients?.FirstOrDefault(x => x.ClientId == "neo-club");
     }
 
     private async Task<IdpRoleDto?> GetRoleByName(string roleName)

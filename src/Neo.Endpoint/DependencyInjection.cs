@@ -276,12 +276,23 @@ public static class DependencyInjection
         return app;
     }
 
+	private static bool _monitoringHubRegistered = false;
+	private static readonly object _monitoringHubLock = new object();
+
 	public static IEndpointRouteBuilder MapNeoEndpoints(this IEndpointRouteBuilder endpoints)
 	{
 		// Map API controllers from this assembly
 		endpoints.MapControllers();
 
-		endpoints.MapHub<MonitoringHub>("/hubs/monitoring");
+		// Prevent duplicate hub registration
+		lock (_monitoringHubLock)
+		{
+			if (!_monitoringHubRegistered)
+			{
+				endpoints.MapHub<MonitoringHub>("/hubs/monitoring");
+				_monitoringHubRegistered = true;
+			}
+		}
 
 		return endpoints;
 	}
@@ -308,9 +319,14 @@ public static class DependencyInjection
 		}
 
 		// Register stores as singletons (shared state)
-		services.AddSingleton<IMetricsStore, MetricsStore>();
-		services.AddSingleton<ITraceStore, TraceStore>();
 		services.AddSingleton<ILogStore, LogStore>();
+		services.AddSingleton<IMetricsStore>(sp => 
+		{
+			var options = sp.GetRequiredService<IOptions<MonitoringStorageOptions>>();
+			var logStore = sp.GetRequiredService<ILogStore>();
+			return new MetricsStore(options, logStore);
+		});
+		services.AddSingleton<ITraceStore, TraceStore>();
 
 		// Register collectors as hosted services
 		services.AddHostedService<MetricsCollector>();

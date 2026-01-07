@@ -541,6 +541,85 @@
         to { transform: rotate(360deg); }
     }
     
+    /* Button spinner */
+    button .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+    
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    /* Copy button styles */
+    .copy-btn {
+        padding: 4px 8px;
+        background: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: #6b7280;
+        transition: all 0.2s;
+    }
+    
+    .copy-btn:hover {
+        background: #e5e7eb;
+        color: #374151;
+    }
+    
+    .copy-btn.copied {
+        background: #10b981;
+        color: white;
+        border-color: #10b981;
+    }
+    
+    .copy-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+    
+    /* Toast notification */
+    .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @@keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .toast.error {
+        background: #ef4444;
+    }
+    
     /* Auto-refresh indicator */
     .refresh-indicator {
         display: flex;
@@ -1494,6 +1573,19 @@
             @ViewData["Title"]
         </h1>
         <div class="header-actions">
+            <button 
+                onclick="resetAllMetrics()" 
+                id="reset-metrics-btn"
+                style="padding: 8px 16px; background: #f59e0b; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+                onmouseover="this.style.background='#d97706'"
+                onmouseout="this.style.background='#f59e0b'"
+                title="ریست کردن کلیه متریک‌ها"
+            >
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>ریست متریک‌ها</span>
+            </button>
             <a href="/Monitoring/Advanced" class="btn-advanced">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
@@ -1749,13 +1841,28 @@
         
         <!-- Traces Tab Content -->
         <div id="tab-traces" class="data-tab-content">
-            <div class="traces-header" style="margin-bottom: 16px;">
-                <h3 class="traces-title" style="font-size: 14px; color: #6b7280;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                    </svg>
-                    ردیابی درخواست‌ها
-                </h3>
+            <div class="traces-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h3 class="traces-title" style="font-size: 14px; color: #6b7280; margin: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                        ردیابی درخواست‌ها
+                    </h3>
+                    <button 
+                        onclick="deleteAllTraces()" 
+                        id="delete-traces-btn"
+                        style="padding: 6px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+                        onmouseover="this.style.background='#b91c1c'"
+                        onmouseout="this.style.background='#dc2626'"
+                        title="حذف کلیه تریس‌ها"
+                    >
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <span>حذف همه</span>
+                    </button>
+                </div>
                 <div class="trace-stats">
                     <div class="trace-stat">
                         <span>کل:</span>
@@ -1828,7 +1935,7 @@
                         >
                             <option value="">همه وضعیت‌ها</option>
                             <option value="1">موفق</option>
-                            <option value="2">خطا</option>
+                            <option value="2" selected>خطا</option>
                             <option value="0">نامشخص</option>
                         </select>
                     </div>
@@ -1879,11 +1986,26 @@
         
         <!-- Logs Tab Content -->
         <div id="tab-logs" class="data-tab-content">
-            <div class="logs-header" style="margin-bottom: 16px;">
-                <h3 class="logs-title" style="font-size: 14px; color: #6b7280;">لاگ‌های اخیر</h3>
+            <div class="logs-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h3 class="logs-title" style="font-size: 14px; color: #6b7280; margin: 0;">لاگ‌های اخیر</h3>
+                    <button 
+                        onclick="deleteAllLogs()" 
+                        id="delete-logs-btn"
+                        style="padding: 6px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+                        onmouseover="this.style.background='#b91c1c'"
+                        onmouseout="this.style.background='#dc2626'"
+                        title="حذف کلیه لاگ‌ها"
+                    >
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <span>حذف همه</span>
+                    </button>
+                </div>
                 <div class="log-filter-buttons">
-                    <button class="log-filter-btn active" data-level="all">همه</button>
-                    <button class="log-filter-btn" data-level="error">خطا</button>
+                    <button class="log-filter-btn" data-level="all">همه</button>
+                    <button class="log-filter-btn active" data-level="error">خطا</button>
                     <button class="log-filter-btn" data-level="warning">هشدار</button>
                     <button class="log-filter-btn" data-level="info">اطلاعات</button>
                 </div>
@@ -1891,45 +2013,45 @@
             
             <!-- Log Filters -->
             <div class="log-text-filters" style="margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
+                <div style="display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px; max-width: 300px;">
                         <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">منبع</label>
                         <select 
                             id="log-source-filter" 
                             class="log-filter-input" 
-                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right;"
+                            style="width: 100%; padding: 6px 28px 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; background: white; cursor: pointer; direction: rtl; text-align: right; box-sizing: border-box;"
                             onchange="handleLogFilterChange()"
                         >
                             <option value="">همه منابع</option>
                         </select>
                     </div>
-                    <div style="flex: 1; min-width: 200px;">
+                    <div style="flex: 1; min-width: 200px; max-width: 300px;">
                         <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">Correlation ID</label>
                         <input 
                             type="text" 
                             id="log-correlation-filter" 
                             class="log-filter-input" 
                             placeholder="جستجوی Correlation ID..."
-                            style="width: 100%; padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; font-family: monospace;"
+                            style="width: 100%; padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; font-family: monospace; box-sizing: border-box;"
                             onkeyup="handleLogFilterChange()"
                         />
                     </div>
-                    <div style="flex: 1; min-width: 200px;">
+                    <div style="flex: 1; min-width: 200px; max-width: 300px;">
                         <label style="display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">جستجوی متن</label>
                         <input 
                             type="text" 
                             id="log-text-filter" 
                             class="log-filter-input" 
                             placeholder="جستجو در متن لاگ..."
-                            style="width: 100%; padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px;"
+                            style="width: 100%; padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; box-sizing: border-box;"
                             onkeyup="handleLogFilterChange()"
                         />
                     </div>
-                    <div style="display: flex; align-items: flex-end; gap: 8px;">
+                    <div style="display: flex; align-items: flex-end; gap: 8px; min-width: 100px;">
                         <button 
                             onclick="clearLogFilters()" 
                             class="log-filter-clear-btn"
-                            style="padding: 6px 12px; border: 1px solid #d1d5db; background: white; border-radius: 6px; font-size: 12px; cursor: pointer; color: #6b7280; transition: all 0.2s;"
+                            style="padding: 6px 12px; border: 1px solid #d1d5db; background: white; border-radius: 6px; font-size: 12px; cursor: pointer; color: #6b7280; transition: all 0.2s; white-space: nowrap;"
                             onmouseover="this.style.background='#f3f4f6'"
                             onmouseout="this.style.background='white'"
                         >
@@ -1947,6 +2069,7 @@
                     <thead>
                         <tr>
                             <th style="width: 140px;">زمان</th>
+                            <th style="width: 80px;">عملیات</th>
                             <th style="width: 80px;">سطح</th>
                             <th style="width: 200px;">منبع</th>
                             <th style="width: 180px;">Correlation ID</th>
@@ -1955,7 +2078,7 @@
                     </thead>
                     <tbody id="logs-body">
                         <tr>
-                            <td colspan="5" class="loading">
+                            <td colspan="6" class="loading">
                                 <span class="spinner"></span>
                                 در حال بارگذاری...
                             </td>
@@ -2048,7 +2171,7 @@
     // Monitoring Dashboard JavaScript
     (function() {
         const API_BASE = '/api/monitoring';
-        let currentLogLevel = 'all';
+        let currentLogLevel = 'error';
         let isPaused = false;
         let refreshIntervals = [];
         let currentDrillDownMetric = null;
@@ -2612,37 +2735,241 @@
                 updateLogFilterStatus(sourceFilter, correlationId, textFilter, filteredLogs.length, logs ? logs.length : 0);
                 
                 if (!filteredLogs || filteredLogs.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #6b7280;">لاگی یافت نشد</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #6b7280;">لاگی یافت نشد</td></tr>';
                     return;
                 }
                 
-                tbody.innerHTML = filteredLogs.map(log => {
+                tbody.innerHTML = filteredLogs.map((log, index) => {
                     const timestamp = getProp(log, 'Timestamp');
                     const level = getProp(log, 'Level');
                     const source = getProp(log, 'SourceContext') || getProp(log, 'CategoryName') || '';
                     const message = getProp(log, 'Message') || '';
                     const correlationId = getProp(log, 'CorrelationId') || getProp(log, 'CorrelationID') || '';
+                    const exceptionType = getProp(log, 'ExceptionType') || '';
+                    const exceptionMessage = getProp(log, 'ExceptionMessage') || '';
+                    const logId = getProp(log, 'Id') || index;
                     return `
                     <tr>
                         <td class="log-time">${formatTime(timestamp)}</td>
+                        <td>
+                            <button class="copy-btn" onclick="copyLogToClipboard(${index}, '${logId.replace(/'/g, "\\'")}')" title="کپی به کلیپ‌برد" id="copy-log-btn-${logId}">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                کپی
+                            </button>
+                        </td>
                         <td>${getLogLevelBadge(level)}</td>
                         <td class="log-source" title="${source}">${source || '-'}</td>
                         <td class="log-correlation" style="font-family: monospace; font-size: 11px; color: #6b7280; direction: ltr; text-align: left;" title="${correlationId}">${correlationId || '-'}</td>
                         <td class="log-message" title="${message}">${message}</td>
                     </tr>
-                `}).join('');
+                `;
+                }).join('');
+                
+                // Store log data for copy function
+                window.logsData = filteredLogs;
                 
             } catch (error) {
                 console.error('Error fetching logs:', error);
                 document.getElementById('logs-body').innerHTML = 
-                    '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #ef4444;">خطا در بارگذاری لاگ‌ها</td></tr>';
+                    '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #ef4444;">خطا در بارگذاری لاگ‌ها</td></tr>';
             }
+        }
+        
+        // Copy log to clipboard
+        window.copyLogToClipboard = async function(index, logId) {
+            if (!window.logsData || !window.logsData[index]) {
+                showToast('خطا: داده لاگ یافت نشد', 'error');
+                return;
+            }
+            
+            const log = window.logsData[index];
+            const level = getProp(log, 'Level');
+            const levelText = getLogLevelText(level);
+            const timestamp = getProp(log, 'Timestamp');
+            const source = getProp(log, 'SourceContext') || getProp(log, 'CategoryName') || '';
+            const message = getProp(log, 'Message') || '';
+            const correlationId = getProp(log, 'CorrelationId') || getProp(log, 'CorrelationID') || '';
+            const exceptionType = getProp(log, 'ExceptionType') || '';
+            const exceptionMessage = getProp(log, 'ExceptionMessage') || '';
+            
+            const logText = [
+                `Level: ${levelText}`,
+                `Timestamp: ${formatTime(timestamp)}`,
+                `Message: ${message}`,
+                source && `Source: ${source}`,
+                correlationId && `CorrelationId: ${correlationId}`,
+                exceptionType && `Exception Type: ${exceptionType}`,
+                exceptionMessage && `Exception Message: ${exceptionMessage}`
+            ].filter(Boolean).join('\n');
+            
+            try {
+                await navigator.clipboard.writeText(logText);
+                showToast('لاگ با موفقیت کپی شد');
+                
+                // Update button state
+                const btn = document.getElementById('copy-log-btn-' + logId);
+                if (btn) {
+                    const originalHTML = btn.innerHTML;
+                    btn.classList.add('copied');
+                    btn.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>کپی شد';
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = originalHTML;
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Failed to copy to clipboard:', error);
+                showToast('خطا در کپی به کلیپ‌برد', 'error');
+            }
+        };
+        
+        // Get log level text
+        function getLogLevelText(level) {
+            const levels = {
+                0: 'Trace',
+                1: 'Debug',
+                2: 'Info',
+                3: 'Warn',
+                4: 'Error',
+                5: 'Fatal'
+            };
+            return levels[level] || 'Unknown';
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (type === 'error' ? ' error' : '');
+            toast.innerHTML = `
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    ${type === 'error' 
+                        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />'
+                    }
+                </svg>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
         }
         
         // Handle log filter changes
         window.handleLogFilterChange = function() {
             const activeLevel = document.querySelector('.log-filter-btn.active')?.dataset.level || 'all';
             fetchLogs(activeLevel);
+        };
+        
+        // Delete all logs
+        window.deleteAllLogs = async function() {
+            if (!confirm('آیا از حذف کلیه لاگ‌ها اطمینان دارید؟ این عمل غیرقابل بازگشت است.')) {
+                return;
+            }
+            
+            const btn = document.getElementById('delete-logs-btn');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" class="spinner" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="animation: spin 1s linear infinite;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg><span>در حال حذف...</span>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/logs/clear`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // Clear logs display
+                    document.getElementById('logs-body').innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #6b7280;">لاگی یافت نشد</td></tr>';
+                    document.getElementById('logs-tab-badge').textContent = '0';
+                    alert('کلیه لاگ‌ها با موفقیت حذف شدند');
+                } else {
+                    alert('خطا در حذف لاگ‌ها');
+                }
+            } catch (error) {
+                console.error('Error deleting logs:', error);
+                alert('خطا در حذف لاگ‌ها');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
+        };
+        
+        // Delete all traces
+        window.deleteAllTraces = async function() {
+            if (!confirm('آیا از حذف کلیه تریس‌ها اطمینان دارید؟ این عمل غیرقابل بازگشت است.')) {
+                return;
+            }
+            
+            const btn = document.getElementById('delete-traces-btn');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" class="spinner" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="animation: spin 1s linear infinite;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg><span>در حال حذف...</span>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/traces/clear`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // Clear traces display
+                    document.getElementById('traces-container').innerHTML = '<div class="loading"><span class="spinner"></span>در حال بارگذاری...</div>';
+                    document.getElementById('traces-tab-badge').textContent = '0';
+                    alert('کلیه تریس‌ها با موفقیت حذف شدند');
+                    // Refresh traces
+                    fetchTraces();
+                } else {
+                    alert('خطا در حذف تریس‌ها');
+                }
+            } catch (error) {
+                console.error('Error deleting traces:', error);
+                alert('خطا در حذف تریس‌ها');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
+        };
+        
+        // Reset all metrics
+        window.resetAllMetrics = async function() {
+            if (!confirm('آیا از ریست کردن کلیه متریک‌ها اطمینان دارید؟ این عمل تمام آمار را به صفر برمی‌گرداند.')) {
+                return;
+            }
+            
+            const btn = document.getElementById('reset-metrics-btn');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="16" height="16" class="spinner" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="animation: spin 1s linear infinite;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg><span>در حال ریست...</span>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/metrics/reset`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    alert('کلیه متریک‌ها با موفقیت ریست شدند');
+                    // Refresh page to show reset metrics
+                    window.location.reload();
+                } else {
+                    alert('خطا در ریست کردن متریک‌ها');
+                }
+            } catch (error) {
+                console.error('Error resetting metrics:', error);
+                alert('خطا در ریست کردن متریک‌ها');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
         };
         
         // Clear log filters
@@ -3247,6 +3574,8 @@
                     html += '</div>';
                     html += '<div class="trace-operation">' + rootOperation + '</div>';
                     html += '<div class="trace-meta">';
+                    html += '<button class="copy-btn" onclick="event.stopPropagation(); copyTraceToClipboard(' + index + ', \'' + traceId.replace(/'/g, "\\'") + '\')" title="کپی به کلیپ‌برد" id="copy-trace-btn-' + traceId + '" style="margin-left: 8px;">';
+                    html += '<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> کپی</button>';
                     html += '<span class="trace-span-count"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> ' + spanCount + '</span>';
                     if (errorCount > 0) {
                         html += '<span style="color: #ef4444;">' + errorCount + ' خطا</span>';
@@ -3264,12 +3593,134 @@
                 
                 container.innerHTML = html;
                 
+                // Store trace data for copy function
+                window.tracesData = filteredTraces;
+                
             } catch (error) {
                 console.error('Error fetching traces:', error);
                 document.getElementById('traces-container').innerHTML = 
                     '<div class="no-traces" style="color: #ef4444;">خطا در بارگذاری ردیابی‌ها</div>';
             }
         }
+        
+        // Copy trace to clipboard
+        window.copyTraceToClipboard = async function(index, traceId) {
+            if (!window.tracesData || !window.tracesData[index]) {
+                showToast('خطا: داده تریس یافت نشد', 'error');
+                return;
+            }
+            
+            const trace = window.tracesData[index];
+            const traceIdValue = getProp(trace, 'TraceId') || traceId;
+            const rootOperation = getProp(trace, 'RootOperationName') || '';
+            const serviceName = getProp(trace, 'ServiceName') || '';
+            const status = getProp(trace, 'Status') || 0;
+            const statusText = getStatusText(status);
+            const spanCount = getProp(trace, 'SpanCount') || 0;
+            const errorCount = getProp(trace, 'ErrorCount') || 0;
+            const startTime = getProp(trace, 'StartTime') || '';
+            const endTime = getProp(trace, 'EndTime') || '';
+            const spans = getProp(trace, 'Spans') || [];
+            
+            // Calculate duration correctly
+            let durationMs = 0;
+            if (startTime && endTime) {
+                const start = new Date(startTime);
+                const end = new Date(endTime);
+                if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                    durationMs = end.getTime() - start.getTime();
+                }
+            }
+            
+            // Build trace text
+            const traceText = [
+                `Trace ID: ${traceIdValue}`,
+                `Root Operation: ${rootOperation}`,
+                `Service: ${serviceName}`,
+                `Status: ${statusText}`,
+                `Duration: ${formatDuration(durationMs)}`,
+                `Spans: ${spanCount}`,
+                errorCount > 0 && `Errors: ${errorCount}`,
+                `Start Time: ${formatTime(startTime)}`,
+                `End Time: ${formatTime(endTime)}`,
+                '',
+                '=== Spans ==='
+            ].filter(Boolean);
+            
+            // Add spans information
+            if (spans && spans.length > 0) {
+                spans.forEach((span, spanIndex) => {
+                    const spanId = getProp(span, 'SpanId') || '';
+                    const parentSpanId = getProp(span, 'ParentSpanId') || '';
+                    const operationName = getProp(span, 'OperationName') || '';
+                    const spanServiceName = getProp(span, 'ServiceName') || '';
+                    const spanStatus = getProp(span, 'Status') || 0;
+                    const spanStatusText = getStatusText(spanStatus);
+                    const spanStartTime = getProp(span, 'StartTime') || '';
+                    const spanEndTime = getProp(span, 'EndTime') || '';
+                    const spanTags = getProp(span, 'Tags') || {};
+                    const spanKind = getProp(span, 'Kind') || '';
+                    
+                    // Calculate span duration
+                    let spanDurationMs = 0;
+                    if (spanStartTime && spanEndTime) {
+                        const spanStart = new Date(spanStartTime);
+                        const spanEnd = new Date(spanEndTime);
+                        if (!isNaN(spanStart.getTime()) && !isNaN(spanEnd.getTime())) {
+                            spanDurationMs = spanEnd.getTime() - spanStart.getTime();
+                        }
+                    }
+                    
+                    traceText.push('');
+                    traceText.push(`Span ${spanIndex + 1}:`);
+                    traceText.push(`  Span ID: ${spanId}`);
+                    if (parentSpanId) {
+                        traceText.push(`  Parent Span ID: ${parentSpanId}`);
+                    }
+                    traceText.push(`  Operation: ${operationName}`);
+                    traceText.push(`  Service: ${spanServiceName}`);
+                    traceText.push(`  Status: ${spanStatusText}`);
+                    traceText.push(`  Duration: ${formatDuration(spanDurationMs)}`);
+                    traceText.push(`  Start Time: ${formatTime(spanStartTime)}`);
+                    traceText.push(`  End Time: ${formatTime(spanEndTime)}`);
+                    if (spanKind) {
+                        traceText.push(`  Kind: ${spanKind}`);
+                    }
+                    
+                    // Add tags
+                    if (spanTags && Object.keys(spanTags).length > 0) {
+                        traceText.push(`  Tags:`);
+                        Object.entries(spanTags).forEach(([key, value]) => {
+                            traceText.push(`    ${key}: ${value}`);
+                        });
+                    }
+                });
+            } else {
+                traceText.push('No spans available');
+            }
+            
+            const finalText = traceText.join('\n');
+            
+            try {
+                await navigator.clipboard.writeText(finalText);
+                showToast('تریس با موفقیت کپی شد');
+                
+                // Update button state
+                const btn = document.getElementById('copy-trace-btn-' + traceId);
+                if (btn) {
+                    const originalHTML = btn.innerHTML;
+                    btn.classList.add('copied');
+                    btn.innerHTML = '<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> کپی شد';
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = originalHTML;
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Failed to copy to clipboard:', error);
+                showToast('خطا در کپی به کلیپ‌برد', 'error');
+            }
+        };
         
         // Toggle trace expand/collapse
         window.toggleTrace = function(index) {
@@ -3355,6 +3806,12 @@
         
         // Initialize
         function init() {
+            // Set default trace status filter to Error
+            const traceStatusFilter = document.getElementById('trace-status-filter');
+            if (traceStatusFilter) {
+                traceStatusFilter.value = '2';
+            }
+            
             // Fetch initial data
             fetchDashboard();
             fetchHealth();

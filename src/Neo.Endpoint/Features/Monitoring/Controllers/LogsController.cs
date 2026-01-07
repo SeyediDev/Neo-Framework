@@ -178,5 +178,24 @@ public class LogsController : ControllerBase
             return Results.Problem("Error receiving logs", statusCode: 500);
         }
     }
+
+    /// <summary>
+    /// Clear all logs
+    /// </summary>
+    [HttpDelete("clear")]
+    public IActionResult Clear()
+    {
+        try
+        {
+            _store.Clear();
+            _logger.LogInformation("All logs cleared");
+            return Ok(new { message = "All logs cleared successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error clearing logs");
+            return StatusCode(500, new { error = "Failed to clear logs", message = ex.Message });
+        }
+    }
 }
 

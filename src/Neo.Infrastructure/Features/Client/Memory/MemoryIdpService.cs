@@ -16,6 +16,8 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 {
 	private string ClientId => configuration["IdpSetting:ClientId"]!;
 	private string ClientSecret => configuration["IdpSetting:ClientSecret"]!;
+	private string Audience => configuration["IdpSetting:ClientId"] ?? "Club.Channel.Api";
+	private string Issuer => configuration["IdpSetting:Issuer"] ?? "Club.Channel.Api";
 	
 	private readonly Dictionary<string, TokenInfo> _tokenStore = [];
     private readonly Dictionary<string, string> _clientSecrets = new()
@@ -37,7 +39,15 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 	public async Task<HttpResponseMessage> GetClientCredentialsTokenAsync(string clientId, string clientSecret)
     {
         // اعتبارسنجی Client Credentials
-        if (!_clientSecrets.TryGetValue(clientId, out var storedSecret) || storedSecret != clientSecret)
+        var isValid = _clientSecrets.TryGetValue(clientId, out var storedSecret) && storedSecret == clientSecret;
+        
+        // Also check against configured ClientId and ClientSecret
+        if (!isValid && clientId == ClientId && clientSecret == ClientSecret)
+        {
+            isValid = true;
+        }
+        
+        if (!isValid)
         {
             throw new UnauthorizedAccessException("Invalid client credentials");
         }
@@ -63,8 +73,8 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
             ),
-            Issuer = "Club.Channel.Api",//TODO Read from setting
-            Audience = "Club.Channel.Api"//TODO Read from setting
+            Issuer = Issuer,
+            Audience = Audience
 		};
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -100,7 +110,15 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 	public async Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, string? channelKey, CancellationToken cancellationToken)
 	{
 		// اعتبارسنجی Client Credentials
-		if (!_clientSecrets.TryGetValue(clientId, out var storedSecret) || storedSecret != clientSecret)
+		var isValid = _clientSecrets.TryGetValue(clientId, out var storedSecret) && storedSecret == clientSecret;
+		
+		// Also check against configured ClientId and ClientSecret
+		if (!isValid && clientId == ClientId && clientSecret == ClientSecret)
+		{
+			isValid = true;
+		}
+		
+		if (!isValid)
 		{
 			throw new UnauthorizedAccessException("Invalid client credentials");
 		}
@@ -132,8 +150,8 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 				new SymmetricSecurityKey(key),
 				SecurityAlgorithms.HmacSha256Signature
 			),
-			Issuer = "Club.Channel.Api",
-			Audience = "Club.Channel.Api"
+			Issuer = Issuer,
+			Audience = Audience
 		};
 
 		var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -215,9 +233,9 @@ public sealed class MemoryIdpService(ILogger<MemoryIdpService> logger, IConfigur
 				ValidateIssuerSigningKey = true,
 				IssuerSigningKey = new SymmetricSecurityKey(key),
 				ValidateIssuer = true,
-				ValidIssuer = "Club.Channel.Api",
+				ValidIssuer = Issuer,
 				ValidateAudience = true,
-				ValidAudience = "Club.Channel.Api",
+				ValidAudience = Audience,
 				ValidateLifetime = true,
 				ClockSkew = TimeSpan.Zero
 			};

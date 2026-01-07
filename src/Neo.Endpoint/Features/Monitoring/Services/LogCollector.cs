@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Neo.Endpoint.Features.Monitoring.Models;
 using LogLevel = Neo.Endpoint.Features.Monitoring.Models.LogLevel;
@@ -71,12 +72,49 @@ public class MonitoringLogger : ILogger
             }
         }
 
+        // Format the base message
+        var baseMessage = formatter(state, exception);
+        
+        // Enhance message with exception details if exception exists
+        var fullMessage = baseMessage;
+        if (exception != null)
+        {
+            var exceptionDetails = new System.Text.StringBuilder();
+            exceptionDetails.AppendLine(baseMessage);
+            exceptionDetails.AppendLine();
+            exceptionDetails.AppendLine($"Exception Type: {exception.GetType().FullName}");
+            exceptionDetails.AppendLine($"Exception Message: {exception.Message}");
+            
+            // Include inner exception if present
+            var innerException = exception.InnerException;
+            var depth = 0;
+            while (innerException != null && depth < 5) // Limit depth to prevent infinite loops
+            {
+                exceptionDetails.AppendLine();
+                exceptionDetails.AppendLine($"Inner Exception [{depth + 1}]:");
+                exceptionDetails.AppendLine($"  Type: {innerException.GetType().FullName}");
+                exceptionDetails.AppendLine($"  Message: {innerException.Message}");
+                innerException = innerException.InnerException;
+                depth++;
+            }
+            
+            // Include stack trace if available
+            if (!string.IsNullOrWhiteSpace(exception.StackTrace))
+            {
+                exceptionDetails.AppendLine();
+                exceptionDetails.AppendLine("Stack Trace:");
+                exceptionDetails.AppendLine(exception.StackTrace);
+            }
+            
+            fullMessage = exceptionDetails.ToString();
+        }
+
         var entry = new LogEntry
         {
             Id = Guid.NewGuid().ToString("N"),
             Timestamp = DateTime.UtcNow,
             Level = ConvertLogLevel(logLevel),
-            Message = formatter(state, exception),
+            Message = fullMessage,
             MessageTemplate = GetMessageTemplate(state),
             SourceContext = _categoryName,
             TraceId = activity?.TraceId.ToString(),

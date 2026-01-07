@@ -156,5 +156,24 @@ public class MetricsController : ControllerBase
             return Results.Problem("Error receiving metrics", statusCode: 500);
         }
     }
+
+    /// <summary>
+    /// Reset all metrics (clear all data points and statistics)
+    /// </summary>
+    [HttpPost("reset")]
+    public IActionResult Reset()
+    {
+        try
+        {
+            _store.Reset();
+            _logger.LogInformation("All metrics reset");
+            return Ok(new { message = "All metrics reset successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error resetting metrics");
+            return StatusCode(500, new { error = "Failed to reset metrics", message = ex.Message });
+        }
+    }
 }
 
