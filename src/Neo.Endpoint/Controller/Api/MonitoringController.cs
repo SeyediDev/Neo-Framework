@@ -21,16 +21,9 @@ namespace Neo.Endpoint.Controller.Api;
 [Route("api/monitoring")]
 [ApiExplorerSettings(IgnoreApi = true)] // مخفی کردن از Swagger
 [AllowAnonymous] // فعلاً احراز هویت غیرفعال است
-public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
+public sealed class MonitoringController(IConfiguration configuration, ILogger<MonitoringController> logger) 
+    : Microsoft.AspNetCore.Mvc.Controller
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<MonitoringController> _logger;
-
-    public MonitoringController(IConfiguration configuration, ILogger<MonitoringController> logger)
-    {
-        _configuration = configuration;
-        _logger = logger;
-    }
 
     /// <summary>
     /// صفحه مانیتورینگ - نمایش داشبورد مانیتورینگ
@@ -44,12 +37,12 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     [HttpGet("~/Monitoring/Index")]
     public IActionResult Index()
     {
-        _logger.LogInformation("Monitoring dashboard accessed");
+        logger.LogInformation("Monitoring dashboard accessed");
         SetPersianCulture();
         
         // تنظیم نام API برای View
-        var apiName = _configuration["TelemetryOptions:ApplicationName"] 
-            ?? _configuration["ApplicationName"] 
+        var apiName = configuration["TelemetryOptions:ApplicationName"] 
+            ?? configuration["ApplicationName"] 
             ?? "API";
         ViewBag.ApiName = apiName;
         ViewData["Title"] = $"مانیتورینگ {apiName}";
@@ -64,7 +57,7 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     [HttpGet("~/Monitoring/Advanced")]
     public IActionResult Advanced()
     {
-        _logger.LogInformation("Advanced monitoring dashboard accessed");
+        logger.LogInformation("Advanced monitoring dashboard accessed");
         SetPersianCulture();
         return View("Advanced");
     }
@@ -75,11 +68,11 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     [HttpGet("~/Monitoring/Index2")]
     public IActionResult Index2()
     {
-        _logger.LogInformation("Micro-frontend monitoring dashboard accessed");
+        logger.LogInformation("Micro-frontend monitoring dashboard accessed");
         SetPersianCulture();
         
-        var apiName = _configuration["TelemetryOptions:ApplicationName"] 
-            ?? _configuration["ApplicationName"] 
+        var apiName = configuration["TelemetryOptions:ApplicationName"] 
+            ?? configuration["ApplicationName"] 
             ?? "API";
         ViewBag.ApiName = apiName;
         ViewData["Title"] = $"مانیتورینگ {apiName} (میکروفرانت)";
@@ -107,7 +100,7 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to set Persian culture, using default culture");
+            logger.LogWarning(ex, "Failed to set Persian culture, using default culture");
         }
 		// تنظیم CSP header برای جلوگیری از خطاهای BrowserLink
 		Response.Headers.Append("Content-Security-Policy",
@@ -187,16 +180,16 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
     public IActionResult GetApiInfo()
     {
         // دریافت نام API از تنظیمات یا از ApplicationName
-        var apiName = _configuration["TelemetryOptions:ApplicationName"] 
-            ?? _configuration["ApplicationName"] 
+        var apiName = configuration["TelemetryOptions:ApplicationName"] 
+            ?? configuration["ApplicationName"] 
             ?? "Neo API";
         
-        var apiVersion = _configuration["TelemetryOptions:ApplicationVersion"] 
-            ?? _configuration["ApplicationVersion"] 
+        var apiVersion = configuration["TelemetryOptions:ApplicationVersion"] 
+            ?? configuration["ApplicationVersion"] 
             ?? "1.0.0";
         
-        var description = _configuration["TelemetryOptions:Description"] 
-            ?? _configuration["ApplicationDescription"] 
+        var description = configuration["TelemetryOptions:Description"] 
+            ?? configuration["ApplicationDescription"] 
             ?? "API سیستم";
 
         var apiInfo = new MonitoringApiInfo
@@ -243,7 +236,7 @@ public sealed class MonitoringController : Microsoft.AspNetCore.Mvc.Controller
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Error receiving log from OTLP");
+            logger.LogWarning(ex, "Error receiving log from OTLP");
             return BadRequest("Invalid log format");
         }
     }
@@ -269,4 +262,3 @@ public sealed record MonitoringApiInfo
     public bool LogsAvailable { get; init; }
     public string Description { get; init; } = null!;
 }
-
