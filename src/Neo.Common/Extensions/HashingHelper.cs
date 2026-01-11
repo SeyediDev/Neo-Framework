@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿/*using System.Security.Cryptography;
 using System.Text;
 
 namespace Neo.Common.Extensions;
@@ -43,4 +43,4 @@ public static class HashingHelper
 
         return (builder.ToString(), salt);
     }
-}
+}*/
