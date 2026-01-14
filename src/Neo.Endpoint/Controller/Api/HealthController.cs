@@ -1,7 +1,5 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Neo.Endpoint.Controller.Base;
 using Swashbuckle.AspNetCore.Annotations;
 

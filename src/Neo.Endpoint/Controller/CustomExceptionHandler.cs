@@ -1,8 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using Neo.Application.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Neo.Endpoint.Controller;
 

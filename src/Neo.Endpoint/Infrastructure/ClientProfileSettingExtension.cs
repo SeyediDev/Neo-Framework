@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-
-namespace Neo.Endpoint.Infrastructure;
+﻿namespace Neo.Endpoint.Infrastructure;
 
 public static class ClientProfileSettingExtension
 {

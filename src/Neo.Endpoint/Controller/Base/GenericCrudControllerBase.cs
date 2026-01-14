@@ -6,9 +6,7 @@ using Neo.Domain.Entities.Base;
 using Neo.Domain.Entities.Common;
 using Neo.Domain.Features.Client;
 using Neo.Domain.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Neo.Endpoint.Controller.Base;
 

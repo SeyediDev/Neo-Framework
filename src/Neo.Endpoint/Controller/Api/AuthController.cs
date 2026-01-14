@@ -1,8 +1,5 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Neo.Application.Features.Auth.Commands;
 using Neo.Domain.Features.Client.Dto;
 using Neo.Endpoint.Controller.Base;

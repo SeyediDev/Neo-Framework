@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using Neo.Endpoint.Features.Monitoring.Models;
 
 namespace Neo.Endpoint.Features.Monitoring.Services;

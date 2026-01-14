@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Neo.Endpoint.Controller;
+﻿namespace Neo.Endpoint.Controller;
 
 
 public class VersionRouteAttribute(string template) : RouteAttribute($"api/v{{version:apiVersion}}/{template}")

@@ -1,11 +1,3 @@
-using System;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 namespace Neo.Endpoint.Infrastructure;
 
 /// <summary>

@@ -1,12 +1,7 @@
 using System.Globalization;
 using System.Security.Claims;
-using System.Threading;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Neo.Domain.Features.Client;
 using Neo.Endpoint.Infrastructure;
 using System.Text.Json;

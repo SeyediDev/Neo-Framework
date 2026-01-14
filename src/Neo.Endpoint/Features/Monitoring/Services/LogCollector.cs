@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Neo.Endpoint.Features.Monitoring.Models;
 using LogLevel = Neo.Endpoint.Features.Monitoring.Models.LogLevel;

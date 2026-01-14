@@ -1,8 +1,6 @@
 ﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Neo.Endpoint.Controller.Base;
