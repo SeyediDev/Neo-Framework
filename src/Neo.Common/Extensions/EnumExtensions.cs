@@ -15,7 +15,7 @@ public static class EnumExtensions
     }
     public static string? ToName(this Enum value)
     {
-        DescriptionAttribute descriptionAttribute = value.GetAttribute<DescriptionAttribute>()!;
+		DescriptionAttribute descriptionAttribute = value.GetAttribute<DescriptionAttribute>()!;
         if (descriptionAttribute != null) 
         {
             return descriptionAttribute.Description;

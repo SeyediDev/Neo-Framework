@@ -16,7 +16,7 @@ public class RegisterRecurringJobs(IRecurringJobsManager recurringJobsManager,
     private void RegisterJob<TRecurringJob>()
         where TRecurringJob : IRecurringJob
     {
-        logger.LogInformation("Register {jobName} {DateTime.Now}", typeof(TRecurringJob).Name, DateTime.Now);
+        logger.LogInformation("Register {jobName} {DateTime.UtcNow}", typeof(TRecurringJob).Name, DateTime.UtcNow);
         recurringJobsManager.AddOrUpdate<TRecurringJob>();
     }
 }

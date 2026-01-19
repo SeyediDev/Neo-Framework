@@ -16,7 +16,7 @@ public class RecurringJobQueryAndCommand<TQueryResult, TCommandRequest>(
 
         List<TQueryResult> queryResult = await query(lastExecutionTime, trace);
 
-        recurringJobLastExecutionTime.Set(jobName, DateTime.Now);
+        recurringJobLastExecutionTime.Set(jobName, DateTime.UtcNow);
         logger.LogInformation("{trace} {lastExecutionTime} {Count}", trace, lastExecutionTime, queryResult?.Count ?? 0);
         metric.AddItem(jobName, queryResult?.Count ?? 0, MetricAggregation.Int, jobName);
 

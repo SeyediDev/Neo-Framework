@@ -22,7 +22,7 @@ public class RecurringJobQueryAndEvent<TQueryRequest, TQueryResponse, TQueryEnti
         querySetter(request);
         TQueryResponse response = await mediator.Send(request, cancellationToken);
 
-        recurringJobLastExecutionTime.Set(jobName, DateTime.Now);
+        recurringJobLastExecutionTime.Set(jobName, DateTime.UtcNow);
         logger.LogInformation("{trace} {lastExecutionTime} {response}", trace, lastExecutionTime, response);
         metric.AddItem(jobName, response?.Result?.Count ?? 0, MetricAggregation.Int, jobName);
 
@@ -55,7 +55,7 @@ public class RecurringJobQueryAndEvent<TQueryResult, TEvent>(
 
         List<TQueryResult> queryResult = await query(lastExecutionTime, trace);
 
-        recurringJobLastExecutionTime.Set(jobName, DateTime.Now);
+        recurringJobLastExecutionTime.Set(jobName, DateTime.UtcNow);
         logger.LogInformation("RecurringJobQueryAndEvent {trace} {dateTime} {Count}", trace, lastExecutionTime, queryResult?.Count ?? 0);
         metric.AddItem(jobName, queryResult?.Count ?? 0, MetricAggregation.Int, jobName);
 

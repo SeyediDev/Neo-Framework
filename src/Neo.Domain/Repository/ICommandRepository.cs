@@ -31,8 +31,10 @@ public interface ICommandRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     Task<bool?> RemoveAsync(TKey id);
     Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken, 
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
+	Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken)=>
+		FirstOrDefaultAsync(x=> x.Id!=null && x.Id.Equals(id), cancellationToken);
 
-    Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(Expression<Func<TEntity, TProperty>> include,
+	Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(Expression<Func<TEntity, TProperty>> include,
         Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
     Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(

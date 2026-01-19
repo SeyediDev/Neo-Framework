@@ -7,7 +7,7 @@ public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IBaseAuditab
     where TKey : struct
 {
     [DisplayName("تاریخ ایجاد")]
-    public DateTime CreateDate { get; set; } = DateTime.Now;
+    public DateTime CreateDate { get; set; } = DateTime.UtcNow;
 
 	[DisplayName("تاریخ حذف")]
     public DateTime? ExpireDate { get; set; }
@@ -19,7 +19,7 @@ public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IBaseAuditab
     public int? CreatedById { get; set; }
 
     [DisplayName("تاریخ تغییر")]
-    public DateTime LastModified { get; set; } = DateTime.Now;
+    public DateTime LastModified { get; set; } = DateTime.UtcNow;
 
     [DisplayName("تغییر دهنده")]
     public int? LastModifiedById { get; set; }

@@ -29,7 +29,7 @@ public class OutboxStore(
 
     public async Task FinishAsync(OutboxMessage outboxMessage, CancellationToken ct)
     {
-        outboxMessage.ExpireDate = DateTime.Now;
+        outboxMessage.ExpireDate = DateTime.UtcNow;
         outboxMessage.IsDeleted = true;
         outboxMessageCmdRepository.Update(outboxMessage);
         _ = await outboxMessageCmdRepository.UnitOfWork.SaveChangesAsync(ct);

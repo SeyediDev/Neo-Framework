@@ -16,6 +16,11 @@ public static partial class TypeConverterExtension
         return string.IsNullOrWhiteSpace(value) ? null : Enum.TryParse(value, true, out T result) ? result : null;
     }
 
+	public static DateTime ToDateTimeOrDefault(this object? value, DateTime defaultValue = default)
+	{
+		return value==null ? defaultValue : Convert.ToDateTime(value);
+	}
+	
     public static DateTime ToDateTimeOrDefault(this string value, DateTime defaultValue = default)
     {
         return string.IsNullOrWhiteSpace(value) ? defaultValue : DateTime.TryParse(value, out var result) ? result : defaultValue;
@@ -54,7 +59,11 @@ public static partial class TypeConverterExtension
         return string.IsNullOrWhiteSpace(value) ? defaultValue : long.TryParse(value, out var result) ? result : defaultValue;
     }
 
-    public static long? ToNullableInt64(this string value)
+	public static int? ToNullableInt32(this object? value)
+		=> value == null ? null : Convert.ToInt32(value);
+	public static long? ToNullableInt64(this object? value)
+		=> value==null ? null:  Convert.ToInt64(value);
+	public static long? ToNullableInt64(this string value)
         => !string.IsNullOrEmpty(value) ? value.ToInt64OrDefault() : null;
 
     public static bool ToBooleanOrDefault(this string value, bool defaultValue = default)
