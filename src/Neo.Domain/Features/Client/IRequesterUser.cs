@@ -11,7 +11,6 @@ public interface IRequesterUser
     Task<int> GetLangIdAsync(CancellationToken cancellationToken=default);
     string? Mobile { get; }
     string? CorrelationId { get; }
-    string? TenantId { get; }
     List<Claim> Claims();
     Dictionary<string, object> Properties { get; set; }
     object? GetProperty(string key, Func<object>? generateValueMethod = null)

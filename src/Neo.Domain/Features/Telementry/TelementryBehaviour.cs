@@ -36,7 +36,6 @@ public interface ITelementryBehaviour
 }
 
 public class TelementryBehaviour(
-    ILogger<TelementryBehaviour> logger,
     ITelementryObject telementry,
     IRequesterUser user
 ) : ITelementryBehaviour

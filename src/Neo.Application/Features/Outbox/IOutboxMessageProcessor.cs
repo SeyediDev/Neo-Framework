@@ -18,7 +18,7 @@ public interface IOutboxMessageProcessor<TOutboxMessage>
     /// <returns>An <see cref="OutboxResponse"/> representing the enqueued message.</returns>
     [Telemetry("outbox", "enqueue_idempotent")]
     Task<OutboxResponse> EnqueueAsync<TIdempotenceMessage>(
-        TIdempotenceMessage message, CancellationToken ct)
+        TIdempotenceMessage message, string tenantId, CancellationToken ct)
         where TIdempotenceMessage : IIdempotenceOutboxMessage, TOutboxMessage;
 
     /// <summary>
@@ -30,7 +30,7 @@ public interface IOutboxMessageProcessor<TOutboxMessage>
     /// <returns>An <see cref="OutboxResponse"/> representing the enqueued message.</returns>
     [Telemetry("outbox", "enqueue_with_key")]
     Task<OutboxResponse> EnqueueAsync(
-        TOutboxMessage message, string idempotencyKey, CancellationToken ct);
+        TOutboxMessage message, string idempotencyKey, string tenantId, CancellationToken ct);
 
     /// <summary>
     /// Enqueue a message without idempotency.

@@ -15,7 +15,7 @@ public class IdempotencyStoreMongoDb<TOutboxMessage> : IIdempotencyStore<TOutbox
 
         // ساخت Composite Index روی (TenantId, IdempotencyKey)
         var indexKeys = Builders<IdempotencyRecord>.IndexKeys
-            .Ascending(x => x.TenantId)
+            .Ascending(x => x.TenantKey)
             .Ascending(x => x.IdempotencyKey);
         
         var indexOptions = new CreateIndexOptions { Unique = true };
@@ -45,7 +45,7 @@ public class IdempotencyStoreMongoDb<TOutboxMessage> : IIdempotencyStore<TOutbox
             {
                 CreatedAt = DateTime.UtcNow,
                 IdempotencyKey = hashedKey,
-                TenantId = tenantId,
+                TenantKey = tenantId,
                 OutboxId = outboxId,
             };
 
@@ -65,7 +65,7 @@ public class IdempotencyStoreMongoDb<TOutboxMessage> : IIdempotencyStore<TOutbox
         var hashedKey = IdempotencyKeyHasher.CreateShortHashedKey(tenantId, idempotencyKey);
         
         return await _collection
-            .Find(x => x.IdempotencyKey == hashedKey && x.TenantId == tenantId)
+            .Find(x => x.IdempotencyKey == hashedKey && x.TenantKey == tenantId)
             .FirstOrDefaultAsync(ct);
     }
 
@@ -75,7 +75,7 @@ public class IdempotencyStoreMongoDb<TOutboxMessage> : IIdempotencyStore<TOutbox
         var hashedKey = IdempotencyKeyHasher.CreateShortHashedKey(tenantId, idempotencyKey);
         
         await _collection.DeleteOneAsync(
-            x => x.IdempotencyKey == hashedKey && x.TenantId == tenantId, 
+            x => x.IdempotencyKey == hashedKey && x.TenantKey == tenantId, 
             ct);
     }
 }

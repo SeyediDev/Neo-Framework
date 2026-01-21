@@ -21,7 +21,7 @@ public class IdempotencyStoreWithCacheService<TOutboxMessage>(
         {
             CreatedAt = DateTime.UtcNow,
             IdempotencyKey = idempotencyKey,
-            TenantId = tenantId,
+            TenantKey = tenantId,
             OutboxId = outboxId,
         };
         

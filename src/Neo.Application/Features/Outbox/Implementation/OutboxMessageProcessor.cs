@@ -1,6 +1,4 @@
-﻿using Neo.Domain.Features.Client;
-
-namespace Neo.Application.Features.Outbox.Implementation;
+﻿namespace Neo.Application.Features.Outbox.Implementation;
 
 /// <summary>
 /// Base implementation for Outbox execution with idempotency and background job scheduling.
@@ -9,8 +7,7 @@ namespace Neo.Application.Features.Outbox.Implementation;
 public class OutboxMessageProcessor<TOutboxMessage>(
     IOutboxStore outboxStore,
     IIdempotencyStore<TOutboxMessage> idempotencyStore,
-    IOutboxJobScheduler outboxJobScheduler,
-    IRequesterUser requesterUser
+    IOutboxJobScheduler outboxJobScheduler
     ) : IOutboxMessageProcessor<TOutboxMessage>
     where TOutboxMessage : IOutboxMessage
 {
@@ -19,11 +16,11 @@ public class OutboxMessageProcessor<TOutboxMessage>(
     /// Enqueue a message that already contains its idempotency key.
     /// </summary>
     public async Task<OutboxResponse> EnqueueAsync<TIdempotenceMessage>(
-        TIdempotenceMessage message, CancellationToken ct)
+        TIdempotenceMessage message, string tenantKey, CancellationToken ct)
         where TIdempotenceMessage : IIdempotenceOutboxMessage, TOutboxMessage
     {
         return !string.IsNullOrEmpty(message.IdempotencyKey)
-            ? await EnqueueAsync(message, message.IdempotencyKey, ct)
+            ? await EnqueueAsync(message, message.IdempotencyKey, tenantKey, ct)
             : await EnqueueNonIdempotentAsync(message, ct);
     }
 
@@ -32,11 +29,9 @@ public class OutboxMessageProcessor<TOutboxMessage>(
     /// Now uses tenant-scoped idempotency for better isolation.
     /// </summary>
     public async Task<OutboxResponse> EnqueueAsync(
-        TOutboxMessage message, string idempotencyKey, CancellationToken ct)
+        TOutboxMessage message, string idempotencyKey, string tenantKey, CancellationToken ct)
     {
-        var tenantId = GetTenantId();
-        
-        var existing = await idempotencyStore.GetAsync(idempotencyKey, tenantId, ct);
+        var existing = await idempotencyStore.GetAsync(idempotencyKey, tenantKey, ct);
         if (existing != null)
         {
             var existingResponse = await outboxStore.GetOutboxResponseAsync(existing.OutboxId, ct);
@@ -44,9 +39,9 @@ public class OutboxMessageProcessor<TOutboxMessage>(
                 return existingResponse;
 
             // Cleanup dangling keys
-            await idempotencyStore.RemoveAsync(idempotencyKey, tenantId, ct);
+            await idempotencyStore.RemoveAsync(idempotencyKey, tenantKey, ct);
         }
-        return await PersistAndScheduleAsync(message, idempotencyKey, ct);
+        return await PersistAndScheduleAsync(message, idempotencyKey, tenantKey, ct);
     }
 
     /// <summary>
@@ -55,7 +50,7 @@ public class OutboxMessageProcessor<TOutboxMessage>(
     public async Task<OutboxResponse> EnqueueNonIdempotentAsync(
         TOutboxMessage message, CancellationToken ct)
     {
-        return await PersistAndScheduleAsync(message, null, ct);
+        return await PersistAndScheduleAsync(message, null, null, ct);
     }
 
     /// <summary>
@@ -63,17 +58,16 @@ public class OutboxMessageProcessor<TOutboxMessage>(
     /// Now supports tenant-scoped idempotency for better isolation.
     /// </summary>
     private async Task<OutboxResponse> PersistAndScheduleAsync(
-        TOutboxMessage message, string? idempotencyKey, CancellationToken ct)
+        TOutboxMessage message, string? idempotencyKey, string? tenantKey, CancellationToken ct)
     {
-        var tenantId = GetTenantId();
-        
         var outboxMessage = new OutboxMessage
         {
             MessageName = typeof(TOutboxMessage).Name,
             MessageType = typeof(TOutboxMessage).FullName!,
             MessageContent = message.ToJson(),
             IdempotencyKey = idempotencyKey,
-            OutboxState = OutboxState.Requested // ابتدا Requested، بعداً Queued می‌شود
+			TenantKey = tenantKey,
+			OutboxState = OutboxState.Requested // ابتدا Requested، بعداً Queued می‌شود
         };
 
         await outboxStore.AddAsync(outboxMessage, ct);
@@ -81,11 +75,11 @@ public class OutboxMessageProcessor<TOutboxMessage>(
         // 🔑 Register idempotency key (atomic add) with tenant scope
         if (!string.IsNullOrEmpty(idempotencyKey))
         {
-            var added = await idempotencyStore.AddAsync(idempotencyKey, tenantId, outboxMessage.Id, ct);
+            var added = await idempotencyStore.AddAsync(idempotencyKey, tenantKey!, outboxMessage.Id, ct);
             if (!added)
             {
                 // اگر کلید همزمان توسط درخواست دیگه ثبت شده بود
-                var existing = await idempotencyStore.GetAsync(idempotencyKey, tenantId, ct);
+                var existing = await idempotencyStore.GetAsync(idempotencyKey, tenantKey!, ct);
                 if (existing != null)
                 {
                     var existingResponse = await outboxStore.GetOutboxResponseAsync(existing.OutboxId, ct);
@@ -93,7 +87,7 @@ public class OutboxMessageProcessor<TOutboxMessage>(
                         return existingResponse;
                 }
                 outboxMessage.OutboxState = OutboxState.DuplicateIdempotencyKey;
-                outboxMessage.ProcessError = $"Duplicate IdempotencyKey={idempotencyKey} for Tenant={tenantId}";
+                outboxMessage.ProcessError = $"Duplicate IdempotencyKey={idempotencyKey}";
                 await outboxStore.FinishAsync(outboxMessage, ct);
                 throw new DuplicateKeyException(outboxMessage.ProcessError);
             }
@@ -124,15 +118,6 @@ public class OutboxMessageProcessor<TOutboxMessage>(
         await outboxStore.UpdateAsync(outboxMessage, ct);
 
         return new OutboxResponse(outboxMessage.Id, outboxMessage.OutboxState, outboxMessage.JobId, outboxMessage.IdempotencyKey);
-    }
-
-    /// <summary>
-    /// Get the tenant ID from the requester context.
-    /// Uses tenant_id claim from JWT token.
-    /// </summary>
-    private string GetTenantId()
-    {
-        return requesterUser.TenantId ?? throw new InvalidOperationException("TenantId is required for idempotency operations");
     }
 
     /// <summary>

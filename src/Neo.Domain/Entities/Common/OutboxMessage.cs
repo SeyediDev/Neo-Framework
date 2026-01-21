@@ -46,8 +46,10 @@ public class OutboxMessage : BaseCoreLogAuditableEntity<long>
     public int? ProcessTryCount { get; set; }
 
     public OutboxState OutboxState { get; set; } = OutboxState.Requested;
-    
-    [MaxLength(40)]
+
+	[MaxLength(40)]
+	public string? TenantKey { get; set; }
+	[MaxLength(40)]
     public string? IdempotencyKey { get; set; }
     [MaxLength(40)]
     public string? JobId { get; set; }
