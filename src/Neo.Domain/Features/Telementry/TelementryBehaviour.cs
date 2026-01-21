@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.Metrics;
 
 namespace Neo.Domain.Features.Telementry;
 
@@ -30,6 +31,8 @@ public interface ITelementryBehaviour
         [CallerMemberName] string caller = "",
         [CallerLineNumber] int line = 0)
         where TRequest : notnull;
+    Meter Meter { get; }
+	ActivitySource ActivitySource { get; }
 }
 
 public class TelementryBehaviour(
@@ -43,10 +46,10 @@ public class TelementryBehaviour(
     private string? _serviceName;
     private ActivityKind _activityKind;
     private KeyValuePair<string, object?>[] _tags = [];
-    private Stopwatch _timer = new();
 
-    #region Handle Methods
-
+	public Meter Meter => telementry.Meter;
+	public ActivitySource ActivitySource => telementry.ActivitySource;
+	#region Handle Methods
     public Task<TResponse?> HandleRequestResponse<TRequest, TResponse>(
         Func<TRequest, CancellationToken, Task<TResponse?>> next,
         TRequest request,
@@ -95,7 +98,8 @@ public class TelementryBehaviour(
     {
         TResponse? response = default;
         Exception? exception = null;
-        using var activity = OnInit(request, component, serviceName, caller, line, activityKind, extraTags);
+		Stopwatch timer = new();
+		using var activity = OnInit(request, component, serviceName, caller, line, activityKind, extraTags);
 
         try
         {
@@ -109,7 +113,7 @@ public class TelementryBehaviour(
         }
         finally
         {
-            OnFinalize(request, response, exception);
+            OnFinalize(request, response, exception, timer, activity);
         }
     }
 
@@ -124,54 +128,13 @@ public class TelementryBehaviour(
         _serviceName = serviceName;
         _activityKind = activityKind;
         _tags = GetTags(component, serviceName, $"{caller}({line})", activityKind, extraTags);
-        _timer.Restart();
-
-        var activity = telementry.ActivitySource.StartActivity(_serviceName!, _activityKind, Activity.Current?.Context ?? default, _tags);
-
-        if (activity != null && user != null)
-        {
-            activity.AddBaggage("client.user.id", user.Id.ToString());
-            activity.AddBaggage("client.app.name", user.AppName ?? "unknown");
-            activity.AddBaggage("client.correlation.id", user.CorrelationId ?? "");
-        }
-
-        telementry.RequestInflights.Add(1, _tags);
-        telementry.RequestCounter.Add(1, _tags);
-
-        logger.LogInformation("Telemetry Init : Component={Component}, Service={Service}, Request={@Request}, ActivityKind={ActivityKind}, Tags={@Tags}",
-            _component, _serviceName, request, _activityKind, _tags);
-        return activity;
+        return telementry.StartActivity(request, component, serviceName, _tags, _activityKind);
     }
 
-    protected virtual void OnFinalize<TRequest, TResponse>(TRequest request, TResponse? response, Exception? ex)
+    protected virtual void OnFinalize<TRequest, TResponse>(TRequest request, TResponse? response, Exception? ex, Stopwatch timer, Activity? activity)
     {
-        _timer.Stop();
-        double elapsedMs = _timer.Elapsed.TotalMilliseconds;
-        logger.LogInformation(
-            "Request finalized: Component={Component}, Service={Service}, Request={@Request}, Response={@Response}, ActivityKind={ActivityKind}, Tags={@Tags}, Duration={Duration}ms, Error={Error}, ExceptionMessage={Message}",
-            _component, _serviceName, request, response, _activityKind, _tags, elapsedMs, ex!=null, ex?.Message);
-
-        telementry.RequestDuration.Record(elapsedMs, _tags);
-
-        // Record success or failure based on exception, not just response
-        // If exception occurred, it's a failure regardless of response
-        if (ex != null)
-        {
-            telementry.RequestFailureCounter.Add(1, _tags);
-            // Mark activity as failed
-            Activity.Current?.SetStatus(ActivityStatusCode.Error, ex.Message);
-        }
-        else if (response != null)
-        {
-            telementry.RequestSuccessCounter.Add(1, _tags);
-        }
-        else
-        {
-            // Response is null but no exception - treat as failure
-            telementry.RequestFailureCounter.Add(1, _tags);
-        }
-
-        telementry.RequestInflights.Add(-1, _tags);
+        telementry.OnFinalize(request, response, _component!, _serviceName!, activity,
+			(ex != null||response==null) ? ActivityStatusCode.Error: ActivityStatusCode.Ok, ex?.Message, timer, _tags, _activityKind);
     }
 
     #endregion

@@ -1,6 +1,8 @@
-﻿using Neo.Common.Extensions;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Reflection;
+using Neo.Common.Extensions;
 
 namespace Neo.Domain.Features.Telementry;
 
@@ -39,9 +41,12 @@ public class TelemetryDispatchProxy<T> : DispatchProxy where T : class
         }
 
         object request = args[0];
-        CancellationToken ct = parameters.FindParameter<CancellationToken>(args);
+        CancellationToken cancellationToken = parameters.FindParameter<CancellationToken>(args);
 
-        Type requestType = request!.GetType();
+        parameters.SetParameter<Meter>(args, null, _telemetry?.Meter!, false);
+		parameters.SetParameter<ActivitySource>(args, null, _telemetry?.ActivitySource!, false);
+
+		Type requestType = request!.GetType();
         Type? responseType = targetMethod.ReturnType.IsGenericType ? targetMethod.ReturnType.GetGenericArguments()[0] : null;
 
         // انتخاب متد مناسب از ITelementryBehaviour
@@ -62,7 +67,7 @@ public class TelemetryDispatchProxy<T> : DispatchProxy where T : class
         [
             nextDelegate, request,
             telemetryAttr.Component??targetMethod.DeclaringType?.Name ?? "",
-            telemetryAttr.ServiceName??targetMethod.Name, telemetryAttr.ActivityKind, null, ct,
+            telemetryAttr.ServiceName??targetMethod.Name, telemetryAttr.ActivityKind, null, cancellationToken,
             callerName, lineNumber
         ]);
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics.Metrics;
 using System.Reflection;
 
 namespace Neo.Common.Extensions;
@@ -23,7 +24,7 @@ public static class ReflectionTools
 
     public static bool IsInBaseInterface<T>(this Type type)
     {
-        if(type==null) return false;
+        if (type == null) return false;
         Type t = typeof(T);
         return IsInBaseInterface(t, type);
     }
@@ -60,8 +61,8 @@ public static class ReflectionTools
 
         return null;
     }
-    
-    public static TAttr? GetMethodAttribute<TAttr>(this MethodInfo method, Type? implType=null)
+
+    public static TAttr? GetMethodAttribute<TAttr>(this MethodInfo method, Type? implType = null)
         where TAttr : Attribute
     {
         // اول روی خود متد کلاس پیاده‌سازی
@@ -148,15 +149,56 @@ public static class ReflectionTools
 
     public static TParam? FindParameter<TParam>(this ParameterInfo[] parameters, object[] args, string? nameHint = null)
     {
-        for (int i = 0; i < parameters.Length; i++)
+        for (int index = 0; index < parameters.Length; index++)
         {
-            if ((nameHint == null || parameters[i].Name == nameHint) && 
-                parameters[i].ParameterType == typeof(TParam) && 
-                (args?.Length>i && args?[i] is TParam value) )
+            if ((nameHint == null || parameters[index].Name == nameHint) &&
+                parameters[index].ParameterType == typeof(TParam) )
             {
-                return value;
+                return args.GetParameterValue<TParam>(index);
             }
         }
         return default;
+    }
+	
+    public static void SetParameter<TParam>(this ParameterInfo[] parameters, object[] args, string? nameHint, object value, bool replaceIfExist)
+	{
+		var index = parameters.FindParameterIndex<TParam>(nameHint);
+        if (index != null)
+        {
+            if (replaceIfExist)
+            {
+                args[index.Value] = value;
+            }
+            else
+            {
+                TParam? param = args.GetParameterValue<TParam>(index.Value);
+                if (param == null )
+                {
+                    args[index.Value] = value;
+                }
+            }
+        }
+	}
+
+	public static TParam? GetParameterValue<TParam>(this object[] args, int index)
+    {
+        if (args?.Length > index && args?[index] is TParam value)
+        {
+            return value;
+        }
+		return default;
+	}
+
+	public static int? FindParameterIndex<TParam>(this ParameterInfo[] parameters, string? nameHint = null)
+    {
+        for (int index = 0; index < parameters.Length; index++)
+        {
+            if ((nameHint == null || parameters[index].Name == nameHint) &&
+                parameters[index].ParameterType == typeof(TParam))
+            {
+                return index;
+            }
+        }
+        return null;
     }
 }
