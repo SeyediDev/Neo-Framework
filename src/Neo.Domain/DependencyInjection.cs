@@ -12,7 +12,7 @@ public static class DependencyInjectionExtension
     {
         services.AddScoped<IMultiLingualService, MultiLingualService>();
 
-        services.AddSingleton<ITelementryObject, TelementryObject>();
+        services.AddScoped<ITelementryObject, TelementryObject>();
         services.AddScoped<ITelementryBehaviour, TelementryBehaviour>();
         services.AddScoped<TelemetryInterceptor>();
         return services;
