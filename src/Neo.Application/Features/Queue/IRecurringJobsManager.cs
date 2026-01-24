@@ -5,8 +5,12 @@ namespace Neo.Application.Features.Queue;
 public interface IRecurringJobsManager
 {
     void RemoveIfExists(string recurringJobId);
+    void RemoveIfExists<TRecurringJob>()
+    {
+		RemoveIfExists(typeof(TRecurringJob).Name);
+	}
 
-    void AddOrUpdate<TRecurringJob>()
+	void AddOrUpdate<TRecurringJob>()
         where TRecurringJob : IRecurringJob
     {
         var attribute = typeof(TRecurringJob).GetAttributeDeep<RecurringJobAttribute>()
