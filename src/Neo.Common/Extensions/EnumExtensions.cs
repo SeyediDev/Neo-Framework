@@ -39,11 +39,41 @@ public static class EnumExtensions
         var attribute = value.GetAttribute<TitleAttribute>();
         return attribute == null ? value.ToString() : attribute.Title;
     }
+    
     public static int ToInt(this Enum value)
     {
         return Convert.ToInt32(value);
     }
-    
+
+	public static int? EnumToInt(this object value, Type enumType)
+	{
+		switch (value)
+		{
+			case string str:
+				if (Enum.TryParse(enumType, str, true, out var enumItem))
+					return (int)enumItem;
+				return Convert.ToInt32(str);
+			case byte v1:
+                return v1;
+            case int v2:
+				return v2;
+			case uint v22:
+				return (int)v22;
+			case long v3:
+				return v3.ToInt();
+			case ulong v33:
+				return v33.ToInt();
+			case short v4:
+				return v4;
+			case ushort v44:
+				return v44;
+			default:
+                //if (value != null)
+                //    Convert.ToInt32(value.ToString());
+				return null;
+		}
+	}
+	
     public static TEnum ToEnum<TEnum>(this object value, TEnum defaultValue)
         where TEnum : Enum
     {
