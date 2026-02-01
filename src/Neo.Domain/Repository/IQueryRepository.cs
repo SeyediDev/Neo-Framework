@@ -11,6 +11,8 @@ public interface IQueryRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken);
     Task<TDto?> GetByIdAsync<TDto>(TKey id, CancellationToken cancellationToken);
 	Task<TEntity?> GetByIdWithIncludeAsync<TProperty>(TKey id, Expression<Func<TEntity, TProperty>> include, CancellationToken cancellationToken);
+	Task<TEntity?> GetByIdWithIncludeAsync(TKey id,
+		CancellationToken cancellationToken, params Expression<Func<TEntity, object?>>[] includes);
     Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken, Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         int? skip = null, int? take = null);

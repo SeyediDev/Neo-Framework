@@ -178,8 +178,21 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
                 .Include(include)
                 .FirstOrDefaultAsync(e => e.Id !=null && e.Id.Equals(id), cancellationToken);
     }
+	
+    public async Task<TEntity?> GetByIdWithIncludeAsync(TKey id,
+		CancellationToken cancellationToken, params Expression<Func<TEntity, object?>>[] includes)
+	{
+        var q = _dbSet;
+        if (includes != null)
+        {
+            foreach (var include in includes)
+                q.Include(include);
+        }
+		return await q
+				.FirstOrDefaultAsync(e => e.Id != null && e.Id.Equals(id), cancellationToken);
+	}
 
-    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
+	public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
     {
         return await _dbSet.AnyAsync(predicate, cancellationToken);
     }
