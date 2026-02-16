@@ -1,9 +1,11 @@
-﻿namespace Neo.Domain.Entities.Base;
+﻿using Neo.Domain.Entities.Common;
+
+namespace Neo.Domain.Entities.Base;
 
 public interface IBaseAuditableEntity: ISoftDelete
 {
     DateTime CreateDate { get; set; }
-    int? CreatedById { get; set; }
+	UserId? CreatedById { get; set; }
     DateTime LastModified { get; set; }
-    int? LastModifiedById { get; set; }
+	UserId? LastModifiedById { get; set; }
 }

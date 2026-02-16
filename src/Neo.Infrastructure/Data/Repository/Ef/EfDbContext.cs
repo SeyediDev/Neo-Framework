@@ -1,14 +1,14 @@
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 using Neo.Common.Attributes;
 using Neo.Common.Extensions;
 using Neo.Common.Utility;
 using Neo.Domain.Entities.Base;
 using Neo.Domain.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Neo.Infrastructure.Data.Repository.Ef;
 
@@ -24,7 +24,7 @@ public abstract partial class EfDbContext<TContext>(DbContextOptions<TContext> o
         modelBuilder.Ignore<BaseEvent>();
 
         HandelMutableEntityTypes(modelBuilder);
-    }
+	}
 
     protected virtual void HandelMutableEntityTypes(ModelBuilder modelBuilder)
     {
@@ -35,10 +35,33 @@ public abstract partial class EfDbContext<TContext>(DbContextOptions<TContext> o
             SetEntityTableAndSchema(entityType, entity);
 
             HandelExpireDateInQuery(entityType!, entity);
-        }
-    }
+			
+            foreach (var property in entityType.GetProperties())
+			{
+				if (TryGetStronglyTypedId(property.ClrType, out var idType))
+				{
+					var converter = StronglyTypedIdConverters.CreateConverter(idType);
+					property.SetValueConverter(converter);
+				}
+			}
+		}
+	}
 
-    private static void SetEntityTableAndSchema(IMutableEntityType entityType, Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder entity)
+	private static bool TryGetStronglyTypedId(Type type, out Type idType)
+	{
+		idType = null!;
+		Type? underlying = Nullable.GetUnderlyingType(type) ?? type;
+
+		var iface = underlying.GetInterfaces()
+			.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IStronglyTypedId<>));
+
+		if (iface == null) return false;
+
+		idType = underlying;
+		return true;
+	}
+
+	private static void SetEntityTableAndSchema(IMutableEntityType entityType, Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder entity)
     {
         object[] customAttributes = entityType.ClrType.GetTypeInfo().GetCustomAttributes(true);
         var schemaAttribute = GetAttribute<SchemaAttribute>(customAttributes);
@@ -315,4 +338,3 @@ public abstract partial class EfDbContext<TContext>(DbContextOptions<TContext> o
         base.Dispose();
     }
 }
-

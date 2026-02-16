@@ -4,8 +4,14 @@ using Neo.Domain.Entities.Common;
 
 namespace Neo.Domain.Entities.Base;
 
-public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IBaseAuditableEntity
-    where TKey : struct
+public abstract class BaseStronglyKeyEntity<TKey, TValue> : BaseEntity<TKey>
+	where TKey : IStronglyTypedId<TValue>
+{
+
+}
+public abstract class BaseAuditableStronglyKeyEntity<TKey, TValue> : BaseStronglyKeyEntity<TKey, TValue>, IBaseAuditableEntity
+	where TKey : IStronglyTypedId<TValue>
+	where TValue : struct
 {
     [DisplayName("تاریخ ایجاد")]
     public DateTime CreateDate { get; set; } = DateTime.UtcNow;
@@ -29,29 +35,26 @@ public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IBaseAuditab
 [Schema(nameof(DomainSchema.CoreConfig))]
 [FileGroup(nameof(DomainSchema.CoreConfig))]
 [ArchivePartition(nameof(DomainSchema.CoreConfig))]
-public abstract class BaseCoreConfigAuditableEntity<TKey> : BaseAuditableEntity<TKey>
-    where TKey : struct
+public abstract class BaseCoreConfigAuditableStronglyKeyEntity<TKey, TValue> : BaseAuditableStronglyKeyEntity<TKey, TValue>
+	where TKey : IStronglyTypedId<TValue>
+	where TValue : struct
 {
 }
 
 [Schema(nameof(DomainSchema.Core))]
 [FileGroup(nameof(DomainSchema.Core))]
 [ArchivePartition(nameof(DomainSchema.Core))]
-public abstract class BaseCoreAuditableEntity<TKey> : BaseAuditableEntity<TKey>
-    where TKey : struct
+public abstract class BaseCoreAuditableStronglyKeyEntity<TKey, TValue> : BaseAuditableStronglyKeyEntity<TKey, TValue>
+	where TKey : IStronglyTypedId<TValue>
+	where TValue : struct
 {
 }
 
 [Schema(nameof(DomainSchema.CoreLog))]
 [FileGroup(nameof(DomainSchema.CoreLog))]
 [ArchivePartition(nameof(DomainSchema.CoreLog))]
-public abstract class BaseCoreLogAuditableEntity<TKey> : BaseAuditableEntity<TKey>
-    where TKey : struct
-{
-}
-
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class ArchivePartitionAttribute(string name)
-    : PartitionAttribute(nameof(ISoftDelete.IsDeleted), $"Archive_{name}", name, $"{name}_Archive")
+public abstract class BaseCoreLogAuditableStronglyKeyEntity<TKey, TValue> : BaseAuditableStronglyKeyEntity<TKey, TValue>
+	where TKey : IStronglyTypedId<TValue>
+	where TValue : struct
 {
 }

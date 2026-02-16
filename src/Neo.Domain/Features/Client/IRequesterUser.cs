@@ -1,10 +1,11 @@
 ﻿using System.Security.Claims;
+using Neo.Domain.Entities.Common;
 
 namespace Neo.Domain.Features.Client;
 
 public interface IRequesterUser
 {
-    int? Id { get; set; }
+    UserId? Id { get; set; }
     string Platform { get; }
     string? AppName { get; }
     string? Lang { get; }
