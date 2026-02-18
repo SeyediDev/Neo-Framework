@@ -33,17 +33,19 @@ public static class StronglyTypedIdConverters
 {
 	public static ValueConverter CreateConverter(Type idType)
 	{
-		var iface = idType.GetInterfaces()
+		// If idType is Nullable<SomeStronglyTypedId>, unwrap it first
+		var underlyingNullable = Nullable.GetUnderlyingType(idType);
+		var typeToInspect = underlyingNullable ?? idType;
+
+		var iface = typeToInspect.GetInterfaces()
 			.First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IStronglyTypedId<>));
 
 		var valueType = iface.GetGenericArguments()[0];
 
-		if (Nullable.GetUnderlyingType(idType) != null)
+		if (underlyingNullable != null)
 		{
-			// nullable converter
-			var underlyingType = Nullable.GetUnderlyingType(idType)!;
 			var converterType = typeof(NullableStronglyTypedIdValueConverter<,>)
-				.MakeGenericType(underlyingType, valueType);
+				.MakeGenericType(typeToInspect, valueType);
 			return (ValueConverter)Activator.CreateInstance(converterType)!;
 		}
 		else

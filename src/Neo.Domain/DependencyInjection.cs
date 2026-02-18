@@ -15,6 +15,13 @@ public static class DependencyInjectionExtension
         services.AddScoped<ITelementryObject, TelementryObject>();
         services.AddScoped<ITelementryBehaviour, TelementryBehaviour>();
         services.AddScoped<TelemetryInterceptor>();
-        return services;
+
+
+		//services.ConfigureHttpJsonOptions(options =>
+		//{
+		//	options.SerializerOptions.Converters
+		//		.Add(new EntityRefJsonConverterFactory());
+		//});
+		return services;
     }
 }

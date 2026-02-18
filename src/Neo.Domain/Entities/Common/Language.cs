@@ -1,9 +1,20 @@
 ﻿using Neo.Common.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Neo.Domain.Entities.Common;
 
-public class Language : BaseCoreConfigAuditableEntity<int>
+[JsonConverter(typeof(StronglyTypedIdJsonConverterFactory))]
+public readonly record struct LanguageId(int Value) : IStronglyTypedId<int>
+{
+	public override string ToString() => Value.ToString();
+
+	public static explicit operator int(LanguageId id) => id.Value;
+
+	public static explicit operator LanguageId(int id) => new(id);
+}
+
+public class Language : BaseCoreConfigAuditableEntity<LanguageId>
 {
     [InDisplayString]
     [MaxLength(5)]

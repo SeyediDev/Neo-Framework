@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Neo.Common.Attributes;
 using Neo.Common.Extensions;
 using Neo.Common.Utility;
@@ -37,15 +38,52 @@ public abstract partial class EfDbContext<TContext>(DbContextOptions<TContext> o
             HandelExpireDateInQuery(entityType!, entity);
 			
             foreach (var property in entityType.GetProperties())
-			{
-				if (TryGetStronglyTypedId(property.ClrType, out var idType))
-				{
-					var converter = StronglyTypedIdConverters.CreateConverter(idType);
-					property.SetValueConverter(converter);
-				}
-			}
+            {
+                if (TryGetStronglyTypedId(property.ClrType, out var idType))
+                {
+                    var converter = StronglyTypedIdConverters.CreateConverter(idType);
+                    property.SetValueConverter(converter);
+                }
+
+                HandleEntityRefConverter(property);
+            }
 		}
 	}
+
+	private static void HandleEntityRefConverter(IMutableProperty property)
+	{
+		var type = property.ClrType;
+		var underlyingNullable = Nullable.GetUnderlyingType(type);
+
+		var actualType = underlyingNullable ?? type;
+
+		if (actualType.IsGenericType &&
+			actualType.GetGenericTypeDefinition() == typeof(EntityRef<,>))
+		{
+			var args = actualType.GetGenericArguments();
+			var entityArg = args[0];
+			var valueArg = args[1];
+
+			ValueConverter converter;
+
+			if (underlyingNullable != null)
+			{
+				converter = (ValueConverter)Activator.CreateInstance(
+					typeof(NullableEntityRefValueConverter<,>)
+						.MakeGenericType(entityArg, valueArg)
+				)!;
+			}
+			else
+			{
+				converter = (ValueConverter)Activator.CreateInstance(
+					typeof(EntityRefValueConverter<,>)
+						.MakeGenericType(entityArg, valueArg)
+				)!;
+			}
+
+			property.SetValueConverter(converter);
+		}
+	}	
 
 	private static bool TryGetStronglyTypedId(Type type, out Type idType)
 	{

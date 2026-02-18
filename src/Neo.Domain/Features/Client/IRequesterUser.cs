@@ -9,7 +9,7 @@ public interface IRequesterUser
     string Platform { get; }
     string? AppName { get; }
     string? Lang { get; }
-    Task<int> GetLangIdAsync(CancellationToken cancellationToken=default);
+    Task<LanguageId> GetLangIdAsync(CancellationToken cancellationToken=default);
     string? Mobile { get; }
     string? CorrelationId { get; }
     List<Claim> Claims();

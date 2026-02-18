@@ -10,7 +10,7 @@ public partial class CultureTerm : BaseCoreConfigAuditableEntity<int>
     public int SubjectId { get; set; }
     [MaxLength(50)]
     public string SubjectField { get; set; } = null!;
-    public int LanguageId { get; set; }
+    public LanguageId LanguageId { get; set; }
     public virtual Language Language { get; set; } = null!;
     [InDisplayString]
     [MaxLength(50)]
