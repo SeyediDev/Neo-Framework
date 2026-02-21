@@ -3,8 +3,11 @@
 namespace Neo.Domain.Repository;
 
 public interface IQueryRepository<TEntity> : IQueryRepository<TEntity, int>
-	where TEntity : class, IEntity<int>, new()
-{ }
+    where TEntity : class, IEntity<int>, new();
+
+public interface IQueryRepositoryL<TEntity> : IQueryRepository<TEntity, long>
+    where TEntity : class, IEntity<long>, new();
+
 public interface IQueryRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>, new()
 {

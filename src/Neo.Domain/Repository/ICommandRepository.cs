@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore.Query;
 namespace Neo.Domain.Repository;
 
 public interface ICommandRepository<TEntity> : ICommandRepository<TEntity, int>
-	where TEntity : class, IEntity<int>, new()
-{ 
-}
+    where TEntity : class, IEntity<int>, new();
+
+public interface ICommandRepositoryL<TEntity> : ICommandRepository<TEntity, long>
+	where TEntity : class, IEntity<long>, new();
 
 public interface ICommandRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>, new()
