@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace Neo.Infrastructure.Data.Repository.Ef;
+
 public abstract class EfCommandRepository<TEntity, TKey, TCommandUnitOfWork>(TCommandUnitOfWork uow)
     : EfRepositoryBase<TEntity, TKey>(uow), ICommandRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>, new()
@@ -19,13 +20,13 @@ public abstract class EfCommandRepository<TEntity, TKey, TCommandUnitOfWork>(TCo
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
     {
         IQueryable<TEntity> query = _dbSet;
-        if (orderBy!=null)
+        if (orderBy != null)
             query = orderBy(query);
         return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
     public async Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
-       Expression<Func<TEntity, TProperty>> include, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken, 
+       Expression<Func<TEntity, TProperty>> include, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
     {
         IQueryable<TEntity> query = _dbSet.Include(include);
@@ -83,7 +84,7 @@ public abstract class EfCommandRepository<TEntity, TKey, TCommandUnitOfWork>(TCo
         _dbSet.Remove(entity);
     }
 
-    public async Task<bool?> RemoveAsync(TKey id)
+    public async Task<bool?> RemoveAsync(TKey id, CancellationToken cancellationToken = default)
     {
         var entity = await _dbSet.FindAsync(id);
         if (entity != null)
@@ -96,8 +97,18 @@ public abstract class EfCommandRepository<TEntity, TKey, TCommandUnitOfWork>(TCo
 
     public async Task<int> ExecuteUpdateAsync(
         Expression<Func<TEntity, bool>> predicate,
-        Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> updateExpression, CancellationToken cancellationToken=default)
+        Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> updateExpression, CancellationToken cancellationToken = default)
     {
         return await _dbSet.Where(predicate).ExecuteUpdateAsync(updateExpression, cancellationToken);
-    }  
+    }
+
+    public async Task<bool?> ExpireAsync(
+        Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        await _dbSet.Where(predicate).ExecuteUpdateAsync(
+                x => x.SetProperty(p => ((ISoftDelete)p).ExpireDate, DateTime.UtcNow)
+                      .SetProperty(p => ((ISoftDelete)p).IsDeleted, true), cancellationToken);
+        int c = await UnitOfWork.SaveChangesAsync(cancellationToken);
+        return c > 0;
+    }
 }
