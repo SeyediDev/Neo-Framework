@@ -206,7 +206,16 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
         return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
-    public async Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
+	public TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate,
+		Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+	{
+		IQueryable<TEntity> query = _dbSet;
+		if (orderBy != null)
+			query = orderBy(query);
+		return query.FirstOrDefault(predicate);
+	}
+
+	public async Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
         Expression<Func<TEntity, TProperty>> include, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
     {

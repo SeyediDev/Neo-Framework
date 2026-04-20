@@ -114,7 +114,7 @@
     <PackageVersion Include="Ocelot" Version="22.0.1" />
     <PackageVersion Include="OpenTelemetry.Api.ProviderBuilderExtensions" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
+    <!--<PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.6.0-rc.1" />-->
     <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Propagators" Version="1.12.0" />

@@ -48,13 +48,17 @@ public static class DependencyInjection
                 
                 if (!string.IsNullOrEmpty(openTelemetryOptions.JaegerExporterHost))
                 {
-                    _ = tracing.AddJaegerExporter(o =>
-                    {
-                        o.AgentHost = openTelemetryOptions.JaegerExporterHost;// "localhost"; // Jaeger
-                        o.AgentPort = openTelemetryOptions.JaegerExporterPort;// 6831;
-                    });
-                }
-                if (!string.IsNullOrEmpty(openTelemetryOptions.ZipkinExporterUri))
+					//               _ = tracing.AddJaegerExporter(o =>//AddJaegerExporter
+					//{
+					//                   o.AgentHost = openTelemetryOptions.JaegerExporterHost;// "localhost"; // Jaeger
+					//                   o.AgentPort = openTelemetryOptions.JaegerExporterPort;// 6831;
+					//               });
+					_ = tracing.AddOtlpExporter(options =>
+					{
+						options.Endpoint = new Uri(openTelemetryOptions.JaegerExporterHost+":"+ openTelemetryOptions.JaegerExporterPort);
+					});
+				}
+				if (!string.IsNullOrEmpty(openTelemetryOptions.ZipkinExporterUri))
                 {
                     _ = tracing.AddZipkinExporter(o =>
                     {

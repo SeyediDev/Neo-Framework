@@ -9,7 +9,7 @@ public class IdempotencyStoreWithCacheService<TOutboxMessage>(
     IIdempotencyStore<TOutboxMessage>
     where TOutboxMessage : IOutboxMessage
 {
-    private static string Key(string idempotencyKey, string tenantId) => $"idempotency-{typeof(TOutboxMessage).Name}-{tenantId}-{idempotencyKey}";
+    private static string Key(string idempotencyKey, string tenantId) => $"{tenantId}-{typeof(TOutboxMessage).Name}-{idempotencyKey}";
     
     public async Task<bool> AddAsync(string idempotencyKey, string tenantId, long outboxId, CancellationToken ct)
     {

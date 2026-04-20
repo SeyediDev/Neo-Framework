@@ -10,7 +10,8 @@ public interface IUnitOfWork
     Task BeginTransactionAsync();
     Task RollbackTransactionAsync();
     Task CommitTransactionAsync();
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    int SaveChanges();
+	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     EntityTableInfo? GetEntityTableInfo(Type entity);
     EntityFieldColumnInfo? GetEntityFieldColumnInfo(Type entity, string propertyName);
     Task<List<TEntity>> ExecuteSqlQueryAsync<TEntity>(string sql, CancellationToken cancellationToken = default) where TEntity : class, new();

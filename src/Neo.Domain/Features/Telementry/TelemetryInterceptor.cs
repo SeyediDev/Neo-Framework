@@ -53,6 +53,8 @@ public class TelemetryInterceptor(ITelementryBehaviour telemetry) : IInterceptor
 
         // انتخاب متد مناسب Handle
         Task? handleTask;
+        string caller = responseType != null?"call-1": "call-2";
+        int line = 0;
         if (responseType != null)
         {
             var handleMethod = typeof(ITelementryBehaviour)
@@ -63,7 +65,8 @@ public class TelemetryInterceptor(ITelementryBehaviour telemetry) : IInterceptor
                 [next, request,
                 telemetryAttr.Component ?? method.DeclaringType?.Name ?? "",
                 telemetryAttr.ServiceName ?? method.Name,
-                telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None])!;
+                telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None,
+			    caller, line])!;
         }
         else
         {
@@ -75,7 +78,8 @@ public class TelemetryInterceptor(ITelementryBehaviour telemetry) : IInterceptor
                 [next, request,
                 telemetryAttr.Component ?? method.DeclaringType?.Name ?? "",
                 telemetryAttr.ServiceName ?? method.Name, 
-                telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None])!;
+                telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None,
+			    caller, line])!;
         }
 
         handleTask?.GetAwaiter().GetResult();

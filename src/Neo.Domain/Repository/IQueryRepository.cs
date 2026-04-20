@@ -55,7 +55,9 @@ public interface IQueryRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken);
     Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
-    Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(Expression<Func<TEntity, TProperty>> include,
+	TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate,
+		Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
+	Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(Expression<Func<TEntity, TProperty>> include,
         Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
     Task<TEntity?> FirstOrDefaultWithIncludesAsync<TProperty>(
