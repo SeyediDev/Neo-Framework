@@ -63,11 +63,11 @@ public class TelemetryInterceptor(ITelementryBehaviour telemetry) : IInterceptor
 
             handleTask = (Task?)handleMethod.Invoke(_telemetry,
                 [next, request,
-                telemetryAttr.Component ?? method.DeclaringType?.Name ?? "",
-                telemetryAttr.ServiceName ?? method.Name,
-                telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None,
-			    caller, line])!;
-        }
+            telemetryAttr.Component ?? method.DeclaringType?.Name ?? "",
+            telemetryAttr.ServiceName ?? method.Name,
+            telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None,
+            caller, line])!;
+		}
         else
         {
             var handleMethod = typeof(ITelementryBehaviour)
@@ -76,13 +76,14 @@ public class TelemetryInterceptor(ITelementryBehaviour telemetry) : IInterceptor
 
             handleTask = (Task?)handleMethod.Invoke(_telemetry,
                 [next, request,
-                telemetryAttr.Component ?? method.DeclaringType?.Name ?? "",
-                telemetryAttr.ServiceName ?? method.Name, 
-                telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None,
-			    caller, line])!;
-        }
+            telemetryAttr.Component ?? method.DeclaringType?.Name ?? "",
+            telemetryAttr.ServiceName ?? method.Name,
+            telemetryAttr.ActivityKind, null, ct ?? CancellationToken.None,
+            caller, line])!;
+		}
 
         handleTask?.GetAwaiter().GetResult();
         invocation.ReturnValue = handleTask;
-    }    
+    }
 }
+

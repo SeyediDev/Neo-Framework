@@ -4,8 +4,7 @@ using System.Text.Json;
 namespace Neo.Application.Features.Outbox.Implementation;
 
 public class DefaultOutboxJobScheduler(
-    IJobExecuter jobExecuter
-) : IOutboxJobScheduler
+    IJobExecuter jobExecuter) : IOutboxJobScheduler
 {
     private static string OutboxQueue => "outbox";
     public async Task<string?> ScheduleOnlineAsync(object message, CancellationToken ct)
@@ -26,14 +25,45 @@ public class DefaultOutboxJobScheduler(
         if (string.IsNullOrWhiteSpace(outboxMessage.MessageType) || string.IsNullOrWhiteSpace(outboxMessage.MessageContent))
             throw new ArgumentException("Invalid outbox message: missing type or content.");
 
-        // 1. Resolve .NET type from stored string
-        var messageType = Type.GetType(outboxMessage.MessageType, throwOnError: true)!;
+        try
+        {
+            // 1. Resolve .NET type from stored string
+            Type messageType = ResolveMessageType(outboxMessage.MessageType)!;
 
-        // 2. Deserialize JSON content to actual object
-        var message = JsonSerializer.Deserialize(outboxMessage.MessageContent, messageType)
-            ?? throw new InvalidOperationException($"Could not deserialize message of type {outboxMessage.MessageType}");
+			// 2. Deserialize JSON content to actual object
+			var jsonOptions = new JsonSerializerOptions
+			{
+				PropertyNameCaseInsensitive = true,
+				// اگر خودت حین Serialize از CamelCase استفاده می‌کنی:
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+			};
+            var message = JsonSerializer.Deserialize(outboxMessage.MessageContent, messageType, jsonOptions)
+                ?? throw new InvalidOperationException($"Could not deserialize message of type {outboxMessage.MessageType}");
 
-        // 3. Enqueue depending on type
-        return await ScheduleOnlineAsync(message!, cancellationToken);
+            // 3. Enqueue depending on type
+            return await ScheduleOnlineAsync(message!, cancellationToken);
+        }
+        catch (Exception exp)
+        {
+            throw new InvalidOperationException($"Could not find type {outboxMessage.MessageType} {exp.Message}");
+        }
     }
+
+	private static Type? ResolveMessageType(string typeFullName)
+	{
+		// اول سعی می‌کند از متد نرمال استفاده کند
+		var type = Type.GetType(typeFullName);
+		if (type != null)
+			return type;
+
+		// اگر پیدا نشد، بین تمام اسمبلی‌های Load شده جستجو می‌کنیم
+		foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+		{
+			type = asm.GetType(typeFullName);
+			if (type != null)
+				return type;
+		}
+
+		throw new InvalidOperationException($"Could not resolve type '{typeFullName}' in any loaded assembly.");
+	}
 }

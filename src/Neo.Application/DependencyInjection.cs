@@ -44,12 +44,14 @@ public static class DependencyInjection
         services.AddScoped(typeof(IUpdateGenericEntityCommandHandler<,,>), typeof(UpdateGenericEntityCommandHandler<,,>));
 
         services.AddScoped(typeof(IOutboxMessageProcessor<>), typeof(OutboxMessageProcessor<>));
-        services.AddScopedWithTelemetry<IOutboxJobScheduler, DefaultOutboxJobScheduler>();
+        //services.AddScopedWithTelemetry<IOutboxJobScheduler, DefaultOutboxJobScheduler>();
+		services.AddScoped<IOutboxJobScheduler, DefaultOutboxJobScheduler>();
         services.AddScopedWithTelemetry<IJobCommand, JobCommand>();
         services.AddScopedWithTelemetry<IJobPublisher, JobPublisher>();
         services.AddScoped<IOutboxStore, OutboxStore>();
         
-        services.AddScopedWithTelemetry<IProcessOutboxRecurringJob, ProcessOutboxRecurringJob>();
+        //services.AddScopedWithTelemetry<IProcessOutboxRecurringJob, ProcessOutboxRecurringJob>();
+		services.AddScoped<IProcessOutboxRecurringJob, ProcessOutboxRecurringJob>();
         return services;
     }
 }

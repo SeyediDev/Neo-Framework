@@ -51,7 +51,7 @@ public class ProcessOutboxRecurringJob(
             {
                 try
                 {
-                    var jobId = await outboxJobScheduler.ScheduleOnlineAsync(outboxMessage, cts.Token);
+					var jobId = await outboxJobScheduler.ScheduleOutboxMessageAsync(outboxMessage, cts.Token);
                     
                     if (!string.IsNullOrEmpty(jobId))
                     {
