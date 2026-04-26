@@ -63,7 +63,27 @@ public static partial class TypeExtensions
         return JsonSerializer.Serialize(entity, options);
     }
 
-    public static T FromJson<T>(this string value, [Optional] JsonSerializerOptions settings)
+    public static object? FromJson(this string value, Type type, [Optional] JsonSerializerOptions settings)
+    {
+		if (string.IsNullOrWhiteSpace(value))
+			return default!;
+
+		if (settings == null)
+		{
+			settings = new JsonSerializerOptions
+			{
+				PropertyNameCaseInsensitive = true,
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+			};
+		}
+		else if (settings.PropertyNameCaseInsensitive == default)
+		{
+			settings.PropertyNameCaseInsensitive = true;
+		}
+        return JsonSerializer.Deserialize(value, type, settings)!;
+	}
+
+	public static T FromJson<T>(this string value, [Optional] JsonSerializerOptions settings)
     {
         if (string.IsNullOrWhiteSpace(value))
             return default!;

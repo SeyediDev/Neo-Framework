@@ -1,5 +1,4 @@
 ﻿using Neo.Application.Features.Queue;
-using System.Text.Json;
 
 namespace Neo.Application.Features.Outbox.Implementation;
 
@@ -19,8 +18,21 @@ public class DefaultOutboxJobScheduler(
         }
         throw new NotSupportedException($"Message type {message?.GetType().FullName} is not supported for scheduling.");
     }
+	
+	public string? ScheduleOnline(object message)
+	{
+		if (message is IRequest request)
+		{
+			return jobExecuter.Enqueue<IJobCommand>(job => job.Run(request, CancellationToken.None), OutboxQueue);
+		}
+		if (message is INotification notification)
+		{
+			return jobExecuter.Enqueue<IJobPublisher>(job => job.Run(notification, CancellationToken.None), OutboxQueue);
+		}
+		throw new NotSupportedException($"Message type {message?.GetType().FullName} is not supported for scheduling.");
+	}
 
-    public async Task<string?> ScheduleOutboxMessageAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken)
+	public async Task<string?> ScheduleOutboxMessageAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(outboxMessage.MessageType) || string.IsNullOrWhiteSpace(outboxMessage.MessageContent))
             throw new ArgumentException("Invalid outbox message: missing type or content.");
@@ -30,14 +42,8 @@ public class DefaultOutboxJobScheduler(
             // 1. Resolve .NET type from stored string
             Type messageType = ResolveMessageType(outboxMessage.MessageType)!;
 
-			// 2. Deserialize JSON content to actual object
-			var jsonOptions = new JsonSerializerOptions
-			{
-				PropertyNameCaseInsensitive = true,
-				// اگر خودت حین Serialize از CamelCase استفاده می‌کنی:
-				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-			};
-            var message = JsonSerializer.Deserialize(outboxMessage.MessageContent, messageType, jsonOptions)
+            // 2. Deserialize JSON content to actual object
+            var message = outboxMessage.MessageContent.FromJson(messageType)
                 ?? throw new InvalidOperationException($"Could not deserialize message of type {outboxMessage.MessageType}");
 
             // 3. Enqueue depending on type
@@ -48,6 +54,29 @@ public class DefaultOutboxJobScheduler(
             throw new InvalidOperationException($"Could not find type {outboxMessage.MessageType} {exp.Message}");
         }
     }
+	
+	public string? ScheduleOutboxMessage(OutboxMessage outboxMessage)
+	{
+		if (string.IsNullOrWhiteSpace(outboxMessage.MessageType) || string.IsNullOrWhiteSpace(outboxMessage.MessageContent))
+			throw new ArgumentException("Invalid outbox message: missing type or content.");
+
+		try
+		{
+			// 1. Resolve .NET type from stored string
+			Type messageType = ResolveMessageType(outboxMessage.MessageType)!;
+
+			// 2. Deserialize JSON content to actual object
+			var message = outboxMessage.MessageContent.FromJson(messageType)
+				?? throw new InvalidOperationException($"Could not deserialize message of type {outboxMessage.MessageType}");
+
+			// 3. Enqueue depending on type
+			return ScheduleOnline(message!);
+		}
+		catch (Exception exp)
+		{
+			throw new InvalidOperationException($"Could not find type {outboxMessage.MessageType} {exp.Message}");
+		}
+	}
 
 	private static Type? ResolveMessageType(string typeFullName)
 	{

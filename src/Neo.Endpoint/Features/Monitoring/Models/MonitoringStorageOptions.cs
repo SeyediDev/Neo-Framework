@@ -38,6 +38,6 @@ public class MonitoringStorageOptions
     /// <summary>
     /// Metrics collection interval in milliseconds
     /// </summary>
-    public int MetricsCollectionIntervalMs { get; set; } = 1000;
+    public int MetricsCollectionIntervalMs { get; set; } = 10000;
 }
 

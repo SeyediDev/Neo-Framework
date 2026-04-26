@@ -27,8 +27,27 @@ public class ProcessOutboxRecurringJob(
             return;
         }
     }
-
+    private static bool _inProcess = false;
     private async Task ProcessOutboxMessagesAsync()
+    {
+        
+        lock (LockKey)
+        {
+            if (_inProcess)
+                return;
+            _inProcess = true;
+		}
+        try
+        {
+            await DoProcessOutboxMessagesAsync();
+        }
+        catch { }
+		lock (LockKey)
+		{
+			_inProcess = false;
+		}
+	}
+	private async Task DoProcessOutboxMessagesAsync()
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(TimeoutSeconds));
         
@@ -51,7 +70,10 @@ public class ProcessOutboxRecurringJob(
             {
                 try
                 {
-					var jobId = await outboxJobScheduler.ScheduleOutboxMessageAsync(outboxMessage, cts.Token);
+					outboxMessage.OutboxState = OutboxState.Processing;
+					await outboxStore.UpdateAsync(outboxMessage, cts.Token);
+
+					var jobId = outboxJobScheduler.ScheduleOutboxMessage(outboxMessage);
                     
                     if (!string.IsNullOrEmpty(jobId))
                     {
@@ -85,12 +107,11 @@ public class ProcessOutboxRecurringJob(
                     logger.LogError(ex, "Error processing outbox message {MessageId}", outboxMessage.Id);
                 }
                 
-                outboxStore.UpdateOnlyAsync(outboxMessage);
-            }
+                await outboxStore.UpdateAsync(outboxMessage, cts.Token);
+			}
 
-            await outboxStore.SaveChangesAsync(cts.Token);
-            
-            logger.LogInformation("Completed processing outbox commands - " +
+
+			logger.LogInformation("Completed processing outbox commands - " +
                 "Success: {SuccessCount}, Failed: {FailedCount}, Total: {TotalCount}",
                 successCount, failedCount, outboxMessages.Count());
 

@@ -72,7 +72,7 @@ public class SystemMetricsPublisher : BackgroundService
 
         _threadCountGauge = _meter.CreateObservableGauge(
             "system.threads",
-            () => _currentProcess.Threads.Count,
+            () => _currentProcess?.Threads?.Count??0,
             unit: "threads",
             description: "Process thread count");
 

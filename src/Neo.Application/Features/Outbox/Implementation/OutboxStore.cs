@@ -17,7 +17,7 @@ public class OutboxStore(
         _ = await outboxMessageCmdRepository.UnitOfWork.SaveChangesAsync(ct);
     }
     
-    public void UpdateOnlyAsync(OutboxMessage outboxMessage)
+    public void UpdateOnly(OutboxMessage outboxMessage)
     {
         outboxMessageCmdRepository.Update(outboxMessage);
     }
@@ -59,6 +59,6 @@ public class OutboxStore(
     public async Task<IEnumerable<OutboxMessage>> GetRequested(int batchSize, CancellationToken cancellationToken)
     {
         return await outboxMessageRepository.GetAllAsync(cancellationToken,
-           x => x.OutboxState == OutboxState.Requested || x.OutboxState == OutboxState.Queued, null, null, batchSize);
+           x => x.OutboxState == OutboxState.Requested || x.OutboxState == OutboxState.Retrying, null, null, batchSize);
     }
 }

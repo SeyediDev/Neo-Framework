@@ -4,7 +4,7 @@ public interface IOutboxStore
 {
     Task AddAsync(OutboxMessage outboxMessage, CancellationToken ct);
     Task UpdateAsync(OutboxMessage outboxMessage, CancellationToken ct);
-    void UpdateOnlyAsync(OutboxMessage outboxMessage);
+    void UpdateOnly(OutboxMessage outboxMessage);
     Task SaveChangesAsync(CancellationToken ct);
     Task FinishAsync(OutboxMessage outboxMessage, CancellationToken ct);
     Task<OutboxMessage?> GetAsync(long outboxId, CancellationToken ct);

@@ -96,7 +96,7 @@ public class OutboxMessageProcessor<TOutboxMessage>(
         // 👇 Register and schedule job 
         try
         {
-            outboxMessage.JobId = await outboxJobScheduler.ScheduleOnlineAsync(message, ct);
+            outboxMessage.JobId = outboxJobScheduler.ScheduleOnline(message);
             if (!string.IsNullOrEmpty(outboxMessage.JobId))
             {
                 outboxMessage.OutboxState = OutboxState.Queued;

@@ -11,14 +11,16 @@ public static class ServiceCollectionExtensions
         where TService : class
         where TImpl : class, TService
     {
-        services.AddScoped<TImpl>();
-        services.AddScoped(sp =>
-        {
-            var impl = sp.GetRequiredService<TImpl>();
-            var interceptor = sp.GetRequiredService<TelemetryInterceptor>();
+		services.AddScoped<TService, TImpl>();
+		//services.AddScoped<TImpl>();
+  //TODO Disable temperory
+  //    services.AddScoped(sp =>
+  //      {
+  //          var impl = sp.GetRequiredService<TImpl>();
+  //          var interceptor = sp.GetRequiredService<TelemetryInterceptor>();
 
-            return _proxyGenerator.CreateInterfaceProxyWithTarget<TService>(impl, interceptor);
-        });
+  //          return _proxyGenerator.CreateInterfaceProxyWithTarget<TService>(impl, interceptor);
+  //      });
 
         return services;
     }
