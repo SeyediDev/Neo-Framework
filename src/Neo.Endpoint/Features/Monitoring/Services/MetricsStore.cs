@@ -219,7 +219,7 @@ public class MetricsStore : IMetricsStore
             MemoryUsagePercent = gcInfo.TotalAvailableMemoryBytes > 0 
                 ? (double)_currentProcess.WorkingSet64 / gcInfo.TotalAvailableMemoryBytes * 100 
                 : 0,
-            ThreadCount = _currentProcess.Threads.Count,
+            ThreadCount = _currentProcess?.Threads?.Count??0,
             Uptime = _uptime.Elapsed,
             GcGen0Collections = GC.CollectionCount(0),
             GcGen1Collections = GC.CollectionCount(1),
