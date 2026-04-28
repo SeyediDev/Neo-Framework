@@ -1,5 +1,4 @@
 ﻿using Neo.Domain.Features.Client;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.Metrics;
