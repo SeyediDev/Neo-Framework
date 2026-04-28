@@ -13,7 +13,7 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
     public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        int? skip = null, int? take = null)
+        int? skip = null, int? take = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         if (predicate != null)
@@ -24,14 +24,16 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
             query = query.Skip(skip.Value);
         if (take != null)
             query = query.Take(take.Value);
-        return await query.ToListAsync(cancellationToken);
+        if(asNoTracking)
+			query = query.AsNoTracking();
+		return await query.ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<TEntity>> GetAllWithIncludeAsync<TProperty>(
         Expression<Func<TEntity, TProperty>> include, CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        int? skip = null, int? take = null)
+        int? skip = null, int? take = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         if (predicate != null)
@@ -42,7 +44,9 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
             query = query.Skip(skip.Value);
         if (take != null)
             query = query.Take(take.Value);
-        query = query.Include(include);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		query = query.Include(include);
         return await query.ToListAsync(cancellationToken);
     }
 
@@ -50,7 +54,7 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
         IEnumerable<Expression<Func<TEntity, object?>>> includes, CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        int? skip = null, int? take = null)
+        int? skip = null, int? take = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         query = ApplyIncludes(query, includes?.Cast<LambdaExpression>());
@@ -62,20 +66,24 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
             query = query.Skip(skip.Value);
         if (take != null)
             query = query.Take(take.Value);
-        return await query.ToListAsync(cancellationToken);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		return await query.ToListAsync(cancellationToken);
     }
 
     public async Task<(IEnumerable<TEntity> Entities, bool HasNext)> GetPagedAsync(
         int pageNumber, int pageSize, CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         if (predicate != null)
             query = query.Where(predicate);
         if (orderBy != null)
             query = orderBy(query);
-        query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize + 1);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize + 1);
         bool hastNext = false;
         List<TEntity> entities = await query.ToListAsync(cancellationToken);
         if (entities?.Count > pageSize)
@@ -91,14 +99,16 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
         Expression<Func<TEntity, TProperty>> include,
         int pageNumber, int pageSize, CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         if (predicate != null)
             query = query.Where(predicate);
         if (orderBy != null)
             query = orderBy(query);
-        query = query.Include(include);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		query = query.Include(include);
         query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize + 1);
         bool hastNext = false;
         List<TEntity> entities = await query.ToListAsync(cancellationToken);
@@ -115,7 +125,7 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
        IEnumerable<Expression<Func<TEntity, TProperty>>> includes,
        int pageNumber, int pageSize, CancellationToken cancellationToken,
        Expression<Func<TEntity, bool>>? predicate = null,
-       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         query = ApplyIncludes(query, includes?.Cast<LambdaExpression>());
@@ -123,7 +133,9 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
             query = query.Where(predicate);
         if (orderBy != null)
             query = orderBy(query);
-        query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize + 1);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize + 1);
         bool hastNext = false;
         List<TEntity> entities = await query.ToListAsync(cancellationToken);
         if (entities?.Count > pageSize)
@@ -137,7 +149,7 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
 
     public async Task<List<TDto>> GetAllAsync<TDto>(CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
         where TDto : class, new()
     {
         IQueryable<TEntity> query = _dbSet;
@@ -145,12 +157,14 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
             query = query.Where(predicate);
         if (orderBy != null)
             query = orderBy(query);
-        return await query.ProjectToType<TDto>().ToListAsync(cancellationToken);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		return await query.ProjectToType<TDto>().ToListAsync(cancellationToken);
     }
 
     public async Task<List<TDto>> GetAllAsync<TDto>(int pageNumber, int pageSize, CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
         where TDto : class, new()
     {
         IQueryable<TEntity> query = _dbSet;
@@ -158,7 +172,9 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
             query = query.Where(predicate);
         if (orderBy != null)
             query = orderBy(query);
-        query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
         return await query.ProjectToType<TDto>().ToListAsync(cancellationToken);
     }
 
@@ -198,42 +214,50 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
     }
 
     public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken, 
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         if (orderBy != null)
             query = orderBy(query);
-        return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
 	public TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate,
-		Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+		Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
 	{
 		IQueryable<TEntity> query = _dbSet;
 		if (orderBy != null)
 			query = orderBy(query);
+		if (asNoTracking)
+			query = query.AsNoTracking();
 		return query.FirstOrDefault(predicate);
 	}
 
 	public async Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
         Expression<Func<TEntity, TProperty>> include, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet.Include(include);
         if (orderBy != null)
             query = orderBy(query);
-        return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
     public async Task<TEntity?> FirstOrDefaultWithIncludesAsync<TProperty>(
       IEnumerable<Expression<Func<TEntity, object?>>> includes, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
-      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, bool asNoTracking = false)
     {
         IQueryable<TEntity> query = _dbSet;
         query = ApplyIncludes(query, includes?.Cast<LambdaExpression>());
         if (orderBy != null)
             query = orderBy(query);
-        return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+		if (asNoTracking)
+			query = query.AsNoTracking();
+		return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
     private static IQueryable<TEntity> ApplyIncludes(IQueryable<TEntity> query,
@@ -294,4 +318,3 @@ public abstract class EfQueryRepository<TEntity, TKey, TQueryUnitOfWork>(IUnitOf
         return false;
     }
 }
-

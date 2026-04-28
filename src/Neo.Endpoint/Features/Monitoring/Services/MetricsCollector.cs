@@ -5,33 +5,24 @@ namespace Neo.Endpoint.Features.Monitoring.Services;
 /// <summary>
 /// Background service that collects metrics using MeterListener
 /// </summary>
-public class MetricsCollector : BackgroundService
+public class MetricsCollector(
+	IMetricsStore store,
+	IOptions<MonitoringStorageOptions> options,
+	ILogger<MetricsCollector> logger) : BackgroundService
 {
-    private readonly IMetricsStore _store;
-    private readonly ILogger<MetricsCollector> _logger;
-    private readonly MonitoringStorageOptions _options;
+	private readonly MonitoringStorageOptions _options = options?.Value ?? new MonitoringStorageOptions();
     private MeterListener? _meterListener;
 
-    public MetricsCollector(
-        IMetricsStore store,
-        IOptions<MonitoringStorageOptions> options,
-        ILogger<MetricsCollector> logger)
+	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _store = store;
-        _options = options?.Value ?? new MonitoringStorageOptions();
-        _logger = logger;
-    }
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        _logger.LogInformation("MetricsCollector starting...");
+        logger.LogInformation("MetricsCollector starting...");
 
         _meterListener = new MeterListener();
 
         // Subscribe to all instruments
         _meterListener.InstrumentPublished = (instrument, listener) =>
         {
-            _logger.LogDebug("Instrument published: {Name} ({Type}) from {MeterName}", 
+            logger.LogDebug("Instrument published: {Name} ({Type}) from {MeterName}", 
                 instrument.Name, instrument.GetType().Name, instrument.Meter.Name);
             
             listener.EnableMeasurementEvents(instrument);
@@ -51,7 +42,7 @@ public class MetricsCollector : BackgroundService
 
         _meterListener.Start();
 
-        _logger.LogInformation("MetricsCollector started. Listening for metrics...");
+        logger.LogInformation("MetricsCollector started. Listening for metrics...");
 
         // Periodic cleanup
         var cleanupInterval = TimeSpan.FromMinutes(5);
@@ -70,12 +61,12 @@ public class MetricsCollector : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in metrics collection loop");
+                logger.LogError(ex, "Error in metrics collection loop");
                 await Task.Delay(1000, stoppingToken);
             }
         }
 
-        _logger.LogInformation("MetricsCollector stopping...");
+        logger.LogInformation("MetricsCollector stopping...");
     }
 
     private void OnMeasurement<T>(
@@ -103,11 +94,11 @@ public class MetricsCollector : BackgroundService
                 Description = instrument.Description
             };
 
-            _store.Record(dataPoint);
+            store.Record(dataPoint);
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Error recording metric {MetricName}", instrument.Name);
+            logger.LogWarning(ex, "Error recording metric {MetricName}", instrument.Name);
         }
     }
 
