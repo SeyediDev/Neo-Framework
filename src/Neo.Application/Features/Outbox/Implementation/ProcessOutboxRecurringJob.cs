@@ -8,7 +8,7 @@ public class ProcessOutboxRecurringJob(
     ) : IProcessOutboxRecurringJob
 {
     private const int BatchSize = 15;
-    private const int TimeoutSeconds = 30;
+    private const int TimeoutSeconds = 300;
     private const string LockKey = "process_outbox_recurring_job";
 
     public async Task Run()
