@@ -17,7 +17,6 @@
 	<PackageReference Include="Elastic.OpenTelemetry" />
 	<PackageReference Include="OpenTelemetry.Api.ProviderBuilderExtensions" />
 	<PackageReference Include="OpenTelemetry.Exporter.Console" />
-	<!--<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />-->
 	<PackageReference Include="OpenTelemetry.Exporter.Zipkin" />
 	<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
 	<PackageReference Include="OpenTelemetry.Extensions.Propagators" />
