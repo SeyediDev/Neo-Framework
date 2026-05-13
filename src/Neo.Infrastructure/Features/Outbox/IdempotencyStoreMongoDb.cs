@@ -1,6 +1,5 @@
 ﻿using Neo.Application.Features.Outbox;
 using Neo.Application.Features.Outbox.Dto;
-using MongoDB.Driver;
 
 namespace Neo.Infrastructure.Features.Outbox;
 

@@ -1,4 +1,4 @@
-<!-- For more info on central package management go to https://devblogs.microsoft.com/nuget/introducing-central-package-management/ -->
+﻿<!-- For more info on central package management go to https://devblogs.microsoft.com/nuget/introducing-central-package-management/ -->
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -21,7 +21,7 @@
     <PackageVersion Include="AutoMapper" Version="14.0.0" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="14.0.0" />
     <PackageVersion Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.2">
+    <PackageVersion Include="coverlet.collector" Version="6.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
@@ -52,13 +52,13 @@
     <PackageVersion Include="Moq" Version="4.20.70" />
     <PackageVersion Include="Quartz" Version="3.14.0" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.14.0" />
-    <PackageVersion Include="Serilog" Version="4.1.0" />
+    <PackageVersion Include="Serilog" Version="4.2.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR" Version="8.0.15" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.9.0" />
-    <PackageVersion Include="System.Drawing.Common" Version="8.0.15" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.8" />
     <PackageVersion Include="System.Threading.Tasks" Version="4.3.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="3.9.0" />
     <PackageVersion Include="zxcvbn-core" Version="8.0.0-beta0002" />
@@ -74,7 +74,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.15" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.15" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8" />
     <PackageVersion Include="Minio" Version="6.0.5" />
     <PackageVersion Include="Otp.NET" Version="1.4.0" />
@@ -83,12 +83,12 @@
     <PackageVersion Include="NSwag.MSBuild" Version="14.2.0" />
     <PackageVersion Include="Serilog.Sinks.Seq" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.15" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.1.4" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.1.6" />
     <PackageVersion Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
     <PackageVersion Include="Microsoft.OpenApi.Readers" Version="1.6.13" />
     <PackageVersion Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.64.0" />
@@ -102,24 +102,25 @@
     <PackageVersion Include="Microsoft.NETCore.App" Version="2.2.8" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.39.0" />
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
-    <PackageVersion Include="Microsoft.OpenApi" Version="1.6.13" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="1.6.22" />
     <PackageVersion Include="MailKit" Version="4.3.0" />
     <PackageVersion Include="MimeKit" Version="4.3.0" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.2.0" />
     <PackageVersion Include="MSTest.TestFramework" Version="3.2.0" />
     <PackageVersion Include="MongoDB.Driver" Version="3.5.0" />
-    <PackageVersion Include="MongoDB.Driver.Core" Version="2.24.0" />
+    <PackageVersion Include="MongoDB.Driver.Core" Version="2.25.0" />
+    <PackageVersion Include="SharpCompress" Version="0.39.0" />
+    <PackageVersion Include="Snappier" Version="1.0.6" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
     <PackageVersion Include="Ocelot" Version="22.0.1" />
-    <PackageVersion Include="OpenTelemetry.Api.ProviderBuilderExtensions" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
-    <!--<PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.6.0-rc.1" />-->
-    <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Propagators" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Api.ProviderBuilderExtensions" Version="1.15.3" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Propagators" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.1" />
     <PackageVersion Include="RestSharp" Version="112.1.0" />
     <PackageVersion Include="Serilog.Sinks.Splunk" Version="4.1.0" />
     <PackageVersion Include="SharpZipLib" Version="1.4.2" />
@@ -138,9 +139,9 @@
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="Tynamix.ObjectFiller" Version="1.5.8" />
-    <PackageVersion Include="xunit" Version="2.6.6" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.assert" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.1">
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
@@ -154,12 +155,12 @@
     <PackageVersion Include="System.Data.OleDb" Version="8.0.0" />
     <PackageVersion Include="System.Data.OracleClient" Version="1.0.8" />
     <PackageVersion Include="System.IO.Packaging" Version="8.0.0" />
-    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
+    
     <PackageVersion Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
     <PackageVersion Include="AsyncFixer" Version="1.6.0" />
     <PackageVersion Include="Azure.Identity" Version="1.10.4" />
     <PackageVersion Include="BuildBundlerMinifier" Version="3.2.449" />
-    <PackageVersion Include="BuildBundlerMinifier2022" Version="2.9.9" />
+    <PackageVersion Include="BuildBundlerMinifier2022" Version="2.9.10" />
     <PackageVersion Include="BouncyCastle" Version="1.8.9" />
     <PackageVersion Include="Captcha" Version="4.4.2" />
     <PackageVersion Include="CSharpFunctionalExtensions" Version="2.40.3" />
@@ -177,6 +178,6 @@
     <PackageVersion Include="Ionic.Utils.Zip" Version="1.5.1.2" />
     <PackageVersion Include="EPPlus" Version="8.0.1" />
     <PackageVersion Include="Dapper" Version="2.1.28" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.300" />
   </ItemGroup>
 </Project>

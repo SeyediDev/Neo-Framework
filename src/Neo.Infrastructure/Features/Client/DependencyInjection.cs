@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Driver;
 using Neo.Infrastructure.Features.Client.Memory;
 using System.Text;
 using Microsoft.Extensions.Logging;

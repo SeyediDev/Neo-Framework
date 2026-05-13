@@ -58,13 +58,6 @@ public static class DependencyInjection
 						options.Endpoint = new Uri(openTelemetryOptions.JaegerExporterHost+":"+ openTelemetryOptions.JaegerExporterPort);
 					});
 				}
-				if (!string.IsNullOrEmpty(openTelemetryOptions.ZipkinExporterUri))
-                {
-                    _ = tracing.AddZipkinExporter(o =>
-                    {
-                        o.Endpoint = new Uri(openTelemetryOptions.ZipkinExporterUri); // Zipkin
-                    });
-                }
             })
             .WithMetrics(metrics =>
             {
