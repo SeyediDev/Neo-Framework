@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Neo.Domain.Dto;
+using Xunit;
 
 namespace Neo.Domain.Tests.Dto;
 

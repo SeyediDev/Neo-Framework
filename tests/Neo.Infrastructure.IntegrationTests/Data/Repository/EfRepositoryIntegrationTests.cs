@@ -4,6 +4,7 @@ using Neo.Domain.Entities.Base;
 using Neo.Domain.Repository;
 using Neo.Infrastructure.Data.Repository.Ef;
 using System.Reflection;
+using Xunit;
 
 namespace Neo.Infrastructure.IntegrationTests.Data.Repository;
 
@@ -33,21 +34,15 @@ public class EfRepositoryIntegrationTests : IDisposable
         }
     }
 
-    private class TestCommandRepository : EfCommandRepository<TestEntity, int, TestDbContext>
+    private class TestCommandRepository(EfRepositoryIntegrationTests.TestDbContext uow) : EfCommandRepository<TestEntity, int, TestDbContext>(uow)
     {
-        public TestCommandRepository(TestDbContext uow) : base(uow)
-        {
-        }
-    }
+	}
 
-    private class TestQueryRepository : EfQueryRepository<TestEntity, int, TestDbContext>
+	private class TestQueryRepository(EfRepositoryIntegrationTests.TestDbContext uow) : EfQueryRepository<TestEntity, int, TestDbContext>(uow)
     {
-        public TestQueryRepository(TestDbContext uow) : base(uow)
-        {
-        }
-    }
+	}
 
-    private readonly TestDbContext _context;
+	private readonly TestDbContext _context;
     private readonly ICommandRepository<TestEntity, int> _commandRepository;
     private readonly IQueryRepository<TestEntity, int> _queryRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -71,8 +66,8 @@ public class EfRepositoryIntegrationTests : IDisposable
         var entity = new TestEntity { Name = "Test Product", Description = "Test Description" };
 
         // Act
-        await _commandRepository.AddAsync(entity);
-        await _unitOfWork.SaveChangesAsync();
+        await _commandRepository.AddAsync(entity, CancellationToken.None);
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Assert
         var saved = await _queryRepository.GetByIdAsync(entity.Id, CancellationToken.None);
@@ -86,14 +81,14 @@ public class EfRepositoryIntegrationTests : IDisposable
     {
         // Arrange
         var entity = new TestEntity { Name = "Original", Description = "Original Desc" };
-        await _commandRepository.AddAsync(entity);
-        await _unitOfWork.SaveChangesAsync();
+        await _commandRepository.AddAsync(entity, CancellationToken.None);
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Act
         entity.Name = "Updated";
         entity.Description = "Updated Desc";
         _commandRepository.Update(entity);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Assert
         var updated = await _queryRepository.GetByIdAsync(entity.Id, CancellationToken.None);
@@ -106,12 +101,12 @@ public class EfRepositoryIntegrationTests : IDisposable
     {
         // Arrange
         var entity = new TestEntity { Name = "To Delete", Description = "Desc" };
-        await _commandRepository.AddAsync(entity);
-        await _unitOfWork.SaveChangesAsync();
+        await _commandRepository.AddAsync(entity, CancellationToken.None);
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Act
         _commandRepository.Remove(entity);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Assert
         var deleted = await _queryRepository.GetByIdAsync(entity.Id, CancellationToken.None);
@@ -131,9 +126,9 @@ public class EfRepositoryIntegrationTests : IDisposable
 
         foreach (var entity in entities)
         {
-            await _commandRepository.AddAsync(entity);
+            await _commandRepository.AddAsync(entity, CancellationToken.None);
         }
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Act
         var result = await _queryRepository.GetAllAsync(CancellationToken.None);
@@ -156,9 +151,9 @@ public class EfRepositoryIntegrationTests : IDisposable
 
         foreach (var entity in entities)
         {
-            await _commandRepository.AddAsync(entity);
+            await _commandRepository.AddAsync(entity, CancellationToken.None);
         }
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Act
         var result = await _queryRepository.FirstOrDefaultAsync(
@@ -176,8 +171,8 @@ public class EfRepositoryIntegrationTests : IDisposable
     {
         // Arrange
         var entity = new TestEntity { Name = "Test", Description = "Desc" };
-        await _commandRepository.AddAsync(entity);
-        await _unitOfWork.SaveChangesAsync();
+        await _commandRepository.AddAsync(entity, CancellationToken.None);
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
         // Act
         var exists = await _queryRepository.AnyAsync(e => e.Name == "Test", CancellationToken.None);
@@ -198,8 +193,8 @@ public class EfRepositoryIntegrationTests : IDisposable
 
         // Act
         await _unitOfWork.BeginTransactionAsync();
-        await _commandRepository.AddAsync(entity1);
-        await _unitOfWork.SaveChangesAsync();
+        await _commandRepository.AddAsync(entity1, CancellationToken.None);
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         await _unitOfWork.RollbackTransactionAsync();
 
         // Assert
@@ -217,8 +212,8 @@ public class EfRepositoryIntegrationTests : IDisposable
 
         // Act
         await _unitOfWork.BeginTransactionAsync();
-        await _commandRepository.AddAsync(entity);
-        await _unitOfWork.SaveChangesAsync();
+        await _commandRepository.AddAsync(entity, CancellationToken.None);
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         await _unitOfWork.CommitTransactionAsync();
 
         // Assert

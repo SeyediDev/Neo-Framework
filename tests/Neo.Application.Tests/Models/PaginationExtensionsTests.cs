@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Neo.Application.Models;
+using Xunit;
 
 namespace Neo.Application.Tests.Models;
 

@@ -1,6 +1,7 @@
 using FluentAssertions;
 using FluentValidation.Results;
 using Neo.Application.Exceptions;
+using Xunit;
 
 namespace Neo.Application.Tests.Exceptions;
 

@@ -1,4 +1,6 @@
-﻿namespace Neo.Common.Tests;
+﻿global using Xunit;
+
+namespace Neo.Common.Tests;
 
 public class UnitTest1
 {

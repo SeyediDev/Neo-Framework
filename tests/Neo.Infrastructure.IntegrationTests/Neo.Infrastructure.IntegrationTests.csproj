@@ -14,7 +14,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,10 +29,6 @@
     <ProjectReference Include="..\..\src\Neo.Infrastructure\Neo.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Neo.Domain\Neo.Domain.csproj" />
     <ProjectReference Include="..\..\src\Neo.Application\Neo.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>

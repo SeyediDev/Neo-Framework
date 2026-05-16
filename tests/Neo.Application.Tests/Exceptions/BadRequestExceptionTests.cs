@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Neo.Application.Exceptions;
+using Xunit;
 
 namespace Neo.Application.Tests.Exceptions;
 

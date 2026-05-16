@@ -1,4 +1,6 @@
-﻿namespace Neo.Application.Tests;
+﻿using Xunit;
+
+namespace Neo.Application.Tests;
 
 public class UnitTest1
 {
