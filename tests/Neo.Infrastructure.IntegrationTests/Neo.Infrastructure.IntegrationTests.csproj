@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -30,7 +29,6 @@
     <ProjectReference Include="..\..\src\Neo.Infrastructure\Neo.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Neo.Domain\Neo.Domain.csproj" />
     <ProjectReference Include="..\..\src\Neo.Application\Neo.Application.csproj" />
-    <ProjectReference Include="..\..\src\Neo.Endpoint\Neo.Endpoint.csproj" />
   </ItemGroup>
 
   <ItemGroup>

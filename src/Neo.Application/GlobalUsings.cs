@@ -1,6 +1,4 @@
 ﻿global using Ardalis.GuardClauses;
-global using AutoMapper;
-global using AutoMapper.QueryableExtensions;
 global using Neo.Application.Exceptions;
 global using Neo.Application.Features.Outbox.Dto;
 global using Neo.Application.Features.Outbox.Implementation;

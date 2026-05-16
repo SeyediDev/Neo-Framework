@@ -19,7 +19,6 @@ public static class DependencyInjection
         assembliesList.Add(typeof(DependencyInjection).Assembly);
         foreach (var assembly in assembliesList)
         {
-            services.AddAutoMapper(assembly);
             services.AddValidatorsFromAssembly(assembly);
         }
 
