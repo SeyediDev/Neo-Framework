@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace Neo.Domain.Repository;
 
@@ -19,15 +18,6 @@ public interface ICommandRepository<TEntity, TKey> : IRepository<TEntity, TKey>
     Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
     void Update(TEntity entity);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="predicate"></param>
-    /// <param name="updateExpression"></param>
-    /// <returns>The total number of rows updated in the database.</returns>
-    Task<int> ExecuteUpdateAsync(
-        Expression<Func<TEntity, bool>> predicate,
-        Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> updateExpression, CancellationToken cancellationToken = default);
     void Remove(TEntity entity);
     Task<bool?> RemoveAsync(TKey id, CancellationToken cancellationToken = default);
     Task<bool?> ExpireAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);

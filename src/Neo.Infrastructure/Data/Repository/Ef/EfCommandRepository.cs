@@ -2,7 +2,6 @@
 using Neo.Domain.Entities.Base;
 using Neo.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace Neo.Infrastructure.Data.Repository.Ef;
 
@@ -95,12 +94,12 @@ public abstract class EfCommandRepository<TEntity, TKey, TCommandUnitOfWork>(TCo
         return null;
     }
 
-    public async Task<int> ExecuteUpdateAsync(
-        Expression<Func<TEntity, bool>> predicate,
-        Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> updateExpression, CancellationToken cancellationToken = default)
-    {
-        return await _dbSet.Where(predicate).ExecuteUpdateAsync(updateExpression, cancellationToken);
-    }
+    //public async Task<int> ExecuteUpdateAsync(
+    //    Expression<Func<TEntity, bool>> predicate,
+    //    Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> updateExpression, CancellationToken cancellationToken = default)
+    //{
+    //    return await _dbSet.Where(predicate).ExecuteUpdateAsync(updateExpression, cancellationToken);
+    //}
 
     public async Task<bool?> ExpireAsync(
         Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)

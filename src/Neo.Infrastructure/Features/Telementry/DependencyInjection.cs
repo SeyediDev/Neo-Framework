@@ -1,7 +1,7 @@
-﻿using Neo.Domain.Features.Telementry;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Neo.Domain.Features.Telementry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -29,10 +29,7 @@ public static class DependencyInjection
                         options.SetDbStatementForText = true; // متن کامل SQL در span قرار بگیره
                         options.SetDbStatementForStoredProcedure = true;
                     })
-                    .AddSqlClientInstrumentation(options =>
-                    {
-                        options.SetDbStatementForText = true; // کوئری SQL رو هم نشون میده
-                    })
+                    .AddSqlClientInstrumentation()
                     .AddConsoleExporter();   // خروجی در کنسول
                 
                 // OTLP Exporter - only enable if endpoint is configured

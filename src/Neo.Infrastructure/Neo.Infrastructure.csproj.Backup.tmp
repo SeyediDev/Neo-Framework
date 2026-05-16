@@ -1,17 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-	  <PackageId>Neo.Infrastructure</PackageId>
-	  <Version>10.0.0</Version>
-	  <Authors>Javad Seyedi</Authors>
-	  <Company>Neo</Company>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DNTPersianUtils.Core" />
     <PackageReference Include="Hangfire" />
     <PackageReference Include="Hangfire.Core" />
     <PackageReference Include="Hangfire.Redis" />
     <PackageReference Include="Hangfire.Redis.StackExchange" />
     <PackageReference Include="Hangfire.SqlServer" />
+
 	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
@@ -19,18 +13,19 @@
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+	<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
 	<PackageReference Include="MongoDB.Driver" />
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Minio" />
     <PackageReference Include="OpenTelemetry.Api.ProviderBuilderExtensions" />
     <PackageReference Include="OpenTelemetry.Exporter.Console" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Exporter.Zipkin" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
     <PackageReference Include="OpenTelemetry.Extensions.Propagators" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
     <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" />
     <PackageReference Include="Otp.NET" />
 	<PackageReference Include="Serilog.AspNetCore" />
@@ -39,12 +34,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Neo.Application\Neo.Application.csproj" />
     <ProjectReference Include="..\Neo.Common\Neo.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 </Project>

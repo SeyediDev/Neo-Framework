@@ -1,4 +1,6 @@
-﻿namespace Neo.Application.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Neo.Infrastructure.Data.Repository.Mappings;
 
 public class PaginatedList<T>(IReadOnlyCollection<T> items, int count, int pageNumber, int pageSize)
 {
