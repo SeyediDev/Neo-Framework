@@ -20,7 +20,7 @@ public class TypeExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void HasValue_ShouldReturnOppositeOfIsNullOrDefault()
     {
         // Arrange
@@ -34,7 +34,7 @@ public class TypeExtensionsTests
         value.IsNullOrDefault().Should().BeFalse();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void IfType_WithMatchingType_ShouldExecuteAction()
     {
         // Arrange
@@ -48,7 +48,7 @@ public class TypeExtensionsTests
         executed.Should().BeTrue();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void IfType_WithNonMatchingType_ShouldNotExecuteAction()
     {
         // Arrange
@@ -62,7 +62,7 @@ public class TypeExtensionsTests
         executed.Should().BeFalse();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void As_WithValidCast_ShouldReturnCastedValue()
     {
         // Arrange
@@ -75,7 +75,7 @@ public class TypeExtensionsTests
         result.Should().Be("test");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToJson_WithValidObject_ShouldSerialize()
     {
         // Arrange
@@ -89,7 +89,7 @@ public class TypeExtensionsTests
         result.Should().Contain("Test");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToJson_WithNull_ShouldReturnNull()
     {
         // Arrange
@@ -102,7 +102,7 @@ public class TypeExtensionsTests
         result.Should().BeNull();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void FromJson_WithValidJson_ShouldDeserialize()
     {
         // Arrange
@@ -117,7 +117,7 @@ public class TypeExtensionsTests
         result.Age.Should().Be(30);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void FromJson_WithEmptyString_ShouldReturnDefault()
     {
         // Arrange

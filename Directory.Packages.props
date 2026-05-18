@@ -111,7 +111,7 @@
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfVersion)" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfVersion)" />
 
-		<PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.8" />
 		<PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.8" />
 		<PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.8" />
 		<PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
@@ -215,12 +215,12 @@
 		<PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
 		<PackageVersion Include="System.Drawing.Common" Version="10.0.8" />
 		<PackageVersion Include="System.Formats.Asn1" Version="10.0.0" />
-		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
 		<PackageVersion Include="System.IO.Packaging" Version="10.0.0" />
 		<PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />
 		<PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.0" />
 		<PackageVersion Include="System.ServiceProcess.ServiceController" Version="10.0.0" />
-		<PackageVersion Include="System.Text.RegularExpressions" Version="10.0.0" />
+    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<PackageVersion Include="System.Threading.Tasks" Version="10.0.0" />
 
 		<!-- T -->

@@ -13,14 +13,14 @@ public class AppControllerBaseIntegrationTests : IClassFixture<WebApplicationFac
         _factory = factory;
     }
 
-    [Fact]
+    [Xunit.Fact]
     public async Task Controller_ShouldHaveApiControllerAttribute()
     {
         // Arrange
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/test");
+        var response = await client.GetAsync("/api/test",CancellationToken.None);
 
         // Assert
         // Just verify the endpoint exists and follows ApiController conventions

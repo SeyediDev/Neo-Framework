@@ -5,7 +5,7 @@ namespace Neo.Common.Tests.Extensions;
 
 public class SplitExtensionsTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void SplitList_WithEmptyList_ShouldReturnEmpty()
     {
         // Arrange
@@ -18,7 +18,7 @@ public class SplitExtensionsTests
         result.Should().BeEmpty();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void SplitList_WithSmallerListThanSize_ShouldReturnSingleChunk()
     {
         // Arrange
@@ -32,7 +32,7 @@ public class SplitExtensionsTests
         result[0].Should().BeEquivalentTo([1, 2, 3]);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void SplitList_WithExactSize_ShouldReturnSingleChunk()
     {
         // Arrange
@@ -46,7 +46,7 @@ public class SplitExtensionsTests
         result[0].Should().HaveCount(50);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void SplitList_WithLargerList_ShouldSplitIntoMultipleChunks()
     {
         // Arrange
@@ -62,7 +62,7 @@ public class SplitExtensionsTests
         result[2].Should().HaveCount(25);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void SplitList_WithCustomSize_ShouldRespectSize()
     {
         // Arrange
@@ -78,7 +78,7 @@ public class SplitExtensionsTests
         result[2].Should().HaveCount(5);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void RunBatch_WithValidBatchSize_ShouldExecuteActionForEachBatch()
     {
         // Arrange
@@ -95,7 +95,7 @@ public class SplitExtensionsTests
         executedBatches[2].Should().HaveCount(5);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void RunBatch_WithZeroBatchSize_ShouldExecuteActionOnce()
     {
         // Arrange
@@ -109,7 +109,7 @@ public class SplitExtensionsTests
         executedCount.Should().Be(1);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void RunBatch_WithNegativeBatchSize_ShouldExecuteActionOnce()
     {
         // Arrange
@@ -123,7 +123,7 @@ public class SplitExtensionsTests
         executedCount.Should().Be(1);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void RunBatch_WithEmptyList_ShouldNotExecuteAction()
     {
         // Arrange

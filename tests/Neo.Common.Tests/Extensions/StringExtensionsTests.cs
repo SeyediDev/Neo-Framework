@@ -34,7 +34,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ForceMax_WhenStringExceedsMax_ShouldTruncate()
     {
         // Arrange
@@ -49,7 +49,7 @@ public class StringExtensionsTests
         result.Length.Should().Be(max);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ForceMax_WhenStringShorterThanMax_ShouldReturnOriginal()
     {
         // Arrange
@@ -63,7 +63,7 @@ public class StringExtensionsTests
         result.Should().Be(input);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ForceMax_WhenStringIsNull_ShouldReturnNull()
     {
         // Arrange
@@ -91,7 +91,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Remove_ShouldRemoveSubstring()
     {
         // Arrange
@@ -118,7 +118,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void IsNullOrEmpty_WithNull_ShouldReturnTrue()
     {
         // Arrange
@@ -144,7 +144,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void HasValue_WithNull_ShouldReturnFalse()
     {
         // Arrange
@@ -199,7 +199,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void HasNotValue_WithNull_ShouldReturnTrue()
     {
         // Arrange
@@ -225,7 +225,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToCamelCase_ShouldConvertFirstLetterToLower()
     {
         // Arrange
@@ -238,7 +238,7 @@ public class StringExtensionsTests
         result.Should().Be("helloWorld");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToPascalCase_ShouldConvertFirstLetterToUpper()
     {
         // Arrange
@@ -270,7 +270,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToBase64Encode_ShouldEncodeCorrectly()
     {
         // Arrange
@@ -283,7 +283,7 @@ public class StringExtensionsTests
         result.Should().Be("SGVsbG8gV29ybGQ=");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void MaskMobileNumber_WithNull_ShouldReturnEmpty()
     {
         // Arrange
@@ -312,7 +312,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Int_WithNull_ShouldReturnZero()
     {
         // Arrange
@@ -340,7 +340,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Sha256_ShouldHashCorrectly()
     {
         // Arrange
@@ -372,7 +372,7 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Long_WithNull_ShouldReturnZero()
     {
         // Arrange
@@ -385,7 +385,7 @@ public class StringExtensionsTests
         result.Should().Be(0L);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToKebabCase_WithNull_ShouldReturnNull()
     {
         // Arrange

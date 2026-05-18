@@ -1,12 +1,11 @@
 using FluentAssertions;
 using Neo.Application.Exceptions;
-using Xunit;
 
 namespace Neo.Application.Tests.Exceptions;
 
 public class BadRequestExceptionTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void Constructor_WithMessage_ShouldSetMessage()
     {
         // Arrange
@@ -20,7 +19,7 @@ public class BadRequestExceptionTests
         exception.Should().BeAssignableTo<Exception>();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Constructor_WithEmptyMessage_ShouldSetEmptyMessage()
     {
         // Arrange

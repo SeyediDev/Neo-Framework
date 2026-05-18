@@ -1,12 +1,11 @@
 using FluentAssertions;
 using Neo.Application.Models;
-using Xunit;
 
 namespace Neo.Application.Tests.Models;
 
 public class PaginationExtensionsTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void Pagination_WithValidInput_ShouldReturnCorrectPage()
     {
         // Arrange
@@ -23,7 +22,7 @@ public class PaginationExtensionsTests
         result.Last().Should().Be(20);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Pagination_WithFirstPage_ShouldReturnFirstItems()
     {
         // Arrange
@@ -38,7 +37,7 @@ public class PaginationExtensionsTests
         result.Last().Should().Be(10);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Pagination_WithLastPage_ShouldReturnRemainingItems()
     {
         // Arrange
@@ -53,7 +52,7 @@ public class PaginationExtensionsTests
         result.Last().Should().Be(25);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Pagination_WithEmptyList_ShouldReturnEmpty()
     {
         // Arrange
@@ -66,7 +65,7 @@ public class PaginationExtensionsTests
         result.Should().BeEmpty();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void SetPagination_WithHasNext_ShouldSetHasNextTrue()
     {
         // Arrange
@@ -84,7 +83,7 @@ public class PaginationExtensionsTests
         response.Items.Should().HaveCount(10);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void SetPagination_WithoutHasNext_ShouldSetHasNextFalse()
     {
         // Arrange

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Neo.Infrastructure.Data.Repository.Mappings;
+﻿namespace Neo.Domain.Repository;
 
 public class PaginatedList<T>(IReadOnlyCollection<T> items, int count, int pageNumber, int pageSize)
 {
@@ -12,12 +10,4 @@ public class PaginatedList<T>(IReadOnlyCollection<T> items, int count, int pageN
     public bool HasPreviousPage => PageNumber > 1;
 
     public bool HasNextPage => PageNumber < TotalPages;
-
-    public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
-    {
-        var count = await source.CountAsync();
-        var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-
-        return new PaginatedList<T>(items, count, pageNumber, pageSize);
-    }
 }

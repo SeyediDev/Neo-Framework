@@ -11,7 +11,7 @@ public class DictionaryExtensionsTests
         public int Age { get; set; }
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToObject_WithValidDictionary_ShouldCreateObject()
     {
         // Arrange
@@ -29,7 +29,7 @@ public class DictionaryExtensionsTests
         result.Age.Should().Be(30);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToObject_WithEmptyDictionary_ShouldCreateEmptyObject()
     {
         // Arrange
@@ -44,7 +44,7 @@ public class DictionaryExtensionsTests
         result.Age.Should().Be(0);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void MergeObject_WithValidObject_ShouldMergeProperties()
     {
         // Arrange
@@ -61,7 +61,7 @@ public class DictionaryExtensionsTests
         dictionary["Age"].Should().Be(30);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void MergeObject_WithNullObject_ShouldNotAddAnything()
     {
         // Arrange
@@ -75,7 +75,7 @@ public class DictionaryExtensionsTests
         dictionary.Should().BeEmpty();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetOrDefault_WithExistingKey_ShouldReturnValue()
     {
         // Arrange
@@ -88,7 +88,7 @@ public class DictionaryExtensionsTests
         result.Should().Be(100);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetOrDefault_WithNonExistingKey_ShouldReturnDefault()
     {
         // Arrange
@@ -101,7 +101,7 @@ public class DictionaryExtensionsTests
         result.Should().Be(0);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetOrAdd_WithExistingKey_ShouldReturnExistingValue()
     {
         // Arrange
@@ -115,7 +115,7 @@ public class DictionaryExtensionsTests
         dictionary["key1"].Should().Be(100);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetOrAdd_WithNonExistingKey_ShouldAddAndReturnNewValue()
     {
         // Arrange
@@ -129,7 +129,7 @@ public class DictionaryExtensionsTests
         dictionary["key1"].Should().Be(200);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetOrAdd_WithFactory_ShouldUseFactory()
     {
         // Arrange

@@ -59,7 +59,7 @@ public class EfRepositoryIntegrationTests : IDisposable
         _unitOfWork = _context;
     }
 
-    [Fact]
+    [Xunit.Fact]
     public async Task AddAsync_And_SaveChanges_ShouldPersistEntity()
     {
         // Arrange
@@ -76,7 +76,7 @@ public class EfRepositoryIntegrationTests : IDisposable
         saved.Description.Should().Be("Test Description");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public async Task Update_And_SaveChanges_ShouldModifyEntity()
     {
         // Arrange
@@ -96,7 +96,7 @@ public class EfRepositoryIntegrationTests : IDisposable
         updated.Description.Should().Be("Updated Desc");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public async Task Remove_And_SaveChanges_ShouldDeleteEntity()
     {
         // Arrange
@@ -113,7 +113,7 @@ public class EfRepositoryIntegrationTests : IDisposable
         deleted.Should().BeNull();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public async Task GetAllAsync_ShouldReturnAllEntities()
     {
         // Arrange
@@ -138,7 +138,7 @@ public class EfRepositoryIntegrationTests : IDisposable
         result.Select(e => e.Name).Should().Contain(["Entity 1", "Entity 2", "Entity 3"]);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public async Task FirstOrDefaultAsync_WithPredicate_ShouldReturnMatchingEntity()
     {
         // Arrange
@@ -166,7 +166,7 @@ public class EfRepositoryIntegrationTests : IDisposable
         result.Description.Should().Be("Fruit");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public async Task AnyAsync_WithPredicate_ShouldReturnCorrectBoolean()
     {
         // Arrange

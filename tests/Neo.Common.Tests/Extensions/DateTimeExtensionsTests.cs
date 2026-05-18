@@ -5,7 +5,7 @@ namespace Neo.Common.Tests.Extensions;
 
 public class DateTimeExtensionsTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void ToPersianDate_ShouldConvertCorrectly()
     {
         // Arrange - March 21, 2024 (Gregorian) = 1403/01/01 (Persian)
@@ -19,7 +19,7 @@ public class DateTimeExtensionsTests
         result.Should().StartWith("1403");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToPersianDateStr_ShouldReturn8CharacterString()
     {
         // Arrange
@@ -33,7 +33,7 @@ public class DateTimeExtensionsTests
         result.Should().MatchRegex(@"^\d{8}$");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToPersianDateInt_ShouldReturnInteger()
     {
         // Arrange
@@ -47,7 +47,7 @@ public class DateTimeExtensionsTests
         result.Should().BeLessThan(99999999);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToPersianDate_WithDifferentDates_ShouldFormatCorrectly()
     {
         // Arrange

@@ -25,7 +25,7 @@ public enum TestEnum
 
 public class EnumExtensionsTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void GetAttribute_WhenAttributeExists_ShouldReturnAttribute()
     {
         // Arrange
@@ -39,7 +39,7 @@ public class EnumExtensionsTests
         result!.Description.Should().Be("Test Description");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetAttribute_WhenAttributeDoesNotExist_ShouldReturnNull()
     {
         // Arrange
@@ -52,7 +52,7 @@ public class EnumExtensionsTests
         result.Should().BeNull();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToName_WithDescriptionAttribute_ShouldReturnDescription()
     {
         // Arrange
@@ -65,7 +65,7 @@ public class EnumExtensionsTests
         result.Should().Be("Test Description");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToName_WithEnumDescriptionAttribute_ShouldReturnName()
     {
         // Arrange
@@ -78,7 +78,7 @@ public class EnumExtensionsTests
         result.Should().Be("Persian Name");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToName_WithDisplayAttribute_ShouldReturnDisplayName()
     {
         // Arrange
@@ -91,7 +91,7 @@ public class EnumExtensionsTests
         result.Should().Be("Display Name");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToName_WithoutAttribute_ShouldReturnToString()
     {
         // Arrange
@@ -104,7 +104,7 @@ public class EnumExtensionsTests
         result.Should().Be("Value5");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetTitle_WithTitleAttribute_ShouldReturnTitle()
     {
         // Arrange
@@ -117,7 +117,7 @@ public class EnumExtensionsTests
         result.Should().Be("Title Value");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void GetTitle_WithoutTitleAttribute_ShouldReturnToString()
     {
         // Arrange
@@ -130,7 +130,7 @@ public class EnumExtensionsTests
         result.Should().Be("Value5");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ToInt_ShouldConvertToInteger()
     {
         // Arrange

@@ -1,10 +1,8 @@
-﻿using Xunit;
-
-namespace Neo.Application.Tests;
+﻿namespace Neo.Application.Tests;
 
 public class UnitTest1
 {
-    [Fact]
+    [Xunit.Fact]
     public void Test1()
     {
 

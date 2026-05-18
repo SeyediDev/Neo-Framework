@@ -5,7 +5,7 @@ namespace Neo.Common.Tests.Utility;
 
 public class Base64FileValidatorTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithValidPngBase64_ShouldReturnValid()
     {
         // Arrange - Valid PNG base64 (1x1 transparent PNG)
@@ -21,7 +21,7 @@ public class Base64FileValidatorTests
         result.ErrorMessage.Should().Be("Valid file");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithEmptyString_ShouldReturnInvalid()
     {
         // Arrange
@@ -37,7 +37,7 @@ public class Base64FileValidatorTests
         result.ErrorMessage.Should().Be("Input is empty");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithNullString_ShouldReturnInvalid()
     {
         // Arrange
@@ -51,7 +51,7 @@ public class Base64FileValidatorTests
         result.ErrorMessage.Should().Be("Input is empty");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithInvalidBase64_ShouldReturnInvalid()
     {
         // Arrange
@@ -65,7 +65,7 @@ public class Base64FileValidatorTests
         result.ErrorMessage.Should().Be("Invalid Base64 format");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithFileExceedingMaxSize_ShouldReturnInvalid()
     {
         // Arrange - Create a large base64 string (larger than 5MB)
@@ -81,7 +81,7 @@ public class Base64FileValidatorTests
         result.ErrorMessage.Should().Be("File too large");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithValidJpegBase64_ShouldReturnValid()
     {
         // Arrange - Minimal valid JPEG (just header)
@@ -96,7 +96,7 @@ public class Base64FileValidatorTests
         result.mimeType.Should().Be("image/jpeg");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithUnsupportedFileType_ShouldReturnInvalid()
     {
         // Arrange - Create base64 that doesn't match any known type
@@ -111,7 +111,7 @@ public class Base64FileValidatorTests
         result.ErrorMessage.Should().Be("Unsupported file type");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithCustomMaxSize_ShouldRespectLimit()
     {
         // Arrange
@@ -127,7 +127,7 @@ public class Base64FileValidatorTests
         result.ErrorMessage.Should().Be("File too large");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void ValidateBase64File_WithValidPdfBase64_ShouldReturnValid()
     {
         // Arrange - Minimal PDF header

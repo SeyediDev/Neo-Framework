@@ -1,12 +1,11 @@
 using FluentAssertions;
 using Neo.Domain.Dto;
-using Xunit;
 
 namespace Neo.Domain.Tests.Dto;
 
 public class ResultTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void Success_ShouldCreateSuccessfulResult()
     {
         // Act
@@ -19,7 +18,7 @@ public class ResultTests
         result.ErrorMessage.Should().BeEmpty();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Failure_WithSingleError_ShouldCreateFailedResult()
     {
         // Arrange
@@ -36,7 +35,7 @@ public class ResultTests
         result.ErrorMessage.Should().Be(error);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Failure_WithMultipleErrors_ShouldCreateFailedResult()
     {
         // Arrange
@@ -53,7 +52,7 @@ public class ResultTests
         result.ErrorMessage.Should().Be("Error 1, Error 2, Error 3");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Failure_WithEmptyErrors_ShouldCreateFailedResult()
     {
         // Arrange
@@ -72,7 +71,7 @@ public class ResultTests
 
 public class ResultTTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void Success_WithData_ShouldCreateSuccessfulResult()
     {
         // Arrange
@@ -89,7 +88,7 @@ public class ResultTTests
         result.ErrorMessage.Should().BeEmpty();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Failure_WithSingleError_ShouldCreateFailedResult()
     {
         // Arrange
@@ -107,7 +106,7 @@ public class ResultTTests
         result.ErrorMessage.Should().Be(error);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Failure_WithMultipleErrors_ShouldCreateFailedResult()
     {
         // Arrange
@@ -125,7 +124,7 @@ public class ResultTTests
         result.ErrorMessage.Should().Be("Error 1, Error 2");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Success_WithNullData_ShouldCreateSuccessfulResult()
     {
         // Arrange
@@ -141,7 +140,7 @@ public class ResultTTests
         result.Errors.Should().BeEmpty();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Success_WithComplexObject_ShouldCreateSuccessfulResult()
     {
         // Arrange

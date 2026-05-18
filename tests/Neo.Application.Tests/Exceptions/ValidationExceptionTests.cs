@@ -1,13 +1,12 @@
 using FluentAssertions;
 using FluentValidation.Results;
 using Neo.Application.Exceptions;
-using Xunit;
 
 namespace Neo.Application.Tests.Exceptions;
 
 public class ValidationExceptionTests
 {
-    [Fact]
+    [Xunit.Fact]
     public void Constructor_WithoutParameters_ShouldInitializeEmptyErrors()
     {
         // Act
@@ -18,7 +17,7 @@ public class ValidationExceptionTests
         exception.Message.Should().Be("One or more validation failures have occurred.");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Constructor_WithValidationFailures_ShouldGroupErrorsByPropertyName()
     {
         // Arrange
@@ -41,7 +40,7 @@ public class ValidationExceptionTests
         exception.Errors["Email"].Should().Contain("Email is invalid");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Constructor_WithEmptyFailures_ShouldInitializeEmptyErrors()
     {
         // Arrange
@@ -54,7 +53,7 @@ public class ValidationExceptionTests
         exception.Errors.Should().BeEmpty();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Constructor_WithNullFailures_ShouldThrow()
     {
         // Arrange

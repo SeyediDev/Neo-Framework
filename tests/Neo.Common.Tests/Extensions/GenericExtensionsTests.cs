@@ -18,7 +18,7 @@ public class GenericExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void In_WithNullParams_ShouldThrow()
     {
         // Arrange
@@ -44,7 +44,7 @@ public class GenericExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void In_WithNullEnumerable_ShouldThrow()
     {
         // Arrange
@@ -83,7 +83,7 @@ public class GenericExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Try_WithNoException_ShouldExecuteAction()
     {
         // Arrange
@@ -97,7 +97,7 @@ public class GenericExtensionsTests
         executed.Should().BeTrue();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Try_WithException_ShouldCatchException()
     {
         // Arrange
@@ -123,7 +123,7 @@ public class GenericExtensionsTests
         result.Should().Be(expected);
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void Yield_ShouldReturnSingleItem()
     {
         // Arrange
@@ -137,7 +137,7 @@ public class GenericExtensionsTests
         result.First().Should().Be("test");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void TryGetValue_WithExistingKey_ShouldReturnTrue()
     {
         // Arrange
@@ -153,7 +153,7 @@ public class GenericExtensionsTests
         key.Should().Be("key1");
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void NotNullNorEmpty_WithNull_ShouldReturnFalse()
     {
         // Arrange
@@ -166,7 +166,7 @@ public class GenericExtensionsTests
         result.Should().BeFalse();
     }
 
-    [Fact]
+    [Xunit.Fact]
     public void TryGetValue_WithNullKey_ShouldUseReplacement()
     {
         // Arrange
