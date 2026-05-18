@@ -95,11 +95,12 @@ public class TracesController : ControllerBase
     /// </summary>
     [HttpPost("otlp")]
     [Consumes("application/json", "application/x-protobuf")]
-    public async Task<IResult> ReceiveOtlpTraces(HttpRequest request)
+    public async Task<IResult> ReceiveOtlpTraces()
     {
         try
         {
-            using var reader = new StreamReader(request.Body, Encoding.UTF8);
+			var request = HttpContext.Request;
+			using var reader = new StreamReader(request.Body, Encoding.UTF8);
             var json = await reader.ReadToEndAsync();
             
             _logger.LogDebug("Received OTLP traces data: {Length} bytes", json.Length);

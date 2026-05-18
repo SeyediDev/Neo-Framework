@@ -117,11 +117,12 @@ public class LogsController : ControllerBase
     /// </summary>
     [HttpPost("otlp")]
     [Consumes("application/json")]
-    public async Task<IResult> ReceiveOtlpLogs(HttpRequest request)
+    public async Task<IResult> ReceiveOtlpLogs()
     {
         try
         {
-            using var reader = new StreamReader(request.Body, Encoding.UTF8);
+			var request = HttpContext.Request;
+			using var reader = new StreamReader(request.Body, Encoding.UTF8);
             var json = await reader.ReadToEndAsync();
             
             _logger.LogDebug("Received OTLP logs data: {Length} bytes", json.Length);
