@@ -171,9 +171,9 @@ public static class DependencyInjection
                 // پیدا کردن مسیر source از assembly location
                 if (!string.IsNullOrEmpty(assemblyLocation))
                 {
-                    // مسیر assembly: D:\Projects\Neo\src\Neo.Endpoint\bin\Debug\net8.0\Neo.Endpoint.dll
+                    // مسیر assembly: D:\Projects\Neo\src\Neo.Endpoint\bin\Debug\net10.0\Neo.Endpoint.dll
                     // مسیر project: D:\Projects\Neo\src\Neo.Endpoint
-                    var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? ""; // bin\Debug\net8.0
+                    var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? ""; // bin\Debug\net10.0
                     
                     // استفاده از مسیر نسبی برای پیدا کردن Views (قابل اعتمادتر)
                     var relativeViewsPath = Path.GetFullPath(Path.Combine(assemblyDir, "..", "..", "..", "Views"));

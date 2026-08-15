@@ -44,16 +44,16 @@ public class NeoMonitoringViewLocationExpander : IViewLocationExpander
             
             // همچنین بررسی source directory پروژه فعلی (برای Development)
             // پیدا کردن source directory از base directory
-            // baseDirectory: D:\Projects\Club\Backend\src\Channel\Club.Channel.Api\bin\Debug\net8.0
+            // baseDirectory: D:\Projects\Club\Backend\src\Channel\Club.Channel.Api\bin\Debug\net10.0
             // source directory: D:\Projects\Club\Backend\src\Channel\Club.Channel.Api\Views
-            var baseDir = Path.GetDirectoryName(baseDirectory); // bin\Debug\net8.0
+            var baseDir = Path.GetDirectoryName(baseDirectory); // bin\Debug\net10.0
             if (!string.IsNullOrEmpty(baseDir))
             {
-                // رفتن به root پروژه از bin\Debug\net8.0
+                // رفتن به root پروژه از bin\Debug\net10.0
                 var possibleSourcePaths = new[]
                 {
-                    Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "Views")), // از bin\Debug\net8.0 به Views
-                    Path.GetFullPath(Path.Combine(baseDir, "..", "..", "Views")), // از bin\Debug به Views (اگر net8.0 نباشد)
+                    Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "Views")), // از bin\Debug\net10.0 به Views
+                    Path.GetFullPath(Path.Combine(baseDir, "..", "..", "Views")), // از bin\Debug به Views (اگر net10.0 نباشد)
                 };
                 
                 foreach (var sourceViewsPath in possibleSourcePaths)
@@ -93,9 +93,9 @@ public class NeoMonitoringViewLocationExpander : IViewLocationExpander
         // پیدا کردن مسیر source از assembly location
         if (!string.IsNullOrEmpty(assemblyLocation))
         {
-            // مسیر assembly: D:\Projects\Neo\src\Neo.Endpoint\bin\Debug\net8.0\Neo.Endpoint.dll
+            // مسیر assembly: D:\Projects\Neo\src\Neo.Endpoint\bin\Debug\net10.0\Neo.Endpoint.dll
             // مسیر project: D:\Projects\Neo\src\Neo.Endpoint
-            var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? ""; // bin\Debug\net8.0
+            var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? ""; // bin\Debug\net10.0
             
             // استفاده از مسیر نسبی برای پیدا کردن Views (قابل اعتمادتر)
             var relativeViewsPath = Path.GetFullPath(Path.Combine(assemblyDir, "..", "..", "..", "Views"));
@@ -103,7 +103,7 @@ public class NeoMonitoringViewLocationExpander : IViewLocationExpander
             // مسیرهای مختلف برای پیدا کردن Views
             var possiblePaths = new[]
             {
-                relativeViewsPath, // مسیر نسبی از bin\Debug\net8.0: D:\Projects\Neo\src\Neo.Endpoint\Views
+                relativeViewsPath, // مسیر نسبی از bin\Debug\net10.0: D:\Projects\Neo\src\Neo.Endpoint\Views
             };
             
             foreach (var sourceViewsPath in possiblePaths)
