@@ -3,7 +3,7 @@
 <div align="center">
 
 ![Neo Framework](https://img.shields.io/badge/Neo-Framework-blue)
-[![.NET 8.0](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com/)
+[![.NET 10.0](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 
@@ -17,7 +17,7 @@
 
 ## 🌟 What is Neo?
 
-Neo is a production-ready .NET 8 framework that implements **Clean Architecture**, **CQRS**, and **Domain-Driven Design** patterns out of the box. Built with best practices and enterprise-grade features, Neo helps you build scalable, maintainable applications faster.
+Neo is a production-ready .NET 10 framework that implements **Clean Architecture**, **CQRS**, and **Domain-Driven Design** patterns out of the box. Built with best practices and enterprise-grade features, Neo helps you build scalable, maintainable applications faster.
 
 ### Why Neo?
 
@@ -289,9 +289,9 @@ Give a ⭐️ if this project helped you!
 
 ## 🙏 Acknowledgments
 
-- Inspired by [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) by Robert C. Martin
+- Inspired by [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/010/13/the-clean-architecture.html) by Robert C. Martin
 - Built with [MediatR](https://github.com/jbogard/MediatR)
-- Powered by [.NET 8](https://dotnet.microsoft.com/)
+- Powered by [.NET 10](https://dotnet.microsoft.com/)
 
 ---
 
