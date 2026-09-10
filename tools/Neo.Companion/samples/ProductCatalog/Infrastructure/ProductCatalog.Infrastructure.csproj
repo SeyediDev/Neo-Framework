@@ -3,5 +3,6 @@
     <ProjectReference Include="../Application/ProductCatalog.Application.csproj" />
     <ProjectReference Include="$(NeoRoot)/src/Neo.Infrastructure/Neo.Infrastructure.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.13" />
   </ItemGroup>
 </Project>
