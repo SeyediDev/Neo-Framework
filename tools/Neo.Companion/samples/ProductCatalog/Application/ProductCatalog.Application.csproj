@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../Domain/ProductCatalog.Domain.csproj" />
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+  </ItemGroup>
+</Project>

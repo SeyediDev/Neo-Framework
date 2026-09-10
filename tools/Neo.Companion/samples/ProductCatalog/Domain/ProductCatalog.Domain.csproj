@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup><ProjectReference Include="$(NeoRoot)/src/Neo.Domain/Neo.Domain.csproj" /></ItemGroup>
+</Project>

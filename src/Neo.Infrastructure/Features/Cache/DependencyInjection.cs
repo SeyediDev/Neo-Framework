@@ -9,8 +9,7 @@ public static class DependencyInjection
     public static IServiceCollection AddNeoMemoryCacheServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMemoryCache();
-		//services.AddScoped<ICacheService, MemoryCacheService>();
-		services.AddScoped<ICacheService, DbCacheService>();
+		services.AddScoped<ICacheService, MemoryCacheService>();
 		return services;
     }
     

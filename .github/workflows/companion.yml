@@ -1,0 +1,44 @@
+name: Neo Companion
+on:
+  push:
+    paths: ['tools/Neo.Companion/**', '.agents/skills/**', 'src/**', 'tests/Neo.Domain.Tests/Telemetry/**', 'Directory.*.props', '.github/workflows/companion.yml']
+  pull_request:
+    paths: ['tools/Neo.Companion/**', '.agents/skills/**', 'src/**', 'tests/Neo.Domain.Tests/Telemetry/**', 'Directory.*.props', '.github/workflows/companion.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-test-package:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify contract snapshot
+        run: python tools/Neo.Companion/scripts/sync_knowledge.py --check
+      - name: Build
+        run: dotnet build tools/Neo.Companion/Neo.Companion.slnx -c Release
+      - name: Test application and telemetry regressions
+        run: dotnet test tools/Neo.Companion/tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj -c Release --no-build --logger trx --results-directory tools/Neo.Companion/artifacts/test-results
+      - name: Exercise real MCP protocol
+        run: python tools/Neo.Companion/scripts/smoke_mcp.py --server-dll tools/Neo.Companion/src/Neo.Companion.Mcp/bin/Release/net10.0/Neo.Companion.Mcp.dll --project-root tools/Neo.Companion/samples
+      - name: Publish local MCP
+        run: dotnet publish tools/Neo.Companion/src/Neo.Companion.Mcp/Neo.Companion.Mcp.csproj -c Release --no-build -o tools/Neo.Companion/artifacts/mcp
+      - name: Package server and skills
+        run: python tools/Neo.Companion/scripts/package_companion.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: neo-companion-${{ matrix.os }}
+          path: tools/Neo.Companion/artifacts/neo-companion.zip
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-test-results-${{ matrix.os }}
+          path: tools/Neo.Companion/artifacts/test-results

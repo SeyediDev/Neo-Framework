@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/Neo.Companion.Mcp/Neo.Companion.Mcp.csproj" />
+  <Project Path="samples/ProductCatalog/Domain/ProductCatalog.Domain.csproj" />
+  <Project Path="samples/ProductCatalog/Application/ProductCatalog.Application.csproj" />
+  <Project Path="samples/ProductCatalog/Infrastructure/ProductCatalog.Infrastructure.csproj" />
+  <Project Path="samples/ProductCatalog/Api/ProductCatalog.Api.csproj" />
+  <Project Path="tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj" />
+  <Project Path="samples/TelemetryDemo/TelemetryDemo.csproj" />
+</Solution>
