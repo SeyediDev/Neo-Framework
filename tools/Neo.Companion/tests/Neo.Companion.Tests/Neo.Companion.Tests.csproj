@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsTestProject>true</IsTestProject><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(NeoRoot)/tests/Neo.Domain.Tests/Telemetry/*.cs" Link="Telemetry/%(Filename)%(Extension)" />
+    <ProjectReference Include="../../samples/TelemetryDemo/TelemetryDemo.csproj" />
+    <ProjectReference Include="../../src/Neo.Companion.Mcp/Neo.Companion.Mcp.csproj" />
+    <ProjectReference Include="../../samples/ProductCatalog/Api/ProductCatalog.Api.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"><PrivateAssets>all</PrivateAssets></PackageReference>
+  </ItemGroup>
+</Project>

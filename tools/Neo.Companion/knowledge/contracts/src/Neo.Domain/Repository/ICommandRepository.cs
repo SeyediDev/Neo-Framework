@@ -1,0 +1,37 @@
+using System.Linq.Expressions;
+
+namespace Neo.Domain.Repository;
+
+public interface ICommandRepository<TEntity> : ICommandRepository<TEntity, int>
+    where TEntity : class, IEntity<int>, new();
+
+public interface ICommandRepositoryL<TEntity> : ICommandRepository<TEntity, long>
+	where TEntity : class, IEntity<long>, new();
+
+public interface ICommandRepository<TEntity, TKey> : IRepository<TEntity, TKey>
+    where TEntity : class, IEntity<TKey>, new()
+{
+    Task<TEntity?> GetAsync(TKey id, CancellationToken cancellationToken);
+    void Add(TEntity entity);
+    Task AddAsync(TEntity entity)=> AddAsync(entity, CancellationToken.None);
+	Task AddAsync(TEntity entity, CancellationToken cancellationToken);
+    Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
+    void Update(TEntity entity);
+
+    void Remove(TEntity entity);
+    Task<bool?> RemoveAsync(TKey id, CancellationToken cancellationToken = default);
+    Task<bool?> ExpireAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
+	Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken, 
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
+	Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken)=>
+		FirstOrDefaultAsync(x=> x.Id!=null && x.Id.Equals(id), cancellationToken);
+
+	Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(Expression<Func<TEntity, TProperty>> include,
+        Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
+    Task<TEntity?> FirstOrDefaultWithIncludeAsync<TProperty>(
+      IEnumerable<Expression<Func<TEntity, object>>> includes, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken);
+    void AddRange(IEnumerable<TEntity> entities);
+    void RemoveRange(IEnumerable<TEntity> entities);
+	async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)=> await UnitOfWork.SaveChangesAsync(cancellationToken);
+}

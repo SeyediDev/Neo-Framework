@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.2.0</Version></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <Content Include="../../knowledge/**/*" Link="knowledge/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../samples/ProductCatalog/**/*.cs" Exclude="../../samples/ProductCatalog/**/obj/**;../../samples/ProductCatalog/**/bin/**" Link="examples/ProductCatalog/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../samples/ProductCatalog/**/*.csproj" Link="examples/ProductCatalog/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../samples/TelemetryDemo/**/*.cs" Exclude="../../samples/TelemetryDemo/**/obj/**;../../samples/TelemetryDemo/**/bin/**" Link="examples/TelemetryDemo/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../samples/TelemetryDemo/**/*.csproj" Link="examples/TelemetryDemo/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

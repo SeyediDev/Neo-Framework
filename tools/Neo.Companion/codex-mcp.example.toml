@@ -1,0 +1,6 @@
+# Replace both paths with your checkout/application paths. Build/publish first.
+[mcp_servers.neo]
+command = "dotnet"
+args = ["/absolute/path/to/Neo/tools/Neo.Companion/artifacts/mcp/Neo.Companion.Mcp.dll"]
+[mcp_servers.neo.env]
+NEO_PROJECT_ROOT = "/absolute/path/to/your/application"

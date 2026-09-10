@@ -1,0 +1,84 @@
+{
+  "baseline": "sha256:e857f090ec0c470f29e4c71870d9269852a4153d9151021ed98cc0ea6be3b037",
+  "repository": "https://github.com/SeyediDev/Neo-Framework",
+  "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
+  "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
+  "sources": [
+    {
+      "path": "src/Neo.Domain/Repository/IRepository.cs",
+      "sha256": "ea47f8a1d8c7ba22f250df36d22389b832eebc1fabacf1f3c130c737b51e9a2d"
+    },
+    {
+      "path": "src/Neo.Domain/Repository/ICommandRepository.cs",
+      "sha256": "3564a4a725746fb5cdad1fe88b3c3b0356e38a638080a4454d6ada48dab6fb41"
+    },
+    {
+      "path": "src/Neo.Domain/Repository/IQueryRepository.cs",
+      "sha256": "21a488af1f288b1d2f68341bfd8f943c8563be436a7ac39b9ffcc4da87644bb4"
+    },
+    {
+      "path": "src/Neo.Domain/Repository/IUnitOfWork.cs",
+      "sha256": "9c29cdae0e561f3ae24279ccc6497292584d5a1b7c60550de7fe26ed2297253c"
+    },
+    {
+      "path": "src/Neo.Domain/Entities/Base/BaseEntity.cs",
+      "sha256": "0c94fbeaabd0c716082c85e286d18212797dd0c1b9bd0f74ef85575cbff9ec3b"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Data/Repository/Ef/EfRepositoryBase.cs",
+      "sha256": "b0a49b4d61a13e56f6cc736178714e230849ad38a2daf989b0676b6b0462f988"
+    },
+    {
+      "path": "src/Neo.Application/Features/GenericEntity/Commands/CreateGenericEntity.cs",
+      "sha256": "75f4f83d0452b8b5c95f3bd8b83344de1812ab5f0553ce4a7568353b7c63da83"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelementryBehaviour.cs",
+      "sha256": "4ef2a4098fdbdad4a015546561137da49c3007e434cd9c438e53b42170149bea"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelementryObject.cs",
+      "sha256": "92536aee4cde08cbea5e03d07e69682773e2066ac0a1e4699c647e703ff951ae"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelemetryAttribute.cs",
+      "sha256": "8916d200a06b1be3f6f60dd97aeffb928d5d0ee18ac439ff88bceec89c53aec9"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelemetryInterceptor.cs",
+      "sha256": "72026d775a1eacbbb37ed12fa2c26b3f5b331680b7c0d335f87144611b333f3c"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelemetryInvocation.cs",
+      "sha256": "a026353a892cdabf9c9797d9fdd63d50385a9d772320adec9d6a87a3b615a137"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelemetryProxyFactory.cs",
+      "sha256": "84e6eff73cfd373f063b5b6a47df0905b9fad6152d27ac7c00b8a81cd21fb2de"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelemetryProxy.cs",
+      "sha256": "1c46ee92c3f7c6c908bb9fe3b763f096d1891e98a98a6c8ccbf88a1ada50aeb4"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelemetryDispatchProxy.cs",
+      "sha256": "73b0e696e8f892b0a7199adbfc7e66f578f739b9f71d13667f1d8304b5a6387b"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/ServiceCollectionExtensions.cs",
+      "sha256": "94f44860c28954f95ce992801fcff1815c3f911cf952ddecea72d24fe6387555"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Telementry/TelemetryOptions.cs",
+      "sha256": "1173c99cff0946a127b202ce8b7fee7f2dc088701bf0cd09adddbdc597eb709e"
+    },
+    {
+      "path": "src/Neo.Domain/DependencyInjection.cs",
+      "sha256": "7311acc0675ef676c0e5d3daf1940ef1dca8d419e2a0f48defcb26387a274b6b"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Telementry/DependencyInjection.cs",
+      "sha256": "03e0abf80b3bac57bdfe4ff2f32e895bacae073733f4d8ece8b0cd7960fbc5d6"
+    }
+  ]
+}

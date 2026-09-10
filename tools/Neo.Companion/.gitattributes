@@ -1,0 +1,2 @@
+# Source snapshots preserve upstream formatting for fingerprint checks.
+knowledge/contracts/** -whitespace
