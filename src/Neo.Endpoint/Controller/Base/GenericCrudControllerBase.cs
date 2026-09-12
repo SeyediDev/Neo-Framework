@@ -35,7 +35,7 @@ public abstract partial class GenericCrudControllerBase<TDto, TEntity, TKey>
             PageNumber = pageNumber,
             PageSize = pageSize
         }, cancellationToken);
-        if (entities?.Items != null)
+        if (entities?.Items is { Count: > 0 })
         {
             await GetCultureTerms(entities.Items, cultureTermRepository, cancellationToken);
         }
@@ -74,7 +74,8 @@ public abstract partial class GenericCrudControllerBase<TDto, TEntity, TKey>
             await SetCultureTerms(true, entityKey.Value.ToInt(), dto, requesterUser,
                 cultureTermCommandRepository, cultureTermRepository, cancellationToken);
         }
-        return TypedResults.Created(string.Empty, dto);
+        // Return a usable Location header for clients that need to follow the new resource.
+        return TypedResults.Created($"{Request.PathBase}{Request.Path}/{entityKey}", dto);
     }
 
     [HttpPut("{id}")]
@@ -87,7 +88,7 @@ public abstract partial class GenericCrudControllerBase<TDto, TEntity, TKey>
         ICultureTermQueryRepository cultureTermRepository,
         TKey? id, [FromBody] TDto dto, CancellationToken cancellationToken = default)
     {
-        if (!id.Equals(dto.Id))
+        if (!id.HasValue || !dto.Id.HasValue || !id.Value.Equals(dto.Id.Value))
         {
             return TypedResults.BadRequest();
         }
@@ -108,8 +109,8 @@ public abstract partial class GenericCrudControllerBase<TDto, TEntity, TKey>
     {
         _ = await handler.Send(new DeleteGenericEntityCommand<TEntity, TKey> { Id = id }, cancellationToken);
         Dictionary<int, List<CultureTerm>> dicTerms = await cultureTermRepository.GetTerms(typeof(TEntity).Name, [id.ToInt()], cancellationToken);
-        List<CultureTerm>? cultureTerms = dicTerms.FirstOrDefault().Value;
-        foreach (var cultureTerm in cultureTerms)
+        List<CultureTerm>? cultureTerms = dicTerms.Count == 0 ? null : dicTerms.First().Value;
+        foreach (CultureTerm cultureTerm in cultureTerms ?? [])
         {
             cultureTerm.ExpireDate = DateTime.UtcNow;
             cultureTerm.IsDeleted = true;
