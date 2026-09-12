@@ -10,6 +10,7 @@ import threading
 parser = argparse.ArgumentParser()
 parser.add_argument('--server-dll', required=True)
 parser.add_argument('--project-root', required=True)
+parser.add_argument('--doctor-expect-code', help='Optional expected Doctor code, or none for no findings.')
 args = parser.parse_args()
 env = os.environ.copy()
 env['NEO_PROJECT_ROOT'] = str(Path(args.project_root).resolve())
@@ -55,7 +56,7 @@ try:
         'capabilities': {}, 'clientInfo': {'name': 'neo-companion-smoke', 'version': '0.1.0'}})
     send({'jsonrpc': '2.0', 'method': 'notifications/initialized'})
     tools = request(2, 'tools/list', {})['tools']
-    expected = {'neo_inspect_project', 'neo_search_docs', 'neo_get_example', 'neo_get_telemetry_recipe'}
+    expected = {'neo_inspect_project', 'neo_search_docs', 'neo_get_example', 'neo_get_telemetry_recipe', 'neo_diagnose_project'}
     assert {x['name'] for x in tools} == expected, tools
     assert all(x['annotations']['readOnlyHint'] for x in tools), tools
     docs = call(3, 'neo_search_docs', {'query': 'ICommandRepository', 'limit': 8})
@@ -70,9 +71,17 @@ try:
         recipe = call(identifier, 'neo_get_telemetry_recipe', {'mode': mode, 'baseline': docs['baseline']})
         assert recipe['mode'] == mode and recipe['files']
         assert 'ITelementryBehaviour' in recipe['guide']
+    diagnosis = call(9, 'neo_diagnose_project', {'configurationSection': 'TelemetryOptions'})
+    assert diagnosis['mode'] == 'csharp-syntax-and-json' and diagnosis['limitations']
+    assert diagnosis['status'] in {'review-required', 'incomplete'}
+    if args.doctor_expect_code == 'none':
+        assert not diagnosis['findings'], diagnosis
+    elif args.doctor_expect_code:
+        assert any(x['code'] == args.doctor_expect_code for x in diagnosis['findings']), diagnosis
     print(json.dumps({'status': 'passed', 'protocol': init['protocolVersion'], 'tools': sorted(expected),
         'example_files': len(example['files']), 'projects': len(inspection['projects']),
-        'checks': ['initialize', 'tool-discovery', 'read-only-annotations', 'docs-search', 'project-inspection', 'example-retrieval', 'wrong-version-error', 'telemetry-manual', 'telemetry-attribute']}, indent=2))
+        'doctor_codes': sorted({x['code'] for x in diagnosis['findings']}),
+        'checks': ['initialize', 'tool-discovery', 'read-only-annotations', 'docs-search', 'project-inspection', 'example-retrieval', 'wrong-version-error', 'telemetry-manual', 'telemetry-attribute', 'doctor-diagnosis']}, indent=2))
 finally:
     process.stdin.close()
     try: process.wait(timeout=5)

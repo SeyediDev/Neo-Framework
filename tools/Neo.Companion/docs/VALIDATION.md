@@ -1,4 +1,26 @@
-# Validation record — 0.2.0
+# Validation record — 0.3.0
+
+Validated locally on 2026-09-10, Windows x64, .NET SDK 10.0.401 / runtime 10.0.12.
+
+| Check | Result |
+|---|---|
+| Complete Companion suite including Doctor | **52 passed, 0 failed, 0 skipped** |
+| Direct-registration fixture | Business result preserved, span absent, NEO-TEL001 reported |
+| Missing-requester fixture | Actual DI resolution fails on IRequesterUser; NEO-DI001 reported |
+| Invalid-endpoint fixture | Actual trace-provider resolution fails on malformed URI; NEO-CONFIG001 reported |
+| Corrected fixture | Service resolves, orders.lookup span has Ok status, no Doctor findings |
+| Real stdio MCP on broken and corrected fixtures | All five tools discovered/called; expected Doctor results |
+| neo-doctor skill structure | Passed |
+| Framework source fingerprint and maintained doc links | Passed |
+
+Doctor tests also exercise evidence line numbers, qualified attributes, manual wrappers, duplicate type names, comments/string literals, generated outputs, conditional compilation, malformed/oversized files, configurable JSON sections, withheld config values, read-only behavior and the finding budget. No user application project is executed by Doctor itself.
+
+This is syntax-level diagnosis. Aliases, registration control flow, external modules, preprocessor settings and environment overrides are not resolved. Symlink rejection is implemented but was not independently exercised by these local tests. No independent model-based skill evaluation was performed. This record reports local checks; the GitHub workflow runs Release build/test/publish and the broken/corrected MCP cases on Windows and Linux.
+
+The local restore again used an official-package local feed with NuGetAudit=false due to the environment's .NET TLS limitation. CI retains NuGet audit. SQLitePCLRaw.bundle_e_sqlite3 remains pinned to 2.1.13 from the previous CI repair. Full legacy Neo test suites were not run.
+
+## Previous telemetry validation (0.2.0)
+
 
 Validated on 2026-09-10, Windows x64, .NET SDK 10.0.401 / runtime 10.0.12.
 Base commit: `e34c0ad5336c71e0cf3be4bccb7f425aecccea9d`. Repaired source is identified by the SHA-256 fingerprint in knowledge/manifest.json; the base commit alone does not include these changes.

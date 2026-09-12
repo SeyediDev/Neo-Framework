@@ -3,6 +3,10 @@
   <ItemGroup>
     <Compile Include="$(NeoRoot)/tests/Neo.Domain.Tests/Telemetry/*.cs" Link="Telemetry/%(Filename)%(Extension)" />
     <ProjectReference Include="../../samples/TelemetryDemo/TelemetryDemo.csproj" />
+    <ProjectReference Include="../../samples/DoctorCases/DirectRegistration/DirectRegistration.csproj" />
+    <ProjectReference Include="../../samples/DoctorCases/MissingRequester/MissingRequester.csproj" />
+    <ProjectReference Include="../../samples/DoctorCases/Healthy/Healthy.csproj" />
+    <Content Include="../../samples/DoctorCases/**/*.cs;../../samples/DoctorCases/**/*.json" Exclude="../../samples/DoctorCases/**/bin/**;../../samples/DoctorCases/**/obj/**" Link="DoctorCases/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Neo.Companion.Mcp/Neo.Companion.Mcp.csproj" />
     <ProjectReference Include="../../samples/ProductCatalog/Api/ProductCatalog.Api.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />

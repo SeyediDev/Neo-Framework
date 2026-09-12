@@ -2,13 +2,14 @@
 
 Developer assistance for Neo Framework, maintained **inside the Neo repository**.
 
-[شروع فارسی](docs/START-HERE.fa.md) · [Telemetry walkthrough](docs/TELEMETRY.fa.md) · [Validation](docs/VALIDATION.md)
+[شروع فارسی](docs/START-HERE.fa.md) · [Telemetry walkthrough](docs/TELEMETRY.fa.md) · [Neo Doctor](docs/DOCTOR.fa.md) · [Validation](docs/VALIDATION.md)
 
 ## Repository layout
 
 ```text
 .agents/skills/neo-feature/       Feature-building skill
 .agents/skills/neo-telemetry/     Telemetry skill
+.agents/skills/neo-doctor/        DI and telemetry diagnosis skill
 src/Neo.Domain/Features/Telementry/       Framework telemetry runtime
 src/Neo.Infrastructure/Features/Telementry/  Export setup
 tests/Neo.Domain.Tests/Telemetry/         Runtime regression tests
@@ -60,8 +61,11 @@ Use [codex-mcp.example.toml](codex-mcp.example.toml) in your client's MCP settin
 | `neo_search_docs` | Return matching guidance/source lines and a source fingerprint |
 | `neo_get_example` | Retrieve the ProductCatalog example for the matching fingerprint |
 | `neo_get_telemetry_recipe` | Retrieve manual/attribute telemetry setup, source and semantics |
+| `neo_diagnose_project` | Inspect C# syntax and selected appsettings keys for DI/telemetry review candidates |
 
 These tools provide developer guidance, not access to running applications' production traces. They make no model calls and require no OpenAI API key. The inspector does not evaluate imports or resolve installed versions. Recipe/example retrieval rejects an unmatched fingerprint.
+
+Doctor uses Roslyn syntax trees without compiling or executing the application. Point `NEO_PROJECT_ROOT` at one consuming application and set `configurationSection` to its actual telemetry JSON section (default `TelemetryOptions`, empty for root). Results include rule codes, file locations, sanitized evidence, suggested checks and coverage limits. They never assert runtime health or return configuration values. Conditional compilation, external registrations and environment overrides require follow-up. See the [teaching cases](samples/DoctorCases/README.md) for broken and corrected services exercised by real runtime tests.
 
 The skills are discoverable under the repo's `.agents/skills`. For another application, copy the desired skill folder into its `.agents/skills` directory. Try `$neo-telemetry` with a real service instrumentation request. The skills also work by reading source when MCP is unavailable.
 

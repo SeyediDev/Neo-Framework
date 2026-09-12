@@ -7,6 +7,12 @@ namespace Neo.Companion.Mcp;
 [McpServerToolType]
 public sealed class NeoTools(CompanionCatalog catalog)
 {
+    [McpServerTool(Name = "neo_diagnose_project", ReadOnly = true, Destructive = false, OpenWorld = false)]
+    [Description("Inspect C# syntax and selected appsettings keys under NEO_PROJECT_ROOT for Neo DI and telemetry issues. Returns review candidates with file locations, evidence, suggestions and coverage limits. Does not execute code, evaluate MSBuild, resolve symbols, return config values or prove runtime health. Configure the root to one consuming application.")]
+    public string DiagnoseProject(
+        [Description("Telemetry JSON section, colon-separated; defaults to TelemetryOptions. Use an empty string for root-level options. Environment overrides are not evaluated.")] string configurationSection = "TelemetryOptions")
+        => JsonSerializer.Serialize(catalog.DiagnoseProject(configurationSection), JsonSerializerOptions.Web);
+
     [McpServerTool(Name = "neo_inspect_project", ReadOnly = true, Destructive = false, OpenWorld = false)]
     [Description("Inspect .NET project declarations under the server-configured NEO_PROJECT_ROOT. Reads csproj and Directory props only; does not execute MSBuild. Reports declared versions, not evaluated versions.")]
     public string InspectProject() => JsonSerializer.Serialize(catalog.InspectProject());

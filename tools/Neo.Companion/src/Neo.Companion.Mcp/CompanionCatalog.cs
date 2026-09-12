@@ -21,6 +21,14 @@ public sealed class CompanionCatalog
         Baseline = manifest.RootElement.GetProperty("baseline").GetString()!;
     }
 
+    public DoctorReport DiagnoseProject(string configurationSection = "TelemetryOptions")
+    {
+        if (projectRoot is null || !Directory.Exists(projectRoot))
+            throw new InvalidOperationException("Set NEO_PROJECT_ROOT to an existing application directory before starting the server.");
+        ArgumentNullException.ThrowIfNull(configurationSection);
+        return new NeoDoctor(projectRoot, Baseline, configurationSection).Run();
+    }
+
     public object InspectProject()
     {
         if (projectRoot is null || !Directory.Exists(projectRoot))

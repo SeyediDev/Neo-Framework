@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.2.0</Version></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.3.0</Version></PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <Content Include="../../../../.agents/skills/neo-doctor/references/diagnostics.md" Link="knowledge/doctor-guide.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../knowledge/**/*" Link="knowledge/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../samples/ProductCatalog/**/*.cs" Exclude="../../samples/ProductCatalog/**/obj/**;../../samples/ProductCatalog/**/bin/**" Link="examples/ProductCatalog/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../samples/ProductCatalog/**/*.csproj" Link="examples/ProductCatalog/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

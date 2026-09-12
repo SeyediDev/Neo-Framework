@@ -192,7 +192,7 @@ Hangfire lives inside **`Neo.Infrastructure`** in this source tree; there is no 
 
 ## AI assistance and telemetry examples
 
-[Neo Companion](tools/Neo.Companion/README.md) lives in this repository and includes feature/telemetry skills, a local C# MCP server, runnable examples and a dedicated GitHub Actions workflow. Its stdio server runs on the developer's computer and does not require hosted infrastructure.
+[Neo Companion](tools/Neo.Companion/README.md) lives in this repository and includes feature, telemetry and diagnosis skills, a local C# MCP server, runnable examples and a dedicated GitHub Actions workflow. Its stdio server runs on the developer's computer and does not require hosted infrastructure.
 
 Telemetry interception is active through `AddScopedWithTelemetry<IService, Implementation>()`. Resolve the interface to apply `[Telemetry]` on the interface or implementation method. The runtime preserves synchronous and asynchronous return shapes, propagates errors/cancellation, measures duration and isolates completion tags across concurrent calls. [See the runnable telemetry walkthrough](tools/Neo.Companion/docs/TELEMETRY.fa.md).
 
