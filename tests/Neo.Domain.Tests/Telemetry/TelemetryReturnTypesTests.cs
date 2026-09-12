@@ -31,8 +31,8 @@ public sealed class TelemetryReturnTypesTests
         await service.ValueVoidAsync();
         Assert.Equal(7, service.Sync(7));
         service.Void();
-        Assert.Equal("x", await service.GenericAsync("x", 100, default));
-        Assert.Equal(12, await service.GenericAsync(12, 100, default));
+        Assert.Equal("x", await service.GenericAsync("x", 100, CancellationToken.None));
+        Assert.Equal(12, await service.GenericAsync(12, 100, CancellationToken.None));
         Assert.Equal("implementation", await service.ImplementationOnlyAsync());
         Assert.Equal("plain", await service.PlainAsync());
         Assert.Equal(8, capture.Calls.Count);
@@ -44,11 +44,13 @@ public sealed class TelemetryReturnTypesTests
     [InlineData("castle")]
     [InlineData("dispatch")]
     public async Task Null_requests_and_third_argument_cancellation_are_preserved(string factory)
-    {
+    { 
+        //var invocation = Task.Run(() => returned.SetResult(service.WaitAsync(gate.Task)));
+    
         using var capture = new Capture();
         var target = new Service();
         var service = Create(factory, target, capture.Behaviour);
-        Assert.Null(await service.NullableAsync(null, "keep-me", default));
+        Assert.Null(await service.NullableAsync(null, "keep-me", CancellationToken.None));
         Assert.Equal("keep-me", target.LastMarker);
         Assert.Equal(ActivityStatusCode.Ok, Assert.Single(capture.Calls).Status);
         using var cancellation = new CancellationTokenSource();
@@ -81,15 +83,14 @@ public sealed class TelemetryReturnTypesTests
         var service = Create(factory, new Service(), capture.Behaviour);
         var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var returned = new TaskCompletionSource<Task<string>>(TaskCreationOptions.RunContinuationsAsynchronously);
-        var invocation = Task.Run(() => returned.SetResult(service.WaitAsync(gate.Task)));
         try
         {
-            var operation = await returned.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            var operation = await returned.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
             Assert.False(operation.IsCompleted);
             gate.SetResult();
-            Assert.Equal("finished", await operation.WaitAsync(TimeSpan.FromSeconds(5)));
+            Assert.Equal("finished", await operation.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken));
         }
-        finally { gate.TrySetResult(); await invocation; }
+        finally { gate.TrySetResult(); }
     }
 
     public interface IService

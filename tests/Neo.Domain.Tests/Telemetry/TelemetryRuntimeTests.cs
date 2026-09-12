@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.DependencyInjection;
-using Neo.Domain.Features.Client;
 using Neo.Domain.Features.Telementry;
 using Xunit;
 
@@ -30,7 +29,7 @@ public sealed class TelemetryRuntimeTests
         using var scope = provider.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IProbe>();
         Assert.Same(service, scope.ServiceProvider.GetRequiredService<IProbe>());
-        Assert.Equal("value!", await service.ReadAsync("value", "!", default));
+        Assert.Equal("value!", await service.ReadAsync("value", "!", TestContext.Current.CancellationToken));
         Assert.Single(capture.Calls);
     }
 
@@ -39,7 +38,7 @@ public sealed class TelemetryRuntimeTests
     {
         using var capture = new Capture();
         await capture.Behaviour.HandleRequestResponse<string, string>(async (_, _) =>
-            { await Task.Delay(25); return null; }, "request", "probe", "null", ActivityKind.Internal, null, default);
+            { await Task.Delay(25); return null; }, "request", "probe", "null", ActivityKind.Internal, null, TestContext.Current.CancellationToken);
         var call = Assert.Single(capture.Calls);
         Assert.True(call.Duration >= 10, $"Measured only {call.Duration} ms.");
         Assert.Equal(ActivityStatusCode.Ok, call.Status);
@@ -52,10 +51,10 @@ public sealed class TelemetryRuntimeTests
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var first = capture.Behaviour.HandleRequestResponse<string, string>(async (request, _) =>
-            { entered.SetResult(); await release.Task; return request; }, "first", "A", "first", ActivityKind.Client, [new("owner", "A")], default);
+            { entered.SetResult(); await release.Task; return request; }, "first", "A", "first", ActivityKind.Client, [new("owner", "A")], TestContext.Current.CancellationToken);
         await entered.Task;
         await capture.Behaviour.HandleRequestResponse<string, string>((request, _) => Task.FromResult<string?>(request),
-            "second", "B", "second", ActivityKind.Internal, [new("owner", "B")], default);
+            "second", "B", "second", ActivityKind.Internal, [new("owner", "B")], TestContext.Current.CancellationToken);
         release.SetResult(); await first;
         Assert.Contains(capture.Calls, c => c.Name == "A.first" && c.Kind == ActivityKind.Client && Equals(c.Tags["owner"], "A"));
         Assert.Contains(capture.Calls, c => c.Name == "B.second" && c.Kind == ActivityKind.Internal && Equals(c.Tags["owner"], "B"));
