@@ -25,4 +25,12 @@ DI entrypoints are `AddNeoDomainServices(configuration)`, `AddNeoApplicationServ
 
 Mapster is used by the generic feature handlers. Hangfire implementation is in `Neo.Infrastructure`; there is no separate Hangfire project in this source tree.
 
+## Generic CRUD or a dedicated feature
+
+Use `GenericCrudControllerBase<TDto,TEntity,TKey>` for straightforward administrative data with direct DTO mapping. Prefer dedicated commands and endpoints for domain transitions, per-operation authorization or atomic entity/translation changes. Preserve the application's existing choice when it meets the requested behavior.
+
+At this baseline the generic controller explicitly binds services from DI. Create assigns the returned key to `dto.Id` and generates Location via MVC's `GetById` action name; override `GetResourceLocation` if routing or Async suffix settings differ. Update rejects missing/mismatched IDs. Update/Delete return `Unit`, not `Result`; missing entities raise `NotFoundException`, mapped to 404 only when Neo's exception handler is enabled. Delete previously ignored missing entities, so verify the consumer's desired repeat-delete behavior.
+
+`CultureFields` is opt-in. An empty list skips localization operations, but action service parameters still require DI registration. With localization enabled, `CultureTerm.SubjectId` requires an int-compatible key; Guid and overflowing long values are unsupported. Entity persistence and translation persistence are separate commits. Missing translations preserve the original DTO field. The `admin` route segment does not enforce authorization; generic DTO mapping does not enforce domain invariants or field-level permissions.
+
 For the self-contained ProductCatalog example, inspect the `tools/Neo.Companion/samples/ProductCatalog` folder or call `neo_get_example` with ID `product-create` and the baseline returned by `neo_search_docs`. In an installed standalone skill without that folder or MCP, work from the target application's own files instead of assuming the example is available.

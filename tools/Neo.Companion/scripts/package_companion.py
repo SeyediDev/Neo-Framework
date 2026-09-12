@@ -13,7 +13,7 @@ with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
         folder=repo/'.agents/skills'/name
         for file in sorted(folder.rglob('*')):
             if file.is_file(): z.write(file,'skills/'+name+'/'+file.relative_to(folder).as_posix())
-    for name in ['README.md','LICENSE','docs/START-HERE.fa.md','docs/TELEMETRY.fa.md','docs/DOCTOR.fa.md','docs/VALIDATION.md']:
+    for name in ['README.md','LICENSE','docs/START-HERE.fa.md','docs/TELEMETRY.fa.md','docs/DOCTOR.fa.md','docs/GENERIC-CRUD.fa.md','docs/VALIDATION.md']:
         z.write(comp/name,name)
     z.writestr('RUN.txt','Requires .NET 10 runtime. Run dotnet mcp/Neo.Companion.Mcp.dll through an MCP client. Set NEO_PROJECT_ROOT to your application. Copy each skills folder into the consuming repository .agents/skills directory.\n')
 print(archive)

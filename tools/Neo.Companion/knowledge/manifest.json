@@ -1,5 +1,5 @@
 {
-  "baseline": "sha256:e857f090ec0c470f29e4c71870d9269852a4153d9151021ed98cc0ea6be3b037",
+  "baseline": "sha256:5fcc61e94396daba7d0a9cf98f66302187c01e79a45f8af36167fb9a4d51ec4a",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
@@ -31,6 +31,18 @@
     {
       "path": "src/Neo.Application/Features/GenericEntity/Commands/CreateGenericEntity.cs",
       "sha256": "75f4f83d0452b8b5c95f3bd8b83344de1812ab5f0553ce4a7568353b7c63da83"
+    },
+    {
+      "path": "src/Neo.Application/Features/GenericEntity/Commands/UpdateGenericEntity.cs",
+      "sha256": "691e2fe6276adf19e70e348523f5be398c543e6d18e7d8e58743aa8f0714706a"
+    },
+    {
+      "path": "src/Neo.Application/Features/GenericEntity/Commands/DeleteGenericEntity.cs",
+      "sha256": "9985a231cd5a9bead6f1477713939bf10cffee0252b20e30dffcbbdd4df4db8b"
+    },
+    {
+      "path": "src/Neo.Endpoint/Controller/Base/GenericCrudControllerBase.cs",
+      "sha256": "a7fa30a3301195eee3e6a5684e56c60878be10659d8dd83fe1f421f87505c7ab"
     },
     {
       "path": "src/Neo.Domain/Features/Telementry/TelementryBehaviour.cs",

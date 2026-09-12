@@ -1,4 +1,4 @@
-﻿using Neo.Application.Features.GenericEntity.Commands;
+using Neo.Application.Features.GenericEntity.Commands;
 using Neo.Application.Features.GenericEntity.Queries;
 using Neo.Common.Extensions;
 using Neo.Domain.Dto;

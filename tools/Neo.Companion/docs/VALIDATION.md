@@ -1,3 +1,18 @@
+# CRUD validation — 2026-09-12
+
+- Full Neo.Endpoint Debug build: zero warnings, zero errors after restoring with the repository NuGet.config and clearing obsolete local fallback directories via command-line restore properties.
+- GenericCrudControllerTests: **17 passed, 0 failed, 0 skipped, 0 not run**, executed with the xUnit v3 in-process runner. POST/GET integration runs on ASP.NET Core TestServer with controlled handlers; repository tests use controlled dependencies and real update/delete handlers. This does not establish atomic database transactions.
+- Verified: followable MVC Location with and without a trailing slash, generated DTO ID, null create result, invalid update IDs, missing entities, translation save/cancellation, untranslated fallback and nonlocalized Guid deletion.
+- Test infrastructure: added the centrally versioned xUnit Visual Studio adapter and executable test output. Replaced the placeholder test application and permissive endpoint check with the HTTP regressions. Local VSTest startup hit its 60-second child-process timeout; the same compiled tests passed using the standalone runner. CI checks both failures and a minimum executed-test count.
+- neo-feature skill validation and the updated CRUD source snapshot check passed. Companion's published knowledge now includes the CRUD guide and controller/update/delete contracts.
+- Local restore/publish used NuGetAudit=false; committed CI commands retain audit. CI results are reported separately after push.
+
+For a slow local runner startup, build the test project and execute the test assembly directly:
+
+```powershell
+dotnet tests/Neo.Endpoint.IntegrationTests/bin/Debug/net10.0/Neo.Endpoint.IntegrationTests.dll -class Neo.Endpoint.IntegrationTests.Controller.GenericCrudControllerTests -trx TestResults/Crud/direct.trx
+```
+
 # Validation record — 0.3.0
 
 Validated locally on 2026-09-10, Windows x64, .NET SDK 10.0.401 / runtime 10.0.12.

@@ -2,7 +2,7 @@
 
 Developer assistance for Neo Framework, maintained **inside the Neo repository**.
 
-[شروع فارسی](docs/START-HERE.fa.md) · [Telemetry walkthrough](docs/TELEMETRY.fa.md) · [Neo Doctor](docs/DOCTOR.fa.md) · [Validation](docs/VALIDATION.md)
+[شروع فارسی](docs/START-HERE.fa.md) · [Telemetry walkthrough](docs/TELEMETRY.fa.md) · [Neo Doctor](docs/DOCTOR.fa.md) · [Generic CRUD](docs/GENERIC-CRUD.fa.md) · [Validation](docs/VALIDATION.md)
 
 ## Repository layout
 

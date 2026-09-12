@@ -1,0 +1,38 @@
+name: Neo CRUD regressions
+on:
+  push:
+    paths: ['src/**', 'tests/Neo.Endpoint.IntegrationTests/**', 'Directory.*.props', 'NuGet.config', '.github/workflows/crud.yml']
+  pull_request:
+    paths: ['src/**', 'tests/Neo.Endpoint.IntegrationTests/**', 'Directory.*.props', 'NuGet.config', '.github/workflows/crud.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet test tests/Neo.Endpoint.IntegrationTests/Neo.Endpoint.IntegrationTests.csproj -c Release --filter FullyQualifiedName~GenericCrudControllerTests --logger trx --results-directory TestResults/Crud
+      - name: Require executed tests
+        shell: pwsh
+        run: |
+          $reports = @(Get-ChildItem -LiteralPath TestResults/Crud -Filter *.trx)
+          if ($reports.Count -eq 0) { throw 'No test report generated.' }
+          foreach ($report in $reports) {
+            [xml]$result = Get-Content -LiteralPath $report.FullName
+            $counts = $result.TestRun.ResultSummary.Counters
+            if ([int]$counts.executed -lt 17 -or [int]$counts.failed -gt 0) {
+              throw 'CRUD regressions were not fully executed or failed.'
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crud-results-${{ matrix.os }}
+          path: TestResults/Crud

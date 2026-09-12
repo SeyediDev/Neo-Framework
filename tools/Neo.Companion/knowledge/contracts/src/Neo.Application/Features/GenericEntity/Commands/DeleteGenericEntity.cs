@@ -1,4 +1,4 @@
-﻿using Neo.Application.Features.GenericEntity.GenericService;
+using Neo.Application.Features.GenericEntity.GenericService;
 using Neo.Domain.Entities.Base;
 using Neo.Domain.Features.Multilingual;
 

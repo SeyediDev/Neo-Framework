@@ -11,7 +11,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--server-dll', required=True)
 parser.add_argument('--project-root', required=True)
 parser.add_argument('--doctor-expect-code', help='Optional expected Doctor code, or none for no findings.')
+parser.add_argument('--timeout-seconds', type=int, default=30, help='Per-response timeout (1-300 seconds); increase for slow local process startup.')
 args = parser.parse_args()
+if not 1 <= args.timeout_seconds <= 300:
+    parser.error('--timeout-seconds must be between 1 and 300')
 env = os.environ.copy()
 env['NEO_PROJECT_ROOT'] = str(Path(args.project_root).resolve())
 creation = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -39,7 +42,7 @@ def send(message):
 def request(identifier, method, params):
     send({'jsonrpc': '2.0', 'id': identifier, 'method': method, 'params': params})
     while True:
-        result = messages.get(timeout=30)
+        result = messages.get(timeout=args.timeout_seconds)
         assert 'invalid_stdout' not in result, result
         if result.get('id') == identifier:
             assert 'error' not in result, result
@@ -61,6 +64,8 @@ try:
     assert all(x['annotations']['readOnlyHint'] for x in tools), tools
     docs = call(3, 'neo_search_docs', {'query': 'ICommandRepository', 'limit': 8})
     assert docs['results']
+    crud_docs = call(10, 'neo_search_docs', {'query': 'GenericCrudControllerBase', 'limit': 8})
+    assert any('GenericCrudControllerBase.cs' in x['Path'] for x in crud_docs['results']), crud_docs
     inspection = call(4, 'neo_inspect_project', {})
     assert inspection['mode'] == 'static-declarations' and inspection['projects']
     example = call(5, 'neo_get_example', {'example': 'product-create', 'baseline': docs['baseline']})
