@@ -20,7 +20,7 @@ if (-not (Test-Path $ExamplePath)) {
 
 Write-Host "`n[1/5] Creating Web API project..." -ForegroundColor Yellow
 Push-Location $ExamplePath
-dotnet new webapi -n $ProjectName -f net8.0 --use-controllers --no-https
+dotnet new webapi -n $ProjectName -f net10.0 --use-controllers --no-https
 Pop-Location
 
 Write-Host "`n[2/5] Adding Neo Framework packages..." -ForegroundColor Yellow
