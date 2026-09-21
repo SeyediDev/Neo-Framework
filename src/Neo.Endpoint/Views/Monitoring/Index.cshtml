@@ -2004,8 +2004,8 @@
                     </button>
                 </div>
                 <div class="log-filter-buttons">
-                    <button class="log-filter-btn" data-level="all">همه</button>
-                    <button class="log-filter-btn active" data-level="error">خطا</button>
+                    <button class="log-filter-btn active" data-level="all">همه</button>
+                    <button class="log-filter-btn" data-level="error">خطا</button>
                     <button class="log-filter-btn" data-level="warning">هشدار</button>
                     <button class="log-filter-btn" data-level="info">اطلاعات</button>
                 </div>
@@ -2171,7 +2171,7 @@
     // Monitoring Dashboard JavaScript
     (function() {
         const API_BASE = '/api/monitoring';
-        let currentLogLevel = 'error';
+        let currentLogLevel = 'all';
         let isPaused = false;
         let refreshIntervals = [];
         let currentDrillDownMetric = null;

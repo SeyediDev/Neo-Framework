@@ -38,7 +38,10 @@ public class LogsController : ControllerBase
     [HttpGet("recent")]
     public ActionResult<IEnumerable<LogEntry>> GetRecentLogs(
         [FromQuery] int limit = 100,
-        [FromQuery] string? minLevel = null)
+        [FromQuery] string? minLevel = null,
+        [FromQuery] string? correlationId = null,
+        [FromQuery] string? source = null,
+        [FromQuery] string? textSearch = null)
     {
         try
         {
@@ -59,7 +62,15 @@ public class LogsController : ControllerBase
                 }
             }
             
-            return Ok(_store.GetRecentLogs(limit, level));
+            return Ok(_store.Query(new LogQueryRequest
+            {
+                Limit = limit,
+                MinLevel = level,
+                TraceId = correlationId,
+                SourceContext = source,
+                MessageContains = textSearch,
+                Descending = true
+            }));
         }
         catch (Exception ex)
         {
