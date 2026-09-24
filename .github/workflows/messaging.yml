@@ -1,0 +1,33 @@
+name: Neo RabbitMQ sample
+on:
+  push:
+    paths: ['src/**', 'tools/Neo.Companion/**', 'Directory.*.props', '.github/workflows/messaging.yml']
+  pull_request:
+    paths: ['src/**', 'tools/Neo.Companion/**', 'Directory.*.props', '.github/workflows/messaging.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rabbitmq:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Start local broker
+        run: docker compose -f tools/Neo.Companion/samples/MessagingDemo/compose.yaml up -d --wait
+      - name: Build demo
+        run: dotnet build tools/Neo.Companion/samples/MessagingDemo/MessagingDemo.csproj -c Release
+      - name: Verify messaging, Saga and compensation over RabbitMQ
+        run: python tools/Neo.Companion/scripts/smoke_messaging.py --server-dll tools/Neo.Companion/samples/MessagingDemo/bin/Release/net10.0/MessagingDemo.dll
+      - name: Broker logs
+        if: failure()
+        run: docker compose -f tools/Neo.Companion/samples/MessagingDemo/compose.yaml logs
+      - name: Stop test broker
+        if: always()
+        run: docker compose -f tools/Neo.Companion/samples/MessagingDemo/compose.yaml down

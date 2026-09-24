@@ -70,6 +70,12 @@ try:
     assert inspection['mode'] == 'static-declarations' and inspection['projects']
     example = call(5, 'neo_get_example', {'example': 'product-create', 'baseline': docs['baseline']})
     assert any(x['path'] == 'Application/CreateProduct.cs' for x in example['files'])
+    messaging = call(11, 'neo_get_example', {'example': 'messaging-demo', 'baseline': docs['baseline']})
+    assert any(x['path'] == 'compose.yaml' for x in messaging['files']), messaging
+    assert any(x['path'] == 'OrderConsumers.cs' for x in messaging['files']), messaging
+    assert 'AddNeoRabbitMq' in messaging['guide']
+    assert any(x['path'] == 'OrderSaga.cs' for x in messaging['files']), messaging
+    assert 'ManualReview' in messaging['sagaGuide']
     mismatch = request(6, 'tools/call', {'name': 'neo_get_example', 'arguments': {'example': 'product-create', 'baseline': 'wrong-version'}})
     assert mismatch.get('isError') is True, mismatch
     for identifier, mode in [(7, 'manual'), (8, 'attribute')]:

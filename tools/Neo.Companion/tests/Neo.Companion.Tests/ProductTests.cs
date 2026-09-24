@@ -37,9 +37,9 @@ public sealed class ProductTests
             using (var app = new CatalogFactory(database))
             using (var client = app.CreateClient())
             {
-                var response = await client.PostAsJsonAsync("/products", new CreateProduct("  محصول آزمایشی  ", 125.50m));
+                var response = await client.PostAsJsonAsync("/products", new CreateProduct("  محصول آزمایشی  ", 125.50m), TestContext.Current.CancellationToken);
                 Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-                created = await response.Content.ReadFromJsonAsync<ProductView>();
+                created = await response.Content.ReadFromJsonAsync<ProductView>(TestContext.Current.CancellationToken);
                 Assert.NotNull(created);
                 Assert.NotEqual(Guid.Empty, created.Id);
                 Assert.Equal("محصول آزمایشی", created.Name);
@@ -48,9 +48,9 @@ public sealed class ProductTests
             using (var app = new CatalogFactory(database))
             using (var client = app.CreateClient())
             {
-                var saved = await client.GetFromJsonAsync<ProductView>($"/products/{created.Id}");
+                var saved = await client.GetFromJsonAsync<ProductView>($"/products/{created.Id}", TestContext.Current.CancellationToken);
                 Assert.Equal(created, saved);
-                Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/products/{Guid.NewGuid()}")).StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/products/{Guid.NewGuid()}", TestContext.Current.CancellationToken)).StatusCode);
             }
         }
         finally { SqliteConnection.ClearAllPools(); File.Delete(database); }
@@ -67,13 +67,13 @@ public sealed class ProductTests
         {
             using var app = new CatalogFactory(database);
             using var client = app.CreateClient();
-            var response = await client.PostAsJsonAsync("/products", new CreateProduct(name, price));
+            var response = await client.PostAsJsonAsync("/products", new CreateProduct(name, price), TestContext.Current.CancellationToken);
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             await using var connection = new SqliteConnection($"Data Source={database}");
-            await connection.OpenAsync();
+            await connection.OpenAsync(TestContext.Current.CancellationToken);
             await using var command = connection.CreateCommand();
             command.CommandText = "SELECT COUNT(*) FROM Products";
-            Assert.Equal(0L, await command.ExecuteScalarAsync());
+            Assert.Equal(0L, await command.ExecuteScalarAsync(TestContext.Current.CancellationToken));
         }
         finally { SqliteConnection.ClearAllPools(); File.Delete(database); }
     }

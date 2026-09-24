@@ -1,0 +1,15 @@
+# Background jobs and integration messages
+
+Neo's `IJobExecuter` and Hangfire integration execute jobs; `JobPublisher` is MediatR in-process notification publication, not a RabbitMQ publisher. Do not silently replace these abstractions with a bus.
+
+For separate-service integration, `Neo.Infrastructure.Features.Messaging.AddNeoRabbitMq` explicitly registers one MassTransit RabbitMQ bus using the `RabbitMq` section. Register consumers/definitions in its callback. It validates connection/endpoint/concurrency settings, waits for startup with a timeout and calls ConfigureEndpoints last. Do not combine it with another AddMassTransit registration. Version is centrally pinned to 8.4.1; verify the actual application version.
+
+Retrieve `neo_get_example(example="messaging-demo", baseline=...)` after source verification, or inspect `tools/Neo.Companion/samples/MessagingDemo` and `docs/MESSAGING.fa.md` in the Neo checkout. The sample contains contracts, publisher/worker roles, two independent consumer queues, transient-only retry, deliberate faults, configuration and loopback Docker Compose. It has no real order database or external side effects.
+
+Explain Publish fan-out versus Send to one queue. Establish subscriber topology before publishing. Consumer replicas on the same queue compete, they do not each receive a copy. Keep event IDs stable on retries and deduplicate effects durably in production. The sample's observations are process-local and reset on restart, not a distributed inbox.
+
+InMemoryOutbox buffers outgoing consumer messages only, not database/HTTP effects; it is not a transactional outbox. Neo's current domain-event interceptor does not establish an atomic database/publish boundary. Implement a database outbox explicitly when the feature requires that guarantee. Do not claim exactly-once delivery. Preserve cancellation; retry only transient exceptions and keep intervals short. Document error queues, readiness and replay expectations.
+
+The same messaging example includes an OrderSaga state machine: reserve, charge, compensate declined payment by releasing inventory, and ManualReview after release failure. Operator retry applies only when compensation is known to be required. An unknown payment outcome requires reconciliation, not automatic release/refund. The Saga and participant ledgers are in-memory and single-worker only; there is no automatic deadline scheduler. For production, require a durable saga repository, transactional outbox/inbox, concurrency control, stable operation idempotency keys, and stale-timeout handling. See its returned `sagaGuide` or `docs/SAGA.fa.md` for executable scenarios and limits. Hangfire may scan persisted overdue sagas and publish reconciliation messages; it should not independently mutate saga state.
+
+When introducing a Neo infrastructure capability, include a runnable example, local configuration, expected behavior, failure exercise and relevant tests alongside its usage guide. Update MCP retrieval/snapshots if affected. Avoid presenting a compiled sample as a verified live-broker integration when only an in-memory transport was tested.

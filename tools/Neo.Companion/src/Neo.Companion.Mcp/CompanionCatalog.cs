@@ -102,16 +102,20 @@ public sealed class CompanionCatalog
 
     public object GetExample(string example, string baseline)
     {
-        if (example != "product-create") throw new ArgumentException("Unknown example. Available: product-create.", nameof(example));
+        if (example is not ("product-create" or "messaging-demo")) throw new ArgumentException("Unknown example. Available: product-create, messaging-demo.", nameof(example));
         if (!string.Equals(baseline, Baseline, StringComparison.Ordinal))
             throw new ArgumentException($"Unsupported baseline. Available: {Baseline}. Do not assume another version is compatible.", nameof(baseline));
-        var root = Path.Combine(contentRoot, "examples", "ProductCatalog");
-        var files = EnumerateFiles(root, 50).Where(x => Path.GetExtension(x) is ".cs" or ".csproj")
+        var root = Path.Combine(contentRoot, "examples", example == "messaging-demo" ? "MessagingDemo" : "ProductCatalog");
+        var files = EnumerateFiles(root, 50).Where(x => Path.GetExtension(x) is ".cs" or ".csproj" or ".json" or ".yaml")
             .Order(StringComparer.Ordinal).Select(x => new { path = Path.GetRelativePath(root, x).Replace('\\', '/'), content = ReadText(x) }).ToArray();
         if (files.Length == 0) throw new InvalidOperationException("Bundled example files are missing; rebuild the MCP project.");
         return new { example, baseline = Baseline, files,
+            guide = example == "messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "messaging-guide.fa.md")) : null,
+            sagaGuide = example == "messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "saga-guide.fa.md")) : null,
             prerequisites = ".NET 10 SDK; Neo source checkout matching the bundled contract snapshot. Set MSBuild NeoRoot to that checkout. The source repository's Directory.Build.props is not part of an individual sample project: the Companion root supplies net10.0 and NeoRoot.",
-            scope = "Local teaching sample: SQLite, explicit MediatR registration and handler validation. Does not enable Neo authorization/telemetry pipelines, authentication, Outbox or production migrations." };
+            scope = example == "messaging-demo"
+                ? "Local RabbitMQ teaching sample using MassTransit 8.4.1: event fan-out, bounded retry, faults, an order Saga and compensation/manual review with simulated effects. Saga state and duplicate suppression are process-local and require one worker. Requires RabbitMQ or the supplied Docker Compose. No durable inbox, transactional outbox or production authentication. Sample credentials are local-only."
+                : "Local teaching sample: SQLite, explicit MediatR registration and handler validation. Does not enable Neo authorization/telemetry pipelines, authentication, Outbox or production migrations." };
     }
 
     public object GetTelemetryRecipe(string mode, string baseline)

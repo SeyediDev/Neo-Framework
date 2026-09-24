@@ -45,8 +45,6 @@ public sealed class TelemetryReturnTypesTests
     [InlineData("dispatch")]
     public async Task Null_requests_and_third_argument_cancellation_are_preserved(string factory)
     { 
-        //var invocation = Task.Run(() => returned.SetResult(service.WaitAsync(gate.Task)));
-    
         using var capture = new Capture();
         var target = new Service();
         var service = Create(factory, target, capture.Behaviour);
@@ -83,10 +81,12 @@ public sealed class TelemetryReturnTypesTests
         var service = Create(factory, new Service(), capture.Behaviour);
         var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var returned = new TaskCompletionSource<Task<string>>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var invocation = Task.Run(() => returned.SetResult(service.WaitAsync(gate.Task)), TestContext.Current.CancellationToken);
         try
         {
             var operation = await returned.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
             Assert.False(operation.IsCompleted);
+            await invocation;
             gate.SetResult();
             Assert.Equal("finished", await operation.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken));
         }

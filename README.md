@@ -175,6 +175,7 @@ For controller APIs, `AppControllerBase` exposes **`Sender`** for dispatching re
 | Persistence | EF Core context, command/query repositories, auditing and domain-event interceptors | Choose a provider; register context, repositories and interceptors |
 | Caching | Memory, Redis and database-backed implementations | Select and configure the appropriate cache services |
 | Background jobs | Hangfire integration and recurring-job abstractions | Configure storage and call the Hangfire registration method |
+| Messaging | MassTransit 8.4.1 with RabbitMQ, explicit consumers and connection validation | Call `AddNeoRabbitMq`; configure consumers and failure policies |
 | Outbox and idempotency | Outbox processor/store, cache/Mongo idempotency stores and locking implementations | Provide repositories, scheduler, stores and transaction boundaries |
 | Identity | Keycloak and development memory-provider implementations, JWT authentication setup | Configure the provider and the host's authentication/authorization policies |
 | Object storage | MinIO implementation behind `IObjectStoreService` | Configure storage and register the implementation |
@@ -182,6 +183,8 @@ For controller APIs, `AppControllerBase` exposes **`Sender`** for dispatching re
 | Localization | Culture-term services and Persian utilities | Supply the required term repository/data |
 
 Hangfire lives inside **`Neo.Infrastructure`** in this source tree; there is no separate `Neo.Infrastructure.Hangfire` project here. The generic feature handlers use **Mapster**.
+
+Start with [MessagingDemo](tools/Neo.Companion/samples/MessagingDemo): a local RabbitMQ setup, publish/consume, bounded retry and error queues. The [Persian messaging guide](tools/Neo.Companion/docs/MESSAGING.fa.md) compares messaging with Hangfire; the [Saga and Compensation walkthrough](tools/Neo.Companion/docs/SAGA.fa.md) demonstrates reservation, payment, compensation and manual recovery. The teaching Saga uses in-memory state and simulated effects; production durability requires database persistence and transactional inbox/outbox.
 
 ## Current behavior to understand
 

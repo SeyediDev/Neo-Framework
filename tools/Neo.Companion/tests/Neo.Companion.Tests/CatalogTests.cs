@@ -29,6 +29,17 @@ public sealed class CatalogTests : IDisposable
     }
 
     [Fact]
+    public void Messaging_example_includes_configuration_consumers_and_limits()
+    {
+        var catalog = Catalog();
+        var result = JsonSerializer.SerializeToElement(catalog.GetExample("messaging-demo", catalog.Baseline));
+        Assert.Contains(result.GetProperty("files").EnumerateArray(), x => x.GetProperty("path").GetString() == "compose.yaml");
+        Assert.Contains("AddNeoRabbitMq", result.GetProperty("guide").GetString());
+        Assert.Contains("No durable inbox", result.GetProperty("scope").GetString());
+        Assert.Throws<ArgumentException>(() => catalog.GetExample("messaging-demo", "unsupported"));
+    }
+
+    [Fact]
     public void Inspector_reports_central_versions_without_evaluating_project_code()
     {
         File.WriteAllText(Path.Combine(root, "App.csproj"), "<Project><ItemGroup><PackageReference Include='Neo.Domain'/><ProjectReference Include='../outside/Other.csproj'/></ItemGroup><Target Name='NeverRun'><Error Text='Do not evaluate'/></Target></Project>");

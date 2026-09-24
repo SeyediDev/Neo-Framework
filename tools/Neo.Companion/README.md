@@ -4,6 +4,23 @@ Developer assistance for Neo Framework, maintained **inside the Neo repository**
 
 [شروع فارسی](docs/START-HERE.fa.md) · [Telemetry walkthrough](docs/TELEMETRY.fa.md) · [Neo Doctor](docs/DOCTOR.fa.md) · [Generic CRUD](docs/GENERIC-CRUD.fa.md) · [Validation](docs/VALIDATION.md)
 
+## Infrastructure with runnable examples
+
+RabbitMQ/MassTransit: [Persian walkthrough, including Hangfire comparison](docs/MESSAGING.fa.md),
+[MessagingDemo](samples/MessagingDemo) and [real-broker smoke test](scripts/smoke_messaging.py).
+The same sample includes an [order Saga and compensation walkthrough](docs/SAGA.fa.md):
+reservation, payment, bounded compensation retry and manual review for uncertain outcomes.
+Saga state and simulated effects are process-local; durable storage and transaction outboxes are not included.
+The optional `AddNeoRabbitMq` registration uses the repository's MassTransit 8.4.1 version.
+Retrieve this complete example through `neo_get_example` with `example: "messaging-demo"`
+and the exact baseline from `neo_search_docs`. The MCP returns source/configuration and instructions;
+it does not connect to a broker or publish application messages.
+
+New infrastructure capabilities should ship with a runnable usage example, local configuration,
+expected output, a failure exercise and behavioral tests. Document guarantees and omissions,
+especially persistence, retries and authorization. Existing Hangfire jobs remain available;
+cross-service events are an additional, explicit capability.
+
 ## Repository layout
 
 ```text
@@ -17,6 +34,7 @@ tools/Neo.Companion/
   src/Neo.Companion.Mcp/         C# MCP server (stdio)
   samples/ProductCatalog/       Domain/Application/Infrastructure/API example
   samples/TelemetryDemo/        Manual and attribute-based instrumentation
+  samples/MessagingDemo/        RabbitMQ, Saga and compensation exercises
   tests/Neo.Companion.Tests/    Sample, MCP and linked runtime regressions
   knowledge/                   Source snapshots and developer guidance
   scripts/                     Snapshot check, protocol smoke test, packaging
@@ -59,7 +77,7 @@ Use [codex-mcp.example.toml](codex-mcp.example.toml) in your client's MCP settin
 |---|---|
 | `neo_inspect_project` | Read project/central-package declarations without running MSBuild |
 | `neo_search_docs` | Return matching guidance/source lines and a source fingerprint |
-| `neo_get_example` | Retrieve the ProductCatalog example for the matching fingerprint |
+| `neo_get_example` | Retrieve ProductCatalog or messaging/Saga examples for the matching fingerprint |
 | `neo_get_telemetry_recipe` | Retrieve manual/attribute telemetry setup, source and semantics |
 | `neo_diagnose_project` | Inspect C# syntax and selected appsettings keys for DI/telemetry review candidates |
 

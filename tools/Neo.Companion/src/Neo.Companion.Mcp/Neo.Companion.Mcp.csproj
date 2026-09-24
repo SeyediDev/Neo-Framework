@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.3.0</Version></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.4.0</Version></PropertyGroup>
   <ItemGroup>
+    <Content Include="../../docs/MESSAGING.fa.md" Link="knowledge/messaging-guide.fa.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../docs/SAGA.fa.md" Link="knowledge/saga-guide.fa.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../samples/MessagingDemo/*.cs;../../samples/MessagingDemo/*.csproj;../../samples/MessagingDemo/appsettings.json;../../samples/MessagingDemo/compose.yaml" Link="examples/MessagingDemo/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />

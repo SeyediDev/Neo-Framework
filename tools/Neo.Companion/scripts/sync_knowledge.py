@@ -8,6 +8,8 @@ comp=Path(__file__).resolve().parents[1]
 repo=comp.parents[1]
 knowledge=comp/'knowledge'
 paths=[
+'src/Neo.Infrastructure/Features/Messaging/NeoRabbitMqOptions.cs',
+'src/Neo.Infrastructure/Features/Messaging/RabbitMqServiceCollectionExtensions.cs',
 'src/Neo.Domain/Repository/IRepository.cs',
 'src/Neo.Domain/Repository/ICommandRepository.cs',
 'src/Neo.Domain/Repository/IQueryRepository.cs',

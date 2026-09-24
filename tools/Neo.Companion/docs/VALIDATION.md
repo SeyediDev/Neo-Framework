@@ -1,3 +1,14 @@
+# Messaging and Saga validation — 0.4.0, 2026-09-24
+
+- Companion suite: **66 passed, 0 failed, 0 skipped**, including real MassTransit 8.4.1 in-memory pipelines for fan-out, transient retry, nonretryable faults and process-local duplicate suppression.
+- Saga scenarios: successful payment, declined payment with compensation, transient compensation failure, exhausted retries followed by operator recovery, unknown payment requiring reconciliation, and repeated participant operations preserving one effect.
+- RabbitMQ configuration validation and endpoint naming are tested without connecting. The sample builds against the framework's pinned dependencies.
+- Companion tests now use xUnit v3 to match the linked framework telemetry tests. Restored a missing invocation in the existing asynchronous-return test; previously it waited on a completion source nobody completed.
+- Source snapshot and neo-feature skill structural validation passed. MCP example retrieval includes messaging configuration, Saga source and both Persian guides.
+- Published MCP 0.4.0 passed a real stdio smoke test: all five tools, ProductCatalog and messaging/Saga retrieval, telemetry recipes, exact-baseline rejection and the healthy Doctor fixture. YAML and Python syntax checks passed.
+- Local Docker is unavailable. The separate `Neo RabbitMQ sample` workflow starts Compose and verifies the real broker, error queue, Saga and compensation. In-memory test results alone do not establish RabbitMQ behavior; consult the workflow for the pushed commit.
+- The sample deliberately has no durable Saga persistence, transactional inbox/outbox, automatic deadlines or real payment integration. Tests do not establish restart recovery or multi-worker correctness. Local restore uses NuGetAudit=false; CI retains audit.
+
 # CRUD validation — 2026-09-12
 
 - Full Neo.Endpoint Debug build: zero warnings, zero errors after restoring with the repository NuGet.config and clearing obsolete local fallback directories via command-line restore properties.

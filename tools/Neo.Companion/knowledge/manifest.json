@@ -1,9 +1,17 @@
 {
-  "baseline": "sha256:5fcc61e94396daba7d0a9cf98f66302187c01e79a45f8af36167fb9a4d51ec4a",
+  "baseline": "sha256:c9a8d2666e0085f24b21cf7c19df97d0881715192ed1b7d4c9ae8afc438e119e",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Infrastructure/Features/Messaging/NeoRabbitMqOptions.cs",
+      "sha256": "48fd40138339b6e059f5c0b8586afa74066b1087e9375522beb910c6acec404b"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Messaging/RabbitMqServiceCollectionExtensions.cs",
+      "sha256": "bf73fed69d13d00857d4a05cb3cf30184146ea0b70537c8042f3566f6f9b6ba0"
+    },
     {
       "path": "src/Neo.Domain/Repository/IRepository.cs",
       "sha256": "ea47f8a1d8c7ba22f250df36d22389b832eebc1fabacf1f3c130c737b51e9a2d"
