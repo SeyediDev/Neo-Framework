@@ -6,6 +6,8 @@ using Neo.Application.Features.Outbox;
 using Neo.Application.Features.Outbox.Dto;
 using Neo.Application.Features.Outbox.Implementation;
 using Neo.Domain.Entities.Common;
+using Neo.Domain.Features.Client;
+using Neo.Domain.Features.Telementry;
 using Neo.Infrastructure.Features.Outbox;
 using Neo.Infrastructure.Features.Queue.Hangfire;
 
@@ -16,6 +18,10 @@ if (!new SqlConnectionStringBuilder(connection).InitialCatalog.StartsWith("NeoHa
     throw new InvalidOperationException("This teaching app may initialize only a NeoHangfireDemo database.");
 builder.Services.AddDbContext<DemoContext>(o => o.UseSqlServer(connection));
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<WriteReceiptHandler>());
+builder.Services.Configure<TelemetryOptions>(o => o.ApplicationName = "Neo.HangfireOutboxDemo");
+builder.Services.AddScoped<IRequesterUser, DemoRequester>();
+builder.Services.AddScoped<ITelementryObject, TelementryObject>();
+builder.Services.AddScoped<ITelementryBehaviour, TelementryBehaviour>();
 builder.Services.AddNeoEfOutbox<DemoContext>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IDistributedLock, MemoryDistributedLock>(); // EF claims coordinate workers across processes here.
@@ -27,7 +33,10 @@ builder.Configuration["Hangfire:WorkerCount"] = "2";
 builder.Services.AddNeoHangfire(builder.Configuration);
 var app = builder.Build();
 await using (var scope = app.Services.CreateAsyncScope())
+{
     await scope.ServiceProvider.GetRequiredService<DemoContext>().Database.EnsureCreatedAsync();
+    _ = scope.ServiceProvider.GetRequiredService<IProcessOutboxRecurringJob>();
+}
 app.Services.GetRequiredService<IRecurringJobManager>().AddOrUpdate<IProcessOutboxRecurringJob>(
     "neo-outbox", "outbox", x => x.Run(), "* * * * *", new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
 app.MapGet("/health/ready", () => Results.Ok(new { status = "ready" }));
