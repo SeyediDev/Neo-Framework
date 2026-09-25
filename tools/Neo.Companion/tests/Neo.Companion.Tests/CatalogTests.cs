@@ -39,6 +39,24 @@ public sealed class CatalogTests : IDisposable
         Assert.Throws<ArgumentException>(() => catalog.GetExample("messaging-demo", "unsupported"));
     }
 
+    [Theory]
+    [InlineData("durable-messaging-demo", "AddNeoSqlServerOutbox")]
+    [InlineData("hangfire-outbox-demo", "AddNeoEfOutbox")]
+    public void Durable_examples_include_source_configuration_dependencies_and_operational_guide(string example, string registration)
+    {
+        var catalog = Catalog();
+        var result = JsonSerializer.SerializeToElement(catalog.GetExample(example, catalog.Baseline));
+        var files = result.GetProperty("files").EnumerateArray().ToArray();
+        Assert.Contains(files, x => x.GetProperty("path").GetString() == "Program.cs" && x.GetProperty("content").GetString()!.Contains(registration));
+        Assert.Contains(files, x => x.GetProperty("path").GetString() == "compose.yaml");
+        Assert.Contains(files, x => x.GetProperty("path").GetString() == "appsettings.json");
+        Assert.Contains("WorkManagement", result.GetProperty("eventDeliveryGuide").GetString());
+        Assert.False(string.IsNullOrWhiteSpace(result.GetProperty("guide").GetString()));
+        if (example == "durable-messaging-demo")
+            Assert.Contains(result.GetProperty("dependencies")[0].GetProperty("files").EnumerateArray(), x => x.GetProperty("path").GetString() == "OrderSaga.cs");
+        Assert.Throws<ArgumentException>(() => catalog.GetExample(example, "wrong"));
+    }
+
     [Fact]
     public void Inspector_reports_central_versions_without_evaluating_project_code()
     {

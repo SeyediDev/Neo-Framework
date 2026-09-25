@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.4.0</Version></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.5.0</Version></PropertyGroup>
   <ItemGroup>
+    <Content Include="../../samples/DurableMessagingDemo/*.cs;../../samples/DurableMessagingDemo/*.csproj;../../samples/DurableMessagingDemo/*.json;../../samples/DurableMessagingDemo/*.yaml;../../samples/DurableMessagingDemo/README.md" Link="examples/DurableMessagingDemo/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../samples/HangfireOutboxDemo/*.cs;../../samples/HangfireOutboxDemo/*.csproj;../../samples/HangfireOutboxDemo/*.json;../../samples/HangfireOutboxDemo/*.md" Link="examples/HangfireOutboxDemo/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../samples/DurableMessagingDemo/compose.yaml" Link="examples/HangfireOutboxDemo/compose.yaml" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../docs/EVENT-DELIVERY.fa.md" Link="knowledge/event-delivery-guide.fa.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../docs/MESSAGING.fa.md" Link="knowledge/messaging-guide.fa.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../docs/SAGA.fa.md" Link="knowledge/saga-guide.fa.md" CopyToOutputDirectory="PreserveNewest" />

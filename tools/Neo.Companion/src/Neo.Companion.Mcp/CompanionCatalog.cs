@@ -102,21 +102,42 @@ public sealed class CompanionCatalog
 
     public object GetExample(string example, string baseline)
     {
-        if (example is not ("product-create" or "messaging-demo")) throw new ArgumentException("Unknown example. Available: product-create, messaging-demo.", nameof(example));
+        var directory = example switch
+        {
+            "product-create" => "ProductCatalog", "messaging-demo" => "MessagingDemo",
+            "durable-messaging-demo" => "DurableMessagingDemo", "hangfire-outbox-demo" => "HangfireOutboxDemo",
+            _ => throw new ArgumentException("Unknown example. Available: product-create, messaging-demo, durable-messaging-demo, hangfire-outbox-demo.", nameof(example))
+        };
         if (!string.Equals(baseline, Baseline, StringComparison.Ordinal))
             throw new ArgumentException($"Unsupported baseline. Available: {Baseline}. Do not assume another version is compatible.", nameof(baseline));
-        var root = Path.Combine(contentRoot, "examples", example == "messaging-demo" ? "MessagingDemo" : "ProductCatalog");
-        var files = EnumerateFiles(root, 50).Where(x => Path.GetExtension(x) is ".cs" or ".csproj" or ".json" or ".yaml")
-            .Order(StringComparer.Ordinal).Select(x => new { path = Path.GetRelativePath(root, x).Replace('\\', '/'), content = ReadText(x) }).ToArray();
-        if (files.Length == 0) throw new InvalidOperationException("Bundled example files are missing; rebuild the MCP project.");
+        var files = ExampleFiles(directory);
+        var durable = example == "durable-messaging-demo";
+        var hangfire = example == "hangfire-outbox-demo";
         return new { example, baseline = Baseline, files,
-            guide = example == "messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "messaging-guide.fa.md")) : null,
-            sagaGuide = example == "messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "saga-guide.fa.md")) : null,
-            prerequisites = ".NET 10 SDK; Neo source checkout matching the bundled contract snapshot. Set MSBuild NeoRoot to that checkout. The source repository's Directory.Build.props is not part of an individual sample project: the Companion root supplies net10.0 and NeoRoot.",
-            scope = example == "messaging-demo"
-                ? "Local RabbitMQ teaching sample using MassTransit 8.4.1: event fan-out, bounded retry, faults, an order Saga and compensation/manual review with simulated effects. Saga state and duplicate suppression are process-local and require one worker. Requires RabbitMQ or the supplied Docker Compose. No durable inbox, transactional outbox or production authentication. Sample credentials are local-only."
-                : "Local teaching sample: SQLite, explicit MediatR registration and handler validation. Does not enable Neo authorization/telemetry pipelines, authentication, Outbox or production migrations." };
+            dependencies = durable ? new[] { new { directory = "MessagingDemo", files = ExampleFiles("MessagingDemo") } } : [],
+            guide = durable || hangfire ? ReadText(Path.Combine(contentRoot, "examples", directory, durable ? "README.md" : "README.fa.md"))
+                : example == "messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "messaging-guide.fa.md")) : null,
+            sagaGuide = example is "messaging-demo" or "durable-messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "saga-guide.fa.md")) : null,
+            eventDeliveryGuide = durable || hangfire ? ReadText(Path.Combine(contentRoot, "knowledge", "event-delivery-guide.fa.md")) : null,
+            prerequisites = ".NET 10 SDK; Neo source checkout matching the bundled contract snapshot. Run from tools/Neo.Companion/samples in that checkout; it supplies Directory.Build.props and NeoRoot. Keep dependency directories as siblings of the returned example directory. Durable samples require the isolated SQL Server from DurableMessagingDemo/compose.yaml; that Compose is also bundled with the Hangfire example. Public demo credentials are local-only.",
+            scope = example switch
+            {
+                "durable-messaging-demo" => "SQL Server shared-transaction bus/consumer outbox, persistent Saga and database participant effects. Requires RabbitMQ. Demonstrates rollback, restart, replicas and manual compensation. No real payment provider, authentication or automatic deadline scheduler; external effects need provider idempotency and reconciliation.",
+                "hangfire-outbox-demo" => "SQL Server/Hangfire example with row-ID jobs, database claims, bounded recovery and execution status committed with same-context effects. External effects are not exactly-once. No public replay endpoint; schema migration and review of old records are required for upgrades.",
+                "messaging-demo" => "Local RabbitMQ teaching sample using MassTransit 8.4.1: fan-out, retries, faults, Saga and compensation. Saga state and duplicate suppression are process-local. No durable inbox, transactional outbox or production authentication.",
+                _ => "Local teaching sample: SQLite, explicit MediatR registration and handler validation. Does not enable Neo authorization/telemetry pipelines, authentication, Outbox or production migrations."
+            } };
     }
+
+    private ExampleFile[] ExampleFiles(string directory)
+    {
+        var root = Path.Combine(contentRoot, "examples", directory);
+        var files = EnumerateFiles(root, 100).Where(x => Path.GetExtension(x) is ".cs" or ".csproj" or ".json" or ".yaml" or ".md")
+            .Order(StringComparer.Ordinal).Select(x => new ExampleFile(Path.GetRelativePath(root, x).Replace('\\', '/'), ReadText(x))).ToArray();
+        if (files.Length == 0) throw new InvalidOperationException("Bundled example files are missing; rebuild the MCP project.");
+        return files;
+    }
+    private sealed record ExampleFile(string path, string content);
 
     public object GetTelemetryRecipe(string mode, string baseline)
     {

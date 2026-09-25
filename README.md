@@ -184,7 +184,9 @@ For controller APIs, `AppControllerBase` exposes **`Sender`** for dispatching re
 
 Hangfire lives inside **`Neo.Infrastructure`** in this source tree; there is no separate `Neo.Infrastructure.Hangfire` project here. The generic feature handlers use **Mapster**.
 
-Start with [MessagingDemo](tools/Neo.Companion/samples/MessagingDemo): a local RabbitMQ setup, publish/consume, bounded retry and error queues. The [Persian messaging guide](tools/Neo.Companion/docs/MESSAGING.fa.md) compares messaging with Hangfire; the [Saga and Compensation walkthrough](tools/Neo.Companion/docs/SAGA.fa.md) demonstrates reservation, payment, compensation and manual recovery. The teaching Saga uses in-memory state and simulated effects; production durability requires database persistence and transactional inbox/outbox.
+Start with [MessagingDemo](tools/Neo.Companion/samples/MessagingDemo): a local RabbitMQ setup, publish/consume, bounded retry and error queues. The [Persian messaging guide](tools/Neo.Companion/docs/MESSAGING.fa.md) compares messaging with Hangfire; the [Saga and Compensation walkthrough](tools/Neo.Companion/docs/SAGA.fa.md) demonstrates reservation, payment, compensation and manual recovery.
+
+Continue with [DurableMessagingDemo](tools/Neo.Companion/samples/DurableMessagingDemo/README.md) for SQL Server transactions, MassTransit Outbox and persistent Saga state, or [HangfireOutboxDemo](tools/Neo.Companion/samples/HangfireOutboxDemo/README.fa.md) for recoverable jobs with persisted execution results. Each includes failure/restart exercises and CI. The [DDD → events → queues guide](tools/Neo.Companion/docs/EVENT-DELIVERY.fa.md) covers local domain handlers, transaction boundaries, idempotency, migrations and reconciliation. Samples simulate external payment effects; production payment providers still require stable operation IDs and reconciliation.
 
 ## Current behavior to understand
 

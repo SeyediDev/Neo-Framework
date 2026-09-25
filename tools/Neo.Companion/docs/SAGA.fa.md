@@ -76,3 +76,7 @@ Invoke-RestMethod "http://127.0.0.1:5087/sagas/orders/$order/retry-compensation"
 تست‌های `OrderSagaTests` state machine و consumerهای واقعی را روی transport حافظه‌ای اجرا می‌کنند؛ تست RabbitMQ در CI همان سناریوهای اصلی را با broker بررسی می‌کند. این تست‌ها تضمین crash recovery یا چند replica نیستند.
 
 مرجع رسمی: [Saga state machine در MassTransit](https://masstransit.io/documentation/patterns/saga/state-machine). نمونه با API نسخهٔ 8.4.1 این ریپو ساخته می‌شود.
+
+## ادامه با ذخیرهٔ پایدار
+
+نسخهٔ دارای SQL Server، Bus/Consumer Outbox و Saga پایدار در [DurableMessagingDemo](../samples/DurableMessagingDemo/README.md) آمده است. برای مسیر Hangfire، [HangfireOutboxDemo](../samples/HangfireOutboxDemo/README.fa.md) را اجرا کنید. [راهنمای DDD و تحویل رویداد](EVENT-DELIVERY.fa.md) مرز تراکنش، بازیابی، پایش و مهاجرت را توضیح می‌دهد. نمونهٔ حافظه‌ای این راهنما همچنان مرحلهٔ مقدماتی آموزش است.

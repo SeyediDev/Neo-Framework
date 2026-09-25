@@ -13,7 +13,11 @@ with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
         folder=repo/'.agents/skills'/name
         for file in sorted(folder.rglob('*')):
             if file.is_file(): z.write(file,'skills/'+name+'/'+file.relative_to(folder).as_posix())
-    for name in ['README.md','LICENSE','docs/START-HERE.fa.md','docs/TELEMETRY.fa.md','docs/DOCTOR.fa.md','docs/GENERIC-CRUD.fa.md','docs/MESSAGING.fa.md','docs/SAGA.fa.md','docs/VALIDATION.md']:
+    for name in ['README.md','LICENSE','docs/START-HERE.fa.md','docs/TELEMETRY.fa.md','docs/DOCTOR.fa.md','docs/GENERIC-CRUD.fa.md','docs/MESSAGING.fa.md','docs/SAGA.fa.md','docs/EVENT-DELIVERY.fa.md','docs/event-delivery-backlog.json','docs/VALIDATION.md']:
         z.write(comp/name,name)
+    # Keep guide links useful offline; source samples still require the matching Neo checkout.
+    for file in sorted((comp/'samples').rglob('*')):
+        if file.is_file() and not {'bin','obj'}.intersection(file.parts) and file.suffix in {'.cs','.csproj','.json','.yaml','.md'}:
+            z.write(file,file.relative_to(comp).as_posix())
     z.writestr('RUN.txt','Requires .NET 10 runtime. Run dotnet mcp/Neo.Companion.Mcp.dll through an MCP client. Set NEO_PROJECT_ROOT to your application. Copy each skills folder into the consuming repository .agents/skills directory.\n')
 print(archive)

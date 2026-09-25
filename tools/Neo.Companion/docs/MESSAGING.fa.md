@@ -89,3 +89,7 @@ callback اختیاری `configureTransport` برای تنظیمات پیشرف�
 برای هر زیرساخت جدید در Neo، کنار کد یک نمونهٔ runnable، فایل تنظیمات محلی، دستور اجرا، خروجی مورد انتظار، سناریوی خطا و توضیح محدودیت‌ها اضافه کنید. نمونهٔ صرفاً کامنت‌شده داخل کتابخانه برای یادگیری مصرف‌کننده کافی نیست. نمونه‌های فعلی را از README Companion پیدا کنید.
 
 منابع رسمی: [RabbitMQ و topology در MassTransit](https://masstransit.io/documentation/configuration/transports/rabbitmq)، [خطا و retry](https://masstransit.io/documentation/concepts/exceptions)، [راه‌اندازی RabbitMQ](https://www.rabbitmq.com/docs/download). APIها در این ریپو با نسخهٔ 8.4.1 build می‌شوند؛ مستندات آنلاین ممکن است نسخهٔ جدیدتری را شرح دهند.
+
+## ادامه با ذخیرهٔ پایدار
+
+نسخهٔ دارای SQL Server، Bus/Consumer Outbox و Saga پایدار در [DurableMessagingDemo](../samples/DurableMessagingDemo/README.md) آمده است. برای مسیر Hangfire، [HangfireOutboxDemo](../samples/HangfireOutboxDemo/README.fa.md) را اجرا کنید. [راهنمای DDD و تحویل رویداد](EVENT-DELIVERY.fa.md) مرز تراکنش، بازیابی، پایش و مهاجرت را توضیح می‌دهد. نمونهٔ حافظه‌ای این راهنما همچنان مرحلهٔ مقدماتی آموزش است.

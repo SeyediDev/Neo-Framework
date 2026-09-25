@@ -27,6 +27,45 @@ Outbox فعلی Neo، کار را از طریق `DefaultOutboxJobScheduler` به
 
 ## معیارهای قابل مشاهده
 
+### مسیر پیشنهادی یادگیری و انتخاب
+
+| نیاز | مسیر | نمونهٔ اجرایی |
+|---|---|---|
+| واکنش داخلی به تغییر Aggregate | DomainEvent و handler محلی MediatR پیش از save | `DurableContext.cs` و `OrderPlacedHandler` |
+| کار پس‌زمینهٔ همین برنامه | Hangfire و Outbox دیتابیسی Neo | [HangfireOutboxDemo](../samples/HangfireOutboxDemo/README.fa.md) |
+| پیام بین سرویس‌ها | قرارداد مستقل، RabbitMQ و MassTransit | [MessagingDemo](MESSAGING.fa.md) |
+| حفظ پیام و Saga پس از restart | Bus/Consumer Outbox و Saga در SQL Server | [DurableMessagingDemo](../samples/DurableMessagingDemo/README.md) |
+
+در نمونهٔ پایدار، ساخت سفارش `OrderPlaced` را در Aggregate ثبت می‌کند. interceptor پیش از save، handler را اجرا می‌کند. handler با `IPublishEndpoint` همان scope، پیام `StartOrder` را در Bus Outbox همان DbContext قرار می‌دهد. commit بیرونی، سفارش و پیام را با هم پایدار می‌کند. worker پیام را به RabbitMQ می‌دهد و Saga مرحلهٔ رزرو، پرداخت و در صورت رد قطعی پرداخت، آزادسازی رزرو را هدایت می‌کند. consumerها اثر دیتابیسی و پیام پاسخ را با Consumer Outbox ثبت می‌کنند. شکست مداوم آزادسازی به ManualReview می‌رسد؛ اپراتور پس از بررسی می‌تواند compensation را ادامه دهد. نتیجهٔ نامعلوم پرداخت مجوز آزادسازی خودکار نیست.
+
+### مرحلهٔ ۴: اجرای قابل‌بازیابی Hangfire
+
+`AddNeoEfOutbox<TContext>()` قرارداد `IOutboxDeliveryStore` را فعال می‌کند. در مسیر جدید `Requested → Dispatching → Queued → Processing → Processed` است. worker سریع ممکن است پیش از ثبت Queued اجرا شود؛ update شرطی dispatcher اجازهٔ بازنویسی Processing/Processed را نمی‌دهد. JobId صرفاً نشان‌دهندهٔ پذیرش در Hangfire است؛ موفقیت کسب‌وکار با Processed مشخص می‌شود.
+
+خطای enqueue به Retrying می‌رود؛ خطای handler به ExecutionRetrying. حداقل فاصلهٔ retry سی ثانیه، lease پنج دقیقه، timeout اجرایی چهار دقیقه و سقف اجرای handler سه بار است. lease منقضی‌شده قابل بازیابی است؛ قطع روی آخرین تلاش به Failed می‌رود. owner token از ثبت نتیجه توسط worker قدیمی جلوگیری می‌کند. ارسال ممکن است تکرار شود؛ اثر خارجی به idempotency مقصد نیاز دارد. جزئیات migration سه ستون جدید، ثبت DI، اجرای cron و محدودیت context در راهنمای نمونه آمده است.
+
+### پایش و عملیات روزانه
+
+| نشانه | چه چیزی بررسی شود | اقدام مناسب |
+|---|---|---|
+| Requested قدیمی | اجرای cron، صف outbox، اتصال SQL/Hangfire | بازگرداندن worker و بررسی لاگ dispatch |
+| Queued بدون پیشرفت | JobId و وضعیت worker Hangfire | رفع خطای DI یا مصرف‌نشدن صف؛ JobId را موفقیت تلقی نکنید |
+| Dispatching/Processing با lease منقضی | تاریخ انقضا، شمارنده، سلامت worker | worker جدید recovery را انجام می‌دهد؛ پس از سقف تلاش، بررسی Failed |
+| PendingIdempotency قدیمی | رکورد cache و OutboxId مالک | تطبیق دستی؛ ارسال کورکورانه ممکن است عملیات تکراری بسازد |
+| Failed یا ProcessError | آخرین خطا، تعداد تلاش، اثر واقعی کسب‌وکار | رفع علت؛ replay کنترل‌شده با شناسهٔ عملیات قبلی و ثبت دلیل |
+| Outbox پیام RabbitMQ رو به رشد | broker، readiness، delivery service و transactionهای SQL | رفع اتصال/قفل؛ پیام‌های commit‌شده را حذف نکنید |
+| Saga در ManualReview | وضعیت رزرو، نتیجهٔ قطعی/نامعلوم پرداخت و خطای compensation | ابتدا reconciliation؛ سپس retry تنها وقتی compensation لازم است |
+
+در نمونهٔ Hangfire از `/outbox/{id}` و `/receipts/{id}`، و در نمونهٔ RabbitMQ از `/outbox` و `/state/{id}` استفاده کنید. readiness اتصال حمل‌ونقل با موفقیت یک عملیات کسب‌وکار متفاوت است. برای سیستم واقعی تعداد و سن پیام‌های pending، تعداد Failed، retry و ManualReview را پایش کنید؛ در لاگ‌های dispatch شناسهٔ Outbox و خطا موجود است. شناسهٔ سفارش/عملیات و پیام را در trace/log نگه دارید، نه به‌صورت برچسب دارای تنوع زیاد برای metric.
+
+برای SQL، یک query صرفاً خواندنی روی جدول نگاشت‌شدهٔ `OutboxMessage` با گروه‌بندی `OutboxState` و `MIN(CreateDate)`، تعداد و سن پیام‌ها را نشان می‌دهد. قبل از replay، payload/version قرارداد، JobId، وضعیت اثر مقصد و مالکیت idempotency را بررسی کنید. پاک‌سازی Inbox/Outbox باید بازهٔ replay و سیاست نگهداری کسب‌وکار را رعایت کند؛ پیام خطادار را برای خالی‌کردن داشبورد حذف نکنید.
+
+### MCP، Skill و سناریوهای قابل تکرار
+
+پس از `neo_search_docs` و دریافت baseline، از `neo_get_example` با `durable-messaging-demo` یا `hangfire-outbox-demo` استفاده کنید. نمونهٔ Saga منبع وابستگی `MessagingDemo` را نیز برمی‌گرداند؛ دو پوشه باید کنار هم در checkout بمانند. MCP فقط راهنما و کد را می‌خواند و پیام واقعی منتشر نمی‌کند. Skill `neo-feature` همین انتخاب مسیر و مرز تراکنش را رعایت می‌کند.
+
+آزمون‌های `DomainEventTests`, `QueueDeliveryTests`, `OutboxCoordinationTests`, `OutboxDeliveryTests` رگرسیون‌ها را پوشش می‌دهند. `smoke_durable_messaging.py` و `smoke_hangfire_outbox.py` با کانتینرهای واقعی اجرا می‌شوند؛ آزمون Redis در workflow پیام‌رسانی از Redis واقعی استفاده می‌کند. گزارش نسخه و محدودیت‌های آزمون در [VALIDATION.md](VALIDATION.md) است. این سناریوها جای سیاست deadline برای Saga، مهاجرت قراردادها یا اتصال واقعی بانک را نمی‌گیرند.
+
 ### مرحلهٔ ۵: نمونهٔ تراکنشی SQL Server و RabbitMQ
 
 [DurableMessagingDemo](../samples/DurableMessagingDemo/README.md) مسیر واقعی DomainEvent → handler محلی → Bus Outbox همان DbContext → RabbitMQ → Saga دیتابیسی → Consumer Outbox را نشان می‌دهد. این نمونه از نمونهٔ حافظه‌ای قبلی جداست. rollback تراکنش بیرونی باید سفارش و پیام را با هم حذف کند؛ خاموش‌بودن delivery و restart باید پیام commit‌شده را حفظ کند. جزئیات اجرا، دو worker و بازیابی کامپنسیشن در README نمونه آمده است.

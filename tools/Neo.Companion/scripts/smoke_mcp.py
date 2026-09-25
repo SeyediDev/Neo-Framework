@@ -76,6 +76,14 @@ try:
     assert 'AddNeoRabbitMq' in messaging['guide']
     assert any(x['path'] == 'OrderSaga.cs' for x in messaging['files']), messaging
     assert 'ManualReview' in messaging['sagaGuide']
+    durable = call(12, 'neo_get_example', {'example': 'durable-messaging-demo', 'baseline': docs['baseline']})
+    assert any(x['path'] == 'DurableContext.cs' for x in durable['files'])
+    assert any(x['path'] == 'OrderSaga.cs' for x in durable['dependencies'][0]['files'])
+    assert 'WorkManagement' in durable['eventDeliveryGuide']
+    hangfire = call(13, 'neo_get_example', {'example': 'hangfire-outbox-demo', 'baseline': docs['baseline']})
+    assert any(x['path'] == 'Program.cs' and 'AddNeoEfOutbox' in x['content'] for x in hangfire['files'])
+    assert any(x['path'] == 'compose.yaml' for x in hangfire['files'])
+    assert 'DeliveryLeaseId' in hangfire['guide']
     mismatch = request(6, 'tools/call', {'name': 'neo_get_example', 'arguments': {'example': 'product-create', 'baseline': 'wrong-version'}})
     assert mismatch.get('isError') is True, mismatch
     for identifier, mode in [(7, 'manual'), (8, 'attribute')]:
@@ -92,7 +100,7 @@ try:
     print(json.dumps({'status': 'passed', 'protocol': init['protocolVersion'], 'tools': sorted(expected),
         'example_files': len(example['files']), 'projects': len(inspection['projects']),
         'doctor_codes': sorted({x['code'] for x in diagnosis['findings']}),
-        'checks': ['initialize', 'tool-discovery', 'read-only-annotations', 'docs-search', 'project-inspection', 'example-retrieval', 'wrong-version-error', 'telemetry-manual', 'telemetry-attribute', 'doctor-diagnosis']}, indent=2))
+        'checks': ['initialize', 'tool-discovery', 'read-only-annotations', 'docs-search', 'project-inspection', 'example-retrieval', 'durable-saga-retrieval', 'hangfire-outbox-retrieval', 'wrong-version-error', 'telemetry-manual', 'telemetry-attribute', 'doctor-diagnosis']}, indent=2))
 finally:
     process.stdin.close()
     try: process.wait(timeout=5)

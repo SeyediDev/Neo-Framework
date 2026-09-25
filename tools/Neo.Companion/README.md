@@ -16,6 +16,14 @@ Retrieve this complete example through `neo_get_example` with `example: "messagi
 and the exact baseline from `neo_search_docs`. The MCP returns source/configuration and instructions;
 it does not connect to a broker or publish application messages.
 
+For persistence and restart recovery, use [DurableMessagingDemo](samples/DurableMessagingDemo/README.md)
+(`durable-messaging-demo` in MCP): shared SQL transaction, MassTransit bus/consumer Outbox, persistent Saga,
+and database effects. For existing job-based applications, use [HangfireOutboxDemo](samples/HangfireOutboxDemo/README.fa.md)
+(`hangfire-outbox-demo`): atomic row claims, retry after interrupted delivery and persisted execution results.
+Both have a runnable SQL Server CI exercise. The [DDD and event-delivery guide](docs/EVENT-DELIVERY.fa.md)
+explains transaction boundaries, migration, monitoring and reconciliation. MCP 0.5.0 still provides five read-only tools;
+`neo_get_example` now offers four examples and bundles required Saga dependency source.
+
 New infrastructure capabilities should ship with a runnable usage example, local configuration,
 expected output, a failure exercise and behavioral tests. Document guarantees and omissions,
 especially persistence, retries and authorization. Existing Hangfire jobs remain available;
