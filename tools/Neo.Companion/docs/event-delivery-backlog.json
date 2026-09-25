@@ -1,0 +1,57 @@
+{
+  "project": "NEO",
+  "database": "WorkManagement",
+  "baseline": "1a224d0e38b69cd0996a865cdf4a0cb08a50b5f9",
+  "auditTask": "NEO-EVT-AUDIT-001",
+  "note": "Source review and acceptance specification. Operational status, ownership, logs, tests and commits live in WorkManagement, not this file.",
+  "items": [
+    {
+      "key": "NEO-EVT-101",
+      "title": "اصلاح چرخه ارسال رویداد دامنه، cancellation و فراخوانی بازگشتی",
+      "priority": 4,
+      "dependsOn": [],
+      "evidence": ["src/Neo.Infrastructure/Data/Interceptors/DispatchDomainEventsInterceptor.cs: clears every event before publication; ignores SaveChanges cancellation; snapshots only one batch; dispatches before persistence", "src/Neo.Domain/Entities/Base/IDomainEventEntity.cs: AddDomainEvents discards the result of Append and adds nothing; used by UpdateGenericEntity", "src/Neo.Domain/Entities/Base/BaseEntity.cs: in-memory domain-event collection"],
+      "acceptance": ["Document pre-commit local domain handlers versus durable integration events", "Forward cancellation; failed and unprocessed events are not silently lost", "Handle events raised by handlers within a bounded drain and reject recursive SaveChanges", "Regression tests cover cancellation, handler failure, cascading events and persistence failure; no claim of distributed rollback"]
+    },
+    {
+      "key": "NEO-EVT-102",
+      "title": "اصلاح قرارداد صف Hangfire و ارسال رویدادهای خروجی command",
+      "priority": 4,
+      "dependsOn": [],
+      "evidence": ["src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireJobExecuter.cs: EnqueueAsync serializes a Compile/GetResult wrapper and most methods bypass injected client", "src/Neo.Application/Behaviours/MediatR/PublishEventsOfCommandsBehaviour.cs: clears events before scheduling and ignores returned job id", "src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireOptions.cs: default queues omit outbox while DefaultOutboxJobScheduler targets outbox"],
+      "acceptance": ["Queue actual serializable job methods with replaced CancellationToken argument using the injected client", "Preserve pending response events when enqueue fails or returns no id", "Make outbox queue configuration explicit and fail early for invalid settings", "Tests inspect Hangfire job metadata and exercise partial enqueue failure"]
+    },
+    {
+      "key": "NEO-EVT-103",
+      "title": "رفع رقابت Idempotency و مالکیت قفل توزیع‌شده",
+      "priority": 4,
+      "dependsOn": [],
+      "evidence": ["src/Neo.Application/Features/Outbox/Implementation/OutboxMessageProcessor.cs: losing concurrent enqueue returns winner before retiring its Requested row", "src/Neo.Infrastructure/Features/Outbox/IdempotencyStoreWithCacheService.cs: Get then Set is not atomic", "src/Neo.Infrastructure/Features/Outbox/RedisDistributedLock.cs: unconditional SetString followed by Get; release unconditionally removes another owner's lock; timeout ignored"],
+      "acceptance": ["Losing duplicate is never left eligible for dispatch", "Replace unsafe cache atomicity claims with an explicit atomic capability or fail-fast registration", "Use atomic Redis acquire and owner-token compare/delete release with bounded lease semantics", "Deterministic concurrent regressions and real Redis integration verify exclusivity and stale-owner release"]
+    },
+    {
+      "key": "NEO-EVT-104",
+      "title": "بازیابی Outbox و ثبت نتیجه اجرای job با شناسه پیام",
+      "priority": 3,
+      "dependsOn": ["NEO-EVT-102", "NEO-EVT-103"],
+      "evidence": ["src/Neo.Application/Features/Outbox/Implementation/ProcessOutboxRecurringJob.cs: persists Processing before schedule; GetRequested never recovers Processing after crash; catches exceptions and uses a separate retry policy", "src/Neo.Application/Features/Outbox/Implementation/DefaultOutboxJobScheduler.cs: schedules only payload, losing OutboxId", "src/Neo.Application/Features/Queue/Implementation/JobCommand.cs and JobPublisher.cs: no persisted execution outcome linked to OutboxMessage"],
+      "acceptance": ["Carry OutboxId into execution and persist success/failure separately from enqueue acceptance", "Provide bounded recovery for interrupted dispatch with explicit duplicate-delivery semantics", "Keep retry and cancellation policies consistent; failures are observable", "Demonstrate interrupted dispatch and successful replay without claiming arbitrary external effects are exactly-once"]
+    },
+    {
+      "key": "NEO-EVT-105",
+      "title": "اتصال تراکنشی رویداد دامنه به RabbitMQ و ذخیره پایدار Saga",
+      "priority": 3,
+      "dependsOn": ["NEO-EVT-101"],
+      "evidence": ["src/Neo.Application/Features/Outbox/Implementation/OutboxStore.cs: AddAsync calls SaveChanges separately; no mandatory shared business/outbox transaction", "src/Neo.Infrastructure/Features/Messaging/RabbitMqServiceCollectionExtensions.cs: bus registration only, no transactional EF outbox", "tools/Neo.Companion/samples/MessagingDemo/OrderSaga.cs and SagaParticipants.cs: state and participant ledgers are process-local"],
+      "acceptance": ["Add opt-in EF/MassTransit transactional outbox with explicit same-DbContext usage", "Runnable database-backed example maps domain event to a stable integration contract and coordinates persistent Saga state", "Test rollback emits no integration message; committed pending messages survive publisher restart", "Document stable event/operation IDs, reconciliation of unknown payment outcomes and multi-worker concurrency requirements"]
+    },
+    {
+      "key": "NEO-EVT-106",
+      "title": "نمونه انتهابه‌انتها، پایش و هماهنگی Skills/MCP برای رویدادها",
+      "priority": 3,
+      "dependsOn": ["NEO-EVT-101", "NEO-EVT-102", "NEO-EVT-103", "NEO-EVT-104", "NEO-EVT-105"],
+      "evidence": ["tools/Neo.Companion/docs/MESSAGING.fa.md and SAGA.fa.md currently cover an in-memory teaching Saga", "src/Neo.Domain/Entities/Common/OutboxMessage.cs: enqueue and execution states exist but need documented operational semantics"],
+      "acceptance": ["Publish a Persian guide for DDD -> transaction -> Outbox -> queue -> consumer -> compensation", "Include failure/restart exercises, readiness and pending/failed work inspection", "Update source snapshots, feature skill, MCP retrieval and runnable CI", "Record actual tests, commits and final state per task in WorkManagement; no unresolved item marked Done"]
+    }
+  ]
+}
