@@ -8,6 +8,13 @@ comp=Path(__file__).resolve().parents[1]
 repo=comp.parents[1]
 knowledge=comp/'knowledge'
 paths=[
+'src/Neo.Application/Features/Outbox/Implementation/OutboxMessageProcessor.cs',
+'src/Neo.Application/Features/Outbox/IdempotencyKeyHasher.cs',
+'src/Neo.Domain/Entities/Common/OutboxMessage.cs',
+'src/Neo.Domain/Features/Cache/IAtomicCacheService.cs',
+'src/Neo.Infrastructure/Features/Outbox/RedisDistributedLock.cs',
+'src/Neo.Infrastructure/Features/Outbox/IdempotencyStoreRedis.cs',
+'src/Neo.Infrastructure/Features/Outbox/IdempotencyStoreWithCacheService.cs',
 'src/Neo.Application/Behaviours/MediatR/PublishEventsOfCommandsBehaviour.cs',
 'src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireJobExecuter.cs',
 'src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireOptions.cs',

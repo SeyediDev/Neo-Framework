@@ -1,4 +1,4 @@
-﻿namespace Neo.Application.Features.Outbox.Implementation;
+namespace Neo.Application.Features.Outbox.Implementation;
 
 /// <summary>
 /// Base implementation for Outbox execution with idempotency and background job scheduling.

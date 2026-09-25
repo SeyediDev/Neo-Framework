@@ -25,6 +25,10 @@ jobs:
         run: dotnet build tools/Neo.Companion/samples/MessagingDemo/MessagingDemo.csproj -c Release
       - name: Verify messaging, Saga and compensation over RabbitMQ
         run: python tools/Neo.Companion/scripts/smoke_messaging.py --server-dll tools/Neo.Companion/samples/MessagingDemo/bin/Release/net10.0/MessagingDemo.dll
+      - name: Verify atomic leases and idempotency with real Redis
+        env:
+          NEO_TEST_REDIS: localhost:6379,abortConnect=false
+        run: dotnet test tools/Neo.Companion/tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj -c Release --filter FullyQualifiedName~RedisCoordinationTests
       - name: Broker logs
         if: failure()
         run: docker compose -f tools/Neo.Companion/samples/MessagingDemo/compose.yaml logs

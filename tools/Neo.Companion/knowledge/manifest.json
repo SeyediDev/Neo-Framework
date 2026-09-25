@@ -1,9 +1,37 @@
 {
-  "baseline": "sha256:ba14420a3ce7faf183d6608ac7b4e6558e412aa6a05fadf0fd8f19313380cd65",
+  "baseline": "sha256:9ce780d2694830d48e3f657bd86b00d2154d831ad04eee974a73bfc1edd5834d",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Application/Features/Outbox/Implementation/OutboxMessageProcessor.cs",
+      "sha256": "8089da269a89f5ff29ff77a5c51aa938d2d7f8e4a2246080ed6525f5cbf013c9"
+    },
+    {
+      "path": "src/Neo.Application/Features/Outbox/IdempotencyKeyHasher.cs",
+      "sha256": "ce1ce2732a65a1fcffde3f73a23fd75588432551e2bb99212e94769132446bbb"
+    },
+    {
+      "path": "src/Neo.Domain/Entities/Common/OutboxMessage.cs",
+      "sha256": "ae8434a6f7649a06cc7e1a8ea28bfd8fe8c1c89ab389d3bb0bc5ba1384462672"
+    },
+    {
+      "path": "src/Neo.Domain/Features/Cache/IAtomicCacheService.cs",
+      "sha256": "ebe3937bc09262281f09b63845287bfd6ed5aa7533f6b48baa4302c820d8a923"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Outbox/RedisDistributedLock.cs",
+      "sha256": "9b8abf825f5a7919068423698591a140ed0f4edc2877d0dc67e642a8f5fe54b6"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Outbox/IdempotencyStoreRedis.cs",
+      "sha256": "43b075321a87203861d7d8ce243b36bb798e2efc790932e05512e5304227828d"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Outbox/IdempotencyStoreWithCacheService.cs",
+      "sha256": "c70b6b9e802222603f7dc7955b9d9b4f32b6502f8bdedc6e1f22d119bcc887b4"
+    },
     {
       "path": "src/Neo.Application/Behaviours/MediatR/PublishEventsOfCommandsBehaviour.cs",
       "sha256": "537a18d116d68e39940c0fae90ff14bc1191a82ecd6b043a3116fe41263af56f"

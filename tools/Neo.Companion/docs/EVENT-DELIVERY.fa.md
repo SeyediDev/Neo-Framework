@@ -27,6 +27,18 @@ Outbox فعلی Neo، کار را از طریق `DefaultOutboxJobScheduler` به
 
 ## معیارهای قابل مشاهده
 
+### مرحلهٔ ۳: کلید تکرار و lease
+
+پیام دارای کلید idempotency ابتدا با وضعیت `PendingIdempotency` ذخیره می‌شود. تنها پس از گرفتن کلید به `Requested` می‌رود؛ درخواست بازنده قبل از برگرداندن نتیجهٔ برنده، رکورد خودش را از dispatch خارج می‌کند. قطع فرایند بین ذخیرهٔ پیام و گرفتن کلید ممکن است رکورد pending بسازد؛ این وضعیت برای بررسی و reconciliation حفظ می‌شود و خودکار ارسال نمی‌شود. برای ثبت اتمیک کسب‌وکار و پیام، از مسیر تراکنشی همان دیتابیس استفاده کنید.
+
+`AddNeoOutboxWithRedis` یک store مبتنی بر `SET NX` و قفل توکن‌دار ثبت می‌کند. اتصال از `ConnectionStrings:Redis` خوانده می‌شود. `AddNeoOutboxWithMongo` نیز برای قفل توزیع‌شده به این اتصال نیاز دارد. سازندهٔ هر دو کلاس `RedisDistributedLock` اکنون `IConnectionMultiplexer` می‌گیرد؛ `IDistributedCache` عملیات لازم برای قفل اتمیک را ندارد.
+
+provider حافظه‌ای فقط بین سرویس‌های متصل به همان `IMemoryCache` و همان پردازش اتمیک است. `IdempotencyStoreWithCacheService` یک cache فاقد `IAtomicCacheService` را رد می‌کند. نام `AddNeoOutboxWithCatch` برای سازگاری باقی مانده؛ آن را فقط با MemoryCacheService یا provider واقعاً اتمیک استفاده کنید.
+
+پارامتر `timeout` قفل، مدت اعتبار lease است. عملیات باید در این بازه پایان یابد؛ توقف طولانی پردازش، قطع شبکه و پایان lease به کنترل idempotency/fencing عملیات کسب‌وکار نیاز دارد. آزادسازی فقط با توکن مالک انجام می‌شود؛ مالک قدیمی قفل جدید را حذف نمی‌کند. providerها خطای اتصال را به caller منتقل می‌کنند.
+
+کلیدهای Redis/cache جدید با namespace مستقل، نام کامل قرارداد و هش کامل ورودی تفکیک‌شده ساخته می‌شوند. هنگام مهاجرت از cache قدیمی، تا پایان بازهٔ replay پیام‌های قبلی را reconcile کنید؛ تغییر فرمت کلید نباید باعث فرض نادرست دربارهٔ سوابق جلوگیری از تکرار شود. فرمت قدیمی Mongo برای سازگاری این مرحله تغییر نکرده است.
+
 ### مرحلهٔ ۲: صف Hangfire و خروجی command
 
 متدهای `IJobExecuter` اکنون از client تزریق‌شده استفاده می‌کنند و متد async واقعی را با آرگومان‌های قابل‌سریال‌سازی ذخیره می‌کنند. token زمان enqueue در آرگومان job به `CancellationToken.None` تبدیل می‌شود؛ Hangfire هنگام اجرا token مربوط به worker را جایگزین می‌کند. نام صف و continuation حفظ می‌شوند.

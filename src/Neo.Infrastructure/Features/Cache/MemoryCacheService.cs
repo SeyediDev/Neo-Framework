@@ -2,11 +2,24 @@
 using Neo.Domain.Features.Cache;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using System.Runtime.CompilerServices;
 
 namespace Neo.Infrastructure.Features.Cache;
 
-public class MemoryCacheService(IMemoryCache memoryCache) : ICacheService
+public class MemoryCacheService(IMemoryCache memoryCache) : IAtomicCacheService
 {
+    private static readonly ConditionalWeakTable<IMemoryCache, object> AtomicGates = new();
+    public Task<bool> TryAddAsync<T>(string key, T value, TimeSpan lifetime, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (lifetime <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(lifetime));
+        lock (AtomicGates.GetValue(memoryCache, _ => new object()))
+        {
+            if (memoryCache.TryGetValue(key, out _)) return Task.FromResult(false);
+            memoryCache.Set(key, value.ToJson(), lifetime);
+            return Task.FromResult(true);
+        }
+    }
     public T? Get<T>(string key)
     {
         if( memoryCache.TryGetValue(key, out string? cachedValue) && cachedValue!=null )
