@@ -27,6 +27,10 @@ Outbox فعلی Neo، کار را از طریق `DefaultOutboxJobScheduler` به
 
 ## معیارهای قابل مشاهده
 
+### مرحلهٔ ۵: نمونهٔ تراکنشی SQL Server و RabbitMQ
+
+[DurableMessagingDemo](../samples/DurableMessagingDemo/README.md) مسیر واقعی DomainEvent → handler محلی → Bus Outbox همان DbContext → RabbitMQ → Saga دیتابیسی → Consumer Outbox را نشان می‌دهد. این نمونه از نمونهٔ حافظه‌ای قبلی جداست. rollback تراکنش بیرونی باید سفارش و پیام را با هم حذف کند؛ خاموش‌بودن delivery و restart باید پیام commit‌شده را حفظ کند. جزئیات اجرا، دو worker و بازیابی کامپنسیشن در README نمونه آمده است.
+
 ### مرحلهٔ ۳: کلید تکرار و lease
 
 پیام دارای کلید idempotency ابتدا با وضعیت `PendingIdempotency` ذخیره می‌شود. تنها پس از گرفتن کلید به `Requested` می‌رود؛ درخواست بازنده قبل از برگرداندن نتیجهٔ برنده، رکورد خودش را از dispatch خارج می‌کند. قطع فرایند بین ذخیرهٔ پیام و گرفتن کلید ممکن است رکورد pending بسازد؛ این وضعیت برای بررسی و reconciliation حفظ می‌شود و خودکار ارسال نمی‌شود. برای ثبت اتمیک کسب‌وکار و پیام، از مسیر تراکنشی همان دیتابیس استفاده کنید.

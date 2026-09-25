@@ -8,6 +8,7 @@ comp=Path(__file__).resolve().parents[1]
 repo=comp.parents[1]
 knowledge=comp/'knowledge'
 paths=[
+'src/Neo.Infrastructure/Features/Messaging/SqlServerOutboxExtensions.cs',
 'src/Neo.Application/Features/Outbox/Implementation/OutboxMessageProcessor.cs',
 'src/Neo.Application/Features/Outbox/IdempotencyKeyHasher.cs',
 'src/Neo.Domain/Entities/Common/OutboxMessage.cs',

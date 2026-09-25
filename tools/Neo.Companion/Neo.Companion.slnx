@@ -7,4 +7,5 @@
   <Project Path="tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj" />
   <Project Path="samples/TelemetryDemo/TelemetryDemo.csproj" />
   <Project Path="samples/MessagingDemo/MessagingDemo.csproj" />
+  <Project Path="samples/DurableMessagingDemo/DurableMessagingDemo.csproj" />
 </Solution>

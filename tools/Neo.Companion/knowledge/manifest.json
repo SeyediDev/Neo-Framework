@@ -1,9 +1,13 @@
 {
-  "baseline": "sha256:9ce780d2694830d48e3f657bd86b00d2154d831ad04eee974a73bfc1edd5834d",
+  "baseline": "sha256:8937e13afcdca84378cf3ab548531fb66d3e4270ae76a3bbadf9721f7768e57e",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Infrastructure/Features/Messaging/SqlServerOutboxExtensions.cs",
+      "sha256": "4c9c5db507b67197bd9271bd7ceda15922d09452e98ab796153e2f5247b058c3"
+    },
     {
       "path": "src/Neo.Application/Features/Outbox/Implementation/OutboxMessageProcessor.cs",
       "sha256": "8089da269a89f5ff29ff77a5c51aa938d2d7f8e4a2246080ed6525f5cbf013c9"
