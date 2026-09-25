@@ -1,16 +1,44 @@
 {
-  "baseline": "sha256:8937e13afcdca84378cf3ab548531fb66d3e4270ae76a3bbadf9721f7768e57e",
+  "baseline": "sha256:5d378556b4ab3e6d2e3b27ef59fdaa5c3042a6989ccd768d8d7e0bebf69f6aaf",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Application/Features/Outbox/IOutboxDeliveryStore.cs",
+      "sha256": "0e0c7e8440b477996deecb1d3149669068c9fbfaee167b5a46bd3f357d50b34c"
+    },
+    {
+      "path": "src/Neo.Application/Features/Outbox/IOutboxExecutionJob.cs",
+      "sha256": "9c1d962aa59f1b692a290c98be83b09deddec704b46f66d52ff8ec839bfaddfa"
+    },
+    {
+      "path": "src/Neo.Application/Features/Outbox/IProcessOutboxRecurringJob.cs",
+      "sha256": "b56131b3bc377ec65f3cdf53d25beaa1c1a2df58073d5cb1d9d514af49825539"
+    },
+    {
+      "path": "src/Neo.Application/Features/Outbox/Implementation/OutboxExecutionJob.cs",
+      "sha256": "39763a969aa7c95d3920175759a5f3ef099913e30ad3f6fc3e6878371b10e5f2"
+    },
+    {
+      "path": "src/Neo.Application/Features/Outbox/Implementation/ProcessOutboxRecurringJob.cs",
+      "sha256": "7a99693d17e2e44dbc0a7735325f1bf9b38ef59273d46440d4ff24a40678815c"
+    },
+    {
+      "path": "src/Neo.Application/Features/Outbox/Implementation/DefaultOutboxJobScheduler.cs",
+      "sha256": "f657647096d7835bbd069010d89a7dfe5602fc038de0680b8e8f22bb1144d1f2"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Outbox/EfOutboxStore.cs",
+      "sha256": "da008667778284caa014f585a31c45d5324d0402f10cc27a53c317e0525acfae"
+    },
     {
       "path": "src/Neo.Infrastructure/Features/Messaging/SqlServerOutboxExtensions.cs",
       "sha256": "4c9c5db507b67197bd9271bd7ceda15922d09452e98ab796153e2f5247b058c3"
     },
     {
       "path": "src/Neo.Application/Features/Outbox/Implementation/OutboxMessageProcessor.cs",
-      "sha256": "8089da269a89f5ff29ff77a5c51aa938d2d7f8e4a2246080ed6525f5cbf013c9"
+      "sha256": "0098314a161471eb612ac3dc66991667377cd63f4d7bcccf1389efdc41fda3a0"
     },
     {
       "path": "src/Neo.Application/Features/Outbox/IdempotencyKeyHasher.cs",
@@ -18,7 +46,7 @@
     },
     {
       "path": "src/Neo.Domain/Entities/Common/OutboxMessage.cs",
-      "sha256": "ae8434a6f7649a06cc7e1a8ea28bfd8fe8c1c89ab389d3bb0bc5ba1384462672"
+      "sha256": "d3e8eb785642276002f4674fd58d32662b3363523d368150cf761408df5d19fe"
     },
     {
       "path": "src/Neo.Domain/Features/Cache/IAtomicCacheService.cs",
@@ -26,7 +54,7 @@
     },
     {
       "path": "src/Neo.Infrastructure/Features/Outbox/RedisDistributedLock.cs",
-      "sha256": "9b8abf825f5a7919068423698591a140ed0f4edc2877d0dc67e642a8f5fe54b6"
+      "sha256": "80c47c63d79ca62ade462376f100ea8463064299538e97aa7e0c6e5127e702b1"
     },
     {
       "path": "src/Neo.Infrastructure/Features/Outbox/IdempotencyStoreRedis.cs",

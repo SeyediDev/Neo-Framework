@@ -62,8 +62,8 @@ public class OutboxMessageProcessor<TOutboxMessage>(
     {
         var outboxMessage = new OutboxMessage
         {
-            MessageName = typeof(TOutboxMessage).Name,
-            MessageType = typeof(TOutboxMessage).FullName!,
+            MessageName = message.GetType().Name,
+            MessageType = message.GetType().FullName!,
             MessageContent = message.ToJson(),
             IdempotencyKey = idempotencyKey,
 			TenantKey = tenantKey,
@@ -95,7 +95,11 @@ public class OutboxMessageProcessor<TOutboxMessage>(
             await outboxStore.UpdateAsync(outboxMessage, ct);
         }
 
-        // 👇 Register and schedule job 
+        // Atomic delivery stores dispatch committed rows from the recurring worker. No dual-write to Hangfire here.
+        if (outboxStore is IOutboxDeliveryStore)
+            return new OutboxResponse(outboxMessage.Id, outboxMessage.OutboxState, null, outboxMessage.IdempotencyKey);
+
+        // Legacy immediate scheduling; opt into AddNeoEfOutbox for recoverable delivery.
         try
         {
             outboxMessage.JobId = outboxJobScheduler.ScheduleOnline(message);

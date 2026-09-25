@@ -8,4 +8,5 @@
   <Project Path="samples/TelemetryDemo/TelemetryDemo.csproj" />
   <Project Path="samples/MessagingDemo/MessagingDemo.csproj" />
   <Project Path="samples/DurableMessagingDemo/DurableMessagingDemo.csproj" />
+  <Project Path="samples/HangfireOutboxDemo/HangfireOutboxDemo.csproj" />
 </Solution>

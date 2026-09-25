@@ -53,6 +53,9 @@ public class OutboxMessage : BaseCoreLogAuditableEntity<long>
     public string? IdempotencyKey { get; set; }
     [MaxLength(40)]
     public string? JobId { get; set; }
+    public Guid? DeliveryLeaseId { get; set; }
+    public DateTime? DeliveryLeaseUntilUtc { get; set; }
+    public DateTime? NextAttemptAtUtc { get; set; }
 }
 
 /// <summary>
@@ -69,5 +72,7 @@ public enum OutboxState
     Expired,     // منقضی شده (Timeout/TTL)
     Canceled,    // لغو شده توسط کاربر/سیستم
     DuplicateIdempotencyKey,
-    PendingIdempotency // Persisted but not dispatchable until ownership of the operation key is confirmed.
+    PendingIdempotency, // Persisted but not dispatchable until ownership of the operation key is confirmed.
+    Dispatching,
+    ExecutionRetrying
 }

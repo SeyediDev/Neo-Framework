@@ -28,6 +28,13 @@ jobs:
       - name: Service logs
         if: failure()
         run: docker compose -f tools/Neo.Companion/samples/DurableMessagingDemo/compose.yaml logs
+      - name: Build Hangfire Outbox demo
+        run: dotnet build tools/Neo.Companion/samples/HangfireOutboxDemo/HangfireOutboxDemo.csproj -c Release
+      - name: Verify SQL and Hangfire execution lifecycle
+        run: python tools/Neo.Companion/scripts/smoke_hangfire_outbox.py --server-dll tools/Neo.Companion/samples/HangfireOutboxDemo/bin/Release/net10.0/HangfireOutboxDemo.dll
+      - name: Final service logs
+        if: failure()
+        run: docker compose -f tools/Neo.Companion/samples/DurableMessagingDemo/compose.yaml logs
       - name: Stop isolated services
         if: always()
         run: docker compose -f tools/Neo.Companion/samples/DurableMessagingDemo/compose.yaml down

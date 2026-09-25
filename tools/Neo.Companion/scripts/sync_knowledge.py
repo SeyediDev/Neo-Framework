@@ -8,6 +8,13 @@ comp=Path(__file__).resolve().parents[1]
 repo=comp.parents[1]
 knowledge=comp/'knowledge'
 paths=[
+'src/Neo.Application/Features/Outbox/IOutboxDeliveryStore.cs',
+'src/Neo.Application/Features/Outbox/IOutboxExecutionJob.cs',
+'src/Neo.Application/Features/Outbox/IProcessOutboxRecurringJob.cs',
+'src/Neo.Application/Features/Outbox/Implementation/OutboxExecutionJob.cs',
+'src/Neo.Application/Features/Outbox/Implementation/ProcessOutboxRecurringJob.cs',
+'src/Neo.Application/Features/Outbox/Implementation/DefaultOutboxJobScheduler.cs',
+'src/Neo.Infrastructure/Features/Outbox/EfOutboxStore.cs',
 'src/Neo.Infrastructure/Features/Messaging/SqlServerOutboxExtensions.cs',
 'src/Neo.Application/Features/Outbox/Implementation/OutboxMessageProcessor.cs',
 'src/Neo.Application/Features/Outbox/IdempotencyKeyHasher.cs',
