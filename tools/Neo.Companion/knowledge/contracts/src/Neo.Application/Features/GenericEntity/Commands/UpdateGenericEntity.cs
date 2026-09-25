@@ -14,7 +14,7 @@ public record UpdateGenericEntityCommand<TDto, TEntity, TKey>
     public required TDto Dto { get; set; }
     public Func<TEntity, Task>? BeforeUpdate { get; set; }
     public Func<TEntity, Task>? AfterUpdate { get; set; }
-    public List<BaseEvent>? DomainEvents { get; }
+    public List<BaseEvent>? DomainEvents { get; init; }
 }
 
 public class UpdateGenericEntityCommandValidator<TDto, TEntity, TKey>

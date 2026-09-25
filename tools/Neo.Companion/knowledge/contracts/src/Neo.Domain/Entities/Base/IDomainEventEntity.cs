@@ -1,4 +1,4 @@
-﻿namespace Neo.Domain.Entities.Base;
+namespace Neo.Domain.Entities.Base;
 
 public interface IDomainEventEntity
 {

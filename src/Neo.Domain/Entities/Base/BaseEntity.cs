@@ -21,6 +21,7 @@ public abstract class BaseEntity<TKey> : IEntity<TKey>, IDomainEventEntity
 
     public void AddDomainEvent(BaseEvent domainEvent)
     {
+        ArgumentNullException.ThrowIfNull(domainEvent);
         _domainEvents.Add(domainEvent);
     }
 

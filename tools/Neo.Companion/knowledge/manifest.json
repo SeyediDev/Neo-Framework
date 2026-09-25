@@ -1,9 +1,17 @@
 {
-  "baseline": "sha256:c9a8d2666e0085f24b21cf7c19df97d0881715192ed1b7d4c9ae8afc438e119e",
+  "baseline": "sha256:5cff2552ef6008e7a78bc9c0b144ca1d353221525051e92cfa70c47f7bab59bc",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Domain/Entities/Base/IDomainEventEntity.cs",
+      "sha256": "5b87b950a5e8fa4aeb7a7cb3add769e2090b15f1c423f2905f31cffa9a101b14"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Data/Interceptors/DispatchDomainEventsInterceptor.cs",
+      "sha256": "a035d7186648e5535d05cd76178042ea870d962bf611ecc2c4c3fb5361961501"
+    },
     {
       "path": "src/Neo.Infrastructure/Features/Messaging/NeoRabbitMqOptions.cs",
       "sha256": "48fd40138339b6e059f5c0b8586afa74066b1087e9375522beb910c6acec404b"
@@ -30,7 +38,7 @@
     },
     {
       "path": "src/Neo.Domain/Entities/Base/BaseEntity.cs",
-      "sha256": "0c94fbeaabd0c716082c85e286d18212797dd0c1b9bd0f74ef85575cbff9ec3b"
+      "sha256": "a181e1178581c4d4861c269c4e387d3e8109353f51169c6c17b329dc001d1a0b"
     },
     {
       "path": "src/Neo.Infrastructure/Data/Repository/Ef/EfRepositoryBase.cs",
@@ -42,7 +50,7 @@
     },
     {
       "path": "src/Neo.Application/Features/GenericEntity/Commands/UpdateGenericEntity.cs",
-      "sha256": "691e2fe6276adf19e70e348523f5be398c543e6d18e7d8e58743aa8f0714706a"
+      "sha256": "a00e8ee8dee2b4f778a0d1fb26c6627ce4867ee604089d0c72124276b1fdacea"
     },
     {
       "path": "src/Neo.Application/Features/GenericEntity/Commands/DeleteGenericEntity.cs",

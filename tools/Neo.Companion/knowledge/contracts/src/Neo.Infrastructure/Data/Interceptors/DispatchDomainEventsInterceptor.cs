@@ -1,4 +1,4 @@
-﻿using Neo.Domain.Entities.Base;
+using Neo.Domain.Entities.Base;
 using MediatR;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;

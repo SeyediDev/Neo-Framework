@@ -27,6 +27,12 @@ Outbox فعلی Neo، کار را از طریق `DefaultOutboxJobScheduler` به
 
 ## معیارهای قابل مشاهده
 
+### مرحلهٔ ۱: قرارداد رویداد دامنه
+
+`IDomainEventEntity` اکنون متدهای `AddDomainEvent` و `RemoveDomainEvent` را الزام می‌کند؛ `BaseEntity` هر دو را دارد. اگر Entity سفارشی مستقیماً این interface را پیاده کرده است، این دو متد را روی collection واقعی خود پیاده کنید. این تغییر قرارداد در زمان کامپایل مشخص می‌شود و جایگزین رفتار بی‌اثر قبلی `AddDomainEvents` است. در command ویرایش نیز می‌توان `DomainEvents` را هنگام ساخت command مقداردهی کرد.
+
+interceptor رویدادهای زنجیره‌ای را تا سقف ۱۰۲۴ رویداد در یک save اجرا می‌کند و cancellation را به handler می‌رساند. رویدادهای ارسال‌شده فقط پس از موفقیت SaveChanges از Entity حذف می‌شوند؛ خطای handler یا دیتابیس آن‌ها را حذف نمی‌کند. نگه‌داشتن رویداد به معنی rollback تغییرات حافظه یا امن‌بودن retry همان DbContext نیست. با تراکنش بیرونی، موفقیت SaveChanges همچنان به معنی commit نیست؛ پیام بیرونی باید در Outbox همان تراکنش بماند.
+
 - رویدادهای ورودی UpdateGenericEntity واقعاً به Entity اضافه شوند.
 - cancellation و exception به caller برسد و رویداد اجرا‌نشده بی‌صدا حذف نشود.
 - پاسخ HTTP یا JobId به معنی انجام کسب‌وکار نباشد؛ وضعیت enqueue و execution جدا دیده شود.

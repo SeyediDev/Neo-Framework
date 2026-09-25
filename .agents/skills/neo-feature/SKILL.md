@@ -25,6 +25,7 @@ For background work or cross-service messaging, read [messaging.md](references/m
 - Register the concrete DbContext, repository implementations and handlers required by the feature. Calling a broad Neo extension does not provide the application's repositories or all integration settings.
 - If using Neo's existing validation pipeline, use its exception handling path; do not add redundant handler validation. The standalone teaching example uses explicit validation because it deliberately registers only MediatR.
 - Preserve transaction and event timing semantics. `AddDomainEvent` queues an event; the current interceptor dispatches during SavingChanges. Do not treat that as post-commit delivery or automatically durable Outbox publication.
+- Domain handlers must stage changes without recursively calling SaveChanges. Events are acknowledged only after a successful save; failed units of work must be discarded and replayed in a fresh scope. Custom IDomainEventEntity implementations must implement AddDomainEvent and RemoveDomainEvent; BaseEntity already does. See the bundled event-delivery guide for the WorkManagement-backed implementation plan.
 - Do not invent an API based on its expected name. In this baseline `AppControllerBase` exposes `Sender`; `Result<T>` exposes `Data`; the repository requires `new()` on the entity.
 
 ## Verify and explain
