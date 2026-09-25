@@ -1,4 +1,4 @@
-﻿using Neo.Application.Features.Queue;
+using Neo.Application.Features.Queue;
 
 namespace Neo.Application.Behaviours.MediatR;
 

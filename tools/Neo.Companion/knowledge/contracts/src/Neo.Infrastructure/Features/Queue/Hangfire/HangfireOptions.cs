@@ -1,4 +1,4 @@
-﻿namespace Neo.Infrastructure.Features.Queue.Hangfire;
+namespace Neo.Infrastructure.Features.Queue.Hangfire;
 
 internal sealed class HangfireOptions
 {

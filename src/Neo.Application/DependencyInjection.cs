@@ -8,11 +8,18 @@ using Neo.Application.Features.Queue.Implementation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Neo.Application;
 
 public static class DependencyInjection
 {
+    /// <summary>Opt-in, nontransactional scheduling of command-response events. Use an outbox for durable business delivery.</summary>
+    public static IServiceCollection AddNeoCommandEventPublishing(this IServiceCollection services)
+    {
+        services.TryAddEnumerable(ServiceDescriptor.Scoped(typeof(IPipelineBehavior<,>), typeof(PublishEventsOfCommandsBehaviour<,>)));
+        return services;
+    }
     public static IServiceCollection AddNeoApplicationServices(this IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
     {
         List<Assembly> assembliesList = [.. assemblies, typeof(DependencyInjection).Assembly];

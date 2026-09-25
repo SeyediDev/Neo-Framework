@@ -8,6 +8,10 @@ comp=Path(__file__).resolve().parents[1]
 repo=comp.parents[1]
 knowledge=comp/'knowledge'
 paths=[
+'src/Neo.Application/Behaviours/MediatR/PublishEventsOfCommandsBehaviour.cs',
+'src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireJobExecuter.cs',
+'src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireOptions.cs',
+'src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireServiceCollectionExtensions.cs',
 'src/Neo.Domain/Entities/Base/IDomainEventEntity.cs',
 'src/Neo.Infrastructure/Data/Interceptors/DispatchDomainEventsInterceptor.cs',
 'src/Neo.Infrastructure/Features/Messaging/NeoRabbitMqOptions.cs',

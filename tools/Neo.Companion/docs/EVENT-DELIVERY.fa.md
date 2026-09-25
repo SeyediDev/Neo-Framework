@@ -27,6 +27,14 @@ Outbox فعلی Neo، کار را از طریق `DefaultOutboxJobScheduler` به
 
 ## معیارهای قابل مشاهده
 
+### مرحلهٔ ۲: صف Hangfire و خروجی command
+
+متدهای `IJobExecuter` اکنون از client تزریق‌شده استفاده می‌کنند و متد async واقعی را با آرگومان‌های قابل‌سریال‌سازی ذخیره می‌کنند. token زمان enqueue در آرگومان job به `CancellationToken.None` تبدیل می‌شود؛ Hangfire هنگام اجرا token مربوط به worker را جایگزین می‌کند. نام صف و continuation حفظ می‌شوند.
+
+صف‌های پیش‌فرض Hangfire شامل `default` و `outbox` هستند. اگر `Hangfire:Queues` را صریح تنظیم کرده‌اید، worker مسئول Outbox باید صف `outbox` را مصرف کند. اتصال، نوع storage، تعداد worker و نام صف هنگام ثبت اعتبارسنجی می‌شوند.
+
+برای خروجی command دارای `IEventContainer`، ثبت اختیاری `services.AddNeoCommandEventPublishing()` را اضافه کنید. هر رویداد فقط پس از دریافت JobId از فهرست pending حذف می‌شود؛ خطا یا executor بدون خروجی به caller برمی‌گردد. این مسیر تراکنشی نیست؛ فاصلهٔ بین enqueue و حذف از حافظه همچنان امکان تحویل تکراری دارد. رویداد بیرونی مهم را از Outbox همان تراکنش بفرستید.
+
 ### مرحلهٔ ۱: قرارداد رویداد دامنه
 
 `IDomainEventEntity` اکنون متدهای `AddDomainEvent` و `RemoveDomainEvent` را الزام می‌کند؛ `BaseEntity` هر دو را دارد. اگر Entity سفارشی مستقیماً این interface را پیاده کرده است، این دو متد را روی collection واقعی خود پیاده کنید. این تغییر قرارداد در زمان کامپایل مشخص می‌شود و جایگزین رفتار بی‌اثر قبلی `AddDomainEvents` است. در command ویرایش نیز می‌توان `DomainEvents` را هنگام ساخت command مقداردهی کرد.

@@ -1,9 +1,25 @@
 {
-  "baseline": "sha256:5cff2552ef6008e7a78bc9c0b144ca1d353221525051e92cfa70c47f7bab59bc",
+  "baseline": "sha256:ba14420a3ce7faf183d6608ac7b4e6558e412aa6a05fadf0fd8f19313380cd65",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Application/Behaviours/MediatR/PublishEventsOfCommandsBehaviour.cs",
+      "sha256": "537a18d116d68e39940c0fae90ff14bc1191a82ecd6b043a3116fe41263af56f"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireJobExecuter.cs",
+      "sha256": "b94dc8911aad1fcff619abc8d9859fecc48d76a98845368e53a17715e564dcaa"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireOptions.cs",
+      "sha256": "4f3bf047c5f8d48c65044fa53c0d9e81ee9df73b20c53db8255aef1172d8fde1"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Queue/Hangfire/HangfireServiceCollectionExtensions.cs",
+      "sha256": "2f078dc9b0b3930c7709797e67af58bc561859ed4b7c041516a80acbffd2f465"
+    },
     {
       "path": "src/Neo.Domain/Entities/Base/IDomainEventEntity.cs",
       "sha256": "5b87b950a5e8fa4aeb7a7cb3add769e2090b15f1c423f2905f31cffa9a101b14"

@@ -1,4 +1,4 @@
-﻿using Neo.Application.Features.Queue;
+using Neo.Application.Features.Queue;
 using Neo.Domain.Features.Telementry;
 using Hangfire;
 using Hangfire.Redis.StackExchange;
