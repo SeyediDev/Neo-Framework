@@ -11,6 +11,7 @@ jobs:
   build-test-package:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
@@ -28,7 +29,7 @@ jobs:
       - name: Test application and telemetry regressions
         run: dotnet test tools/Neo.Companion/tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj -c Release --no-build --logger trx --results-directory tools/Neo.Companion/artifacts/test-results
       - name: Generate, build and run a CRUD feature
-        run: python tools/Neo.Companion/scripts/smoke_generator.py --cli-dll tools/Neo.Companion/src/Neo.Companion.Cli/bin/Release/net10.0/Neo.Companion.Cli.dll --skip-framework-build
+        run: python tools/Neo.Companion/scripts/smoke_generator.py --cli-dll tools/Neo.Companion/src/Neo.Companion.Cli/bin/Release/net10.0/Neo.Companion.Cli.dll
       - name: Exercise real MCP protocol
         run: python tools/Neo.Companion/scripts/smoke_mcp.py --server-dll tools/Neo.Companion/src/Neo.Companion.Mcp/bin/Release/net10.0/Neo.Companion.Mcp.dll --project-root tools/Neo.Companion/samples
       - name: Publish local MCP
