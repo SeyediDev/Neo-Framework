@@ -42,7 +42,7 @@ public sealed class CrudEndpointTests
         service.VerifyNoOtherCalls();
     }
 
-    private sealed class RestrictedDefinition(bool disabled) : CrudDefinition<CreateProduct,UpdateProduct,ProductView,Product,Guid>
+    public sealed class RestrictedDefinition(bool disabled) : CrudDefinition<CreateProduct,UpdateProduct,ProductView,Product,Guid>
     {
         public override string Name => "restricted";
         public override CrudOperation Operations => disabled ? CrudOperation.Read : CrudOperation.All;

@@ -31,8 +31,16 @@ public sealed class Product : IEntity<Guid>, IConcurrencyVersion
         Name = name.Trim();
     }
 }
-public sealed record CreateProduct([property: Required, StringLength(120)] string Name, [property: StringLength(120)] string? PersianName);
-public sealed record UpdateProduct([property: Required, StringLength(120)] string Name, [property: StringLength(120)] string? PersianName);
+public sealed class CreateProduct(string name, string? persianName)
+{
+    [Required, StringLength(120)] public string Name { get; set; } = name;
+    [StringLength(120)] public string? PersianName { get; set; } = persianName;
+}
+public sealed class UpdateProduct(string name, string? persianName)
+{
+    [Required, StringLength(120)] public string Name { get; set; } = name;
+    [StringLength(120)] public string? PersianName { get; set; } = persianName;
+}
 public sealed record ProductView(string Name, DateTime CreatedAtUtc);
 
 public sealed class ProductDefinition(IConfiguration configuration) : CrudDefinition<CreateProduct,UpdateProduct,ProductView,Product,Guid>

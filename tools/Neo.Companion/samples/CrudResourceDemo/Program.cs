@@ -16,7 +16,10 @@ var doctor = args.Contains("--doctor", StringComparer.Ordinal);
 var connect = args.Contains("--check-connectivity", StringComparer.Ordinal);
 var builder = WebApplication.CreateBuilder(args.Where(x => x is not ("--doctor" or "--check-connectivity")).ToArray());
 builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://127.0.0.1:5092");
-builder.Services.AddControllers().AddApplicationPart(typeof(ProductsController).Assembly);
+var mvc = builder.Services.AddControllers();
+// This standalone sample hosts only its own controllers, not Neo's optional monitoring/versioned endpoints.
+mvc.PartManager.ApplicationParts.Clear();
+mvc.AddApplicationPart(typeof(ProductsController).Assembly);
 builder.Services.Configure<ApiBehaviorOptions>(o => o.SuppressModelStateInvalidFilter = true);
 builder.Services.AddAuthentication("demo").AddScheme<AuthenticationSchemeOptions,DemoAuthentication>("demo", _ => { });
 builder.Services.AddAuthorization(o => o.AddPolicy("catalog.write", p => p.RequireAuthenticatedUser().RequireClaim("permission", "catalog.write")));
