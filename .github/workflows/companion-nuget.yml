@@ -1,0 +1,67 @@
+name: Publish Neo Companion CLI to NuGet
+on:
+  push:
+    tags: ['companion-cli-v*']
+permissions:
+  contents: read
+concurrency:
+  group: companion-nuget-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Validate version and publishing credential
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#companion-cli-v}"
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo 'Invalid version tag'; exit 1; }
+          declared="$(dotnet msbuild tools/Neo.Companion/src/Neo.Companion.Cli/Neo.Companion.Cli.csproj -nologo -getProperty:Version)"
+          [ "$version" = "$declared" ] || { echo 'Tag must match the CLI project Version'; exit 1; }
+          [ -n "$NUGET_API_KEY" ] || { echo '::error::Configure NUGET_API_KEY with push permission for Neo.Companion.Cli.'; exit 1; }
+          echo "PACKAGE_VERSION=$version" >> "$GITHUB_ENV"
+      - name: Pack the CLI only
+        run: dotnet pack tools/Neo.Companion/src/Neo.Companion.Cli/Neo.Companion.Cli.csproj -c Release -o artifacts/nuget
+      - name: Verify local package and installed command
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, zipfile, xml.etree.ElementTree as ET
+          from pathlib import Path
+          packages = Path('artifacts/nuget').resolve()
+          package = packages / ('Neo.Companion.Cli.' + os.environ['PACKAGE_VERSION'] + '.nupkg')
+          with zipfile.ZipFile(package) as archive:
+              manifest = ET.fromstring(archive.read('Neo.Companion.Cli.nuspec'))
+              ns = {'n': manifest.tag.split('}')[0][1:]}
+              metadata = manifest.find('n:metadata', ns)
+              assert metadata.find('n:id', ns).text == 'Neo.Companion.Cli'
+              assert metadata.find('n:version', ns).text == os.environ['PACKAGE_VERSION']
+              assert metadata.find('n:license', ns).text == 'MIT'
+              assert 'README.md' in archive.namelist()
+          config = ET.Element('configuration')
+          sources = ET.SubElement(config, 'packageSources')
+          ET.SubElement(sources, 'clear')
+          ET.SubElement(sources, 'add', key='local', value=str(packages))
+          ET.ElementTree(config).write('artifacts/local-nuget.config', encoding='utf-8', xml_declaration=True)
+          PY
+          dotnet tool install Neo.Companion.Cli --version "$PACKAGE_VERSION" --tool-path artifacts/tools --configfile artifacts/local-nuget.config
+          artifacts/tools/neo --help
+          sha256sum "artifacts/nuget/Neo.Companion.Cli.$PACKAGE_VERSION.nupkg"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: neo-companion-cli-nuget
+          path: artifacts/nuget/*.nupkg
+      - name: Publish the verified CLI package
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        shell: bash
+        run: dotnet nuget push "artifacts/nuget/Neo.Companion.Cli.$PACKAGE_VERSION.nupkg" --source https://api.nuget.org/v3/index.json

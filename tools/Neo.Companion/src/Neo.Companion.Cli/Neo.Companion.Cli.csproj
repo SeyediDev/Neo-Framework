@@ -4,9 +4,17 @@
     <PackAsTool>true</PackAsTool><ToolCommandName>neo</ToolCommandName>
     <PackageId>Neo.Companion.Cli</PackageId><Description>Source-pinned Neo CRUD feature generator.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Authors>Javad Seyedi</Authors>
+    <Company>Neo Framework</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/SeyediDev/Neo-Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SeyediDev/Neo-Framework.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>neo-framework;dotnet-tool;crud;code-generation;concurrency</PackageTags>
+    <PackageReleaseNotes>Initial public CLI: generate a standalone CRUD resource with separate DTOs, optimistic or SQL Server pessimistic concurrency, transactional translation/Outbox staging and local runtime Doctor. Requires a matching Neo source checkout.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="../../docs/FEATURE-GENERATOR.fa.md" Pack="true" PackagePath="README.md" />
+    <None Update="README.md" Pack="true" PackagePath="README.md" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <EmbeddedResource Include="../../samples/CrudResourceDemo/*.cs;../../samples/CrudResourceDemo/CrudResourceDemo.csproj" LogicalName="template.%(Filename)%(Extension)" />
   </ItemGroup>

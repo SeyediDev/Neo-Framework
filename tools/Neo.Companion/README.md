@@ -117,6 +117,8 @@ python tools/Neo.Companion/scripts/package_companion.py
 
 The ZIP contains the published server, knowledge/examples and canonical skills. It needs .NET 10 runtime on the user's machine; no SDK is needed just to launch the packaged MCP. A human-maintained GitHub Release can attach this ZIP. Publishing/creating a release is separate from preparing this repository structure.
 
+The CLI has a separate [NuGet publishing workflow](docs/NUGET-PUBLISH.fa.md), scoped to `Neo.Companion.Cli` and `companion-cli-v*` tags. It validates the local package and installed `neo` command before pushing to NuGet.org using the repository's publishing secret. Package creation alone does not establish public availability.
+
 A shared remote MCP would require an HTTP endpoint and authentication on an application hosting service. That hosting does not have to be a purchased dedicated server. This version intentionally uses local stdio and requires no hosting subscription.
 
 ## Keep guidance aligned with code
