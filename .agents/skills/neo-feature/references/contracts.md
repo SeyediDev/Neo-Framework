@@ -27,7 +27,7 @@ Mapster is used by the generic feature handlers. Hangfire implementation is in `
 
 ## Generic CRUD or a dedicated feature
 
-Use `GenericCrudControllerBase<TDto,TEntity,TKey>` for straightforward administrative data with direct DTO mapping. Prefer dedicated commands and endpoints for domain transitions, per-operation authorization or atomic entity/translation changes. Preserve the application's existing choice when it meets the requested behavior.
+Use `GenericCrudControllerBase<TDto,TEntity,TKey>` for existing straightforward administrative data with direct DTO mapping. The opt-in six-parameter overload adds separate DTOs, per-operation policies and transactional resources; read [crud-resources.md](crud-resources.md) before adopting it. Prefer dedicated commands for domain transitions and larger units of work. Preserve the application's existing choice when it meets the requested behavior.
 
 At this baseline the generic controller explicitly binds services from DI. Create assigns the returned key to `dto.Id` and generates Location via MVC's `GetById` action name; override `GetResourceLocation` if routing or Async suffix settings differ. Update rejects missing/mismatched IDs. Update/Delete return `Unit`, not `Result`; missing entities raise `NotFoundException`, mapped to 404 only when Neo's exception handler is enabled. Delete previously ignored missing entities, so verify the consumer's desired repeat-delete behavior.
 

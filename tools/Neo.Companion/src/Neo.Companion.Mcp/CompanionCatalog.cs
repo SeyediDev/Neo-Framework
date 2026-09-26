@@ -106,22 +106,27 @@ public sealed class CompanionCatalog
         {
             "product-create" => "ProductCatalog", "messaging-demo" => "MessagingDemo",
             "durable-messaging-demo" => "DurableMessagingDemo", "hangfire-outbox-demo" => "HangfireOutboxDemo",
-            _ => throw new ArgumentException("Unknown example. Available: product-create, messaging-demo, durable-messaging-demo, hangfire-outbox-demo.", nameof(example))
+            "crud-resource-demo" => "CrudResourceDemo",
+            _ => throw new ArgumentException("Unknown example. Available: product-create, messaging-demo, durable-messaging-demo, hangfire-outbox-demo, crud-resource-demo.", nameof(example))
         };
         if (!string.Equals(baseline, Baseline, StringComparison.Ordinal))
             throw new ArgumentException($"Unsupported baseline. Available: {Baseline}. Do not assume another version is compatible.", nameof(baseline));
         var files = ExampleFiles(directory);
         var durable = example == "durable-messaging-demo";
         var hangfire = example == "hangfire-outbox-demo";
+        var crud = example == "crud-resource-demo";
         return new { example, baseline = Baseline, files,
             dependencies = durable ? new[] { new { directory = "MessagingDemo", files = ExampleFiles("MessagingDemo") } } : [],
-            guide = durable || hangfire ? ReadText(Path.Combine(contentRoot, "examples", directory, durable ? "README.md" : "README.fa.md"))
+            guide = durable || hangfire || crud ? ReadText(Path.Combine(contentRoot, "examples", directory, durable ? "README.md" : "README.fa.md"))
                 : example == "messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "messaging-guide.fa.md")) : null,
             sagaGuide = example is "messaging-demo" or "durable-messaging-demo" ? ReadText(Path.Combine(contentRoot, "knowledge", "saga-guide.fa.md")) : null,
             eventDeliveryGuide = durable || hangfire ? ReadText(Path.Combine(contentRoot, "knowledge", "event-delivery-guide.fa.md")) : null,
-            prerequisites = ".NET 10 SDK; Neo source checkout matching the bundled contract snapshot. Run from tools/Neo.Companion/samples in that checkout; it supplies Directory.Build.props and NeoRoot. Keep dependency directories as siblings of the returned example directory. Durable samples require the isolated SQL Server from DurableMessagingDemo/compose.yaml; that Compose is also bundled with the Hangfire example. Public demo credentials are local-only.",
+            crudGuide = crud ? ReadText(Path.Combine(contentRoot, "knowledge", "crud-resources-guide.fa.md")) : null,
+            prerequisites = crud ? ".NET 10 SDK and matching Neo source checkout. Use tools/Neo.Companion/samples/CrudResourceDemo under its Directory.Build.props (NeoRoot). SQLite optimistic mode is the default. Set your own runtime DemoToken for writes. Pessimistic mode requires an isolated SQL Server and ConnectionStrings__Demo. Doctor is local and read-only; no server or code is executed by this MCP call."
+                : ".NET 10 SDK; Neo source checkout matching the bundled contract snapshot. Run from tools/Neo.Companion/samples in that checkout; it supplies Directory.Build.props and NeoRoot. Keep dependency directories as siblings of the returned example directory. Durable samples require the isolated SQL Server from DurableMessagingDemo/compose.yaml; that Compose is also bundled with the Hangfire example. Public demo credentials are local-only.",
             scope = example switch
             {
+                "crud-resource-demo" => "Separate CRUD DTOs and explicit mappings; per-operation HTTP policies; optimistic versions or SQL Server transaction locks; same-context entity/translation/Outbox rollback; local runtime Doctor. Outbox is staged only: no dispatcher or ProductChanged handler. Demo authentication and EnsureCreated require replacement for production; no automatic tenant scope or soft delete.",
                 "durable-messaging-demo" => "SQL Server shared-transaction bus/consumer outbox, persistent Saga and database participant effects. Requires RabbitMQ. Demonstrates rollback, restart, replicas and manual compensation. No real payment provider, authentication or automatic deadline scheduler; external effects need provider idempotency and reconciliation.",
                 "hangfire-outbox-demo" => "SQL Server/Hangfire example with row-ID jobs, database claims, bounded recovery and execution status committed with same-context effects. External effects are not exactly-once. No public replay endpoint; schema migration and review of old records are required for upgrades.",
                 "messaging-demo" => "Local RabbitMQ teaching sample using MassTransit 8.4.1: fan-out, retries, faults, Saga and compensation. Saga state and duplicate suppression are process-local. No durable inbox, transactional outbox or production authentication.",

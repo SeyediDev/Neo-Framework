@@ -19,6 +19,8 @@ Without MCP, read the referenced Neo source or the installed package's API docum
 
 For background work or cross-service messaging, read [messaging.md](references/messaging.md). Preserve Hangfire for jobs when it fits; use the runnable messaging example when the feature needs RabbitMQ consumers.
 
+For administrative resources with separate DTOs, per-operation policies, atomic translations/Outbox or concurrency, read [crud-resources.md](references/crud-resources.md). Preserve existing handlers when they model domain transitions better.
+
 - Put business invariants in the domain creation/update operations. Validate input at the application boundary so the API can explain invalid requests.
 - Follow the project's CQRS, key type, error/result and persistence conventions. Locate an existing handler before adding a new pattern.
 - For the pinned source baseline, create through `ICommandRepository<TEntity, TKey>` and commit through its `UnitOfWork`; read through `IQueryRepository<TEntity, TKey>`. Check the exact signatures before using another version.

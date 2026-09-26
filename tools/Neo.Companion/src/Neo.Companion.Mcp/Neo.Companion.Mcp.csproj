@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.5.0</Version></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><UseAppHost>false</UseAppHost><Version>0.6.0</Version></PropertyGroup>
   <ItemGroup>
+    <Content Include="../../samples/CrudResourceDemo/*.cs;../../samples/CrudResourceDemo/*.csproj;../../samples/CrudResourceDemo/*.md" Link="examples/CrudResourceDemo/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../docs/CRUD-RESOURCES.fa.md" Link="knowledge/crud-resources-guide.fa.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../.agents/skills/neo-feature/references/crud-resources.md" Link="knowledge/crud-resources.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../samples/DurableMessagingDemo/*.cs;../../samples/DurableMessagingDemo/*.csproj;../../samples/DurableMessagingDemo/*.json;../../samples/DurableMessagingDemo/*.yaml;../../samples/DurableMessagingDemo/README.md" Link="examples/DurableMessagingDemo/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../samples/HangfireOutboxDemo/*.cs;../../samples/HangfireOutboxDemo/*.csproj;../../samples/HangfireOutboxDemo/*.json;../../samples/HangfireOutboxDemo/*.md" Link="examples/HangfireOutboxDemo/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../samples/DurableMessagingDemo/compose.yaml" Link="examples/HangfireOutboxDemo/compose.yaml" CopyToOutputDirectory="PreserveNewest" />

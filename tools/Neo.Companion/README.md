@@ -21,8 +21,15 @@ For persistence and restart recovery, use [DurableMessagingDemo](samples/Durable
 and database effects. For existing job-based applications, use [HangfireOutboxDemo](samples/HangfireOutboxDemo/README.fa.md)
 (`hangfire-outbox-demo`): atomic row claims, retry after interrupted delivery and persisted execution results.
 Both have a runnable SQL Server CI exercise. The [DDD and event-delivery guide](docs/EVENT-DELIVERY.fa.md)
-explains transaction boundaries, migration, monitoring and reconciliation. MCP 0.5.0 still provides five read-only tools;
-`neo_get_example` now offers four examples and bundles required Saga dependency source.
+explains transaction boundaries, migration, monitoring and reconciliation. MCP 0.6.0 provides five read-only tools;
+`neo_get_example` offers five examples and bundles required Saga dependency source.
+
+Use [CrudResourceDemo](samples/CrudResourceDemo/README.fa.md) (`crud-resource-demo` in MCP) for separate DTOs,
+per-operation policies, optimistic versions, SQL Server pessimistic locks, and entity/translation/Outbox transactions.
+The [resource guide](docs/CRUD-RESOURCES.fa.md) explains migration and concurrency limits.
+The [feature generator](docs/FEATURE-GENERATOR.fa.md) exposes `neo new feature`, reuses that sample,
+and creates a compilable application in a new directory. Its runtime Doctor checks DI, EF metadata and policies
+without migrations or writes. MCP diagnosis remains static. CRUD staging does not start an Outbox worker.
 
 New infrastructure capabilities should ship with a runnable usage example, local configuration,
 expected output, a failure exercise and behavioral tests. Document guarantees and omissions,
@@ -40,6 +47,8 @@ src/Neo.Infrastructure/Features/Telementry/  Export setup
 tests/Neo.Domain.Tests/Telemetry/         Runtime regression tests
 tools/Neo.Companion/
   src/Neo.Companion.Mcp/         C# MCP server (stdio)
+  src/Neo.Companion.Cli/         neo new feature generator
+  samples/CrudResourceDemo/     Concurrency, policies, transactions and runtime Doctor
   samples/ProductCatalog/       Domain/Application/Infrastructure/API example
   samples/TelemetryDemo/        Manual and attribute-based instrumentation
   samples/MessagingDemo/        RabbitMQ, Saga and compensation exercises
@@ -76,6 +85,7 @@ No second framework clone or `.neo` checkout is needed. `NeoRoot` defaults to th
 
 ```bash
 dotnet publish tools/Neo.Companion/src/Neo.Companion.Mcp -c Release -o tools/Neo.Companion/artifacts/mcp
+dotnet publish tools/Neo.Companion/src/Neo.Companion.Cli -c Release -o tools/Neo.Companion/artifacts/cli
 python tools/Neo.Companion/scripts/smoke_mcp.py --server-dll tools/Neo.Companion/artifacts/mcp/Neo.Companion.Mcp.dll --project-root tools/Neo.Companion/samples
 ```
 
@@ -99,7 +109,7 @@ The skills are discoverable under the repo's `.agents/skills`. For another appli
 
 **A server is not required for this stdio MCP.** Users run it on their own machines through an MCP client. GitHub stores source; Actions builds/tests/packages it; an Actions artifact or a Release asset distributes the executable and skills. GitHub Actions is a build runner, not an always-on MCP host.
 
-The Companion workflow builds on Windows and Linux and uploads an installable ZIP. To package locally after publish:
+The Companion workflow builds on Windows and Linux, executes a generated feature and uploads a ZIP containing MCP, CLI, skills and examples. To package locally after publishing both MCP and CLI:
 
 ```bash
 python tools/Neo.Companion/scripts/package_companion.py

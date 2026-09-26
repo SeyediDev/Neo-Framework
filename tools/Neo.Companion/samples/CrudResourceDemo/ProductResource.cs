@@ -60,7 +60,7 @@ public sealed class ProductDefinition(IConfiguration configuration) : CrudDefini
         { ["name"] = (query, descending) => descending ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name) };
     public override Product Create(CreateProduct input) => Product.Create(input.Name);
     public override void Update(Product entity, UpdateProduct input) => entity.Rename(input.Name);
-    public override ProductView Read(Product entity) => new(entity.Name, entity.CreatedAtUtc);
+    public override ProductView Read(Product entity) => new(entity.Name, DateTime.SpecifyKind(entity.CreatedAtUtc, DateTimeKind.Utc));
 }
 
 [Route("products")]

@@ -23,8 +23,8 @@ public sealed class NeoTools(CompanionCatalog catalog)
         [Description("Maximum results, 1 through 20.")] int limit = 8) => JsonSerializer.Serialize(catalog.SearchDocs(query, limit));
 
     [McpServerTool(Name = "neo_get_example", ReadOnly = true, Destructive = false, OpenWorld = false)]
-    [Description("Get ProductCatalog, RabbitMQ, durable SQL/Saga or Hangfire Outbox reference source for an exact baseline. First obtain baseline from neo_search_docs. If your project's source or package version differs, inspect the actual contracts before adapting the example; do not infer compatibility. Returns bundled teaching configuration only; does not contact a broker.")]
-    public string GetExample([Description("Supported example IDs: product-create, messaging-demo, durable-messaging-demo (SQL Server, transactional RabbitMQ outbox, persistent Saga), hangfire-outbox-demo (SQL Server, recoverable Hangfire jobs). Persian guides included; durable-messaging-demo includes sibling MessagingDemo dependencies.")] string example,
+    [Description("Get ProductCatalog, CRUD resources/concurrency, RabbitMQ, durable SQL/Saga or Hangfire Outbox reference source for an exact baseline. First obtain baseline from neo_search_docs. If your project's source or package version differs, inspect the actual contracts before adapting the example; do not infer compatibility. Returns source and teaching guidance only; does not execute code or contact a database/broker.")]
+    public string GetExample([Description("Supported example IDs: product-create, crud-resource-demo (separate DTOs, optimistic/pessimistic concurrency, transactions, runtime Doctor), messaging-demo, durable-messaging-demo (SQL Server, transactional RabbitMQ outbox, persistent Saga), hangfire-outbox-demo (SQL Server, recoverable Hangfire jobs). Persian guides included; durable-messaging-demo includes sibling MessagingDemo dependencies.")] string example,
         [Description("Exact source baseline identifier returned by neo_search_docs.")] string baseline)
         => JsonSerializer.Serialize(catalog.GetExample(example, baseline));
 

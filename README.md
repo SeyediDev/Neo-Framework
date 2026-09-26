@@ -199,6 +199,8 @@ Continue with [DurableMessagingDemo](tools/Neo.Companion/samples/DurableMessagin
 
 [Neo Companion](tools/Neo.Companion/README.md) lives in this repository and includes feature, telemetry and diagnosis skills, a local C# MCP server, runnable examples and a dedicated GitHub Actions workflow. Its stdio server runs on the developer's computer and does not require hosted infrastructure.
 
+For administrative resources, the opt-in [CRUD resource API](tools/Neo.Companion/docs/CRUD-RESOURCES.fa.md) adds separate DTOs, explicit mappings, per-operation policies and a shared transaction for entity, translations and Outbox. It supports optimistic version checks and SQL Server pessimistic locking; stale writes return HTTP 409. The existing three-parameter controller remains available. Try [CrudResourceDemo](tools/Neo.Companion/samples/CrudResourceDemo/README.fa.md), its read-only runtime Doctor, or generate an application with [`neo new feature`](tools/Neo.Companion/docs/FEATURE-GENERATOR.fa.md).
+
 Telemetry interception is active through `AddScopedWithTelemetry<IService, Implementation>()`. Resolve the interface to apply `[Telemetry]` on the interface or implementation method. The runtime preserves synchronous and asynchronous return shapes, propagates errors/cancellation, measures duration and isolates completion tags across concurrent calls. [See the runnable telemetry walkthrough](tools/Neo.Companion/docs/TELEMETRY.fa.md).
 
 ## Development and tests

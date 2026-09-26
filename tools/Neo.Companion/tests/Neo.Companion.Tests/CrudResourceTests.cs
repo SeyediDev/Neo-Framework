@@ -111,6 +111,8 @@ public sealed class CrudResourceTests
     {
         public override string Name=>"test-products";
         public EntityConcurrencyMode Mode {get;init;}
+        public TimeSpan Wait {get;init;} = TimeSpan.FromSeconds(3);
+        public override TimeSpan LockWait => Wait;
         public override EntityConcurrencyMode Concurrency=>Mode;
         public override IReadOnlyDictionary<CrudOperation,string?> Policies=>new Dictionary<CrudOperation,string?> { [CrudOperation.List]=null,[CrudOperation.Read]=null,[CrudOperation.Create]=null,[CrudOperation.Update]=null,[CrudOperation.Delete]=null };
         public override IReadOnlyDictionary<string,Func<IQueryable<Entity>,bool,IOrderedQueryable<Entity>>> Sorts=>new Dictionary<string,Func<IQueryable<Entity>,bool,IOrderedQueryable<Entity>>> { ["name"]=(q,descending)=>descending?q.OrderByDescending(x=>x.Name):q.OrderBy(x=>x.Name) };

@@ -6,6 +6,19 @@ namespace Neo.Companion.Tests;
 
 public sealed class CatalogTests : IDisposable
 {
+    [Fact]
+    public void Crud_example_includes_contract_guidance_runtime_source_and_honest_limits()
+    {
+        var catalog = Catalog();
+        var result = JsonSerializer.SerializeToElement(catalog.GetExample("crud-resource-demo", catalog.Baseline));
+        var files = result.GetProperty("files").EnumerateArray().ToArray();
+        Assert.Contains(files, x => x.GetProperty("path").GetString() == "ProductResource.cs" && x.GetProperty("content").GetString()!.Contains("ICrudTransactionParticipant"));
+        Assert.Contains(files, x => x.GetProperty("path").GetString() == "Program.cs" && x.GetProperty("content").GetString()!.Contains("CrudRuntimeDoctor"));
+        Assert.Contains("ExpectedVersion", result.GetProperty("crudGuide").GetString());
+        Assert.Contains("DemoToken", result.GetProperty("prerequisites").GetString());
+        Assert.Contains("no dispatcher", result.GetProperty("scope").GetString());
+        Assert.Throws<ArgumentException>(() => catalog.GetExample("crud-resource-demo", "older"));
+    }
     private readonly string root = Path.Combine(Path.GetTempPath(), "neo-inspect-" + Guid.NewGuid().ToString("N"));
     public CatalogTests() => Directory.CreateDirectory(root);
     private CompanionCatalog Catalog() => new(AppContext.BaseDirectory, root);

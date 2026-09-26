@@ -13,6 +13,8 @@ Read [diagnostics.md](references/diagnostics.md) to interpret rule codes and cov
 
 For DI failures, trace the actual service constructor graph and resolve the affected interface inside a scope. Reuse the application's requester implementation, registration extensions and lifetimes; do not insert a dummy user or change a lifetime merely to silence a finding.
 
+For opt-in CRUD resources on the matching source revision, `CrudRuntimeDoctor.CheckAsync` checks registered resource services, EF concurrency metadata and authorization policies in fresh scopes; connectivity is optional. CrudResourceDemo exposes it through `--doctor`, before EnsureCreated. This is application code execution, unlike the static MCP tool: service constructors may have side effects. It performs no migrations or CRUD writes and does not prove physical-schema compatibility. Keep its report local and verify provider-specific locking separately.
+
 For missing telemetry, distinguish proxy registration, use of the resolved interface, invocation, listener subscription, and export. Check the actual Neo revision: older implementations disabled the proxy. Preserve return values, cancellation and exceptions; avoid wrapping a method twice. Use `neo_get_telemetry_recipe` or the `neo-telemetry` references for the instrumentation details when available.
 
 Make the smallest source change justified by the symptom. For an authorized fix, verify the failing behavior before and after with a focused test: service resolution, observed span/status, or original exception. Static analysis does not require running the project; select runtime checks appropriate to the application's external dependencies and the user's scope.

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><Version>0.6.0</Version>
+    <PackAsTool>true</PackAsTool><ToolCommandName>neo</ToolCommandName>
+    <PackageId>Neo.Companion.Cli</PackageId><Description>Source-pinned Neo CRUD feature generator.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <EmbeddedResource Include="../../samples/CrudResourceDemo/*.cs;../../samples/CrudResourceDemo/CrudResourceDemo.csproj" LogicalName="template.%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

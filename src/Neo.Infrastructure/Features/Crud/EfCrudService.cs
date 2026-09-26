@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Neo.Application.Exceptions;
@@ -97,6 +98,9 @@ public sealed class EfCrudService<TContext,TDefinition,TCreate,TUpdate,TRead,TEn
         if (db.Database.CurrentTransaction is not null || db.ChangeTracker.Entries().Any())
             throw new InvalidOperationException("Use a fresh scoped DbContext for each CRUD mutation; it owns the transaction.");
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
+        var previousTimeout = db.Database.GetCommandTimeout();
+        if (definition.Concurrency == EntityConcurrencyMode.Pessimistic)
+            db.Database.SetCommandTimeout((int)Math.Ceiling(definition.LockWait.TotalSeconds));
         try
         {
             TEntity entity;
@@ -137,7 +141,11 @@ public sealed class EfCrudService<TContext,TDefinition,TCreate,TUpdate,TRead,TEn
             catch (Exception cleanupError) { error.Data["CrudRollbackError"] = cleanupError.GetType().Name; }
             db.ChangeTracker.Clear();
             if (error is DbUpdateConcurrencyException) throw new EntityConcurrencyException("stale_version", "The record changed; reload it before submitting another change.", error);
+            var sqlError = error as SqlException ?? (error as DbUpdateException)?.InnerException as SqlException;
+            if (sqlError?.Number is -2 or 1205 or 1222)
+                throw new EntityConcurrencyException("resource_busy", "The record is busy; retry the complete operation after reviewing its current version.", error);
             throw;
         }
+        finally { db.Database.SetCommandTimeout(previousTimeout); }
     }
 }

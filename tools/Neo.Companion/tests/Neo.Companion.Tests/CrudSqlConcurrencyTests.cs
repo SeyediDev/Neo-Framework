@@ -16,6 +16,26 @@ namespace Neo.Companion.Tests;
 public sealed class CrudSqlConcurrencyTests
 {
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
+    [Fact]
+    public async Task Pessimistic_scope_read_is_bounded_when_another_writer_holds_an_exclusive_lock()
+    {
+        await using var f = await Fixture.Create();
+        await using var owner = f.Context(); await using var contender = f.Context();
+        var original = await Service(owner, EntityConcurrencyMode.Optimistic).CreateAsync(new("original"), Ct);
+        await using var tx = await owner.Database.BeginTransactionAsync(Ct);
+        var row = await owner.Set<Entity>().SingleAsync(Ct);
+        row.Name = "uncommitted"; await owner.SaveChangesAsync(Ct);
+        var service = new EfCrudService<Context,Definition,CreateInput,UpdateInput,ReadDto,Entity,Guid>(
+            contender, new Definition { Mode = EntityConcurrencyMode.Pessimistic, Wait = TimeSpan.FromSeconds(1) }, []);
+        var timeout = contender.Database.GetCommandTimeout();
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        var error = await Assert.ThrowsAsync<EntityConcurrencyException>(() => service.UpdateAsync(original.Id, new("next"), original.Version, Ct));
+        Assert.Equal("resource_busy", error.Code);
+        Assert.True(clock.Elapsed < TimeSpan.FromSeconds(10), "The scope pre-read must honor LockWait too.");
+        Assert.Equal(timeout, contender.Database.GetCommandTimeout());
+        await tx.RollbackAsync(Ct);
+        Assert.Equal("next", (await service.UpdateAsync(original.Id, new("next"), original.Version, Ct)).Data.Name);
+    }
     [Theory]
     [InlineData(EntityConcurrencyMode.Optimistic)]
     [InlineData(EntityConcurrencyMode.Pessimistic)]

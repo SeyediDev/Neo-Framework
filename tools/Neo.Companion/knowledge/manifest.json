@@ -1,5 +1,5 @@
 {
-  "baseline": "sha256:18a180b060db446ca644f19594f01cee299ee6478930267e0ab8ef6f6b963c3b",
+  "baseline": "sha256:678445c95ddff108020fb6aa2e9188bd354f3592a82535648af51305b4a7c276",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
@@ -26,7 +26,7 @@
     },
     {
       "path": "src/Neo.Infrastructure/Features/Crud/EfCrudService.cs",
-      "sha256": "2295fd2f289d9cd8001a137e6bd7c5905394ddf95ba4fe9ddbf9305f4e2cf58b"
+      "sha256": "0289af6d1aaf9ecccfac4badc6458a2e46d282e6de99c074f254e04c2d8379d5"
     },
     {
       "path": "src/Neo.Infrastructure/Features/Crud/CrudRegistration.cs",

@@ -84,6 +84,11 @@ try:
     assert any(x['path'] == 'Program.cs' and 'AddNeoEfOutbox' in x['content'] for x in hangfire['files'])
     assert any(x['path'] == 'compose.yaml' for x in hangfire['files'])
     assert 'DeliveryLeaseId' in hangfire['guide']
+    crud = call(14, 'neo_get_example', {'example': 'crud-resource-demo', 'baseline': docs['baseline']})
+    assert any(x['path'] == 'ProductResource.cs' and 'ICrudTransactionParticipant' in x['content'] for x in crud['files'])
+    assert any(x['path'] == 'Program.cs' and 'CrudRuntimeDoctor' in x['content'] for x in crud['files'])
+    assert 'ExpectedVersion' in crud['crudGuide'] and 'DemoToken' in crud['prerequisites']
+    assert 'no dispatcher' in crud['scope']
     mismatch = request(6, 'tools/call', {'name': 'neo_get_example', 'arguments': {'example': 'product-create', 'baseline': 'wrong-version'}})
     assert mismatch.get('isError') is True, mismatch
     for identifier, mode in [(7, 'manual'), (8, 'attribute')]:
@@ -100,7 +105,7 @@ try:
     print(json.dumps({'status': 'passed', 'protocol': init['protocolVersion'], 'tools': sorted(expected),
         'example_files': len(example['files']), 'projects': len(inspection['projects']),
         'doctor_codes': sorted({x['code'] for x in diagnosis['findings']}),
-        'checks': ['initialize', 'tool-discovery', 'read-only-annotations', 'docs-search', 'project-inspection', 'example-retrieval', 'durable-saga-retrieval', 'hangfire-outbox-retrieval', 'wrong-version-error', 'telemetry-manual', 'telemetry-attribute', 'doctor-diagnosis']}, indent=2))
+        'checks': ['initialize', 'tool-discovery', 'read-only-annotations', 'docs-search', 'project-inspection', 'example-retrieval', 'crud-resource-retrieval', 'durable-saga-retrieval', 'hangfire-outbox-retrieval', 'wrong-version-error', 'telemetry-manual', 'telemetry-attribute', 'doctor-diagnosis']}, indent=2))
 finally:
     process.stdin.close()
     try: process.wait(timeout=5)

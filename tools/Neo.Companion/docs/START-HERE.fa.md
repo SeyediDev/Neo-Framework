@@ -22,6 +22,8 @@ dotnet run --project tools/Neo.Companion/samples/TelemetryDemo -c Release --no-b
 
 نمونهٔ [ProductCatalog](../samples/ProductCatalog) نیز باقی مانده است: از [دامنه](../samples/ProductCatalog/Domain/Product.cs) شروع کن، سپس [handler](../samples/ProductCatalog/Application/CreateProduct.cs)، [ذخیره‌سازی](../samples/ProductCatalog/Infrastructure/CatalogDbContext.cs) و [API](../samples/ProductCatalog/Api/Program.cs) را بخوان.
 
+برای CRUD مدیریتی، [نمونهٔ منابع و همزمانی](../samples/CrudResourceDemo/README.fa.md) را اجرا کنید: DTOهای جدا، مجوز عملیات، Version خوش‌بینانه، قفل SQL Server بدبینانه و rollback مشترک محصول، ترجمه و Outbox. [تولیدگر `neo new feature`](FEATURE-GENERATOR.fa.md) همین الگو را در پوشه‌ای تازه می‌سازد. Doctor زمان اجرای این نمونه با `--doctor` بدون ساخت دیتابیس اجرا می‌شود؛ ابزار تشخیص MCP همچنان استاتیک است.
+
 ## کار با Skill و MCP
 
 در یک کلاینت دارای پشتیبانی Skill، `$neo-feature`، `$neo-telemetry` یا `$neo-doctor` را فراخوانی کن. برای پروژه‌های مصرف‌کنندهٔ دیگر، پوشهٔ Skill موردنیاز را داخل `.agents/skills` همان پروژه کپی کن. توضیح نسخه و قرارداد واقعی پروژه باید همیشه مبنای تصمیم دستیار باشد.
