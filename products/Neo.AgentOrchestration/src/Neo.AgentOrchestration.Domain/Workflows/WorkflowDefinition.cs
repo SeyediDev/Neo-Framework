@@ -65,6 +65,8 @@ public sealed record WorkflowGates(bool RequireCommit = false, bool RequirePassi
 
 public sealed class WorkflowTransition : BaseEntity<Guid>
 {
+    public Guid OrganizationId { get; private set; }
+    public Guid WorkspaceId { get; private set; }
     public Guid WorkflowDefinitionId { get; private set; }
     public string Key { get; private set; } = "";
     public Guid FromRoleId { get; private set; }
@@ -95,6 +97,7 @@ public sealed class WorkflowTransition : BaseEntity<Guid>
         if ((toStatus == WorkItemStatus.Ready) != (toRole is not null))
             throw new ArgumentException("A Ready handoff requires a target role; completion must not assign one.");
         return new WorkflowTransition { Id = Guid.NewGuid(), WorkflowDefinitionId = ProjectRules.Id(workflowId),
+            OrganizationId = scope.OrganizationId, WorkspaceId = scope.WorkspaceId,
             Key = key, FromRoleId = ProjectRules.Id(fromRole.Id), FromStatus = fromStatus,
             ToRoleId = toRole?.Id, ToStatus = toStatus, RequireCommit = gates.RequireCommit,
             RequirePassingTests = gates.RequirePassingTests, RequireApproval = gates.RequireApproval,

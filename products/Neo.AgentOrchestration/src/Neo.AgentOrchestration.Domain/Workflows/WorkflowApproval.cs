@@ -8,6 +8,7 @@ namespace Neo.AgentOrchestration.Domain.Workflows;
 // agent/chat ID is not permission to approve. Approvals do not change the item.
 public sealed class WorkflowApproval : BaseEntity<Guid>
 {
+    public Guid ProjectId { get; private set; }
     public Guid WorkItemId { get; private set; }
     public Guid WorkItemVersion { get; private set; }
     public Guid WorkflowDefinitionId { get; private set; }
@@ -36,7 +37,7 @@ public sealed class WorkflowApproval : BaseEntity<Guid>
         if (item.OwnerAgentId == reviewer.AgentId)
             throw new InvalidOperationException("An owner cannot approve their own handoff, including from another chat.");
         if (now < item.UpdatedAtUtc) throw new InvalidOperationException("Approval predates the item change.");
-        return new WorkflowApproval { Id = Guid.NewGuid(), WorkItemId = item.Id, WorkItemVersion = item.Version,
+        return new WorkflowApproval { Id = Guid.NewGuid(), ProjectId = item.ProjectId, WorkItemId = item.Id, WorkItemVersion = item.Version,
             WorkflowDefinitionId = workflow.Id, WorkflowVersion = workflow.Version, TransitionId = transition.Id,
             ReviewerAgentId = reviewer.AgentId, ReviewerChatId = reviewer.ChatId, Approved = approved,
             Reason = WorkRules.Required(reason, 8000), CreatedAtUtc = now.ToUniversalTime() };

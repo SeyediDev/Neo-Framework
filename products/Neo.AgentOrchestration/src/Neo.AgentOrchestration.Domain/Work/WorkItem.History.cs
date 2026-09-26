@@ -31,7 +31,7 @@ public sealed partial class WorkItem
             throw new InvalidOperationException("Dependency must be another item in the same project.");
         if (_dependencies.Any(x => x.DependsOnWorkItemId == dependency.Id)) return;
         DependencyGraph.EnsureAcyclicAddition(this, dependency, projectGraph);
-        _dependencies.Add(WorkItemDependency.Create(Id, dependency.Id, now));
+        _dependencies.Add(WorkItemDependency.Create(ProjectId, Id, dependency.Id, now));
         Record(actor, "DependencyAdded", dependency.Key, now);
     }
 

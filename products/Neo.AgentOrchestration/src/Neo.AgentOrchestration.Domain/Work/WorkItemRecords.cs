@@ -37,12 +37,13 @@ public sealed class WorkItemTimeEntry : BaseEntity<Guid>
 
 public sealed class WorkItemDependency : BaseEntity<Guid>
 {
+    public Guid ProjectId { get; private set; }
     public Guid WorkItemId { get; private set; }
     public Guid DependsOnWorkItemId { get; private set; }
     public DateTimeOffset CreatedAtUtc { get; private set; }
     public WorkItemDependency() { }
-    internal static WorkItemDependency Create(Guid itemId, Guid dependsOn, DateTimeOffset now)
-        => new() { Id = Guid.NewGuid(), WorkItemId = itemId, DependsOnWorkItemId = dependsOn, CreatedAtUtc = now.ToUniversalTime() };
+    internal static WorkItemDependency Create(Guid projectId, Guid itemId, Guid dependsOn, DateTimeOffset now)
+        => new() { Id = Guid.NewGuid(), ProjectId = projectId, WorkItemId = itemId, DependsOnWorkItemId = dependsOn, CreatedAtUtc = now.ToUniversalTime() };
 }
 
 public sealed class WorkItemEvidence : BaseEntity<Guid>

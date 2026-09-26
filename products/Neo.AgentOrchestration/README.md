@@ -22,10 +22,11 @@ cycle rejection, owner/chat checks, status transitions, logs, commit/test/artifa
 evidence, pause/resume time tracking, forecasts, archive/restore and stale-version
 rejection. Time-budget usage is labeled separately from completion percentage.
 Application tests use a scoped memory fixture, not a runtime storage fallback.
-The required IWorkspaceWorkStore must commit atomically, serialize claims and
-graph updates, and enforce durable concurrency. SQL persistence and HTTP task
-endpoints are still pending; the API registers only the foundation status handler
-until those dependencies are configured.
+The SQL store uses Neo EF repositories, workspace transaction locks, scoped
+foreign keys, unique assignment/timer indexes and optimistic concurrency. Explicit
+versioned provisioning targets an independent database; see [database setup and
+verification](docs/DATABASE.md). HTTP task endpoints are still pending; the API
+registers only the foundation status handler until membership/endpoint work lands.
 
 Workflow definitions now configure project-scoped, role/status-matched handoffs
 from Review/Blocked to Ready and terminal Review-to-Done transitions. The pure

@@ -6,6 +6,7 @@
     <Project Path="src/Neo.AgentOrchestration.Infrastructure/Neo.AgentOrchestration.Infrastructure.csproj" />
     <Project Path="src/Neo.AgentOrchestration.Api/Neo.AgentOrchestration.Api.csproj" />
     <Project Path="src/Neo.AgentOrchestration.Web/Neo.AgentOrchestration.Web.csproj" />
+    <Project Path="src/Neo.AgentOrchestration.Provisioning/Neo.AgentOrchestration.Provisioning.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Neo.AgentOrchestration.Tests/Neo.AgentOrchestration.Tests.csproj" />
