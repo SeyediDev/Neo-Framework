@@ -11,10 +11,12 @@ namespace Neo.AgentOrchestration.Tests;
 
 public sealed class HostTests
 {
-    [Fact]
-    public async Task Api_starts_independently_and_reports_legacy_retention()
+    [Theory]
+    [InlineData("Testing")]
+    [InlineData("Development")]
+    public async Task Api_starts_independently_and_reports_legacy_retention(string environment)
     {
-        await using var app = new WebApplicationFactory<ApiHost>().WithWebHostBuilder(b => b.UseEnvironment("Testing"));
+        await using var app = new WebApplicationFactory<ApiHost>().WithWebHostBuilder(b => b.UseEnvironment(environment));
         using var client = app.CreateClient();
         var info = await client.GetFromJsonAsync<ProductInfo>("/api/orchestration/v1/system", TestContext.Current.CancellationToken);
         Assert.NotNull(info);

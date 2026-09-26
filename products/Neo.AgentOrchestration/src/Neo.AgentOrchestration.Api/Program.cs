@@ -13,7 +13,13 @@ builder.Services.AddNeoControllerServices(builder.Configuration, "Neo Agent Orch
 // require a separate policy and are not implicitly published by this product.
 mvc.PartManager.ApplicationParts.Clear();
 mvc.PartManager.ApplicationParts.Add(new AssemblyPart(typeof(ApiHost).Assembly));
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<GetProductInfo>());
+builder.Services.AddMediatR(c =>
+{
+    c.RegisterServicesFromAssemblyContaining<GetProductInfo>();
+    // Work commands require a transactional store and scoped membership first.
+    // Keep foundation startup valid without silently selecting an in-memory store.
+    c.TypeEvaluator = type => type == typeof(GetProductInfoHandler);
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
 {
     o.Authority = builder.Configuration["Authentication:Authority"];

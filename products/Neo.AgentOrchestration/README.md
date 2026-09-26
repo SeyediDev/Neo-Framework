@@ -17,6 +17,16 @@ profile when a role has multiple enabled agents. Profiles contain configuration,
 not credentials or execution state. The contracts are ready for later API/UI
 integration; this milestone does not expose profile CRUD endpoints.
 
+The Work domain and CQRS handlers implement tasks/subtasks, dependency gates and
+cycle rejection, owner/chat checks, status transitions, logs, commit/test/artifact
+evidence, pause/resume time tracking, forecasts, archive/restore and stale-version
+rejection. Time-budget usage is labeled separately from completion percentage.
+Application tests use a scoped memory fixture, not a runtime storage fallback.
+The required IWorkspaceWorkStore must commit atomically, serialize claims and
+graph updates, and enforce durable concurrency. SQL persistence and HTTP task
+endpoints are still pending; the API registers only the foundation status handler
+until those dependencies are configured.
+
 ## Run the foundation
 
 From the Neo repository, with .NET 10:
