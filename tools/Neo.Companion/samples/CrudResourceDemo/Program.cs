@@ -6,6 +6,12 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Neo.Infrastructure.Features.Crud;
 
+namespace CrudResourceDemo;
+
+public sealed class CrudDemoProgram
+{
+public static async Task Main(string[] args)
+{
 var doctor = args.Contains("--doctor", StringComparer.Ordinal);
 var connect = args.Contains("--check-connectivity", StringComparer.Ordinal);
 var builder = WebApplication.CreateBuilder(args.Where(x => x is not ("--doctor" or "--check-connectivity")).ToArray());
@@ -46,4 +52,5 @@ app.MapControllers();
 app.MapGet("/health/ready", () => Results.Ok(new { status = "ready" }));
 await app.RunAsync();
 
-public partial class CrudDemoProgram;
+}
+}
