@@ -38,6 +38,8 @@ public sealed class FeatureGeneratorTests : IDisposable
         var link = Path.Combine(root, "linked");
         try { Directory.CreateSymbolicLink(link, target); }
         catch (UnauthorizedAccessException) { Assert.Skip("Symbolic-link creation is unavailable on this Windows host."); return; }
+        catch (IOException ex) when (OperatingSystem.IsWindows() && (ex.HResult & 0xffff) == 1314)
+        { Assert.Skip("This Windows account lacks the symbolic-link creation privilege; Linux CI exercises the link guard."); return; }
         try { Assert.Throws<IOException>(() => FeatureGenerator.Generate("Book", "Example.Inventory", "books", Path.Combine(link, "output"), root)); }
         finally { Directory.Delete(link); }
         Assert.Empty(Directory.GetFileSystemEntries(target));
