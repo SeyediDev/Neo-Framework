@@ -4,6 +4,12 @@ Independent product under Neo-Framework. This first milestone provides separate
 API and Razor Web hosts, a Neo-backed CQRS status endpoint, and host smoke tests.
 It is a foundation, not a completed task-management or agent-execution service.
 
+The domain now includes Organization, Workspace and Project factories, normalized
+project keys, disabled-parent checks and a WorkspaceScope that rejects a project
+operation from a different organization/workspace. These are domain invariants;
+membership authorization must still be enforced by the application/API. Database
+constraints, project CRUD and data import belong to subsequent milestones.
+
 ## Run the foundation
 
 From the Neo repository, with .NET 10:
