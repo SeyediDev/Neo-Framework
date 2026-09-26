@@ -10,6 +10,13 @@ operation from a different organization/workspace. These are domain invariants;
 membership authorization must still be enforced by the application/API. Database
 constraints, project CRUD and data import belong to subsequent milestones.
 
+RoleProfile and AgentProfile are separate workspace-scoped domain models.
+Profiles support validated updates and enable/disable; agent selection rejects
+disabled, foreign-role/workspace and ambiguous candidates. Choose an explicit
+profile when a role has multiple enabled agents. Profiles contain configuration,
+not credentials or execution state. The contracts are ready for later API/UI
+integration; this milestone does not expose profile CRUD endpoints.
+
 ## Run the foundation
 
 From the Neo repository, with .NET 10:
