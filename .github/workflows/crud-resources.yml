@@ -27,7 +27,7 @@ jobs:
       - name: Verify resource transactions and both concurrency modes
         env:
           NEO_CRUD_SQL: 'Server=127.0.0.1,14333;Database=master;User Id=sa;Password=${{ env.NEO_CRUD_SQL_PASSWORD }};TrustServerCertificate=true'
-        run: dotnet test tools/Neo.Companion/tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj -c Release --filter 'FullyQualifiedName~CrudSqlConcurrencyTests|FullyQualifiedName~CrudResourceTests|FullyQualifiedName~CrudPaginationTests' --logger trx --results-directory tools/Neo.Companion/artifacts/test-results/crud-sql
+        run: dotnet test tools/Neo.Companion/tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj -c Release --filter 'FullyQualifiedName~Crud' --logger trx --results-directory tools/Neo.Companion/artifacts/test-results/crud-sql
       - uses: actions/upload-artifact@v4
         if: always()
         with:

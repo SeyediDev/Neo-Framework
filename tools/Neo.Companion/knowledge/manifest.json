@@ -1,9 +1,17 @@
 {
-  "baseline": "sha256:a45ce7b2f743bbd2edd29e7012679ed85554f0e85b4aff0bdea6f7a901cdf745",
+  "baseline": "sha256:18a180b060db446ca644f19594f01cee299ee6478930267e0ab8ef6f6b963c3b",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Endpoint/Controller/Base/GenericCrudResourceControllerBase.cs",
+      "sha256": "ff7f83b7c43fcbf3489c19b31ea9f27f5a277a5d98e591819c69e7780a4f372f"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Crud/CrudRuntimeDoctor.cs",
+      "sha256": "131fdd2d832d775c85c815e594c1403be4a05925cec3ba6cc64f5c65ebd1e4e0"
+    },
     {
       "path": "src/Neo.Domain/Features/Concurrency/IConcurrencyVersion.cs",
       "sha256": "245757a7ab8a67ef711d941c24e2bcca1fc4dde5bcb0531680f34bff9cdb5b0c"

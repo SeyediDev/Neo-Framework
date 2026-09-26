@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><IsTestProject>true</IsTestProject><IsPackable>false</IsPackable><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../samples/CrudResourceDemo/CrudResourceDemo.csproj" />
     <Compile Include="$(NeoRoot)/tests/Neo.Domain.Tests/Telemetry/*.cs" Link="Telemetry/%(Filename)%(Extension)" />
     <ProjectReference Include="../../samples/TelemetryDemo/TelemetryDemo.csproj" />
     <ProjectReference Include="../../samples/MessagingDemo/MessagingDemo.csproj" />

@@ -33,6 +33,12 @@ LockWait بین ۱ تا ۳۰ ثانیه و پیش‌فرض ۳ ثانیه است�
 
 در صورت شکست، tracker پاک می‌شود و درخواست خطا می‌گیرد؛ instanceهای Entity که caller قبلاً نگه داشته ممکن است همچنان تغییرات حافظه را داشته باشند. آن‌ها را نتیجهٔ commit تلقی نکنید. این مسیر، رفتار قدیمی ذخیرهٔ جداگانهٔ CultureTerm را به‌صورت پنهان تغییر نمی‌دهد؛ نمونهٔ جدید، ترجمهٔ دارای کلید Guid را در جدول برنامه و تراکنش مشترک نشان می‌دهد.
 
+## کنترلر و Doctor
+
+نسخهٔ جدید `GenericCrudControllerBase<TCreate,TUpdate,TRead,TEntity,TKey,TDefinition>` را با route صریح در کنترلر برنامه ارث‌بری کنید. سرویس تعریف‌محور `ICrudService<TDefinition,TCreate,TUpdate,TRead,TKey>` تزریق می‌شود تا منابع با DTO مشابه با هم تداخل نکنند. عملیات غیرفعال 405، درخواست نامعتبر 400، رکورد ناموجود 404 و تعارض 409 با فیلد code برمی‌گرداند. policy در ورودی HTTP اعمال می‌شود؛ محدودیت رکوردی همچنان باید در Scope تعریف باشد. در PUT بدنه `{ data, expectedVersion }` است؛ DELETE پارامتر query به نام expectedVersion می‌گیرد. MVC و fallback policy برنامه می‌توانند محدودیت بیشتری اعمال کنند.
+
+`CrudRuntimeDoctor.CheckAsync(provider, checkConnectivity, ct)` از ثبت‌های `AddNeoCrudResource` گزارش می‌سازد؛ مدل و DI و policyها را بررسی می‌کند. اتصال اختیاری است؛ migration، نوشتن یا بررسی جامع schema انجام نمی‌دهد. resolve می‌تواند سازنده‌های برنامه را اجرا کند. [نمونهٔ اجرایی و دستورهای Doctor](../samples/CrudResourceDemo/README.fa.md) را ببینید.
+
 ## ارتقای دیتابیس
 
 Version از نوع Guid، required و concurrency token است. migration برنامه باید ستون و backfill رکوردهای موجود را انجام دهد؛ صرف ثبت سرویس یا اجرای Doctor دیتابیس را migrate نمی‌کند. کلاینت باید Version پاسخ را نگه دارد و در ویرایش/حذف بعدی ارسال کند. قبل از فعال‌کردن قرارداد جدید، سایر نویسنده‌های همان جدول را نیز با این قاعده هماهنگ کنید.

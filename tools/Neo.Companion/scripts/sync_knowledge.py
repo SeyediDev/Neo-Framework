@@ -8,6 +8,8 @@ comp=Path(__file__).resolve().parents[1]
 repo=comp.parents[1]
 knowledge=comp/'knowledge'
 paths=[
+'src/Neo.Endpoint/Controller/Base/GenericCrudResourceControllerBase.cs',
+'src/Neo.Infrastructure/Features/Crud/CrudRuntimeDoctor.cs',
 'src/Neo.Domain/Features/Concurrency/IConcurrencyVersion.cs',
 'src/Neo.Application/Features/Crud/CrudDefinition.cs',
 'src/Neo.Infrastructure/Features/Crud/NeoConcurrency.cs',
