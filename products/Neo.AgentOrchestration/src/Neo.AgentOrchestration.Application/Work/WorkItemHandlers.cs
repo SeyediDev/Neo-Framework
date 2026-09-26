@@ -92,7 +92,7 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
                 else item.Restore(request.Scope, request.Actor, now);
                 break;
             case EvidenceChange change: item.AddEvidence(request.Scope, request.Actor, change.Kind, change.Reference,
-                change.Outcome, change.Details, now); break;
+                change.Outcome, change.Details, now, change.CommitSha); break;
             case DependencyChange change:
                 var dependency = items.SingleOrDefault(x => x.Id == change.DependsOnWorkItemId)
                     ?? throw new KeyNotFoundException("Dependency not found in project.");

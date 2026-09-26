@@ -20,7 +20,8 @@ public sealed record LogChange(string Message) : WorkItemChange;
 public sealed record EstimateChange(long? Seconds) : WorkItemChange;
 public sealed record TrackingChange(bool Start) : WorkItemChange;
 public sealed record ArchiveChange(bool Archive) : WorkItemChange;
-public sealed record EvidenceChange(EvidenceKind Kind, string Reference, EvidenceOutcome Outcome, string? Details = null) : WorkItemChange;
+public sealed record EvidenceChange(EvidenceKind Kind, string Reference, EvidenceOutcome Outcome,
+    string? Details = null, string? CommitSha = null) : WorkItemChange;
 public sealed record DependencyChange(Guid DependsOnWorkItemId) : WorkItemChange;
 
 public sealed class WorkItemConflictException(string message) : InvalidOperationException(message);

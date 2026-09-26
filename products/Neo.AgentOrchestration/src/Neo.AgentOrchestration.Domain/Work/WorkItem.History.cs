@@ -5,11 +5,15 @@ namespace Neo.AgentOrchestration.Domain.Work;
 public sealed partial class WorkItem
 {
     public void AddEvidence(WorkspaceScope scope, WorkActor actor, EvidenceKind kind, string reference,
-        EvidenceOutcome outcome, string? details, DateTimeOffset now)
+        EvidenceOutcome outcome, string? details, DateTimeOffset now, string? commitSha = null)
     {
         RequireEditable(scope, actor, now);
         if (OwnerAgentId is not null) RequireOwner(actor);
-        var evidence = WorkItemEvidence.Create(Id, kind, reference, outcome, details, now);
+        var evidence = WorkItemEvidence.Create(Id, kind, reference, outcome, details, now,
+            checked(_evidence.Select(x => x.Sequence).DefaultIfEmpty().Max() + 1), commitSha);
+        if (evidence.CommitSha is not null && !_evidence.Any(x => x.Kind == EvidenceKind.Commit &&
+            string.Equals(x.Reference, evidence.CommitSha, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException("Record the referenced commit on this item first.");
         _evidence.Add(evidence);
         Record(actor, "EvidenceAdded", $"{kind}: {evidence.Reference} ({outcome})", now);
     }

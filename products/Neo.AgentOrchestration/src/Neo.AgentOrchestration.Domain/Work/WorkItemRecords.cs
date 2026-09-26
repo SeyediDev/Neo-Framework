@@ -48,6 +48,8 @@ public sealed class WorkItemDependency : BaseEntity<Guid>
 public sealed class WorkItemEvidence : BaseEntity<Guid>
 {
     public Guid WorkItemId { get; private set; }
+    public int Sequence { get; private set; }
+    public string? CommitSha { get; private set; }
     public EvidenceKind Kind { get; private set; }
     public string Reference { get; private set; } = "";
     public EvidenceOutcome Outcome { get; private set; }
@@ -56,7 +58,7 @@ public sealed class WorkItemEvidence : BaseEntity<Guid>
     public WorkItemEvidence() { }
 
     internal static WorkItemEvidence Create(Guid itemId, EvidenceKind kind, string reference,
-        EvidenceOutcome outcome, string? details, DateTimeOffset now)
+        EvidenceOutcome outcome, string? details, DateTimeOffset now, int sequence, string? commitSha)
     {
         if (!Enum.IsDefined(kind) || !Enum.IsDefined(outcome)) throw new ArgumentException("Unknown evidence kind or outcome.");
         reference = WorkRules.Required(reference, 2000);
@@ -64,7 +66,13 @@ public sealed class WorkItemEvidence : BaseEntity<Guid>
             throw new ArgumentException("Commit evidence requires a full hexadecimal SHA.");
         if ((kind == EvidenceKind.Test) != (outcome != EvidenceOutcome.NotApplicable))
             throw new ArgumentException("Only test evidence has a test outcome; a test requires an outcome.");
+        if (sequence <= 0) throw new ArgumentOutOfRangeException(nameof(sequence));
+        commitSha = WorkRules.Optional(commitSha, 64)?.ToLowerInvariant();
+        if (commitSha is not null && (kind == EvidenceKind.Commit || commitSha.Length is not (40 or 64) ||
+            commitSha.Any(c => !char.IsAsciiHexDigit(c))))
+            throw new ArgumentException("Only test/artifact evidence may reference a full commit SHA.");
         return new WorkItemEvidence { Id = Guid.NewGuid(), WorkItemId = itemId, Kind = kind,
+            Sequence = sequence, CommitSha = commitSha,
             Reference = reference, Outcome = outcome, Details = WorkRules.Optional(details, 8000),
             CreatedAtUtc = now.ToUniversalTime() };
     }

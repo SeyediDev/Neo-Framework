@@ -27,6 +27,17 @@ graph updates, and enforce durable concurrency. SQL persistence and HTTP task
 endpoints are still pending; the API registers only the foundation status handler
 until those dependencies are configured.
 
+Workflow definitions now configure project-scoped, role/status-matched handoffs
+from Review/Blocked to Ready and terminal Review-to-Done transitions. The pure
+planner checks enabled roles, commit/test/artifact evidence and independent
+reviewer approval, and selects the next agent profile. Tests/artifacts must name
+the current commit when one exists; the latest result per test wins. Approvals
+bind both item and workflow versions, and an owner cannot approve their own work.
+These are configuration and preview capabilities, not durable dispatch. The
+executor must revalidate in a transaction and enforce membership, dependencies,
+children and role availability before persisting handoff/outbox. Authentication,
+workflow HTTP/UI management, durable runs and harness execution remain pending.
+
 ## Run the foundation
 
 From the Neo repository, with .NET 10:
