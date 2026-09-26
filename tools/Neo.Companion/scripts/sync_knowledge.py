@@ -8,6 +8,8 @@ comp=Path(__file__).resolve().parents[1]
 repo=comp.parents[1]
 knowledge=comp/'knowledge'
 paths=[
+'src/Neo.Application/Models/PagintationQuery.cs',
+'src/Neo.Application/Features/GenericEntity/Queries/GetAllGenericEntity.cs',
 'src/Neo.Application/Features/Outbox/IOutboxDeliveryStore.cs',
 'src/Neo.Application/Features/Outbox/IOutboxExecutionJob.cs',
 'src/Neo.Application/Features/Outbox/IProcessOutboxRecurringJob.cs',

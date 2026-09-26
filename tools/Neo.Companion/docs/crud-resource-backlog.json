@@ -1,0 +1,50 @@
+{
+  "project": "NEO",
+  "database": "WorkManagement",
+  "baseline": "cc0b023b87eae1837ae0e6f26b861bb2fe115668",
+  "auditTask": "NEO-CRUD-AUDIT-001",
+  "note": "Acceptance specification; live state and evidence are in WorkManagement.",
+  "items": [
+    {
+      "key": "NEO-CRUD-101",
+      "title": "Correct SQL pagination and legacy page validation",
+      "priority": 4,
+      "dependsOn": [],
+      "acceptance": [
+        "No gaps between pages; bounded page size; stable key order; no full-table materialization for a requested page; regression tests"
+      ]
+    },
+    {
+      "key": "NEO-CRUD-102",
+      "title": "Resource definitions, separate DTOs and transactional concurrency",
+      "priority": 4,
+      "dependsOn": [],
+      "acceptance": [
+        "Opt-in shared resource definition and explicit mapping; optimistic concurrency version; SQL Server pessimistic transaction lock with cancellation/bounded wait; same-context entity/translation/Outbox commit; real rollback and race tests"
+      ]
+    },
+    {
+      "key": "NEO-CRUD-103",
+      "title": "Generic CRUD resource endpoints and runtime Doctor",
+      "priority": 3,
+      "dependsOn": [
+        "NEO-CRUD-101",
+        "NEO-CRUD-102"
+      ],
+      "acceptance": [
+        "Enabled operations and per-operation policies enforced; 400/404/409 contracts; DI and EF metadata checked without writes; read-only runtime report; executable sample with translation and Outbox"
+      ]
+    },
+    {
+      "key": "NEO-CRUD-104",
+      "title": "Feature generator, companion integration and release evidence",
+      "priority": 3,
+      "dependsOn": [
+        "NEO-CRUD-103"
+      ],
+      "acceptance": [
+        "Runnable neo new feature command with no overwrite and input validation; generated project builds and runs; generator uses shared CRUD definition; MCP source retrieval, Persian guide and skill synchronized; local and SQL CI evidence recorded"
+      ]
+    }
+  ]
+}

@@ -1,9 +1,17 @@
 {
-  "baseline": "sha256:5d378556b4ab3e6d2e3b27ef59fdaa5c3042a6989ccd768d8d7e0bebf69f6aaf",
+  "baseline": "sha256:24fdf3fcf72fda9235d2067c108e85fe8a8d28e5f5e053388725dc2db8fd8a7e",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Application/Models/PagintationQuery.cs",
+      "sha256": "ad3dc107bf382e9543a97a2f26435c3df7139c3ba6e0fc5ce50a87442b19f11e"
+    },
+    {
+      "path": "src/Neo.Application/Features/GenericEntity/Queries/GetAllGenericEntity.cs",
+      "sha256": "1bc73c41ffe74c5c1d040d21bd1047c669c376e08365bc99400f17bb9ac7a226"
+    },
     {
       "path": "src/Neo.Application/Features/Outbox/IOutboxDeliveryStore.cs",
       "sha256": "0e0c7e8440b477996deecb1d3149669068c9fbfaee167b5a46bd3f357d50b34c"

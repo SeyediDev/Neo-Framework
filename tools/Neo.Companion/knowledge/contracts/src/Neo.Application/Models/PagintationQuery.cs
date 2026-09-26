@@ -1,4 +1,4 @@
-﻿namespace Neo.Application.Models;
+namespace Neo.Application.Models;
 
 public record PaginationQuery
 {

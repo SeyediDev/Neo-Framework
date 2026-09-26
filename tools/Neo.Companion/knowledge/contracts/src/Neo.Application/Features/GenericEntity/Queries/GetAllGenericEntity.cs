@@ -1,4 +1,4 @@
-﻿using Neo.Application.Features.GenericEntity.GenericService;
+using Neo.Application.Features.GenericEntity.GenericService;
 using Neo.Application.Models;
 using Neo.Domain.Dto;
 using Neo.Domain.Entities.Base;

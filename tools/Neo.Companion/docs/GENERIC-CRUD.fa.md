@@ -27,6 +27,8 @@ Create و Update، تغییرات ترجمه را از UnitOfWork همان repos
 
 ## اعتبارسنجی
 
+صفحه‌بندی GetAll در دیتابیس با `GetPagedAsync` و حداکثر ۲۰۰ ردیف در صفحه انجام می‌شود؛ یک ردیف اضافه فقط برای تعیین `HasNext` خوانده می‌شود. کلید Entity، ترتیب پیش‌فرض و معیار نهایی رفع تساوی است. شمارهٔ صفحهٔ نامعتبر، اندازهٔ خارج از بازه و سرریز offset قبل از query رد می‌شوند. helper قدیمی `SetPagination` نیز فاصلهٔ نادرست بین صفحه‌ها را اصلاح کرده است؛ با اندازهٔ ۱۰، صفحهٔ دوم رکوردهای ۱۱ تا ۲۰ را دارد.
+
 تست‌های `tests/Neo.Endpoint.IntegrationTests/Controller/GenericCrudControllerTests.cs` رفتار HTTP، دنبال‌کردن Location، شناسهٔ ایجادشده، ترجمهٔ خالی، ذخیرهٔ ترجمه، cancellation و خطای رکورد ناموجود را پوشش می‌دهند. تست HTTP از TestServer و Handlerهای کنترل‌شده استفاده می‌کند؛ تست تراکنش دیتابیس واقعی محسوب نمی‌شود.
 
 ```powershell
