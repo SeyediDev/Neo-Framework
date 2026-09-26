@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Neo.AgentOrchestration.Domain/Neo.AgentOrchestration.Domain.csproj" />
+    <Project Path="src/Neo.AgentOrchestration.Contracts/Neo.AgentOrchestration.Contracts.csproj" />
+    <Project Path="src/Neo.AgentOrchestration.Application/Neo.AgentOrchestration.Application.csproj" />
+    <Project Path="src/Neo.AgentOrchestration.Infrastructure/Neo.AgentOrchestration.Infrastructure.csproj" />
+    <Project Path="src/Neo.AgentOrchestration.Api/Neo.AgentOrchestration.Api.csproj" />
+    <Project Path="src/Neo.AgentOrchestration.Web/Neo.AgentOrchestration.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Neo.AgentOrchestration.Tests/Neo.AgentOrchestration.Tests.csproj" />
+  </Folder>
+</Solution>

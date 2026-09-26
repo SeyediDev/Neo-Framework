@@ -1,0 +1,36 @@
+@page
+@model Neo.AgentOrchestration.Web.Pages.IndexModel
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>مدیریت کار نئو</title>
+    <link rel="stylesheet" href="/site.css" />
+</head>
+<body>
+<main>
+    <p class="brand" dir="ltr">NEO · Agent Orchestration</p>
+    <h1>مدیریت کار و هماهنگی ایجنت‌ها</h1>
+    <p>نسخهٔ مستقل در حال آماده‌سازی است. برای کارهای جاری از پنل فعلی استفاده کنید.</p>
+    <section aria-labelledby="status">
+        <h2 id="status">وضعیت سرویس مستقل</h2>
+        @if (Model.Info is { } info)
+        {
+            <p class="online">ارتباط با سرویس برقرار است.</p>
+            <p>مرحله: <span dir="ltr">@info.Stage</span></p>
+        }
+        else
+        {
+            <p role="status">سرویس در دسترس نیست؛ برای دریافت وضعیت دوباره تلاش کنید.</p>
+        }
+        <a href="/">تازه‌سازی وضعیت</a>
+    </section>
+    <section aria-labelledby="migration">
+        <h2 id="migration">انتقال با حفظ نسخهٔ فعلی</h2>
+        <p>پنل، اطلاعات و تنظیمات فعلی Hyper تا تکمیل مهاجرت باقی می‌مانند.
+        پاکسازی پس از بررسی نتیجه و تأیید شما انجام خواهد شد.</p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../Neo.AgentOrchestration.Application/Neo.AgentOrchestration.Application.csproj" />
+    <ProjectReference Include="$(NeoRoot)/src/Neo.Infrastructure/Neo.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

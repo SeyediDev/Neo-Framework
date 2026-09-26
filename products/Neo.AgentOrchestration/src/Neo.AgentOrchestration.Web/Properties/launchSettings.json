@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Neo.AgentOrchestration.Web": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5181",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
