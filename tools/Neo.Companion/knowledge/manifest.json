@@ -1,9 +1,29 @@
 {
-  "baseline": "sha256:24fdf3fcf72fda9235d2067c108e85fe8a8d28e5f5e053388725dc2db8fd8a7e",
+  "baseline": "sha256:a45ce7b2f743bbd2edd29e7012679ed85554f0e85b4aff0bdea6f7a901cdf745",
   "repository": "https://github.com/SeyediDev/Neo-Framework",
   "baseCommit": "e34c0ad5336c71e0cf3be4bccb7f425aecccea9d",
   "versionPolicy": "Exact normalized source-contract snapshot; baseCommit is provenance, not a claim that this is an unchanged commit.",
   "sources": [
+    {
+      "path": "src/Neo.Domain/Features/Concurrency/IConcurrencyVersion.cs",
+      "sha256": "245757a7ab8a67ef711d941c24e2bcca1fc4dde5bcb0531680f34bff9cdb5b0c"
+    },
+    {
+      "path": "src/Neo.Application/Features/Crud/CrudDefinition.cs",
+      "sha256": "f21d93bf8a26f611fa56beb320a9c45669ee332e34838f1fb47a383a779c1943"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Crud/NeoConcurrency.cs",
+      "sha256": "be28644b58f202f83a530fddb98879ac58c006b480daba0f00cc42ac1140cd5b"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Crud/EfCrudService.cs",
+      "sha256": "2295fd2f289d9cd8001a137e6bd7c5905394ddf95ba4fe9ddbf9305f4e2cf58b"
+    },
+    {
+      "path": "src/Neo.Infrastructure/Features/Crud/CrudRegistration.cs",
+      "sha256": "acf9a89fa506e34030381c3889181c664a42ad820e008af28c180501993a45c6"
+    },
     {
       "path": "src/Neo.Application/Models/PagintationQuery.cs",
       "sha256": "ad3dc107bf382e9543a97a2f26435c3df7139c3ba6e0fc5ce50a87442b19f11e"

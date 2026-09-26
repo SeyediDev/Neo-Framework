@@ -1,0 +1,41 @@
+name: Neo CRUD resource concurrency
+on:
+  push:
+    paths: ['src/**', 'tools/Neo.Companion/**', 'Directory.*.props', '.github/workflows/crud-resources.yml']
+  pull_request:
+    paths: ['src/**', 'tools/Neo.Companion/**', 'Directory.*.props', '.github/workflows/crud-resources.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sql-concurrency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Generate masked ephemeral database credential
+        shell: bash
+        run: |
+          password="Neo_$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          echo "NEO_CRUD_SQL_PASSWORD=$password" >> "$GITHUB_ENV"
+      - name: Start isolated SQL Server
+        run: docker compose -f tools/Neo.Companion/tests/compose.sql.yaml up -d --wait
+      - name: Verify resource transactions and both concurrency modes
+        env:
+          NEO_CRUD_SQL: 'Server=127.0.0.1,14333;Database=master;User Id=sa;Password=${{ env.NEO_CRUD_SQL_PASSWORD }};TrustServerCertificate=true'
+        run: dotnet test tools/Neo.Companion/tests/Neo.Companion.Tests/Neo.Companion.Tests.csproj -c Release --filter 'FullyQualifiedName~CrudSqlConcurrencyTests|FullyQualifiedName~CrudResourceTests|FullyQualifiedName~CrudPaginationTests' --logger trx --results-directory tools/Neo.Companion/artifacts/test-results/crud-sql
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crud-sql-results
+          path: tools/Neo.Companion/artifacts/test-results/crud-sql
+      - name: Database logs
+        if: failure()
+        run: docker compose -f tools/Neo.Companion/tests/compose.sql.yaml logs sqlserver
+      - name: Stop isolated SQL Server
+        if: always()
+        run: docker compose -f tools/Neo.Companion/tests/compose.sql.yaml down
