@@ -9,6 +9,7 @@ public sealed partial class WorkItem : BaseEntity<Guid>
     private readonly List<WorkItemEvidence> _evidence = [];
     private readonly List<WorkItemTimeEntry> _timeEntries = [];
     private readonly List<WorkItemDependency> _dependencies = [];
+    private readonly List<WorkItemOwnerHistory> _ownerHistory = [];
 
     public Guid OrganizationId { get; private set; }
     public Guid WorkspaceId { get; private set; }
@@ -35,6 +36,7 @@ public sealed partial class WorkItem : BaseEntity<Guid>
     public IReadOnlyList<WorkItemEvidence> Evidence => _evidence.AsReadOnly();
     public IReadOnlyList<WorkItemTimeEntry> TimeEntries => _timeEntries.AsReadOnly();
     public IReadOnlyList<WorkItemDependency> Dependencies => _dependencies.AsReadOnly();
+    public IReadOnlyList<WorkItemOwnerHistory> OwnerHistory => _ownerHistory.AsReadOnly();
 
     public WorkItem() { }
 

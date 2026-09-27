@@ -9,6 +9,9 @@ public sealed record WorkLogView(Guid Id, string AgentId, string ChatId, string 
 public sealed record WorkEvidenceView(Guid Id, string Kind, string Reference, string Outcome,
     string? Details, DateTimeOffset CreatedAtUtc, int Sequence, string? CommitSha);
 public sealed record WorkTimeView(Guid Id, DateTimeOffset StartedAtUtc, DateTimeOffset? EndedAtUtc, long DurationSeconds);
+public sealed record WorkItemOwnerHistoryView(Guid Id, long SourceWorkItemId, int OriginalStatus,
+    string? OwnerRole, string? OwnerAgent, string? OwnerChat, DateTimeOffset CreatedAtUtc);
 public sealed record WorkItemDetails(WorkItemView Item, IReadOnlyList<WorkItemView> Children,
     IReadOnlyList<Guid> Dependencies, IReadOnlyList<WorkLogView> Logs,
-    IReadOnlyList<WorkEvidenceView> Evidence, IReadOnlyList<WorkTimeView> TimeEntries);
+    IReadOnlyList<WorkEvidenceView> Evidence, IReadOnlyList<WorkTimeView> TimeEntries,
+    IReadOnlyList<WorkItemOwnerHistoryView> OwnerHistory);

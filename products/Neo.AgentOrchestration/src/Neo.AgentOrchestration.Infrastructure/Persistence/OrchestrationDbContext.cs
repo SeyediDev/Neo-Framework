@@ -22,6 +22,7 @@ public sealed class OrchestrationDbContext(DbContextOptions<OrchestrationDbConte
     public DbSet<RoleProfile> Roles => Set<RoleProfile>();
     public DbSet<AgentProfile> Agents => Set<AgentProfile>();
     public DbSet<WorkItem> WorkItems => Set<WorkItem>();
+    public DbSet<WorkItemOwnerHistory> WorkItemOwnerHistory => Set<WorkItemOwnerHistory>();
     public DbSet<WorkflowDefinition> Workflows => Set<WorkflowDefinition>();
     public DbSet<WorkflowApproval> Approvals => Set<WorkflowApproval>();
     public DbSet<AgentRun> AgentRuns => Set<AgentRun>();

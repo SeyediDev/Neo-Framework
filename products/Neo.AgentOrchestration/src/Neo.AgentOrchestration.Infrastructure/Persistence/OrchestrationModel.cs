@@ -97,6 +97,15 @@ internal static class OrchestrationModel
         dependency.HasOne<WorkItem>().WithMany().HasForeignKey(x => new { x.DependsOnWorkItemId, x.ProjectId })
             .HasPrincipalKey(x => new { x.Id, x.ProjectId }).OnDelete(DeleteBehavior.Restrict);
         work.Navigation(x => x.Dependencies).HasField("_dependencies").UsePropertyAccessMode(PropertyAccessMode.Field);
+        var ownerHistory = Entity<WorkItemOwnerHistory>(b, "WorkItemOwnerHistory");
+        ownerHistory.Property(x => x.OwnerRole).HasMaxLength(200);
+        ownerHistory.Property(x => x.OwnerAgent).HasMaxLength(200);
+        ownerHistory.Property(x => x.OwnerChat).HasMaxLength(200);
+        ownerHistory.HasIndex(x => new { x.ProjectId, x.WorkItemId, x.CreatedAtUtc });
+        ownerHistory.HasOne<WorkItem>().WithMany(x => x.OwnerHistory)
+            .HasForeignKey(x => new { x.WorkItemId, x.ProjectId })
+            .HasPrincipalKey(x => new { x.Id, x.ProjectId }).OnDelete(DeleteBehavior.Restrict);
+        work.Navigation(x => x.OwnerHistory).HasField("_ownerHistory").UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 
     private static void ConfigureWorkflows(ModelBuilder b)

@@ -95,7 +95,8 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         private readonly WorkItemQueryRepository queries = new(db);
         private IQueryable<WorkItem> Items => queries.Query().Where(x =>
             x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId)
-            .Include(x => x.Logs).Include(x => x.Evidence).Include(x => x.TimeEntries).Include(x => x.Dependencies).AsSplitQuery();
+            .Include(x => x.Logs).Include(x => x.Evidence).Include(x => x.TimeEntries).Include(x => x.Dependencies)
+            .Include(x => x.OwnerHistory).AsSplitQuery();
         public Task<Project?> GetProjectAsync(Guid id, CancellationToken ct) => db.Projects.SingleOrDefaultAsync(x =>
             x.Id == id && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId, ct);
         public Task<RoleProfile?> GetRoleAsync(Guid id, CancellationToken ct) => db.Roles.SingleOrDefaultAsync(x =>

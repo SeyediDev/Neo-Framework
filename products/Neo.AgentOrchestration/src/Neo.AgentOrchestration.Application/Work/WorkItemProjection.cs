@@ -19,5 +19,7 @@ internal static class WorkItemProjection
             item.Evidence.Select(x => new WorkEvidenceView(x.Id, x.Kind.ToString(), x.Reference,
                 x.Outcome.ToString(), x.Details, x.CreatedAtUtc, x.Sequence, x.CommitSha)).ToArray(),
             item.TimeEntries.Select(x => new WorkTimeView(x.Id, x.StartedAtUtc, x.EndedAtUtc,
-                x.EndedAtUtc.HasValue ? x.DurationSeconds : Math.Max(0L, (long)(now - x.StartedAtUtc).TotalSeconds))).ToArray());
+                x.EndedAtUtc.HasValue ? x.DurationSeconds : Math.Max(0L, (long)(now - x.StartedAtUtc).TotalSeconds))).ToArray(),
+            item.OwnerHistory.Select(x => new WorkItemOwnerHistoryView(x.Id, x.SourceWorkItemId, x.OriginalStatus,
+                x.OwnerRole, x.OwnerAgent, x.OwnerChat, x.CreatedAtUtc)).ToArray());
 }
