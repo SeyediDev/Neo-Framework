@@ -1,6 +1,8 @@
 <Project>
   <Import Project="../../Directory.Packages.props" />
   <ItemGroup>
+    <PackageVersion Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.8" />
   </ItemGroup>
 </Project>

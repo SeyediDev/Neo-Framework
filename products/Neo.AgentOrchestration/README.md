@@ -103,5 +103,8 @@ existing WorkManagement database, project NEO, domain agent-orchestration,
 parent NAO-MIGRATION. The [planning backlog](../../docs/AGENT_ORCHESTRATION_BACKLOG.md)
 describes scope; it is not a second live board.
 
-MCP tools, an installer and data transfer remain subsequent milestones.
+The [operational MCP](docs/MCP.md) exposes scoped work/run tools over stdio,
+calling API v1 with the user's issuer token. It cannot access SQL or execute
+repository/model work itself. It does not change any global client settings.
+An installer and data transfer remain subsequent milestones.
 Existing generic Companion skills/MCP contracts are unchanged.

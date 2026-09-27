@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><IsTestProject>true</IsTestProject><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/Neo.AgentOrchestration.Mcp/Neo.AgentOrchestration.Mcp.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="../../src/Neo.AgentOrchestration.Api/Neo.AgentOrchestration.Api.csproj" />
     <ProjectReference Include="../../src/Neo.AgentOrchestration.Web/Neo.AgentOrchestration.Web.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
