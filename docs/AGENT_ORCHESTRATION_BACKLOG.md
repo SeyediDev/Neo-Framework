@@ -54,7 +54,22 @@
 | NAO-026 | backup/restore، retention و disaster recovery | runbook و restore drill |
 | NAO-027 | معماری، امنیت، load و contract test suite | گزارش reproducible در CI |
 
-## قواعد مدیریت کار
+## اتصال‌های اختیاری پس از آماده‌شدن محصول
+
+تصمیم کاربر: مدیریت کار Neo حفظ شود و با ارائه‌دهنده بیرونی هم‌زمان قابل استفاده
+باشد. این جدول محدوده است؛ وضعیت، واگذاری و وابستگی عملیاتی در SQL ثبت شده‌اند.
+
+| Key | عنوان | وابستگی | معیار پذیرش |
+|---|---|---|---|
+| NAO-028 | قرارداد چندارائه‌دهنده و همزیستی | NAO-011, NAO-016, NAO-020 | اتصال‌های scoped، قابلیت‌ها، mapping، مالکیت فیلد و تعارض؛ حالت Neo-only مستقل |
+| NAO-029 | GitHub همراه Neo | NAO-028 | Issue/Project/PR با sync کنترل‌شده؛ هر دو پنل فعال، بدون اجرای تکراری یا حذف داده |
+| NAO-030 | GitLab اختیاری | NAO-028 | adapter مستقل با اعلام قابلیت‌های واقعی و حفظ فیلدهای Neo |
+| NAO-031 | Azure DevOps اختیاری | NAO-028 | تفکیک Boards از Repos؛ همزیستی و scope مستقل |
+
+جزئیات: [WORK-PROVIDERS.md](../products/Neo.AgentOrchestration/docs/WORK-PROVIDERS.md).
+این اتصال‌ها هنوز پیاده نشده‌اند و مسیر اصلی را متوقف نمی‌کنند.
+
+## قواعد اجرای کار
 
 - هر task یک owner role، owner agent، project، domain، branch و status دارد.
 - task فعال متعلق به هر role باید قبل از واگذاری task جدید claim/complete/block شود.
