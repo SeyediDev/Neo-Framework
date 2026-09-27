@@ -1,23 +1,42 @@
 using Neo.AgentOrchestration.Web;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-builder.Services.AddRazorPages();
-var apiUrl = builder.Configuration["OrchestrationApi:BaseUrl"];
-if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out var apiUri) ||
-    apiUri.Scheme is not ("https" or "http") ||
-    (apiUri.Scheme == "http" && !apiUri.IsLoopback))
-    throw new InvalidOperationException("OrchestrationApi:BaseUrl requires HTTPS, or loopback HTTP for local use.");
-builder.Services.AddHttpClient<OrchestrationClient>(c =>
+builder.Services.AddRazorPages().AddMvcOptions(o => o.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddWebIdentity(builder.Configuration, builder.Environment);
+builder.Services.AddAuthorization(o => o.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
+builder.Services.AddHttpClient<OrchestrationClient>((provider, c) =>
 {
-    c.BaseAddress = apiUri;
-    c.Timeout = TimeSpan.FromSeconds(5);
-});
+    c.BaseAddress = WebIdentity.ApiAddress(provider.GetRequiredService<IConfiguration>());
+    c.Timeout = TimeSpan.FromSeconds(20);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
 var app = builder.Build();
+// Remote handlers initialize on every request, even public pages. Use the
+// final host configuration and leave cookie protection active without an IdP.
+if (!WebIdentity.Configured(app.Configuration))
+    app.Services.GetRequiredService<IAuthenticationSchemeProvider>().RemoveScheme(OpenIdConnectDefaults.AuthenticationScheme);
+_ = WebIdentity.ApiAddress(app.Configuration);
+app.UseExceptionHandler("/Error");
+if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing")) app.UseHsts();
 app.UseStaticFiles();
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.CacheControl = "no-store";
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
+    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'";
+    await next();
+});
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapRazorPages();
-app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy" }));
+app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy" })).AllowAnonymous();
 app.Run();
 
 public partial class WebHost;

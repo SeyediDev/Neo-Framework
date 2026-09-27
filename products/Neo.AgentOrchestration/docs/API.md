@@ -138,6 +138,7 @@ public deployment or execution by a real agent/harness.
 Preview and approval are not dispatch. [Simulation runs](RUNS.md) require explicit
 host opt-in and read/execute grants. Reserved `neo-run:` subjects cannot use
 workspace endpoints; the run initiator cannot independently approve its own work.
-No public external callback endpoint or real harness is included. Full independent
-Web, bootstrap installer, legacy import, external adapter and user acceptance
-remain pending. Existing Companion MCP/skills contracts are unchanged.
+No public external callback endpoint or real harness is included. The independent
+[management Web](WEB.md) now consumes these HTTP contracts with per-user OIDC
+access tokens. Bootstrap installer, legacy import, external adapter and user
+acceptance remain pending. Existing Companion MCP/skills contracts are unchanged.

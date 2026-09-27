@@ -3,6 +3,7 @@ using Neo.AgentOrchestration.Contracts;
 
 namespace Neo.AgentOrchestration.Web.Pages;
 
+[Microsoft.AspNetCore.Authorization.AllowAnonymous]
 public sealed class IndexModel(OrchestrationClient client, ILogger<IndexModel> logger) : PageModel
 {
     public ProductInfo? Info { get; private set; }

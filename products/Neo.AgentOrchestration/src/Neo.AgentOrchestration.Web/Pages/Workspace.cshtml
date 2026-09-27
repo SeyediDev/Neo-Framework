@@ -1,0 +1,7 @@
+@page
+@model Neo.AgentOrchestration.Web.Pages.WorkspaceModel
+@{ ViewData["Title"] = "انتخاب فضای کاری"; }
+<section class="panel narrow"><p class="eyebrow">مرز دسترسی مستقل</p><h1>فضای کاری شما</h1>
+<p>شناسه‌ها را مدیر نصب ارائه می‌کند. انتخاب یک شناسه به‌تنهایی مجوز دسترسی ایجاد نمی‌کند.</p>
+<form method="get"><label>شناسه سازمان<input name="organizationId" value="@Model.Organization" dir="ltr" required /></label>
+<label>شناسه فضای کاری<input name="workspaceId" value="@Model.Workspace" dir="ltr" required /></label><button>باز کردن برد</button></form></section>

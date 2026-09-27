@@ -1,0 +1,6 @@
+@page
+@model Neo.AgentOrchestration.Web.Pages.LoginModel
+@{ ViewData["Title"] = "ورود"; }
+<section class="panel narrow"><h1>ورود به مدیریت کار</h1>
+<p role="alert">@(Model.Failed ? "ورود تأیید نشد. دوباره تلاش کنید یا با مدیر نصب تماس بگیرید." : "ورود مستقل هنوز پیکربندی نشده است. مدیر نصب باید سرویس هویت و دسترسی API را تنظیم کند.")</p>
+<p>هیچ رمز یا توکن باسلام و Hyper در این صفحه وارد نکنید.</p><a asp-page="/Index">بازگشت</a></section>

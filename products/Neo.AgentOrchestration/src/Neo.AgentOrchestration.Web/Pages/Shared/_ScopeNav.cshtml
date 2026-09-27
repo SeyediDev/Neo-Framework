@@ -1,0 +1,6 @@
+@model Neo.AgentOrchestration.Web.Pages.WorkPageModel
+<div class="workspace-bar"><span>@Model.Catalog?.Workspace.Name</span><nav aria-label="فضای کاری">
+<a asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">برد کارها</a>
+<a asp-page="/Manage" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پروژه‌ها، رول‌ها و فلوها</a>
+<a asp-page="/NewItem" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">کار جدید</a></nav></div>
+@if (Model.Error is { } error) { <div class="alert" role="alert">@error <a asp-page="/Login">ورود مجدد</a></div> }

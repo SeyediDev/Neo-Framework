@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>@ViewData["Title"] · مدیریت کار نئو</title><link rel="stylesheet" href="~/site.css" asp-append-version="true" /></head>
+<body><a class="skip" href="#content">رفتن به محتوای اصلی</a>
+<header class="topbar"><a class="brand" asp-page="/Index" dir="ltr">NEO / WORK</a><nav aria-label="ناوبری اصلی">
+<a asp-page="/Workspace">فضای کاری</a>
+@if (User.Identity?.IsAuthenticated == true) { <form method="post" asp-page="/Logout"><button class="quiet" type="submit">خروج از پنل</button></form> }
+else { <a asp-page="/Login">ورود</a> }
+</nav></header>
+<main id="content">@RenderBody()</main><footer>مدیریت کار مستقل Neo · اتصال‌های بیرونی اختیاری · نسخه قبلی Hyper تا تأیید مهاجرت محفوظ است.</footer>
+</body></html>

@@ -1,8 +1,8 @@
 # Neo Agent Orchestration
 
 Independent product under Neo-Framework, with a scoped SQL-backed API and a
-separate Razor Web foundation. Task/configuration APIs are implemented;
-the full management Web and external agent integration are not yet complete.
+separate Razor management Web. Task/configuration APIs and the independent P0
+management Web are implemented; external agent integration remains subsequent work.
 
 The domain now includes Organization, Workspace and Project factories, normalized
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
@@ -16,7 +16,7 @@ Profiles support validated updates and enable/disable; agent selection rejects
 disabled, foreign-role/workspace and ambiguous candidates. Choose an explicit
 profile when a role has multiple enabled agents. Profiles contain configuration,
 not credentials or execution state. Scoped API endpoints now create/update and
-enable/disable profiles; the independent management UI remains pending.
+enable/disable profiles and the independent Web exposes these operations.
 
 The Work domain and CQRS handlers implement tasks/subtasks, dependency gates and
 cycle rejection, owner/chat checks, status transitions, logs, commit/test/artifact
@@ -39,7 +39,8 @@ bind both item and workflow versions, and an owner cannot approve their own work
 The opt-in simulation executor revalidates these gates in its SQL transaction,
 including dependencies, children, versions and next-role availability. Workflow
 configuration/preview/independent approval and durable fake runs are implemented;
-the UI and external harness remain pending. Preview does not perform a handoff.
+the Web exposes these operations; the external harness remains pending. Preview
+does not perform a handoff.
 
 Durable delivery now stages product changes and Neo Outbox messages atomically.
 Workspace-scoped Inbox receipts reject conflicting keys and acknowledge duplicate
@@ -74,8 +75,10 @@ The public system endpoint and liveness expose no task data.
 Production requires Authentication:Authority and Authentication:Audience;
 the API has an authenticated fallback policy and explicit workspace grant
 policies. See [API configuration](docs/API.md) for claims, SQL and OpenAPI access.
-The Web currently exposes only public service status; its login/task pages are
-a later milestone. HTTP tests do not establish a real external issuer login.
+The Web exposes service status, OIDC login, board, tasks/history/time, configuration
+and simulation run monitoring. See [Web setup and limits](docs/WEB.md) for issuer
+configuration, workspace selection and single-instance server-side sessions.
+HTTP tests do not establish a real external issuer login.
 OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 
 ## Optional work-provider direction

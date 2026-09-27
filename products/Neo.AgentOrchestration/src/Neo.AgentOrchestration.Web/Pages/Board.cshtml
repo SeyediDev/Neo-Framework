@@ -1,0 +1,35 @@
+@page "/work/{organizationId:guid}/{workspaceId:guid}"
+@model Neo.AgentOrchestration.Web.Pages.BoardModel
+@using static Neo.AgentOrchestration.Web.Pages.WorkPageModel
+@{ ViewData["Title"] = "برد کارها"; }
+<partial name="_ScopeNav" model="Model" />
+<div class="page-heading"><div><p class="eyebrow">نمای عملیاتی</p><h1>برد کارها</h1><p>از برنامه‌ریزی تا نتیجه؛ با مالکیت، زمان و سابقه مشخص.</p></div></div>
+@if (Model.Catalog is { } catalog) {
+<form method="get" class="filters panel"><label>پروژه<select name="ProjectId"><option value="">همه پروژه‌ها</option>@foreach(var p in catalog.Projects){<option value="@p.Id" selected="@(Model.ProjectId==p.Id)">@p.Name</option>}</select></label>
+<label>دامین<input name="Domain" value="@Model.Domain" maxlength="80" placeholder="مثلاً integration" /></label>
+<label>رول<select name="RoleId"><option value="">همه رول‌ها</option>@foreach(var r in catalog.Roles){<option value="@r.Id" selected="@(Model.RoleId==r.Id)">@r.Name</option>}</select></label>
+<label>وضعیت<select name="State"><option value="">همه وضعیت‌ها</option>@foreach(var s in Statuses){<option value="@s" selected="@(Model.State==s)">@Status(s)</option>}</select></label>
+<label class="check"><input type="checkbox" name="IncludeArchived" value="true" checked="@Model.IncludeArchived" /> نمایش بایگانی</label><button>اعمال فیلتر</button><a asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پاک‌کردن</a></form>
+}
+@if (Model.Board is { } board) {
+<div class="metrics"><section><span>کارهای مطابق فیلتر</span><strong>@board.Total</strong></section><section><span>زمان سپری‌شده</span><strong>@Time(board.Metrics.ElapsedSeconds)</strong></section><section><span>برآورد کل</span><strong>@Time(board.Metrics.EstimatedSeconds)</strong></section><section><span>زمان‌سنج فعال</span><strong>@board.Metrics.TrackingCount</strong></section></div>
+<p class="muted">آمار برای همه نتایج فیلتر است؛ کارت‌ها صفحه‌ای نمایش داده می‌شوند. مصرف برآورد زمانی، درصد تکمیل کار نیست.</p>
+@if (board.Items.Count == 0) { <section class="panel empty"><h2>کاری برای این فیلتر پیدا نشد</h2><p>فیلترها را تغییر دهید یا یک کار جدید بسازید.</p></section> }
+else { <div class="kanban" aria-label="کانبان">
+@foreach(var state in Statuses.Where(s=>Model.State is null or "" || s==Model.State)) {
+<section class="column"><h2>@Status(state) <span class="count">@(board.Metrics.StatusCounts.GetValueOrDefault(state))</span></h2>
+@foreach(var item in board.Items.Where(x=>x.Status==state)) {
+<article class="card" data-item-id="@item.Id"><div class="card-meta"><span dir="ltr">@item.Key</span><span>@item.Priority</span></div>
+<h3><a asp-page="/Item" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@item.Id">@item.Title</a></h3>
+@if(item.ParentWorkItemId.HasValue){<span class="tag">زیرتسک</span>} @if(item.IsArchived){<span class="tag">بایگانی</span>}
+<p class="description">@item.Description</p><div class="tags"><span>@item.Domain</span><span>@Model.Project(item.ProjectId)</span><span>@Model.Role(item.OwnerRoleId)</span></div>
+<p class="small">@Time(item.ElapsedSeconds) @(item.IsTracking ? "· زمان‌سنج فعال" : "")</p>
+@if(item.BudgetUsedPercent is { } budget){<progress max="100" value="@Math.Min(100m,budget).ToString(System.Globalization.CultureInfo.InvariantCulture)" aria-label="مصرف برآورد زمانی"></progress><span class="small">@budget٪ از برآورد زمانی</span>}
+else {<span class="small muted">برآورد زمانی ثبت نشده</span>}
+</article>}
+</section>}
+</div>}
+<nav class="pagination" aria-label="صفحه‌بندی"><span>@(board.Total==0 ? 0 : board.Skip+1) تا @(Math.Min(board.Skip+board.Take,board.Total)) از @board.Total</span>
+@if(board.Skip>0){<a asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-ProjectId="@Model.ProjectId" asp-route-RoleId="@Model.RoleId" asp-route-Domain="@Model.Domain" asp-route-State="@Model.State" asp-route-IncludeArchived="@Model.IncludeArchived" asp-route-Skip="@Math.Max(0,board.Skip-board.Take)">قبلی</a>}
+@if(board.Skip+board.Take<board.Total){<a asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-ProjectId="@Model.ProjectId" asp-route-RoleId="@Model.RoleId" asp-route-Domain="@Model.Domain" asp-route-State="@Model.State" asp-route-IncludeArchived="@Model.IncludeArchived" asp-route-Skip="@(board.Skip+board.Take)">بعدی</a>}
+</nav>}
