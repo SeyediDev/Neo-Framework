@@ -10,6 +10,9 @@ using Neo.AgentOrchestration.Domain.Agents;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
 using Neo.AgentOrchestration.Domain.Workflows;
+using Neo.AgentOrchestration.Domain.Runs;
+using Neo.AgentOrchestration.Application.Runs;
+using Neo.AgentOrchestration.Contracts;
 using Neo.Infrastructure.Data.Repository.Ef;
 
 namespace Neo.AgentOrchestration.Infrastructure.Persistence;
@@ -48,8 +51,27 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         // context is never reused. Operations are not automatically replayed.
     }
 
-    internal sealed class Session(OrchestrationDbContext db, WorkspaceScope scope) : IWorkItemSession
+    internal sealed class Session(OrchestrationDbContext db, WorkspaceScope scope) : IRunSession
     {
+        public async Task<AgentRun?> GetRunAsync(Guid id, CancellationToken ct)
+            => db.AgentRuns.Local.SingleOrDefault(x => x.Id == id && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId)
+                ?? await db.AgentRuns.SingleOrDefaultAsync(x => x.Id == id && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId, ct);
+        public async Task<IReadOnlyList<AgentRun>> GetRunsAsync(Guid workItemId, CancellationToken ct)
+            => await db.AgentRuns.Where(x => x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId &&
+                x.WorkItemId == workItemId).OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id).ToArrayAsync(ct);
+        public async Task<IReadOnlyList<RunDeliveryView>> GetRunDeliveriesAsync(Guid runId, CancellationToken ct)
+        {
+            var rows = await db.Deliveries.Where(x => x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId &&
+                x.AgentRunId == runId).Include(x => x.Outbox).OrderBy(x => x.OutboxId).ToArrayAsync(ct);
+            return rows.Select(x => new RunDeliveryView(x.Id, x.OutboxId, x.Kind.ToString(), x.Outbox.OutboxState.ToString(),
+                x.Outbox.PublishTryCount ?? 0, x.Outbox.ProcessTryCount ?? 0, x.Outbox.ProcessError ?? x.Outbox.PublishError, x.Outbox.NextAttemptAtUtc)).ToArray();
+        }
+        public void Add(AgentRun run) { scope.Require(run.OrganizationId, run.WorkspaceId); db.AgentRuns.Add(run); }
+        public async Task StageMessageAsync(WorkDeliveryRequest request, WorkDeliveryKind kind, TimeProvider clock, CancellationToken ct)
+            => _ = await SqlDurableWorkStore.StageAsync(db, scope, request, (_, _) => Task.CompletedTask, false, kind, clock, ct);
+        public async Task<bool> StageInboxAsync(WorkDeliveryRequest request, Func<IWorkItemSession, CancellationToken, Task> mutation,
+            WorkDeliveryKind? followUp, TimeProvider clock, CancellationToken ct)
+            => (await SqlDurableWorkStore.StageAsync(db, scope, request, mutation, true, followUp, clock, ct)).Duplicate;
         public Task<Workspace> GetWorkspaceAsync(CancellationToken ct) => db.Workspaces.SingleAsync(x =>
             x.Id == scope.WorkspaceId && x.OrganizationId == scope.OrganizationId, ct);
         public async Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct) => await db.Projects.Where(x =>

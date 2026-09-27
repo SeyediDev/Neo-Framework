@@ -5,16 +5,16 @@ using Neo.Application.Features.Outbox.Dto;
 
 namespace Neo.AgentOrchestration.Application.Delivery;
 
-public enum WorkDeliveryKind : byte { EvaluateWorkflow = 1, DispatchAgent = 2 }
+public enum WorkDeliveryKind : byte { EvaluateWorkflow = 1, DispatchAgent = 2, ReceiveSimulationResult = 3 }
 
 // Source is an authenticated producer/operation namespace, not arbitrary caller
 // authority. Payload is fingerprinted, never stored by the delivery ledger.
-public sealed record WorkDeliveryRequest(Guid WorkItemId, string Source, string MessageId, string Payload);
+public sealed record WorkDeliveryRequest(Guid WorkItemId, string Source, string MessageId, string Payload, Guid? AgentRunId = null);
 public sealed record DeliveryAcceptance(Guid ReceiptId, Guid WorkItemId, Guid WorkItemVersion,
     long? OutboxId, bool Duplicate);
 public sealed record WorkDeliverySignal(Guid OperationId) : IRequest, IOutboxMessage;
 public sealed record WorkDeliveryExecution(Guid OperationId, WorkspaceScope Scope, Guid ProjectId,
-    Guid WorkItemId, Guid RequestedWorkItemVersion, WorkDeliveryKind Kind);
+    Guid WorkItemId, Guid RequestedWorkItemVersion, WorkDeliveryKind Kind, Guid? AgentRunId = null);
 
 public interface IDurableWorkStore
 {

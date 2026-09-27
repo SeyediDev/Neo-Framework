@@ -11,6 +11,7 @@ public sealed class OrchestrationApiExceptions : IExceptionHandler
     {
         var (status, code, title) = error switch
         {
+            SimulationDisabledException => (503, "simulation-disabled", "Simulation is not enabled on this installation."),
             OrchestrationUnavailableException => (503, "storage-unconfigured", "Configure the independent orchestration database."),
             KeyNotFoundException => (404, "not-found", "The resource was not found in this workspace."),
             ArgumentException => (400, "invalid-input", "The request contains an invalid value."),

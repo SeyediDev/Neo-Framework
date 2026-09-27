@@ -155,13 +155,14 @@ internal sealed class ApiFixture : IAsyncDisposable
     private const string Audience = "neo-orchestration-tests";
     private readonly SymmetricSecurityKey key = new(RandomNumberGenerator.GetBytes(64));
     public WebApplicationFactory<ApiHost> Factory { get; }
-    public ApiFixture(IWorkspaceWorkStore? store = null, TimeProvider? clock = null, string? sql = null)
+    public ApiFixture(IWorkspaceWorkStore? store = null, TimeProvider? clock = null, string? sql = null, bool simulation = false)
     {
         Factory = new WebApplicationFactory<ApiHost>().WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("Testing");
             builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?> {
                 ["NEO_ORCHESTRATION_SQL"] = "", ["ConnectionStrings:Orchestration"] = sql ?? "",
+                ["Orchestration:SimulationEnabled"] = simulation.ToString(),
                 ["Orchestration:DatabaseName"] = "NeoAgentOrchestration_Verification", ["OpenApi:Enabled"] = "true" }));
             builder.ConfigureServices(services =>
             {

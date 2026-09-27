@@ -34,7 +34,12 @@ internal sealed class WorkFixture : IDisposable
         collection.AddLogging();
         collection.AddSingleton<IWorkspaceWorkStore>(Store);
         collection.AddSingleton<TimeProvider>(Clock);
-        collection.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<WorkItemHandlers>());
+        collection.AddMediatR(c =>
+        {
+            c.RegisterServicesFromAssemblyContaining<WorkItemHandlers>();
+            // This deliberately non-transactional memory fixture does not host durable runs.
+            c.TypeEvaluator = type => type != typeof(Neo.AgentOrchestration.Application.Runs.RunHandlers);
+        });
         services = collection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
     }
 

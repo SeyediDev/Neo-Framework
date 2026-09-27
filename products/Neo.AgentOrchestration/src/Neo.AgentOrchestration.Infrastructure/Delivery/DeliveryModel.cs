@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
+using Neo.AgentOrchestration.Domain.Runs;
 using Neo.Domain.Entities.Common;
 
 namespace Neo.AgentOrchestration.Infrastructure.Delivery;
@@ -24,6 +25,8 @@ internal static class DeliveryModel
         delivery.Property(x => x.PayloadHash).HasMaxLength(64).IsUnicode(false);
         delivery.HasIndex(x => new { x.WorkspaceId, x.Source, x.MessageId }).IsUnique();
         delivery.HasAlternateKey(x => new { x.Id, x.WorkItemId, x.ProjectId });
+        delivery.HasOne<AgentRun>().WithMany().HasForeignKey(x => new { x.AgentRunId, x.WorkItemId, x.ProjectId })
+            .HasPrincipalKey(x => new { x.Id, x.WorkItemId, x.ProjectId }).OnDelete(DeleteBehavior.Restrict);
         delivery.HasOne(x => x.Outbox).WithOne().HasForeignKey<DeliveryRecord>(x => x.OutboxId).OnDelete(DeleteBehavior.Restrict);
         delivery.HasOne<Project>().WithMany().HasForeignKey(x => new { x.ProjectId, x.WorkspaceId, x.OrganizationId })
             .HasPrincipalKey(x => new { x.Id, x.WorkspaceId, x.OrganizationId }).OnDelete(DeleteBehavior.Restrict);

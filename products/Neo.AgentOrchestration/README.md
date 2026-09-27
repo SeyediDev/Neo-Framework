@@ -2,7 +2,7 @@
 
 Independent product under Neo-Framework, with a scoped SQL-backed API and a
 separate Razor Web foundation. Task/configuration APIs are implemented;
-the full management Web and running agent orchestration are not yet complete.
+the full management Web and external agent integration are not yet complete.
 
 The domain now includes Organization, Workspace and Project factories, normalized
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
@@ -36,19 +36,21 @@ planner checks enabled roles, commit/test/artifact evidence and independent
 reviewer approval, and selects the next agent profile. Tests/artifacts must name
 the current commit when one exists; the latest result per test wins. Approvals
 bind both item and workflow versions, and an owner cannot approve their own work.
-These are configuration and preview capabilities, not durable dispatch. The
-executor must revalidate in a transaction and enforce membership, dependencies,
-children and role availability before persisting handoff/outbox. Workflow HTTP
-configuration/preview/independent approval is implemented; the UI, durable runs
-and harness execution remain pending. Preview does not perform a handoff.
+The opt-in simulation executor revalidates these gates in its SQL transaction,
+including dependencies, children, versions and next-role availability. Workflow
+configuration/preview/independent approval and durable fake runs are implemented;
+the UI and external harness remain pending. Preview does not perform a handoff.
 
 Durable delivery now stages product changes and Neo Outbox messages atomically.
 Workspace-scoped Inbox receipts reject conflicting keys and acknowledge duplicate
 callbacks without repeating their database effects; a follow-up can be queued in
 that same transaction. The executor reuses Neo's EF delivery engine for fenced
 leases, recovery and bounded retries; terminal failures remain inspectable.
-See [delivery semantics and limits](docs/DELIVERY.md). No background dispatcher,
-HTTP callback endpoint or real harness is enabled merely by installing this schema.
+See [delivery semantics and limits](docs/DELIVERY.md). A separate opt-in worker now
+connects Neo Hangfire to the simulation executor. See [run setup and limits](docs/RUNS.md)
+for the create/dispatch/internal-callback/handoff/done scenario and return of
+stopped assignments. No dispatcher starts from API startup or schema migration;
+no public external callback or real agent is implemented in this stage.
 
 ## Run the hosts
 
@@ -76,7 +78,15 @@ The Web currently exposes only public service status; its login/task pages are
 a later milestone. HTTP tests do not establish a real external issuer login.
 OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 
-## Migration agreement
+## Optional work-provider direction
+
+Native Neo work management will remain independently usable. GitHub, GitLab and
+Azure DevOps are planned optional adapters, not replacements; Neo and an external
+provider may be enabled simultaneously. Work tracking, repository/PR management
+and agent execution are separate choices. See [coexistence and field authority](docs/WORK-PROVIDERS.md).
+External integrations follow core product readiness and are not implemented yet.
+
+## Legacy migration agreement
 
 The current Hyper API, database, UI, skills and settings remain operational.
 No redirect, dual-write, schema deletion or replacement is activated by this

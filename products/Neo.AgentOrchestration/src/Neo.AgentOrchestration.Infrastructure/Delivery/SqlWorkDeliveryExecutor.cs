@@ -46,7 +46,7 @@ public sealed class SqlWorkDeliveryExecutor(IDbContextFactory<OrchestrationDbCon
                 if (item?.ProjectId != operation.ProjectId ||
                     await session.GetProjectAsync(operation.ProjectId, token) is not { IsEnabled: true })
                     throw new DeliveryProcessingException();
-                await handler(new(operation.Id, scope, operation.ProjectId, operation.WorkItemId, operation.WorkItemVersion, operation.Kind), session, token);
+                await handler(new(operation.Id, scope, operation.ProjectId, operation.WorkItemId, operation.WorkItemVersion, operation.Kind, operation.AgentRunId), session, token);
                 token.ThrowIfCancellationRequested();
             }
             catch (OperationCanceledException) { throw new OperationCanceledException("Delivery execution cancelled.", token); }

@@ -13,6 +13,7 @@ public sealed class DeliveryRecord : BaseEntity<Guid>
     public Guid ProjectId { get; set; }
     public Guid WorkItemId { get; set; }
     public Guid WorkItemVersion { get; set; }
+    public Guid? AgentRunId { get; set; }
     public string Source { get; set; } = "";
     public string MessageId { get; set; } = "";
     public string PayloadHash { get; set; } = "";

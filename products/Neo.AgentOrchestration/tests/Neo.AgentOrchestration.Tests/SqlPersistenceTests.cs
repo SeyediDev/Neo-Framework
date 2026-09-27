@@ -169,12 +169,15 @@ public sealed class SqlPersistenceTests
         public required RoleProfile Role { get; init; }
         public required ManualClock Clock { get; init; }
         public WorkActor Actor { get; } = new("sql-agent", "sql-chat");
-        public static async Task<Fixture> Create()
+        public static async Task<Fixture> Create(string database = "NeoAgentOrchestration_Verification")
         {
             var connection = Environment.GetEnvironmentVariable("NEO_ORCHESTRATION_TEST_SQL");
             Assert.SkipUnless(!string.IsNullOrWhiteSpace(connection), "Set an isolated SQL verification connection to run live persistence tests.");
             OrchestrationProvisioner.ValidateDestination(connection!, "NeoAgentOrchestration_Verification");
-            await OrchestrationProvisioner.MigrateAsync(connection!, "NeoAgentOrchestration_Verification", Ct);
+            if (database is not ("NeoAgentOrchestration_Verification" or "NeoAgentOrchestration_WorkerVerification"))
+                throw new ArgumentException("Unexpected test catalog.");
+            connection = new SqlConnectionStringBuilder(connection!) { InitialCatalog = database }.ConnectionString;
+            await OrchestrationProvisioner.MigrateAsync(connection!, database, Ct);
             var factory = new Factory(connection!);
             await using var db = factory.CreateDbContext();
             var org = Organization.Create(Guid.NewGuid().ToString("N"), "SQL verification");

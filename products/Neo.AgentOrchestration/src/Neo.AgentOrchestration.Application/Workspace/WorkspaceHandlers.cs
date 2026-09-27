@@ -105,6 +105,12 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
         {
             var flow = await Workflow(s, r.WorkflowId, token); var item = await Item(s, r.Value.WorkItemId, token);
             Version(flow.Version, r.Value.ExpectedWorkflowVersion); Version(item.Version, r.Value.ExpectedWorkItemVersion);
+            // A managed run has a synthetic owner. Its initiating user must not
+            // gain an independent-review loophole through that identity change.
+            if (s is Neo.AgentOrchestration.Application.Runs.IRunSession runs &&
+                (await runs.GetRunsAsync(item.Id, token)).Any(x => x.Actor.AgentId == item.OwnerAgentId &&
+                    x.RequestedByAgentId == r.Reviewer.AgentId))
+                throw new WorkItemConflictException("The execution requestor cannot independently approve its own run.");
             var approval = WorkflowApproval.Record(r.Scope, flow, r.Value.TransitionId, item, r.Reviewer,
                 r.Value.Approved, r.Value.Reason, clock.GetUtcNow());
             s.Add(approval); return Approval(approval);

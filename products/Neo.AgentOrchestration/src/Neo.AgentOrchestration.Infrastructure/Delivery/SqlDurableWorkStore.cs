@@ -29,10 +29,29 @@ public sealed class SqlDurableWorkStore(IDbContextFactory<OrchestrationDbContext
         ArgumentNullException.ThrowIfNull(scope);
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(mutation);
-        var (source, messageId, hash) = Validate(request, inbox, kind);
         await using var db = await factory.CreateDbContextAsync(ct);
         await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
         await WorkspaceTransaction.LockAsync(db, scope, ct);
+        var staged = await StageAsync(db, scope, request, mutation, inbox, kind, clock, ct);
+        try
+        {
+            await db.SaveChangesAsync(ct);
+            await tx.CommitAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException) { throw new DeliveryConflictException("Work changed before delivery could be committed."); }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 2601 or 2627 })
+        { throw new DeliveryConflictException("A delivery key or business assignment already exists."); }
+        return staged.Acceptance();
+    }
+
+    // Used by the product execution session inside Neo's execution transaction.
+    // The caller already holds the workspace lock and owns save/commit/fencing.
+    internal static async Task<StagedDelivery> StageAsync(OrchestrationDbContext db, WorkspaceScope scope,
+        WorkDeliveryRequest request, Func<IWorkItemSession, CancellationToken, Task> mutation,
+        bool inbox, WorkDeliveryKind? kind, TimeProvider clock, CancellationToken ct)
+    {
+        if (db.Database.CurrentTransaction is null) throw new InvalidOperationException("A delivery transaction is required.");
+        var (source, messageId, hash) = Validate(request, inbox, kind);
         if (inbox)
         {
             var existing = await db.InboxReceipts.Include(x => x.FollowUp).SingleOrDefaultAsync(x =>
@@ -41,7 +60,7 @@ public sealed class SqlDurableWorkStore(IDbContextFactory<OrchestrationDbContext
             if (existing is not null)
             {
                 Match(existing.WorkItemId, existing.PayloadHash, request.WorkItemId, hash);
-                return new(existing.Id, existing.WorkItemId, existing.WorkItemVersion, existing.FollowUp?.OutboxId, true);
+                return new(existing, existing.FollowUp, true);
             }
         }
         else
@@ -51,7 +70,7 @@ public sealed class SqlDurableWorkStore(IDbContextFactory<OrchestrationDbContext
             if (existing is not null)
             {
                 Match(existing.WorkItemId, existing.PayloadHash, request.WorkItemId, hash);
-                return new(existing.Id, existing.WorkItemId, existing.WorkItemVersion, existing.OutboxId, true);
+                return new(null, existing, true);
             }
         }
         var session = new SqlWorkspaceWorkStore.Session(db, scope);
@@ -61,7 +80,7 @@ public sealed class SqlDurableWorkStore(IDbContextFactory<OrchestrationDbContext
         await mutation(session, ct);
         ct.ThrowIfCancellationRequested();
         var now = clock.GetUtcNow();
-        DeliveryRecord? delivery = kind.HasValue ? Stage(db, item, source, messageId, hash, kind.Value, now) : null;
+        DeliveryRecord? delivery = kind.HasValue ? Stage(db, item, source, messageId, hash, kind.Value, now, request.AgentRunId) : null;
         InboxReceipt? receipt = null;
         if (inbox)
         {
@@ -70,25 +89,20 @@ public sealed class SqlDurableWorkStore(IDbContextFactory<OrchestrationDbContext
                 Source = source, MessageId = messageId, PayloadHash = hash, AppliedAtUtc = now, FollowUp = delivery };
             db.InboxReceipts.Add(receipt);
         }
-        try
-        {
-            // Inbox/effect/follow-up and outgoing business changes commit together.
-            // Do not use IOutboxStore.AddAsync: it saves independently of staging.
-            await db.SaveChangesAsync(ct);
-            await tx.CommitAsync(ct);
-        }
-        catch (DbUpdateConcurrencyException) { throw new DeliveryConflictException("Work changed before delivery could be committed."); }
-        catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 2601 or 2627 })
-        { throw new DeliveryConflictException("A delivery key or business assignment already exists."); }
-        return new(receipt?.Id ?? delivery!.Id, item.Id, item.Version, delivery?.OutboxId, false);
+        return new(receipt, delivery, false);
+    }
+    internal sealed record StagedDelivery(InboxReceipt? Receipt, DeliveryRecord? Delivery, bool Duplicate)
+    {
+        public DeliveryAcceptance Acceptance() => new(Receipt?.Id ?? Delivery!.Id,
+            Receipt?.WorkItemId ?? Delivery!.WorkItemId, Receipt?.WorkItemVersion ?? Delivery!.WorkItemVersion, Delivery?.OutboxId, Duplicate);
     }
 
     private static DeliveryRecord Stage(OrchestrationDbContext db, WorkItem item, string source, string messageId,
-        string hash, WorkDeliveryKind kind, DateTimeOffset now)
+        string hash, WorkDeliveryKind kind, DateTimeOffset now, Guid? runId)
     {
         var id = Guid.NewGuid();
         var delivery = new DeliveryRecord { Id = id, OrganizationId = item.OrganizationId, WorkspaceId = item.WorkspaceId,
-            ProjectId = item.ProjectId, WorkItemId = item.Id, WorkItemVersion = item.Version, Source = source,
+            ProjectId = item.ProjectId, WorkItemId = item.Id, WorkItemVersion = item.Version, Source = source, AgentRunId = runId,
             MessageId = messageId, PayloadHash = hash, Kind = kind, CreatedAtUtc = now,
             Outbox = new OutboxMessage { MessageName = nameof(WorkDeliverySignal), MessageType = typeof(WorkDeliverySignal).FullName!,
                 MessageContent = JsonSerializer.Serialize(new WorkDeliverySignal(id)), TenantKey = item.WorkspaceId.ToString("N"),
@@ -110,7 +124,11 @@ public sealed class SqlDurableWorkStore(IDbContextFactory<OrchestrationDbContext
             throw new ArgumentException("Invalid delivery namespace or message identifier.");
         if (Encoding.UTF8.GetByteCount(request.Payload) > 262144) throw new ArgumentException("Delivery fingerprint input is too large.");
         if (kind.HasValue && !Enum.IsDefined(kind.Value)) throw new ArgumentOutOfRangeException(nameof(kind));
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(new { Inbox = inbox, request.WorkItemId, Kind = kind, request.Payload });
+        if (request.AgentRunId == Guid.Empty) throw new ArgumentException("Run identifier cannot be empty.");
+        // Preserve the original fingerprint for existing messages without a run.
+        var bytes = request.AgentRunId.HasValue
+            ? JsonSerializer.SerializeToUtf8Bytes(new { Inbox = inbox, request.WorkItemId, Kind = kind, request.Payload, request.AgentRunId })
+            : JsonSerializer.SerializeToUtf8Bytes(new { Inbox = inbox, request.WorkItemId, Kind = kind, request.Payload });
         return (source, messageId, Convert.ToHexString(SHA256.HashData(bytes)));
     }
 

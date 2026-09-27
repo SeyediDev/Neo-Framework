@@ -20,7 +20,7 @@ public sealed class WorkspaceContractProcessor : IOperationProcessor
         var operation = context.OperationDescription.Operation;
         operation.ExtensionData ??= new Dictionary<string, object?>();
         operation.ExtensionData["x-workspace-permissions"] = policies;
-        if (policies.Any(x => x is "write" or "approve"))
+        if (policies.Any(x => x is "write" or "approve" or "execute"))
             operation.Parameters.Add(new OpenApiParameter { Name = "X-Orchestration-Chat", Kind = OpenApiParameterKind.Header,
                 IsRequired = true, Description = "Chat correlation/ownership context; not an authentication credential.",
                 Schema = new JsonSchema { Type = JsonObjectType.String, MinLength = 1, MaxLength = 200 } });

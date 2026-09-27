@@ -22,10 +22,12 @@ workspace and permission, using lower-case D-format GUIDs:
 {organization-guid}/{workspace-guid}/write
 {organization-guid}/{workspace-guid}/configure
 {organization-guid}/{workspace-guid}/approve
+{organization-guid}/{workspace-guid}/execute
 ```
 
 Every scoped endpoint needs `read`. Task mutations additionally need `write`,
-configuration changes `configure`, and approval/rejection `approve`. There is
+configuration changes `configure`, approval/rejection `approve`, and run
+start/evaluate/return-assignment `execute`. There is
 no wildcard/admin bypass or independent claim-list cross-product. Membership
 is issued by the trusted identity provider, not self-selected in request JSON.
 Revocation takes effect according to that provider's token lifetime; database
@@ -34,7 +36,7 @@ Organization/workspace enablement and all resource scopes are checked again in
 the SQL transaction. Missing/foreign objects return 404 within an allowed route;
 an unauthorized workspace route returns 403 before storage access.
 
-Task mutations and approvals require one `X-Orchestration-Chat` header, 1-200
+Task mutations, approvals and run commands require one `X-Orchestration-Chat` header, 1-200
 characters. This is correlation/ownership context, not an authentication secret.
 The actor's agent identifier always comes from `sub`; clients cannot set it in
 JSON. Clients sharing one subject share its authority, so autonomous agents
@@ -83,6 +85,10 @@ All routes below are relative to:
 | POST `workflows/{id}/preview` | WorkItemId, TransitionId, optional PreferredAgentProfileId |
 | POST `workflows/{id}/approvals` | Both expected versions, WorkItemId, TransitionId, Approved, Reason |
 | GET `workflows/{id}/approvals?workItemId=...` | Persisted approval history for the scoped item/workflow |
+| GET `items/{id}/runs`; GET `runs/{id}` | Scoped run details and linked delivery outcomes |
+| POST `items/{id}/runs` | Opt-in simulation start with stable RequestId and item/workflow versions; 202 with Location |
+| POST `runs/{id}/evaluate` | Explicit versioned gate reevaluation with stable RequestId; 202 |
+| POST `runs/{id}/return-assignment` | ExpectedWorkItemVersion; initiating subject recovers its stopped assignment; 200 |
 
 Configuration writes return the committed workspace catalog (200). Their
 readback is a subsequent transaction and can include intervening authorized
@@ -129,7 +135,9 @@ and re-read using fresh contexts in the isolated verification catalog.
 These are not a live external identity-provider login, browser verification,
 public deployment or execution by a real agent/harness.
 
-Preview and approval are not dispatch. No run/callback HTTP facade is invented
-before NAO-009 defines durable runs and the worker scenario. Full independent
+Preview and approval are not dispatch. [Simulation runs](RUNS.md) require explicit
+host opt-in and read/execute grants. Reserved `neo-run:` subjects cannot use
+workspace endpoints; the run initiator cannot independently approve its own work.
+No public external callback endpoint or real harness is included. Full independent
 Web, bootstrap installer, legacy import, external adapter and user acceptance
 remain pending. Existing Companion MCP/skills contracts are unchanged.

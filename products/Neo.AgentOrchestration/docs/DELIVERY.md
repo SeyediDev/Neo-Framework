@@ -57,12 +57,13 @@ its ProcessError, so provider responses/tokens are not persisted there. Inspecti
 should use operation IDs, state and counters, not raw external payloads.
 
 The installation worker is trusted and processes installation-wide messages;
-its methods are **not** user-facing unscoped endpoints. NAO-009 must connect a
-dispatcher/scheduler and a product-specific execution job to
+its methods are **not** user-facing unscoped endpoints. The opt-in simulation
+[worker](RUNS.md) connects Neo's dispatcher to `RunOutboxJob` and
 `SqlWorkDeliveryExecutor`, using its supplied session. Do not route this contract
 to a generic MediatR handler that creates a second DbContext/transaction.
 No worker, recurring schedule, HTTP callback or harness adapter starts from
-`AddOrchestrationSql` or database migration. Those host integrations remain pending.
+`AddOrchestrationSql`, API startup or database migration. The separately enabled
+worker registers its schedule; external HTTP callbacks/harness remain pending.
 
 ## Delivery guarantees and verification
 

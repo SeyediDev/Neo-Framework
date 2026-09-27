@@ -10,11 +10,12 @@ public static class WorkspaceSecurity
     public const string Write = "workspace.write";
     public const string Configure = "workspace.configure";
     public const string Approve = "workspace.approve";
+    public const string Execute = "workspace.execute";
 
     public static void AddPolicies(AuthorizationOptions options)
     {
         options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-        foreach (var permission in new[] { "read", "write", "configure", "approve" })
+        foreach (var permission in new[] { "read", "write", "configure", "approve", "execute" })
             options.AddPolicy("workspace." + permission, policy => policy.RequireAuthenticatedUser().RequireAssertion(context =>
             {
                 var http = context.Resource as HttpContext ?? (context.Resource as AuthorizationFilterContext)?.HttpContext;
@@ -31,6 +32,7 @@ public static class WorkspaceSecurity
     {
         var subjects = user.FindAll("sub").Select(x => x.Value).ToArray();
         return subjects.Length == 1 && subjects[0].Length is > 0 and <= 200 &&
-            subjects[0] == subjects[0].Trim() && !subjects[0].Any(char.IsControl) ? subjects[0] : null;
+            subjects[0] == subjects[0].Trim() && !subjects[0].Any(char.IsControl) &&
+            !subjects[0].StartsWith("neo-run:", StringComparison.OrdinalIgnoreCase) ? subjects[0] : null;
     }
 }

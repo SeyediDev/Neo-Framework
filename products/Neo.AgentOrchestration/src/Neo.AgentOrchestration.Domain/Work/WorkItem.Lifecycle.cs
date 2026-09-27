@@ -5,6 +5,16 @@ namespace Neo.AgentOrchestration.Domain.Work;
 
 public sealed partial class WorkItem
 {
+    public void ReturnStoppedAssignment(WorkspaceScope scope, WorkActor currentOwner, WorkActor recipient, DateTimeOffset now)
+    {
+        RequireEditable(scope, currentOwner, now); RequireOwner(currentOwner);
+        ArgumentNullException.ThrowIfNull(recipient);
+        if (Status is not (WorkItemStatus.Review or WorkItemStatus.Blocked or WorkItemStatus.Done) || IsTracking)
+            throw new InvalidOperationException("Only a stopped assignment can be returned.");
+        OwnerAgentId = recipient.AgentId; OwnerChatId = recipient.ChatId;
+        Record(recipient, "AssignmentReturned", "Stopped managed execution returned to its requestor.", now);
+    }
+
     public void Claim(WorkspaceScope scope, RoleProfile role, WorkActor actor, string? branch, DateTimeOffset now)
     {
         RequireEditable(scope, actor, now);

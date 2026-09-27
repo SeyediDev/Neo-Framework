@@ -5,6 +5,7 @@ using Neo.AgentOrchestration.Domain.Agents;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
 using Neo.AgentOrchestration.Domain.Workflows;
+using Neo.AgentOrchestration.Domain.Runs;
 using Neo.AgentOrchestration.Infrastructure.Delivery;
 using Neo.Domain.Entities.Common;
 using Neo.Infrastructure.Data.Repository.Ef;
@@ -23,6 +24,7 @@ public sealed class OrchestrationDbContext(DbContextOptions<OrchestrationDbConte
     public DbSet<WorkItem> WorkItems => Set<WorkItem>();
     public DbSet<WorkflowDefinition> Workflows => Set<WorkflowDefinition>();
     public DbSet<WorkflowApproval> Approvals => Set<WorkflowApproval>();
+    public DbSet<AgentRun> AgentRuns => Set<AgentRun>();
     public DbSet<DeliveryRecord> Deliveries => Set<DeliveryRecord>();
     public DbSet<InboxReceipt> InboxReceipts => Set<InboxReceipt>();
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
@@ -31,6 +33,7 @@ public sealed class OrchestrationDbContext(DbContextOptions<OrchestrationDbConte
     {
         base.OnModelCreating(builder);
         OrchestrationModel.Configure(builder);
+        AgentRunModel.Configure(builder);
         DeliveryModel.Configure(builder);
     }
 }
