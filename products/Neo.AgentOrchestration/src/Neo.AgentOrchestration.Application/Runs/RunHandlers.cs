@@ -19,16 +19,17 @@ public sealed record GetAgentRun(WorkspaceScope Scope, Guid RunId) : IRequest<Ag
 public sealed record ReturnRunAssignment(WorkspaceScope Scope, Guid RunId, WorkActor Requestor, ReturnRunAssignmentRequest Body) : IRequest<AgentRunDetails>;
 public sealed record GetAgentRuns(WorkspaceScope Scope, Guid WorkItemId) : IRequest<IReadOnlyList<AgentRunDetails>>;
 
-public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore durable, TimeProvider clock) :
+public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore durable, TimeProvider clock, IRunProviders? providers = null) :
     IRequestHandler<StartAgentRun, AgentRunDetails>, IRequestHandler<EvaluateAgentRun, AgentRunDetails>,
     IRequestHandler<GetAgentRun, AgentRunDetails>, IRequestHandler<GetAgentRuns, IReadOnlyList<AgentRunDetails>>,
     IRequestHandler<ReturnRunAssignment, AgentRunDetails>
 {
+    private readonly IRunProviders providers = providers ?? new SimulationRunProviders();
     public async Task<AgentRunDetails> Handle(StartAgentRun r, CancellationToken ct)
     {
         if (r.Body.RequestId == Guid.Empty) throw new ArgumentException("Request ID is required.");
         var outcome = Outcome(r.Body.SimulationOutcome);
-        await durable.EnqueueAsync(r.Scope, Request(r.WorkItemId, r.Body.RequestId, "run.start", r.Requestor, r.Body, r.Body.RequestId),
+        await durable.EnqueueAsync(r.Scope, Request(r.WorkItemId, r.Body.RequestId, "run.start", r.Requestor, StartPayload(r.Body), r.Body.RequestId),
             WorkDeliveryKind.DispatchAgent, async (session, token) =>
             {
                 var s = Session(session);
@@ -40,11 +41,14 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
                     throw new WorkItemConflictException("Role or task already has an active execution.");
                 item.RequireCompletedDependencies(await s.GetProjectItemsAsync(item.ProjectId, token));
                 var profile = AgentSelector.Select(r.Scope, role, await s.GetAgentsAsync(token), r.Body.AgentProfileId);
-                RequireSimulation(profile.Provider);
+                providers.RequireAvailable(profile.Provider, r.Scope);
+                if (profile.Provider != "fake" && !r.Body.AllowExternalExecution)
+                    throw new ArgumentException("External execution requires explicit consent.");
                 var now = clock.GetUtcNow();
-                var run = AgentRun.Create(r.Scope, r.Body.RequestId, item, workflow, role, profile, r.Requestor, r.Body.Branch, outcome, now);
+                var run = AgentRun.Create(r.Scope, r.Body.RequestId, item, workflow, role, profile, r.Requestor, r.Body.Branch, outcome, now,
+                    allowExternalExecution: r.Body.AllowExternalExecution);
                 item.Claim(r.Scope, role, run.Actor, run.Branch, now);
-                item.AddLog(r.Scope, run.Actor, $"Simulation requested by {r.Requestor.AgentId}, chat {r.Requestor.ChatId}. No external agent is executed.", now);
+                item.AddLog(r.Scope, run.Actor, $"Execution requested by {r.Requestor.AgentId}, chat {r.Requestor.ChatId}; provider {profile.Provider}.", now);
                 run.BindClaim(item); s.Add(run);
             }, ct);
         return await Handle(new GetAgentRun(r.Scope, r.Body.RequestId), ct);
@@ -54,6 +58,7 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
     {
         if (r.Body.RequestId == Guid.Empty) throw new ArgumentException("Request ID is required.");
         var snapshot = await Handle(new GetAgentRun(r.Scope, r.RunId), ct);
+        providers.RequireAvailable(snapshot.Run.Provider, r.Scope);
         await durable.EnqueueAsync(r.Scope, Request(snapshot.Run.WorkItemId, r.Body.RequestId, "run.eval", r.Requestor, r.Body, r.RunId),
             WorkDeliveryKind.EvaluateWorkflow, async (session, token) =>
             {
@@ -100,13 +105,20 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
     internal static void Version(Guid current, Guid expected)
     { if (expected == Guid.Empty || expected != current) throw new WorkItemConflictException("Resource changed; reload before retrying."); }
     internal static void RequireSimulation(string provider)
-    { if (provider != "fake") throw new InvalidOperationException("Only the explicitly enabled fake harness is implemented in this stage."); }
+    { if (provider != "fake") throw new InvalidOperationException("Only a fake run may receive an internal simulation result."); }
     private static SimulationOutcome Outcome(string value) => Enum.GetNames<SimulationOutcome>()
         .Any(x => string.Equals(x, value, StringComparison.OrdinalIgnoreCase)) && Enum.TryParse<SimulationOutcome>(value, true, out var parsed)
         ? parsed : throw new ArgumentException("Unknown simulation outcome.");
     private static WorkDeliveryRequest Request(Guid item, Guid requestId, string operation, WorkActor actor, object body, Guid run)
         => new(item, operation + "." + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(actor.AgentId))).ToLowerInvariant(),
             requestId.ToString("N"), JsonSerializer.Serialize(new { actor.AgentId, actor.ChatId, Body = body }), run);
+    private static object StartPayload(StartAgentRunRequest body)
+    {
+        // Preserve the old simulation idempotency fingerprint across upgrade.
+        if (body.AllowExternalExecution) return body;
+        return new { body.RequestId, body.ExpectedWorkItemVersion, body.WorkflowId, body.ExpectedWorkflowVersion,
+            body.RoleId, body.AgentProfileId, body.Branch, body.SimulationOutcome };
+    }
     private static AgentRunView View(AgentRun x) => new(x.Id, x.WorkItemId, x.RoleId, x.AgentProfileId, x.WorkflowId,
         x.InitialWorkflowVersion, x.WorkflowVersion, x.WorkItemVersion, x.PreviousRunId, x.NextRunId, x.Hop, x.Provider,
         x.Model, x.Instructions, x.SkillPath, x.Branch, x.RequestedByAgentId, x.RequestedByChatId, x.Status.ToString(), x.Decision.ToString(),

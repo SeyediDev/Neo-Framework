@@ -1,7 +1,8 @@
 namespace Neo.AgentOrchestration.Contracts;
 
 public sealed record StartAgentRunRequest(Guid RequestId, Guid ExpectedWorkItemVersion, Guid WorkflowId,
-    Guid ExpectedWorkflowVersion, Guid RoleId, Guid? AgentProfileId = null, string? Branch = null, string SimulationOutcome = "Succeeded");
+    Guid ExpectedWorkflowVersion, Guid RoleId, Guid? AgentProfileId = null, string? Branch = null, string SimulationOutcome = "Succeeded",
+    bool AllowExternalExecution = false);
 public sealed record EvaluateAgentRunRequest(Guid RequestId, Guid ExpectedWorkItemVersion, Guid ExpectedWorkflowVersion);
 public sealed record ReturnRunAssignmentRequest(Guid ExpectedWorkItemVersion);
 public sealed record AgentRunView(Guid Id, Guid WorkItemId, Guid RoleId, Guid AgentProfileId, Guid WorkflowId,

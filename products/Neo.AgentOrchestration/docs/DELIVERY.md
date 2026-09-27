@@ -16,7 +16,7 @@ none of those writes. These callbacks may not do HTTP, publish to a broker,
 open another work-store transaction or commit independently.
 
 The receipt key is `(WorkspaceId, Source, MessageId)`. Source is a normalized
-producer/operation namespace that the future HTTP adapter must derive from its
+producer/operation namespace that the HTTP adapter derives from its
 authenticated producer and operation, not accept as authority from a body field.
 Opaque message IDs are case-sensitive after trimming. A SHA-256 fingerprint
 includes the target, operation/follow-up kind, inbound/outbound mode and payload.
@@ -61,9 +61,17 @@ its methods are **not** user-facing unscoped endpoints. The opt-in simulation
 [worker](RUNS.md) connects Neo's dispatcher to `RunOutboxJob` and
 `SqlWorkDeliveryExecutor`, using its supplied session. Do not route this contract
 to a generic MediatR handler that creates a second DbContext/transaction.
-No worker, recurring schedule, HTTP callback or harness adapter starts from
-`AddOrchestrationSql`, API startup or database migration. The separately enabled
-worker registers its schedule; external HTTP callbacks/harness remain pending.
+No worker or recurring schedule starts from `AddOrchestrationSql`, API startup
+or database migration. The separately enabled worker registers its schedule.
+The API hosts the authenticated HTTP result route when explicitly configured;
+it does not execute outgoing dispatch. See [HARNESS.md](HARNESS.md).
+
+HTTP send runs after Neo's conditional execution lease is acquired and before
+the final SQL transaction. Only a short read transaction loads the immutable
+snapshot. This permits a callback to commit before the gateway returns 202.
+The final handler revalidates state and commits Processed without overwriting
+an already-arrived result. Errors use Neo's existing fenced retry path. A
+permanent response commits a reconciliation hold, not a fabricated run result.
 
 ## Delivery guarantees and verification
 

@@ -155,11 +155,13 @@ internal sealed class ApiFixture : IAsyncDisposable
     private const string Audience = "neo-orchestration-tests";
     private readonly SymmetricSecurityKey key = new(RandomNumberGenerator.GetBytes(64));
     public WebApplicationFactory<ApiHost> Factory { get; }
-    public ApiFixture(IWorkspaceWorkStore? store = null, TimeProvider? clock = null, string? sql = null, bool simulation = false)
+    public ApiFixture(IWorkspaceWorkStore? store = null, TimeProvider? clock = null, string? sql = null, bool simulation = false,
+        IDictionary<string,string?>? settings = null, Action<IServiceCollection>? configure = null)
     {
         Factory = new WebApplicationFactory<ApiHost>().WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("Testing");
+            if (settings is not null) builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(settings));
             builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?> {
                 ["NEO_ORCHESTRATION_SQL"] = "", ["ConnectionStrings:Orchestration"] = sql ?? "",
                 ["Orchestration:SimulationEnabled"] = simulation.ToString(),
@@ -168,6 +170,7 @@ internal sealed class ApiFixture : IAsyncDisposable
             {
                 if (store is not null) services.AddSingleton(store);
                 if (clock is not null) services.AddSingleton(clock);
+                configure?.Invoke(services);
                 // Real JwtBearer validation with an ephemeral test-only key.
                 // No test authentication handler or token bypass exists in the host.
                 services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>

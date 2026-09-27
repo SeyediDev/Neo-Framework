@@ -8,6 +8,12 @@ The additive delivery migration reuses Neo Outbox and adds scoped delivery/inbox
 records; see [DELIVERY.md](DELIVERY.md) for atomicity, retries and worker boundaries.
 There is no automatic import, dispatch, redirect, dual write or legacy cleanup.
 
+`HttpHarnessDispatch` adds only `AllowExternalExecution` (default false),
+`HarnessBinding` and `HarnessPayload` to `nao.AgentRuns`. Existing simulation
+requests retain their idempotency fingerprints. The immutable payload contains
+historical task context, not transport secrets, and is absent from public run
+views. Protect database/backup access; automatic context retention is later work.
+
 ## Explicit provisioning
 
 Configure `NEO_ORCHESTRATION_SQL` privately in the process environment or through

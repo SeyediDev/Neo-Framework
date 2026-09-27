@@ -22,6 +22,7 @@ public sealed class ItemModel(OrchestrationClient client) : WorkPageModel(client
     [BindProperty] public Guid RequestId { get; set; } = Guid.NewGuid();
     [BindProperty] public Guid? AgentProfileId { get; set; }
     [BindProperty] public string SimulationOutcome { get; set; } = "Succeeded";
+    [BindProperty] public bool AllowExternalExecution { get; set; }
     public WorkItemDetails? Details { get; private set; }
     public IReadOnlyList<AgentRunDetails> Runs { get; private set; } = [];
     public IReadOnlyList<WorkflowApprovalView> Approvals { get; private set; } = [];
@@ -54,7 +55,7 @@ public sealed class ItemModel(OrchestrationClient client) : WorkPageModel(client
     public async Task<IActionResult> OnPostRunAsync(CancellationToken ct)
     {
         AgentRunDetails? run=null;
-        if(await Attempt(async()=>run=await Send<AgentRunDetails>($"items/{Id}/runs",new StartAgentRunRequest(RequestId,Version,WorkflowId,WorkflowVersion,RoleId,AgentProfileId,Branch,SimulationOutcome),ct)))
+        if(await Attempt(async()=>run=await Send<AgentRunDetails>($"items/{Id}/runs",new StartAgentRunRequest(RequestId,Version,WorkflowId,WorkflowVersion,RoleId,AgentProfileId,Branch,SimulationOutcome,AllowExternalExecution),ct)))
             return RedirectToPage("/Run",new{OrganizationId,WorkspaceId,id=run!.Run.Id});
         await Attempt(()=>Load(ct));return Page();
     }

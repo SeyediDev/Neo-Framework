@@ -2,6 +2,7 @@ using System.Data.Common;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Neo.AgentOrchestration.Application.Workspace;
+using Neo.AgentOrchestration.Application.Runs;
 
 namespace Neo.AgentOrchestration.Api;
 
@@ -11,7 +12,7 @@ public sealed class OrchestrationApiExceptions : IExceptionHandler
     {
         var (status, code, title) = error switch
         {
-            SimulationDisabledException => (503, "simulation-disabled", "Simulation is not enabled on this installation."),
+            RunProviderUnavailableException provider => (503, provider.Code, "Execution provider is not configured or enabled for this workspace."),
             OrchestrationUnavailableException => (503, "storage-unconfigured", "Configure the independent orchestration database."),
             KeyNotFoundException => (404, "not-found", "The resource was not found in this workspace."),
             ArgumentException => (400, "invalid-input", "The request contains an invalid value."),

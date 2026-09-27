@@ -2,7 +2,8 @@
 
 Independent product under Neo-Framework, with a scoped SQL-backed API and a
 separate Razor management Web. Task/configuration APIs and the independent P0
-management Web are implemented; external agent integration remains subsequent work.
+management Web and opt-in HTTP execution gateway adapter are implemented.
+A compatible external gateway and its account/setup remain operator-supplied.
 
 The domain now includes Organization, Workspace and Project factories, normalized
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
@@ -39,7 +40,7 @@ bind both item and workflow versions, and an owner cannot approve their own work
 The opt-in simulation executor revalidates these gates in its SQL transaction,
 including dependencies, children, versions and next-role availability. Workflow
 configuration/preview/independent approval and durable fake runs are implemented;
-the Web exposes these operations; the external harness remains pending. Preview
+the Web exposes these operations; the HTTP adapter uses the same gates. Preview
 does not perform a handoff.
 
 Durable delivery now stages product changes and Neo Outbox messages atomically.
@@ -51,7 +52,8 @@ See [delivery semantics and limits](docs/DELIVERY.md). A separate opt-in worker 
 connects Neo Hangfire to the simulation executor. See [run setup and limits](docs/RUNS.md)
 for the create/dispatch/internal-callback/handoff/done scenario and return of
 stopped assignments. No dispatcher starts from API startup or schema migration;
-no public external callback or real agent is implemented in this stage.
+the opt-in [HTTP Harness](docs/HARNESS.md) adds connection-scoped authenticated
+callbacks and immutable dispatch snapshots. No real model execution is claimed.
 
 ## Run the hosts
 
@@ -76,7 +78,7 @@ Production requires Authentication:Authority and Authentication:Audience;
 the API has an authenticated fallback policy and explicit workspace grant
 policies. See [API configuration](docs/API.md) for claims, SQL and OpenAPI access.
 The Web exposes service status, OIDC login, board, tasks/history/time, configuration
-and simulation run monitoring. See [Web setup and limits](docs/WEB.md) for issuer
+and simulation/HTTP run monitoring. See [Web setup and limits](docs/WEB.md) for issuer
 configuration, workspace selection and single-instance server-side sessions.
 HTTP tests do not establish a real external issuer login.
 OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
@@ -101,5 +103,5 @@ existing WorkManagement database, project NEO, domain agent-orchestration,
 parent NAO-MIGRATION. The [planning backlog](../../docs/AGENT_ORCHESTRATION_BACKLOG.md)
 describes scope; it is not a second live board.
 
-MCP tools, an installer, data transfer and external harness adapters are planned,
-not included in this milestone. Existing Companion skills/MCP contracts are unchanged.
+MCP tools, an installer and data transfer remain subsequent milestones.
+Existing generic Companion skills/MCP contracts are unchanged.

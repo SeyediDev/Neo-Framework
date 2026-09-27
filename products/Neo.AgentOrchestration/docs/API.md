@@ -86,7 +86,8 @@ All routes below are relative to:
 | POST `workflows/{id}/approvals` | Both expected versions, WorkItemId, TransitionId, Approved, Reason |
 | GET `workflows/{id}/approvals?workItemId=...` | Persisted approval history for the scoped item/workflow |
 | GET `items/{id}/runs`; GET `runs/{id}` | Scoped run details and linked delivery outcomes |
-| POST `items/{id}/runs` | Opt-in simulation start with stable RequestId and item/workflow versions; 202 with Location |
+| POST `items/{id}/runs` | Opt-in fake or configured HTTP start with stable RequestId and versions; HTTP requires AllowExternalExecution; 202 |
+| POST `harness/{connection}/runs/{id}/result` | Separate connection-scoped HarnessKey authentication; idempotent result/evidence receipt (200) |
 | POST `runs/{id}/evaluate` | Explicit versioned gate reevaluation with stable RequestId; 202 |
 | POST `runs/{id}/return-assignment` | ExpectedWorkItemVersion; initiating subject recovers its stopped assignment; 200 |
 
@@ -135,10 +136,14 @@ and re-read using fresh contexts in the isolated verification catalog.
 These are not a live external identity-provider login, browser verification,
 public deployment or execution by a real agent/harness.
 
-Preview and approval are not dispatch. [Simulation runs](RUNS.md) require explicit
-host opt-in and read/execute grants. Reserved `neo-run:` subjects cannot use
+Preview and approval are not dispatch. [Simulation runs](RUNS.md) and
+[HTTP execution](HARNESS.md) require their respective explicit host opt-in and
+read/execute grants. Unavailable providers return sanitized 503; HTTP dispatch
+also requires explicit external-execution consent. Reserved `neo-run:` subjects cannot use
 workspace endpoints; the run initiator cannot independently approve its own work.
-No public external callback endpoint or real harness is included. The independent
+The authenticated callback uses `X-Neo-Harness-Key`, not workspace grants/chat;
+its key grants no access to CRUD. OpenAPI describes that separate API-key scheme.
+A compatible real gateway is operator-supplied, not an embedded model client. The independent
 [management Web](WEB.md) now consumes these HTTP contracts with per-user OIDC
-access tokens. Bootstrap installer, legacy import, external adapter and user
+access tokens. Bootstrap installer, legacy import, live gateway setup and user
 acceptance remain pending. Existing Companion MCP/skills contracts are unchanged.

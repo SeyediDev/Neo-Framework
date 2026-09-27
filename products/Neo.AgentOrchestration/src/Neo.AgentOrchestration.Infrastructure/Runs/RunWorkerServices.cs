@@ -21,8 +21,8 @@ namespace Neo.AgentOrchestration.Infrastructure.Runs;
 
 public static class RunWorkerServices
 {
-    // Opt-in after host configuration validation. No HTTP callback/provider is
-    // registered; only deterministic simulation runs can be executed here.
+    // Opt-in after host configuration validation. The existing registration
+    // name is retained for compatibility; external transport is separate opt-in.
     public static IServiceCollection AddSimulationRunWorker(this IServiceCollection services)
     {
         services.AddNeoEfOutbox<OrchestrationDbContext>();
@@ -48,11 +48,28 @@ public static class RunWorkerServices
     }
 }
 
-public sealed class RunOutboxJob(SqlWorkDeliveryExecutor executor, RunExecutionHandler handler)
+public sealed class RunOutboxJob(SqlWorkDeliveryExecutor executor, RunExecutionHandler handler,
+    HttpHarnessTransport? transport = null, TimeProvider? clock = null)
 {
     [AutomaticRetry(Attempts = 0), Queue("outbox")]
     public async Task Execute(long outboxId, CancellationToken ct)
-        => _ = await executor.ExecuteAsync(outboxId, handler.ExecuteAsync, ct);
+    {
+        string? hold = null;
+        _ = await executor.ExecuteAsync(outboxId, async (operation, session, token) =>
+        {
+            await handler.ExecuteAsync(operation, session, token);
+            if (hold is not null)
+            {
+                var run = await ((IRunSession)session).GetRunAsync(operation.AgentRunId!.Value, token) ?? throw new InvalidOperationException();
+                if (run.Status == Neo.AgentOrchestration.Domain.Runs.AgentRunStatus.AwaitingResult)
+                    run.Wait(hold, (clock ?? TimeProvider.System).GetUtcNow());
+            }
+        }, ct, async (operation, token) =>
+        {
+            if (transport is null) throw new InvalidOperationException("HTTP harness transport is disabled.");
+            hold = await transport.SendAsync(operation, token);
+        });
+    }
 }
 
 public sealed class RunOutboxScheduler(IBackgroundJobClient client) : IOutboxJobScheduler

@@ -6,9 +6,9 @@ using Neo.Infrastructure.Features.Queue.Hangfire;
 
 // A generic host: no HTTP listener, public callback, dashboard or implicit seed.
 var builder = Host.CreateApplicationBuilder(args);
-if (!builder.Configuration.GetValue<bool>("Orchestration:SimulationEnabled"))
+if (!builder.Configuration.GetValue<bool>("Orchestration:SimulationEnabled") && !builder.Configuration.GetValue<bool>("Harness:Enabled"))
 {
-    Console.WriteLine("Simulation worker disabled. Set Orchestration:SimulationEnabled explicitly to run it.");
+    Console.WriteLine("Run worker disabled. Enable simulation or the HTTP harness explicitly to run it.");
     return;
 }
 var product = builder.Configuration["NEO_ORCHESTRATION_SQL"] ?? builder.Configuration.GetConnectionString("Orchestration")
@@ -28,6 +28,7 @@ if (!queues.Contains("outbox", StringComparer.Ordinal)) throw new InvalidOperati
 builder.Services.AddOrchestrationSql(product);
 builder.Services.AddNeoHangfire(builder.Configuration);
 builder.Services.AddSimulationRunWorker();
+builder.Services.AddHttpHarness();
 using var host = builder.Build();
 await using (var scope = host.Services.CreateAsyncScope())
 {

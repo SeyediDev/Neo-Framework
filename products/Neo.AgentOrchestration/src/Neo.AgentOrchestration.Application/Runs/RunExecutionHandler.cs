@@ -4,32 +4,45 @@ using Neo.AgentOrchestration.Application.Work;
 using Neo.AgentOrchestration.Application.Workflows;
 using Neo.AgentOrchestration.Domain.Runs;
 using Neo.AgentOrchestration.Domain.Work;
+using Neo.AgentOrchestration.Contracts;
 
 namespace Neo.AgentOrchestration.Application.Runs;
 
 // This handler is invoked by SqlWorkDeliveryExecutor with its SAME session.
 // It never opens another store transaction or invokes an external provider.
-public sealed class RunExecutionHandler(ISimulationHarness harness, TimeProvider clock)
+public sealed class RunExecutionHandler(ISimulationHarness harness, TimeProvider clock, IRunProviders? providers = null)
 {
+    private readonly IRunProviders providers = providers ?? new SimulationRunProviders();
     public async Task ExecuteAsync(WorkDeliveryExecution operation, IWorkItemSession session, CancellationToken ct)
     {
         var s = RunHandlers.Session(session);
         var run = await RunHandlers.Run(s, operation.AgentRunId ?? throw new InvalidOperationException("Run delivery required."), ct);
         var item = await RunHandlers.Item(s, operation.WorkItemId, ct);
         if (run.WorkItemId != item.Id || run.ProjectId != operation.ProjectId) throw new InvalidOperationException("Run scope mismatch.");
-        RunHandlers.RequireSimulation(run.Provider);
         switch (operation.Kind)
         {
             case WorkDeliveryKind.DispatchAgent:
                 if (run.Status != AgentRunStatus.Queued) return;
+                providers.RequireAvailable(run.Provider, operation.Scope);
                 RunHandlers.Version(item.Version, operation.RequestedWorkItemVersion);
                 var flow = await RunHandlers.Workflow(s, run.WorkflowId, ct);
                 var profile = (await s.GetAgentsAsync(ct)).SingleOrDefault(x => x.Id == run.AgentProfileId);
                 var role = await s.GetRoleAsync(run.RoleId, ct);
                 if (profile is not { IsEnabled: true } || role is not { IsEnabled: true } || !flow.IsEnabled || flow.Version != run.WorkflowVersion)
                 {
-                    run.DeclineDispatch(item, "Simulation not dispatched: profile, role or pinned workflow is unavailable.", clock.GetUtcNow());
+                    run.DeclineDispatch(item, "Execution not dispatched: profile, role or pinned workflow is unavailable.", clock.GetUtcNow());
                     return;
+                }
+                if (run.Provider != "fake")
+                {
+                    var binding = providers.Bind(run.Provider, operation.Scope, run.Id);
+                    var context = WorkItemProjection.Details(item, await s.GetProjectItemsAsync(item.ProjectId, ct), clock.GetUtcNow());
+                    run.PrepareHarness(binding.Fingerprint, JsonSerializer.Serialize(new HarnessRequest("neo-harness/v1", run.Id,
+                        run.OrganizationId, run.WorkspaceId, run.RoleId, run.AgentProfileId, run.Model, run.Instructions,
+                        run.SkillPath, run.Branch, binding.CallbackUrl, context), new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+                    run.MarkDispatched(item, clock.GetUtcNow());
+                    await s.StageMessageAsync(Message(run, "http-dispatch", new { run.Id }), WorkDeliveryKind.SendHarnessRequest, clock, ct);
+                    break;
                 }
                 run.MarkDispatched(item, clock.GetUtcNow());
                 // The queued callback is a separate durable execution. A crash
@@ -38,6 +51,8 @@ public sealed class RunExecutionHandler(ISimulationHarness harness, TimeProvider
                     WorkDeliveryKind.ReceiveSimulationResult, clock, ct);
                 break;
             case WorkDeliveryKind.ReceiveSimulationResult:
+                providers.RequireAvailable("fake", operation.Scope);
+                RunHandlers.RequireSimulation(run.Provider);
                 var result = harness.Result(run);
                 await s.StageInboxAsync(Message(run, "fake-callback", result), (_, token) =>
                 {
@@ -49,6 +64,11 @@ public sealed class RunExecutionHandler(ISimulationHarness harness, TimeProvider
                 break;
             case WorkDeliveryKind.EvaluateWorkflow:
                 await Evaluate(operation, s, run, item, ct); break;
+            case WorkDeliveryKind.SendHarnessRequest:
+                if (run.Provider == "fake" || run.HarnessPayload is null) throw new InvalidOperationException("External snapshot required.");
+                // HTTP happened before entering this database transaction. A
+                // callback may already have completed/handed off this run.
+                break;
             default: throw new ArgumentException("Unsupported run delivery kind.");
         }
     }
@@ -78,15 +98,17 @@ public sealed class RunExecutionHandler(ISimulationHarness harness, TimeProvider
         {
             if (projectItems.Any(x => x.ParentWorkItemId == item.Id && x.Status is not (WorkItemStatus.Done or WorkItemStatus.Cancelled)))
             { run.Wait("children-incomplete", now); return; }
-            item.ChangeStatus(operation.Scope, run.Actor, WorkItemStatus.Done, now, "Workflow completed after simulation.");
+            item.ChangeStatus(operation.Scope, run.Actor, WorkItemStatus.Done, now, "Workflow completed after execution.");
             run.Advance(null, now); return;
         }
         if (run.Hop >= 20) { run.Wait("handoff-limit-reached", now); return; }
         var nextRole = roles.Single(x => x.Id == plan.TargetRoleId);
         if (await s.IsRoleBusyAsync(nextRole.Id, item.Id, ct)) { run.Wait("target-role-busy", now); return; }
         var nextProfile = profiles.Single(x => x.Id == plan.AgentProfileId);
-        if (nextProfile.Provider != "fake") { run.Wait("target-provider-not-implemented", now); return; }
-        item.ChangeStatus(operation.Scope, run.Actor, WorkItemStatus.Ready, now, "Workflow handoff after simulation.");
+        try { providers.RequireAvailable(nextProfile.Provider, operation.Scope); }
+        catch (RunProviderUnavailableException) { run.Wait("target-provider-unavailable", now); return; }
+        if (nextProfile.Provider != "fake" && !run.AllowExternalExecution) { run.Wait("external-execution-not-authorized", now); return; }
+        item.ChangeStatus(operation.Scope, run.Actor, WorkItemStatus.Ready, now, "Workflow handoff after execution.");
         var next = AgentRun.Create(operation.Scope, Guid.NewGuid(), item, workflow, nextRole, nextProfile,
             new(run.RequestedByAgentId, run.RequestedByChatId), run.Branch, SimulationOutcome.Succeeded, now, run);
         item.Claim(operation.Scope, nextRole, next.Actor, next.Branch, now);

@@ -6,7 +6,7 @@ using Neo.AgentOrchestration.Contracts;
 
 namespace Neo.AgentOrchestration.Api;
 
-public sealed class AgentRunsController(ISender sender, IConfiguration configuration) : WorkspaceControllerBase(sender)
+public sealed class AgentRunsController(ISender sender) : WorkspaceControllerBase(sender)
 {
     [HttpGet("items/{id:guid}/runs")]
     public Task<IReadOnlyList<AgentRunDetails>> List(Guid id, CancellationToken ct)
@@ -20,7 +20,6 @@ public sealed class AgentRunsController(ISender sender, IConfiguration configura
     [ProducesResponseType<AgentRunDetails>(202)]
     public async Task<ActionResult<AgentRunDetails>> Start(Guid id, StartAgentRunRequest body, CancellationToken ct)
     {
-        RequireSimulation();
         var result = await Sender.Send(new StartAgentRun(Scope, id, Actor(), body), ct);
         return AcceptedAtAction(nameof(Details), new { organizationId = Scope.OrganizationId, workspaceId = Scope.WorkspaceId, id = result.Run.Id }, result);
     }
@@ -29,14 +28,8 @@ public sealed class AgentRunsController(ISender sender, IConfiguration configura
     [ProducesResponseType<AgentRunDetails>(202)]
     public async Task<ActionResult<AgentRunDetails>> Evaluate(Guid id, EvaluateAgentRunRequest body, CancellationToken ct)
     {
-        RequireSimulation();
         var result = await Sender.Send(new EvaluateAgentRun(Scope, id, Actor(), body), ct);
         return AcceptedAtAction(nameof(Details), new { organizationId = Scope.OrganizationId, workspaceId = Scope.WorkspaceId, id }, result);
-    }
-
-    private void RequireSimulation()
-    {
-        if (!configuration.GetValue<bool>("Orchestration:SimulationEnabled")) throw new SimulationDisabledException();
     }
 
     [HttpPost("runs/{id:guid}/return-assignment"), Authorize(Policy = WorkspaceSecurity.Execute)]
@@ -47,5 +40,3 @@ public sealed class AgentRunsController(ISender sender, IConfiguration configura
         return Sender.Send(new ReturnRunAssignment(Scope, id, Actor(), body), ct);
     }
 }
-
-public sealed class SimulationDisabledException() : InvalidOperationException("Simulation is disabled.");

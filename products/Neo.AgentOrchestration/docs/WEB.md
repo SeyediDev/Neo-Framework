@@ -59,7 +59,7 @@ Routes use `/work/{organizationId}/{workspaceId}`:
 | `/new` | Task or same-project child creation, description, priority, estimate |
 | `/items/{id}` | Claim, status, timer, estimate, archive/restore, dependencies, append-only notes, commit/test/artifact evidence, children, full history |
 | `/manage` | Project creation/rename/disable; roles and agent profiles; workflows, transitions, evidence/approval gates |
-| `/items/{id}` execution section | Gate preview, independent approval/rejection, explicitly requested simulation run |
+| `/items/{id}` execution section | Gate preview, independent approval/rejection, fake/HTTP run with explicit unchecked external-execution consent |
 | `/runs/{id}` | Run and profile snapshot, delivery state/attempts/errors, chain links, versioned reevaluation and return of stopped assignment |
 
 Writes are anti-forgery-protected POST forms; the server forwards a per-user
@@ -81,8 +81,11 @@ polling. Subtasks appear as board rows and as direct children in item details.
 Archived Blocked/Done items can be restored. No hard deletion is exposed.
 
 Simulation requires explicit API/worker opt-in from [RUNS.md](RUNS.md); a queued
-request does not mean an agent executed. Only the fake provider currently runs.
-External harness execution is a subsequent milestone.
+request does not mean an agent executed. Configured `http.<connection-key>`
+providers require the separate [Harness setup](HARNESS.md) and explicit consent
+to forward task/history/evidence and execute the external workflow chain. The
+simulation outcome control affects only fake runs. Endpoints/secret references
+are server-owned configuration, not credentials to enter in agent instructions.
 
 ## Session limits
 

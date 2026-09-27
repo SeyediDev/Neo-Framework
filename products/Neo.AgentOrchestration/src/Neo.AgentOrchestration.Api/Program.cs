@@ -6,6 +6,8 @@ using Neo.AgentOrchestration.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using Neo.Endpoint;
+using Neo.AgentOrchestration.Infrastructure.Runs;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -26,6 +28,8 @@ builder.Services.AddMediatR(c =>
 // Resolve the final composed configuration, including host-added providers.
 // An early branch can permanently select the wrong store before Build applies them.
 builder.Services.AddOrchestrationSql(provider => OrchestrationApiStorage.Connection(provider.GetRequiredService<IConfiguration>()));
+builder.Services.AddHttpHarness();
+builder.Services.AddAuthentication().AddScheme<AuthenticationSchemeOptions, HarnessAuthentication>(HarnessAuthentication.Name, _ => { });
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
 {
     o.Authority = builder.Configuration["Authentication:Authority"];

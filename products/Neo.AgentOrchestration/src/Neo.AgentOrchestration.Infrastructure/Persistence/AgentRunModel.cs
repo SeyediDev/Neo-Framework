@@ -28,6 +28,8 @@ internal static class AgentRunModel
         run.Property(x => x.Instructions).HasMaxLength(32000); run.Property(x => x.SkillPath).HasMaxLength(512);
         run.Property(x => x.Branch).HasMaxLength(250); run.Property(x => x.DecisionReason).HasMaxLength(500);
         run.Property(x => x.ResultSummary).HasMaxLength(8000);
+        run.Property(x => x.HarnessBinding).HasMaxLength(64).IsUnicode(false);
+        run.Property(x => x.HarnessPayload).HasColumnType("nvarchar(max)");
         run.HasOne<Project>().WithMany().HasForeignKey(x => new { x.ProjectId, x.WorkspaceId, x.OrganizationId })
             .HasPrincipalKey(x => new { x.Id, x.WorkspaceId, x.OrganizationId }).OnDelete(DeleteBehavior.Restrict);
         run.HasOne<WorkItem>().WithMany().HasForeignKey(x => new { x.WorkItemId, x.ProjectId })

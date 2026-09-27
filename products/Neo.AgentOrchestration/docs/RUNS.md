@@ -2,7 +2,8 @@
 
 NAO-009 adds the persisted FakeHarness scenario. It is **not an external agent**:
 no shell, repository change, model request, fabricated commit, test result or
-artifact is produced. External authenticated callbacks/HTTP harness are NAO-011.
+artifact is produced. The separately opt-in HTTP provider and authenticated
+callbacks are documented in [HARNESS.md](HARNESS.md); this page covers fake runs.
 Optional GitHub/GitLab/Azure work providers are separate future adapters; see
 [WORK-PROVIDERS.md](WORK-PROVIDERS.md). Native work management remains active.
 
@@ -79,8 +80,9 @@ The response is **202 Accepted**, with a resolvable run Location, not completed
 work. `requestId` is the stable run ID/idempotency key. Exact retries from the
 same authenticated actor/chat return the existing run even after it advances;
 changing the target/body under that key conflicts. Stale versions, a busy role,
-incomplete dependencies, disabled/ambiguous profiles or a non-fake provider are
-rejected before an execution claim is committed.
+incomplete dependencies, disabled/ambiguous profiles or an unavailable provider
+are rejected before an execution claim is committed. An enabled HTTP provider
+additionally requires explicit external-execution consent.
 
 GET `items/{id}/runs` or `runs/{id}` to observe:
 
@@ -138,7 +140,7 @@ Failed delivery is retained for inspection and is not automatically reset or
 converted into a successful/negative agent result. A queued/awaiting run with
 exhausted delivery may need operator reconciliation; this stage has no unsafe
 force-release/reset endpoint. A timeout or missing callback is not proof of a
-failed external operation. Real external adapters remain unimplemented.
+failed external operation. The HTTP adapter preserves these uncertainty rules.
 
 ## Verification
 
@@ -156,4 +158,5 @@ scans, not delivery execution, and stops only its own host. It does not run
 against the shared kernel-test catalog or delete databases. Lease-crash recovery
 is covered by timestamp-based SQL tests, not a claim of a killed-process drill.
 No test constitutes real external agent execution, browser acceptance or migration
-acceptance. Full standalone Web and external harness remain separate milestones.
+acceptance. The independent Web and HTTP adapter have separate verification
+guides; neither test fixture establishes a live issuer or model execution.

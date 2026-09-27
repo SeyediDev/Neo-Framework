@@ -18,7 +18,8 @@ public sealed class DeliveryProcessingException() : InvalidOperationException("D
 public sealed class SqlWorkDeliveryExecutor(IDbContextFactory<OrchestrationDbContext> factory)
 {
     public async Task<DeliveryExecutionOutcome> ExecuteAsync(long outboxId,
-        Func<WorkDeliveryExecution, IWorkItemSession, CancellationToken, Task> handler, CancellationToken ct)
+        Func<WorkDeliveryExecution, IWorkItemSession, CancellationToken, Task> handler, CancellationToken ct,
+        Func<WorkDeliveryExecution, CancellationToken, Task>? external = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
         await using var db = await factory.CreateDbContextAsync(ct);
@@ -27,18 +28,33 @@ public sealed class SqlWorkDeliveryExecutor(IDbContextFactory<OrchestrationDbCon
         if (operation.Outbox.OutboxState == OutboxState.Processed) return DeliveryExecutionOutcome.AlreadyProcessed;
         var delivery = new EfOutboxStore<OrchestrationDbContext>(db);
         var leaseId = Guid.NewGuid();
-        if (await delivery.ClaimExecutionAsync(outboxId, leaseId, TimeSpan.FromMinutes(5), ct) is null)
+        var claimed = await delivery.ClaimExecutionAsync(outboxId, leaseId, TimeSpan.FromMinutes(5), ct);
+        if (claimed is null)
             return DeliveryExecutionOutcome.NotReady;
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
         timeout.CancelAfter(TimeSpan.FromMinutes(4));
+        var execution = new WorkDeliveryExecution(operation.Id, new(operation.OrganizationId, operation.WorkspaceId),
+            operation.ProjectId, operation.WorkItemId, operation.WorkItemVersion, operation.Kind, operation.AgentRunId);
+        var externalFailed = false;
+        if (operation.Kind == WorkDeliveryKind.SendHarnessRequest)
+        {
+            try
+            {
+                ValidateEnvelope(claimed, operation);
+                if (external is null) throw new DeliveryProcessingException();
+                await external(execution, timeout.Token);
+            }
+            catch (Exception ex) when (ex is not OutOfMemoryException) { externalFailed = true; }
+        }
+        // Record a sanitized failure through Neo's normal fenced retry path,
+        // even when the network request was cancelled. No alternate retry ledger.
+        using var failureRecording = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         await delivery.ExecuteClaimedAsync(outboxId, leaseId, async (row, token) =>
         {
             try
             {
-                if (row.MessageType != typeof(WorkDeliverySignal).FullName ||
-                    row.TenantKey != operation.WorkspaceId.ToString("N") || row.IdempotencyKey != operation.Id.ToString("N") ||
-                    JsonSerializer.Deserialize<WorkDeliverySignal>(row.MessageContent)?.OperationId != operation.Id)
-                    throw new DeliveryProcessingException();
+                if (externalFailed) throw new DeliveryProcessingException();
+                ValidateEnvelope(row, operation);
                 var scope = new WorkspaceScope(operation.OrganizationId, operation.WorkspaceId);
                 await WorkspaceTransaction.LockAsync(db, scope, token);
                 var session = new SqlWorkspaceWorkStore.Session(db, scope);
@@ -56,7 +72,14 @@ public sealed class SqlWorkDeliveryExecutor(IDbContextFactory<OrchestrationDbCon
                 // callback bodies or credentials through that field.
                 throw new DeliveryProcessingException();
             }
-        }, timeout.Token);
+        }, externalFailed ? failureRecording.Token : timeout.Token);
         return DeliveryExecutionOutcome.Processed;
+    }
+    private static void ValidateEnvelope(OutboxMessage row, DeliveryRecord operation)
+    {
+        if (row.MessageType != typeof(WorkDeliverySignal).FullName ||
+            row.TenantKey != operation.WorkspaceId.ToString("N") || row.IdempotencyKey != operation.Id.ToString("N") ||
+            JsonSerializer.Deserialize<WorkDeliverySignal>(row.MessageContent)?.OperationId != operation.Id)
+            throw new DeliveryProcessingException();
     }
 }
