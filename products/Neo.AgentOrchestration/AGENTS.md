@@ -11,6 +11,13 @@ concurrent workers use separate branches/worktrees. Preserve unrelated edits.
 Record time, commit and test evidence in the task database. The planning
 Markdown documents are not a second operational board.
 
+The reusable product skill is
+[neo-agent-orchestration](.agents/skills/neo-agent-orchestration/SKILL.md).
+Read it when using an authorized Neo workspace for task/run coordination.
+Its presence does not replace the migration board: this repository still uses
+WorkManagement until approved cutover. Do not copy live backlog records into
+the new product merely because its MCP is available.
+
 Legacy Hyper must continue operating until migration acceptance. Removing or
 redirecting the old implementation, database or settings requires the user's
 explicit approval after verification. Starting a host, installing or migrating

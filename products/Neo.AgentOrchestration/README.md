@@ -108,3 +108,9 @@ calling API v1 with the user's issuer token. It cannot access SQL or execute
 repository/model work itself. It does not change any global client settings.
 An installer and data transfer remain subsequent milestones.
 Existing generic Companion skills/MCP contracts are unchanged.
+
+The portable [neo-agent-orchestration skill](.agents/skills/neo-agent-orchestration/SKILL.md)
+documents intake, ownership, time, evidence and gated runs using these tools.
+It includes its own tool reference and can travel with the product; no global
+skill/client installation or current-board cutover is performed here. See
+[skill use and verification](docs/SKILL.md).

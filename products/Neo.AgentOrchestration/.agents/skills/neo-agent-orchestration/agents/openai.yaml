@@ -1,0 +1,4 @@
+interface:
+  display_name: "Neo Agent Orchestration"
+  short_description: "Coordinate Neo tasks and gated agent handoffs"
+  default_prompt: "Use $neo-agent-orchestration to resume my authorized task, verify ownership and record progress in the designated Neo workspace."
