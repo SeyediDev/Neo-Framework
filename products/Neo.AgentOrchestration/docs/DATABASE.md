@@ -29,8 +29,9 @@ The migration command creates the destination if absent and permitted, and
 applies versioned EF migrations. Repeating it preserves data. It refuses
 legacy/system catalogs, a mismatched catalog and unrelated tables. Startup of
 the API/Web never runs this command. Exit 0 confirms current schema; exit 2 is
-invalid/missing configuration; exit 1 is migration failure. The initial command
-does not seed users/projects, register credentials or replace the fuller installer.
+invalid/missing configuration; exit 1 is migration failure. The separate explicit
+[CLI seed command](CLI.md) bootstraps organization/workspace/project/roles after
+migration. It does not create users/grants, register credentials or start agents.
 
 ## Transaction contract
 

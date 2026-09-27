@@ -9,8 +9,9 @@ The domain now includes Organization, Workspace and Project factories, normalize
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
 operation from a different organization/workspace. These are domain invariants;
 membership authorization is enforced by issuer-signed workspace permission
-grants at the API. The SQL model enforces scope constraints. Data import and
-organization/workspace installer bootstrap remain subsequent milestones.
+grants at the API. The SQL model enforces scope constraints. Organization/workspace
+bootstrap is explicit through the [CLI](docs/CLI.md);
+data import remains a subsequent milestone.
 
 RoleProfile and AgentProfile are separate workspace-scoped domain models.
 Profiles support validated updates and enable/disable; agent selection rejects
@@ -106,7 +107,8 @@ describes scope; it is not a second live board.
 The [operational MCP](docs/MCP.md) exposes scoped work/run tools over stdio,
 calling API v1 with the user's issuer token. It cannot access SQL or execute
 repository/model work itself. It does not change any global client settings.
-An installer and data transfer remain subsequent milestones.
+The [CLI](docs/CLI.md) supports offline init, explicit migrate/seed and read-only
+schema health. Clean-machine packaging and data transfer remain subsequent milestones.
 Existing generic Companion skills/MCP contracts are unchanged.
 
 The portable [neo-agent-orchestration skill](.agents/skills/neo-agent-orchestration/SKILL.md)

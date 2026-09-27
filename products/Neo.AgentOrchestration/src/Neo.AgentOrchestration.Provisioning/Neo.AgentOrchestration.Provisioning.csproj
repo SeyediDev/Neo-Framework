@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>neo-agent</AssemblyName>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Neo.AgentOrchestration.Infrastructure/Neo.AgentOrchestration.Infrastructure.csproj" />
   </ItemGroup>
