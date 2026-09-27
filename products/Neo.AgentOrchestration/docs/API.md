@@ -1,0 +1,135 @@
+# Scoped API v1
+
+The independent API composes Neo.Endpoint (MVC, versioning and NSwag), MediatR
+application commands and the product SQL transaction store. It does not use
+Neo.Bpms, Hyper controllers, shared admin authentication or legacy tables.
+No startup path migrates, seeds, imports or dispatches work.
+
+## Configuration and access
+
+Set `Authentication__Authority` to your trusted HTTPS OIDC authority and
+`Authentication__Audience` to the API audience. Production refuses missing
+values. JWT signatures, issuer, audience and expiration are validated by
+JwtBearer with inbound claim mapping disabled. No built-in signing secret,
+development token bypass or token-issuing endpoint is supplied.
+
+The issuer must supply one non-empty `sub` (at most 200 characters) and explicit
+`nao_grant` claims. A grant is a single string binding the organization,
+workspace and permission, using lower-case D-format GUIDs:
+
+```text
+{organization-guid}/{workspace-guid}/read
+{organization-guid}/{workspace-guid}/write
+{organization-guid}/{workspace-guid}/configure
+{organization-guid}/{workspace-guid}/approve
+```
+
+Every scoped endpoint needs `read`. Task mutations additionally need `write`,
+configuration changes `configure`, and approval/rejection `approve`. There is
+no wildcard/admin bypass or independent claim-list cross-product. Membership
+is issued by the trusted identity provider, not self-selected in request JSON.
+Revocation takes effect according to that provider's token lifetime; database
+membership administration and the extended policy matrix remain later work.
+Organization/workspace enablement and all resource scopes are checked again in
+the SQL transaction. Missing/foreign objects return 404 within an allowed route;
+an unauthorized workspace route returns 403 before storage access.
+
+Task mutations and approvals require one `X-Orchestration-Chat` header, 1-200
+characters. This is correlation/ownership context, not an authentication secret.
+The actor's agent identifier always comes from `sub`; clients cannot set it in
+JSON. Clients sharing one subject share its authority, so autonomous agents
+should have distinct subjects. An owner cannot approve its own handoff even
+using another chat. Unknown JSON members are rejected (400), not silently trusted.
+
+Set `NEO_ORCHESTRATION_SQL` or `ConnectionStrings__Orchestration` privately.
+`Orchestration__DatabaseName` defaults to `NeoAgentOrchestration`; its catalog
+must match and satisfy the [independent destination policy](DATABASE.md).
+The host never reads Hyper settings. With no storage configured, public status
+and liveness still work but authorized data requests return 503. There is no
+runtime in-memory fallback. A missing/down SQL service likewise cannot become
+a success response. Initial organization/workspace bootstrap and user/issuer
+configuration are not created automatically; installer/seed work is NAO-017.
+
+## Routes
+
+All routes below are relative to:
+
+```text
+/api/orchestration/v1/organizations/{organizationId}/workspaces/{workspaceId}
+```
+
+| Method / route | Result / behavior |
+| --- | --- |
+| GET `catalog` | Workspace, projects, roles, agents, workflows and transitions |
+| GET `items` | Paged board plus metrics over **all filtered** items |
+| GET `items/{id}` | Item, direct children, dependencies, full logs, evidence and time intervals |
+| POST `items` | Create a task/subtask; 201 with a resolvable Location |
+| POST `items/{id}/claim` | ExpectedVersion, RoleId, Branch; identity from token/chat |
+| POST `items/{id}/status` | ExpectedVersion, named Status, optional Note |
+| POST `items/{id}/logs` | ExpectedVersion, Message; append, not overwrite description |
+| PUT `items/{id}/estimate` | ExpectedVersion, positive Seconds or null |
+| POST `items/{id}/time/start` or `time/stop` | ExpectedVersion; owned InProgress timer |
+| POST `items/{id}/archive` or `restore` | ExpectedVersion; Blocked/Done archival rules |
+| POST `items/{id}/dependencies` | ExpectedVersion, DependsOnWorkItemId; same-project cycle checks |
+| POST `items/{id}/evidence` | ExpectedVersion, Kind, Reference, Outcome, optional Details/CommitSha |
+| POST `projects`; PUT `projects/{id}` | Create project; rename (Key is immutable) |
+| POST `projects/{id}/disable` | Disable without deleting history |
+| POST `roles`; PUT `roles/{id}` | Create or update role configuration |
+| PUT `roles/{id}/enabled` | IsEnabled |
+| POST `agents`; PUT `agents/{id}` | Create or update agent profile (configuration, not credentials) |
+| PUT `agents/{id}/enabled` | IsEnabled |
+| POST `workflows`; PUT `workflows/{id}` | Create; update name/enabled with ExpectedVersion |
+| PUT `workflows/{id}/transitions/{key}` | ExpectedVersion plus roles, named statuses and evidence/approval gates |
+| POST `workflows/{id}/preview` | WorkItemId, TransitionId, optional PreferredAgentProfileId |
+| POST `workflows/{id}/approvals` | Both expected versions, WorkItemId, TransitionId, Approved, Reason |
+| GET `workflows/{id}/approvals?workItemId=...` | Persisted approval history for the scoped item/workflow |
+
+Configuration writes return the committed workspace catalog (200). Their
+readback is a subsequent transaction and can include intervening authorized
+changes. Project/role/agent edits are serialized last-writer-wins; only work
+items and workflows currently have client-visible version preconditions.
+There are no hard-delete endpoints. Creation is not idempotent by an HTTP key:
+after an uncertain response, query by project/key before attempting creation
+again. Unique constraints reject duplicate keys with 409; automatic command
+replay is not enabled.
+
+Board filters are `projectId`, `domain`, `roleId`, `status`, `includeArchived`,
+`skip` and `take` (default 50, maximum 200). Filters combine with AND. Sorting
+is updated-time descending, then identifier. Metrics count the same filtered
+set before pagination. Subtasks are ordinary board rows with ParentWorkItemId;
+item details return direct children even if their domain differs from a board
+filter. ElapsedSeconds includes any open interval. BudgetUsedPercent measures
+time consumed against the estimate, **not percent of work completed**.
+The current P0 store reads workspace project graphs to preserve dependency
+rules; output pagination is not a claim of database-side large-board paging.
+
+Write requests require the latest GUID `ExpectedVersion` returned by the item
+or workflow. Re-read after 409; never retry with an invented replacement version.
+Enum input uses names, not numbers: statuses Backlog, Ready, InProgress, Blocked,
+Review, Done, Cancelled; priorities Low, Normal, High, Critical; evidence kinds
+Commit, Test, Artifact; outcomes NotApplicable, Passed, Failed, Skipped.
+Request bodies are limited to 256 KiB. Invalid input is 400, missing token 401,
+insufficient grant 403, missing scoped resource 404, stale/illegal/owned state
+409, unconfigured/unavailable storage 503. Problem responses do not expose raw
+exceptions/provider messages. Avoid credentials in user-entered task text too.
+
+## OpenAPI and verification
+
+Neo's generated document is `/swagger/v1/swagger.json`, available in Development
+or when `OpenApi__Enabled=true`, and requires authentication. It describes the
+request/response DTOs, JWT requirement, required chat header and per-operation
+`x-workspace-permissions`. There is no second hand-maintained JSON specification.
+Public `/api/orchestration/v1/system` and `/health/live` expose no task data.
+
+Tests use ASP.NET TestServer and real JWT signature/issuer/audience/lifetime
+validation with ephemeral keys only in test code. HTTP contract/lifecycle tests
+cover grants, filtering, child/history/time/evidence, stale versions and OpenAPI.
+SQL HTTP tests additionally persist configuration/approvals, verify scope FKs
+and re-read using fresh contexts in the isolated verification catalog.
+These are not a live external identity-provider login, browser verification,
+public deployment or execution by a real agent/harness.
+
+Preview and approval are not dispatch. No run/callback HTTP facade is invented
+before NAO-009 defines durable runs and the worker scenario. Full independent
+Web, bootstrap installer, legacy import, external adapter and user acceptance
+remain pending. Existing Companion MCP/skills contracts are unchanged.

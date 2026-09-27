@@ -9,6 +9,7 @@ using Neo.AgentOrchestration.Application.Work;
 using Neo.AgentOrchestration.Domain.Agents;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
+using Neo.AgentOrchestration.Domain.Workflows;
 using Neo.Infrastructure.Data.Repository.Ef;
 
 namespace Neo.AgentOrchestration.Infrastructure.Persistence;
@@ -49,6 +50,25 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
 
     internal sealed class Session(OrchestrationDbContext db, WorkspaceScope scope) : IWorkItemSession
     {
+        public Task<Workspace> GetWorkspaceAsync(CancellationToken ct) => db.Workspaces.SingleAsync(x =>
+            x.Id == scope.WorkspaceId && x.OrganizationId == scope.OrganizationId, ct);
+        public async Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct) => await db.Projects.Where(x =>
+            x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId).OrderBy(x => x.Key).ToArrayAsync(ct);
+        public async Task<IReadOnlyList<RoleProfile>> GetRolesAsync(CancellationToken ct) => await db.Roles.Where(x =>
+            x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId).OrderBy(x => x.Key).ToArrayAsync(ct);
+        public async Task<IReadOnlyList<AgentProfile>> GetAgentsAsync(CancellationToken ct) => await db.Agents.Where(x =>
+            x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId).OrderBy(x => x.Key).ToArrayAsync(ct);
+        public async Task<IReadOnlyList<WorkflowDefinition>> GetWorkflowsAsync(CancellationToken ct) => await db.Workflows.Where(x =>
+            x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId).Include(x => x.Transitions).OrderBy(x => x.Key).ToArrayAsync(ct);
+        public async Task<IReadOnlyList<WorkflowApproval>> GetApprovalsAsync(Guid workflowId, Guid workItemId, CancellationToken ct)
+            => await db.Approvals.Where(x => x.WorkflowDefinitionId == workflowId && x.WorkItemId == workItemId &&
+                db.Workflows.Any(w => w.Id == x.WorkflowDefinitionId && w.OrganizationId == scope.OrganizationId &&
+                    w.WorkspaceId == scope.WorkspaceId)).OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id).ToArrayAsync(ct);
+        public void Add(Project project) { project.RequireScope(scope); db.Projects.Add(project); }
+        public void Add(RoleProfile role) { role.RequireScope(scope); db.Roles.Add(role); }
+        public void Add(AgentProfile agent) { agent.RequireScope(scope); db.Agents.Add(agent); }
+        public void Add(WorkflowDefinition workflow) { workflow.RequireScope(scope); db.Workflows.Add(workflow); }
+        public void Add(WorkflowApproval approval) => db.Approvals.Add(approval); // Handler validates both scoped parents.
         private readonly WorkItemCommandRepository commands = new(db);
         private readonly WorkItemQueryRepository queries = new(db);
         private IQueryable<WorkItem> Items => queries.Query().Where(x =>
@@ -81,8 +101,11 @@ public static class PersistenceRegistration
 {
     // Opt-in: registering persistence does not create/seed/migrate a database.
     public static IServiceCollection AddOrchestrationSql(this IServiceCollection services, string connectionString)
+        => services.AddOrchestrationSql(_ => connectionString);
+
+    public static IServiceCollection AddOrchestrationSql(this IServiceCollection services, Func<IServiceProvider, string> connectionString)
     {
-        services.AddDbContextFactory<OrchestrationDbContext>(o => o.UseSqlServer(connectionString));
+        services.AddDbContextFactory<OrchestrationDbContext>((provider, options) => options.UseSqlServer(connectionString(provider)));
         services.AddScoped<IWorkspaceWorkStore, SqlWorkspaceWorkStore>();
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IDurableWorkStore, SqlDurableWorkStore>();

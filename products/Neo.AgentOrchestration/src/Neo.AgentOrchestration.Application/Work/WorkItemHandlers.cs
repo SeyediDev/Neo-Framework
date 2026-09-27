@@ -5,8 +5,8 @@ using Neo.AgentOrchestration.Domain.Work;
 
 namespace Neo.AgentOrchestration.Application.Work;
 
-// Commands are not exposed until a transactional store and membership policies
-// are configured. The store owns commit/rollback; domain objects own invariants.
+// The API authorizes workspace membership before sending commands. The store
+// owns commit/rollback; domain objects own invariants and owner/version checks.
 public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clock) :
     IRequestHandler<CreateWorkItem, WorkItemDetails>, IRequestHandler<ClaimWorkItem, WorkItemDetails>,
     IRequestHandler<UpdateWorkItem, WorkItemDetails>, IRequestHandler<GetWorkItem, WorkItemDetails>
@@ -63,6 +63,8 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
             var item = await Item(session, request.Scope, request.WorkItemId, token);
             RequireVersion(item, request.ExpectedVersion);
             var items = await ProjectItems(session, request.Scope, item.ProjectId, token);
+            if (await session.GetProjectAsync(item.ProjectId, token) is not { IsEnabled: true })
+                throw new InvalidOperationException("Project is disabled.");
             var now = clock.GetUtcNow();
             Apply(request, item, items, now);
             return WorkItemProjection.Details(item, items, now);

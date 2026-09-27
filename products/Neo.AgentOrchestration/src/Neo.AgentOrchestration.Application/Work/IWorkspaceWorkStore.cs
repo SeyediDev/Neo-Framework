@@ -1,6 +1,7 @@
 using Neo.AgentOrchestration.Domain.Agents;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
+using Neo.AgentOrchestration.Domain.Workflows;
 
 namespace Neo.AgentOrchestration.Application.Work;
 
@@ -15,6 +16,17 @@ public interface IWorkspaceWorkStore
 
 public interface IWorkItemSession
 {
+    Task<Domain.Projects.Workspace> GetWorkspaceAsync(CancellationToken ct);
+    Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct);
+    Task<IReadOnlyList<RoleProfile>> GetRolesAsync(CancellationToken ct);
+    Task<IReadOnlyList<AgentProfile>> GetAgentsAsync(CancellationToken ct);
+    Task<IReadOnlyList<WorkflowDefinition>> GetWorkflowsAsync(CancellationToken ct);
+    Task<IReadOnlyList<WorkflowApproval>> GetApprovalsAsync(Guid workflowId, Guid workItemId, CancellationToken ct);
+    void Add(Project project);
+    void Add(RoleProfile role);
+    void Add(AgentProfile agent);
+    void Add(WorkflowDefinition workflow);
+    void Add(WorkflowApproval approval);
     // All reads are scoped by the surrounding ExecuteAsync. Work items include
     // their tracked history, evidence, dependencies and time-entry collections.
     Task<Project?> GetProjectAsync(Guid id, CancellationToken ct);

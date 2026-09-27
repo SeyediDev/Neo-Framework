@@ -5,6 +5,7 @@ using Neo.AgentOrchestration.Contracts;
 using Neo.AgentOrchestration.Domain.Agents;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
+using Neo.AgentOrchestration.Domain.Workflows;
 using Xunit;
 
 namespace Neo.AgentOrchestration.Tests;
@@ -28,7 +29,7 @@ internal sealed class WorkFixture : IDisposable
     {
         Project = Project.Create(Workspace, "project", "Project");
         Role = RoleProfile.Create(Workspace, "developer", "Developer");
-        Store = new MemoryWorkStore([Project], [Role]);
+        Store = new MemoryWorkStore(Workspace, [Project], [Role]);
         var collection = new ServiceCollection();
         collection.AddLogging();
         collection.AddSingleton<IWorkspaceWorkStore>(Store);
@@ -66,8 +67,12 @@ internal sealed class ManualClock : TimeProvider
     public void Advance(int seconds) => Now = Now.AddSeconds(seconds);
 }
 
-internal sealed class MemoryWorkStore(List<Project> projects, List<RoleProfile> roles) : IWorkspaceWorkStore
+internal sealed class MemoryWorkStore(Workspace workspace, List<Project> projects, List<RoleProfile> roles) : IWorkspaceWorkStore
 {
+    public Workspace Workspace { get; } = workspace;
+    public List<AgentProfile> Agents { get; } = [];
+    public List<WorkflowDefinition> Workflows { get; } = [];
+    public List<WorkflowApproval> Approvals { get; } = [];
     public List<Project> Projects { get; } = projects;
     public List<RoleProfile> Roles { get; } = roles;
     public List<WorkItem> Items { get; } = [];
@@ -80,6 +85,23 @@ internal sealed class MemoryWorkStore(List<Project> projects, List<RoleProfile> 
 
     private sealed class Session(MemoryWorkStore store, WorkspaceScope scope) : IWorkItemSession
     {
+        public Task<Workspace> GetWorkspaceAsync(CancellationToken ct) => Task.FromResult(store.Workspace);
+        public Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<Project>>(
+            store.Projects.Where(x => Matches(x.OrganizationId, x.WorkspaceId)).ToArray());
+        public Task<IReadOnlyList<RoleProfile>> GetRolesAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<RoleProfile>>(
+            store.Roles.Where(x => Matches(x.OrganizationId, x.WorkspaceId)).ToArray());
+        public Task<IReadOnlyList<AgentProfile>> GetAgentsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<AgentProfile>>(
+            store.Agents.Where(x => Matches(x.OrganizationId, x.WorkspaceId)).ToArray());
+        public Task<IReadOnlyList<WorkflowDefinition>> GetWorkflowsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<WorkflowDefinition>>(
+            store.Workflows.Where(x => Matches(x.OrganizationId, x.WorkspaceId)).ToArray());
+        public Task<IReadOnlyList<WorkflowApproval>> GetApprovalsAsync(Guid workflowId, Guid workItemId, CancellationToken ct)
+            => Task.FromResult<IReadOnlyList<WorkflowApproval>>(store.Approvals.Where(x => x.WorkflowDefinitionId == workflowId &&
+                x.WorkItemId == workItemId && store.Workflows.Any(w => w.Id == workflowId && Matches(w.OrganizationId, w.WorkspaceId))).ToArray());
+        public void Add(Project value) { value.RequireScope(scope); store.Projects.Add(value); }
+        public void Add(RoleProfile value) { value.RequireScope(scope); store.Roles.Add(value); }
+        public void Add(AgentProfile value) { value.RequireScope(scope); store.Agents.Add(value); }
+        public void Add(WorkflowDefinition value) { value.RequireScope(scope); store.Workflows.Add(value); }
+        public void Add(WorkflowApproval value) => store.Approvals.Add(value);
         private bool Matches(Guid org, Guid workspace) => org == scope.OrganizationId && workspace == scope.WorkspaceId;
         public Task<Project?> GetProjectAsync(Guid id, CancellationToken ct) => Task.FromResult(
             store.Projects.SingleOrDefault(x => x.Id == id && Matches(x.OrganizationId, x.WorkspaceId)));

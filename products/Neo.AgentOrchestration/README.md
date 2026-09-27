@@ -1,22 +1,22 @@
 # Neo Agent Orchestration
 
-Independent product under Neo-Framework. This first milestone provides separate
-API and Razor Web hosts, a Neo-backed CQRS status endpoint, and host smoke tests.
-It is a foundation, not a completed task-management or agent-execution service.
+Independent product under Neo-Framework, with a scoped SQL-backed API and a
+separate Razor Web foundation. Task/configuration APIs are implemented;
+the full management Web and running agent orchestration are not yet complete.
 
 The domain now includes Organization, Workspace and Project factories, normalized
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
 operation from a different organization/workspace. These are domain invariants;
-membership authorization must still be enforced by the application/API. Database
-constraints are enforced by the SQL model; project CRUD and data import remain
-subsequent milestones.
+membership authorization is enforced by issuer-signed workspace permission
+grants at the API. The SQL model enforces scope constraints. Data import and
+organization/workspace installer bootstrap remain subsequent milestones.
 
 RoleProfile and AgentProfile are separate workspace-scoped domain models.
 Profiles support validated updates and enable/disable; agent selection rejects
 disabled, foreign-role/workspace and ambiguous candidates. Choose an explicit
 profile when a role has multiple enabled agents. Profiles contain configuration,
-not credentials or execution state. The contracts are ready for later API/UI
-integration; this milestone does not expose profile CRUD endpoints.
+not credentials or execution state. Scoped API endpoints now create/update and
+enable/disable profiles; the independent management UI remains pending.
 
 The Work domain and CQRS handlers implement tasks/subtasks, dependency gates and
 cycle rejection, owner/chat checks, status transitions, logs, commit/test/artifact
@@ -26,8 +26,9 @@ Application tests use a scoped memory fixture, not a runtime storage fallback.
 The SQL store uses Neo EF repositories, workspace transaction locks, scoped
 foreign keys, unique assignment/timer indexes and optimistic concurrency. Explicit
 versioned provisioning targets an independent database; see [database setup and
-verification](docs/DATABASE.md). HTTP task endpoints are still pending; the API
-registers only the foundation status handler until membership/endpoint work lands.
+verification](docs/DATABASE.md). [API v1](docs/API.md) exposes the task lifecycle,
+filtered/paged board, nested history, time and configuration via authenticated
+workspace-scoped routes. It has no implicit runtime memory fallback.
 
 Workflow definitions now configure project-scoped, role/status-matched handoffs
 from Review/Blocked to Ready and terminal Review-to-Done transitions. The pure
@@ -37,8 +38,9 @@ the current commit when one exists; the latest result per test wins. Approvals
 bind both item and workflow versions, and an owner cannot approve their own work.
 These are configuration and preview capabilities, not durable dispatch. The
 executor must revalidate in a transaction and enforce membership, dependencies,
-children and role availability before persisting handoff/outbox. Authentication,
-workflow HTTP/UI management, durable runs and harness execution remain pending.
+children and role availability before persisting handoff/outbox. Workflow HTTP
+configuration/preview/independent approval is implemented; the UI, durable runs
+and harness execution remain pending. Preview does not perform a handoff.
 
 Durable delivery now stages product changes and Neo Outbox messages atomically.
 Workspace-scoped Inbox receipts reject conflicting keys and acknowledge duplicate
@@ -48,7 +50,7 @@ leases, recovery and bounded retries; terminal failures remain inspectable.
 See [delivery semantics and limits](docs/DELIVERY.md). No background dispatcher,
 HTTP callback endpoint or real harness is enabled merely by installing this schema.
 
-## Run the foundation
+## Run the hosts
 
 From the Neo repository, with .NET 10:
 
@@ -68,8 +70,10 @@ No database is created or migrated on startup.
 
 The public system endpoint and liveness expose no task data.
 Production requires Authentication:Authority and Authentication:Audience;
-the API has an authenticated fallback policy. The Web currently exposes only
-public service status. User authentication and task pages are later milestones.
+the API has an authenticated fallback policy and explicit workspace grant
+policies. See [API configuration](docs/API.md) for claims, SQL and OpenAPI access.
+The Web currently exposes only public service status; its login/task pages are
+a later milestone. HTTP tests do not establish a real external issuer login.
 OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 
 ## Migration agreement

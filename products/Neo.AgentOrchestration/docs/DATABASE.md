@@ -43,7 +43,10 @@ foreign-workspace project/role/agent/workflow relationships. All deletes restric
 Membership authorization still belongs to the API; a scope object is not a token.
 
 SQL registration is opt-in (`AddOrchestrationSql`) and does not migrate a catalog.
-The foundation API still exposes only system status pending its scoped endpoints.
+The API selects this store only with an explicit independent connection and
+validates its catalog. Scoped task/configuration endpoints and their issuer
+grant contract are documented in [API.md](API.md). No organization/workspace
+is automatically seeded by API startup.
 
 ## Verification
 
