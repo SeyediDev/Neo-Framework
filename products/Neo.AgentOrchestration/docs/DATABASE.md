@@ -4,6 +4,8 @@ The destination is `NeoAgentOrchestration`; `NeoAgentOrchestration_<installation
 is also accepted by the initial provisioner. Each installation has one database,
 with organizations/workspaces/projects inside it. Product tables use schema `nao`.
 `WorkManagement` remains the live coordination source until accepted cutover.
+The additive delivery migration reuses Neo Outbox and adds scoped delivery/inbox
+records; see [DELIVERY.md](DELIVERY.md) for atomicity, retries and worker boundaries.
 There is no automatic import, dispatch, redirect, dual write or legacy cleanup.
 
 ## Explicit provisioning
@@ -28,8 +30,11 @@ does not seed users/projects, register credentials or replace the fuller install
 
 `OrchestrationDbContext` derives from Neo's `EfDbContext`; the work store uses
 Neo EF query/command repositories. Each work operation gets a fresh context and
-a serializable transaction. A transaction-owned SQL application lock serializes
-workspace claims and dependency graph changes, including empty candidate sets.
+a read-committed transaction. A transaction-owned SQL application lock serializes
+all workspace business operations, including claims and dependency graph changes
+with empty candidate sets. This avoids serializable key-range locks overlapping
+between independent workspaces. Every writer must use this scope-lock protocol;
+raw DbContext access is reserved for provisioning and controlled internal work.
 Errors/cancellation roll back and discard the context; commands are not silently
 replayed. Database unique indexes enforce one active item per role and one open
 timer per item. Row versions and item/workflow GUID versions reject stale writes.

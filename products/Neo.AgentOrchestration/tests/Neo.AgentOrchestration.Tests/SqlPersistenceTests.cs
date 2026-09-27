@@ -158,7 +158,7 @@ public sealed class SqlPersistenceTests
         Assert.Equal(f.Project.Id, recorded.ProjectId);
     }
 
-    private sealed class Fixture
+    internal sealed class Fixture
     {
         public required string Connection { get; init; }
         public required Factory Factory { get; init; }
@@ -200,7 +200,7 @@ public sealed class SqlPersistenceTests
         }
     }
 
-    private sealed class Factory(string connection) : IDbContextFactory<OrchestrationDbContext>
+    internal sealed class Factory(string connection) : IDbContextFactory<OrchestrationDbContext>
     {
         public OrchestrationDbContext CreateDbContext() => new(new DbContextOptionsBuilder<OrchestrationDbContext>().UseSqlServer(connection).Options);
     }

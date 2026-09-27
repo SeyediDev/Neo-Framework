@@ -2,6 +2,9 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Neo.AgentOrchestration.Application.Delivery;
+using Neo.AgentOrchestration.Infrastructure.Delivery;
 using Neo.AgentOrchestration.Application.Work;
 using Neo.AgentOrchestration.Domain.Agents;
 using Neo.AgentOrchestration.Domain.Projects;
@@ -18,19 +21,13 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         ArgumentNullException.ThrowIfNull(scope);
         ArgumentNullException.ThrowIfNull(operation);
         await using var db = await factory.CreateDbContextAsync(ct);
-        await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
+        // The transaction-owned workspace application lock serializes every
+        // business read/write in this scope. Serializable key-range locks can
+        // overlap empty ranges of DIFFERENT workspaces and deadlock on inserts.
+        await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
         // Workspace serialization covers role claims AND graph changes, including
         // an empty candidate set. The lock is transaction-owned and cross-process.
-        var resource = $"neo-orchestration:workspace:{scope.WorkspaceId:D}";
-        await db.Database.ExecuteSqlInterpolatedAsync($"""
-            DECLARE @result int;
-            EXEC @result = sys.sp_getapplock @Resource={resource}, @LockMode='Exclusive',
-                @LockOwner='Transaction', @LockTimeout=15000;
-            IF @result < 0 THROW 51001, 'Workspace transaction lock unavailable.', 1;
-            """, ct);
-        if (!await db.Workspaces.AnyAsync(w => w.Id == scope.WorkspaceId && w.OrganizationId == scope.OrganizationId &&
-            w.IsEnabled && db.Organizations.Any(o => o.Id == w.OrganizationId && o.IsEnabled), ct))
-            throw new KeyNotFoundException("Enabled workspace not found.");
+        await WorkspaceTransaction.LockAsync(db, scope, ct);
         try
         {
             var result = await operation(new Session(db, scope), ct);
@@ -50,7 +47,7 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         // context is never reused. Operations are not automatically replayed.
     }
 
-    private sealed class Session(OrchestrationDbContext db, WorkspaceScope scope) : IWorkItemSession
+    internal sealed class Session(OrchestrationDbContext db, WorkspaceScope scope) : IWorkItemSession
     {
         private readonly WorkItemCommandRepository commands = new(db);
         private readonly WorkItemQueryRepository queries = new(db);
@@ -87,6 +84,9 @@ public static class PersistenceRegistration
     {
         services.AddDbContextFactory<OrchestrationDbContext>(o => o.UseSqlServer(connectionString));
         services.AddScoped<IWorkspaceWorkStore, SqlWorkspaceWorkStore>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddScoped<IDurableWorkStore, SqlDurableWorkStore>();
+        services.AddScoped<SqlWorkDeliveryExecutor>();
         return services;
     }
 }

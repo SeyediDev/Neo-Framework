@@ -8,7 +8,8 @@ The domain now includes Organization, Workspace and Project factories, normalize
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
 operation from a different organization/workspace. These are domain invariants;
 membership authorization must still be enforced by the application/API. Database
-constraints, project CRUD and data import belong to subsequent milestones.
+constraints are enforced by the SQL model; project CRUD and data import remain
+subsequent milestones.
 
 RoleProfile and AgentProfile are separate workspace-scoped domain models.
 Profiles support validated updates and enable/disable; agent selection rejects
@@ -38,6 +39,14 @@ These are configuration and preview capabilities, not durable dispatch. The
 executor must revalidate in a transaction and enforce membership, dependencies,
 children and role availability before persisting handoff/outbox. Authentication,
 workflow HTTP/UI management, durable runs and harness execution remain pending.
+
+Durable delivery now stages product changes and Neo Outbox messages atomically.
+Workspace-scoped Inbox receipts reject conflicting keys and acknowledge duplicate
+callbacks without repeating their database effects; a follow-up can be queued in
+that same transaction. The executor reuses Neo's EF delivery engine for fenced
+leases, recovery and bounded retries; terminal failures remain inspectable.
+See [delivery semantics and limits](docs/DELIVERY.md). No background dispatcher,
+HTTP callback endpoint or real harness is enabled merely by installing this schema.
 
 ## Run the foundation
 
