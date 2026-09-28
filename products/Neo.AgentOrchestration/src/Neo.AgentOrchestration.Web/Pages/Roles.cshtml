@@ -1,0 +1,32 @@
+@page "/work/{organizationId:guid}/{workspaceId:guid}/roles"
+@model Neo.AgentOrchestration.Web.Pages.RolesModel
+@using static Neo.AgentOrchestration.Web.Pages.WorkPageModel
+@{ ViewData["Title"] = "کارهای رول‌ها"; }
+<partial name="_ScopeNav" model="Model" />
+<h1>کارهای رول‌ها</h1>
+<p>کارهای هر رول به ترتیب مراحل کانبان؛ تکمیل‌شده‌ها و لغوشده‌ها در انتهای لیست. کارهای بایگانی نمایش داده نمی‌شوند.</p>
+@if(Model.Catalog is {} catalog){
+<form method="get" class="filters panel">
+<label>پروژه<select name="ProjectId"><option value="">همه پروژه‌ها</option>@foreach(var p in catalog.Projects){<option value="@p.Id" selected="@(Model.ProjectId==p.Id)">@p.Name</option>}</select></label>
+<label>رول<select name="RoleId"><option value="">همه رول‌ها</option>@foreach(var r in catalog.Roles){<option value="@r.Id" selected="@(Model.RoleId==r.Id)">@r.Name</option>}</select></label>
+<label>دامین<input name="Domain" value="@Model.Domain" maxlength="80" /></label><button>اعمال فیلتر</button>
+<a asp-page="/Roles" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پاک‌کردن</a></form>
+<div class="flow-legend" aria-label="راهنمای رنگ مراحل">@foreach(var state in Statuses){<span class="flow-badge" data-state="@state">@Status(state)</span>}</div>
+@if(Model.Error is null){
+<div class="role-board">
+@foreach(var role in catalog.Roles.Where(x=>!Model.RoleId.HasValue || x.Id==Model.RoleId).Select(x=>(Id:(Guid?)x.Id,Name:x.Name)).Concat(Model.RoleId.HasValue ? [] : new[]{(Id:(Guid?)null,Name:"بدون رول")})){
+var tasks=Model.Items.Where(x=>x.OwnerRoleId==role.Id).ToArray();
+<section class="role-column"><h2>@role.Name <span class="count">@tasks.Length</span></h2>
+<p class="small">@tasks.Count(x=>x.Status is not ("Done" or "Cancelled")) کار ناتمام</p>
+@if(tasks.Length==0){<p class="muted">کاری برای این رول پیدا نشد.</p>}
+@foreach(var item in tasks){
+<article class="card flow-card" data-state="@item.Status" data-item-id="@item.Id">
+<div class="card-meta"><span dir="ltr">@item.Key</span><span class="flow-badge" data-state="@item.Status">@Status(item.Status)</span></div>
+<h3><a asp-page="/Item" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@item.Id">@item.Title</a></h3>
+@if(item.ParentWorkItemId.HasValue){<span class="tag">زیرتسک</span>}
+<p class="description">@item.Description</p><div class="tags"><span>@Model.Project(item.ProjectId)</span><span>@item.Domain</span></div>
+<p class="small">@Time(item.ElapsedSeconds) @(item.IsTracking ? "· زمان‌سنج فعال" : "")</p>
+@if(item.BudgetUsedPercent is {} budget){<progress max="100" value="@Math.Min(100m,budget).ToString(System.Globalization.CultureInfo.InvariantCulture)" aria-label="مصرف برآورد زمانی"></progress><span class="small">@budget٪ از برآورد زمانی</span>}
+</article>}
+</section>}
+</div>}}

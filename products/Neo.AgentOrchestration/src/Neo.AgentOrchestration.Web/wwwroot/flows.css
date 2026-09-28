@@ -1,0 +1,14 @@
+[data-state="Backlog"]{--flow:#526579;--flow-bg:#edf1f5}
+[data-state="Ready"]{--flow:#1e63ad;--flow-bg:#eaf3ff}
+[data-state="InProgress"]{--flow:#8a5800;--flow-bg:#fff5dc}
+[data-state="Review"]{--flow:#7540aa;--flow-bg:#f5edff}
+[data-state="Blocked"]{--flow:#ad3535;--flow-bg:#ffeded}
+[data-state="Done"]{--flow:#237545;--flow-bg:#eaf8ee}
+[data-state="Cancelled"]{--flow:#656565;--flow-bg:#efefef}
+.flow-column{border-top:4px solid var(--flow);background:var(--flow-bg)}
+.flow-card{border-inline-start:4px solid var(--flow)}
+.flow-badge{display:inline-block;border:1px solid var(--flow);border-radius:6px;padding:2px 8px;color:var(--flow);background:var(--flow-bg);font-size:12px}
+.flow-legend{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.role-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:18px;align-items:start}
+.role-column{padding:16px;border:1px solid var(--border);border-radius:12px;background:#eaf0e8;min-width:0}
+.role-column>h2{display:flex;justify-content:space-between;gap:10px}

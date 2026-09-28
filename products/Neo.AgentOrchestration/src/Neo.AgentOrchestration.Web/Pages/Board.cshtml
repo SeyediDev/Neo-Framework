@@ -17,9 +17,9 @@
 @if (board.Items.Count == 0) { <section class="panel empty"><h2>کاری برای این فیلتر پیدا نشد</h2><p>فیلترها را تغییر دهید یا یک کار جدید بسازید.</p></section> }
 else { <div class="kanban" aria-label="کانبان">
 @foreach(var state in Statuses.Where(s=>Model.State is null or "" || s==Model.State)) {
-<section class="column"><h2>@Status(state) <span class="count">@(board.Metrics.StatusCounts.GetValueOrDefault(state))</span></h2>
+<section class="column flow-column" data-state="@state"><h2>@Status(state) <span class="count">@(board.Metrics.StatusCounts.GetValueOrDefault(state))</span></h2>
 @foreach(var item in board.Items.Where(x=>x.Status==state)) {
-<article class="card" data-item-id="@item.Id"><div class="card-meta"><span dir="ltr">@item.Key</span><span>@item.Priority</span></div>
+<article class="card flow-card" data-state="@item.Status" data-item-id="@item.Id"><div class="card-meta"><span dir="ltr">@item.Key</span><span>@item.Priority</span></div>
 <h3><a asp-page="/Item" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@item.Id">@item.Title</a></h3>
 @if(item.ParentWorkItemId.HasValue){<span class="tag">زیرتسک</span>} @if(item.IsArchived){<span class="tag">بایگانی</span>}
 <p class="description">@item.Description</p><div class="tags"><span>@item.Domain</span><span>@Model.Project(item.ProjectId)</span><span>@Model.Role(item.OwnerRoleId)</span></div>
