@@ -90,7 +90,10 @@ Native Neo work management will remain independently usable. GitHub, GitLab and
 Azure DevOps are planned optional adapters, not replacements; Neo and an external
 provider may be enabled simultaneously. Work tracking, repository/PR management
 and agent execution are separate choices. See [coexistence and field authority](docs/WORK-PROVIDERS.md).
-External integrations follow core product readiness and are not implemented yet.
+Continuous external work-provider integrations remain planned. The explicit
+[GitHub public-backlog bootstrap](docs/GITHUB-BOOTSTRAP.md) can publish approved
+summaries as Issues and link them back to native task history; it is not ongoing
+bidirectional synchronization or a GitHub Projects integration.
 
 ## Legacy migration agreement
 
