@@ -3,8 +3,9 @@
 Approved product direction, 2026-09-27. This is an architecture decision and
 acceptance contract, **not an implemented external integration**. Native Neo work
 management continues. No GitHub-only pivot, legacy cleanup or data cutover is
-authorized by this decision. Live development coordination remains in the
-existing WorkManagement database until the migration acceptance gate.
+authorized by this decision alone. Subsequent cutover approval and the current
+Neo API operational board are documented in COEXISTENCE.md and AGENTS.md.
+WorkManagement is retained legacy data, not the current coordination source.
 
 ## Independent choices
 
@@ -83,8 +84,8 @@ not delay that work with four speculative adapters. Operational records:
 - NAO-029: first GitHub integration with native Neo **simultaneously active**.
 - NAO-030 / NAO-031: later GitLab / Azure DevOps providers.
 
-These are unclaimed planned items; live status/dependencies belong in SQL, not
-this document. The first integration must demonstrate native-only use plus
+Live ownership/status/dependencies belong in the scoped Neo API, not this
+document; re-read before claiming these items. The first integration must demonstrate native-only use plus
 linked Neo/GitHub use, edits from both UIs, duplicate/out-of-order events,
 conflicting versions, disconnect/reconnect, permission revocation, no secret or
 private-log export, and no duplicate agent run. Live external setup requires the

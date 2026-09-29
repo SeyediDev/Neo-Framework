@@ -11,7 +11,8 @@ operation from a different organization/workspace. These are domain invariants;
 membership authorization is enforced by issuer-signed workspace permission
 grants at the API. The SQL model enforces scope constraints. Organization/workspace
 bootstrap is explicit through the [CLI](docs/CLI.md);
-data import remains a subsequent milestone.
+the local development installation contains imported legacy work data. This is
+not proof of clean-machine installation or complete historical migration parity.
 
 RoleProfile and AgentProfile are separate workspace-scoped domain models.
 Profiles support validated updates and enable/disable; agent selection rejects
@@ -95,17 +96,17 @@ Continuous external work-provider integrations remain planned. The explicit
 summaries as Issues and link them back to native task history; it is not ongoing
 bidirectional synchronization or a GitHub Projects integration.
 
-## Legacy migration agreement
+## Current operational board and migration history
 
-The current Hyper API, database, UI, skills and settings remain operational.
-No redirect, dual-write, schema deletion or replacement is activated by this
-foundation. Cleanup requires **explicit user approval after migration acceptance**.
-See [the coexistence plan](docs/COEXISTENCE.md).
-
-Operational ownership, status, time, commits and test evidence live in the
-existing WorkManagement database, project NEO, domain agent-orchestration,
-parent NAO-MIGRATION. The [planning backlog](../../docs/AGENT_ORCHESTRATION_BACKLOG.md)
-describes scope; it is not a second live board.
+The user approved independent cutover and legacy Hyper WorkManagement project/UI
+removal in the main development chat. Current operational ownership, status,
+time and evidence live behind the Neo orchestration API in NeoAgentOrchestration.
+Product development uses project **NEO-ORCH**; existing migration records remain
+in **NEO**, under **NAO-MIGRATION**, without duplication or inferred completion.
+The retained **WorkManagement** database is not a parallel operational board and
+must not be deleted. See [migration decisions and limits](docs/COEXISTENCE.md).
+The [planning backlog](../../docs/AGENT_ORCHESTRATION_BACKLOG.md) describes historical
+scope; it is not a second live board. Resolve current tasks through the API/MCP.
 
 The [operational MCP](docs/MCP.md) exposes scoped work/run tools over stdio,
 calling API v1 with the user's issuer token. It cannot access SQL or execute

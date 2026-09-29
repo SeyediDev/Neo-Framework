@@ -1,4 +1,20 @@
-# Coexistence and acceptance gate
+# Migration decisions and retained-data policy
+
+## Current operational state (verified 2026-09-30)
+
+The user subsequently requested migration with all values preserved, approved
+removing Hyper.WorkManagement, then explicitly requested removal of its legacy
+admin UI in the main development chat. The independent Neo API is now the live
+coordination source; its catalog contains the imported NEO and HYPER projects
+and the new NEO-ORCH product-development project. The Web reads the same API.
+
+This supersedes the initial hold/cutover instructions below for this installation,
+not for arbitrary customer deployments. The old WorkManagement database is
+retained; there is no approval to delete it. Historical NAO task statuses require
+evidence reconciliation, not automatic completion. Live API/catalog checks do
+not establish full snapshot parity, installer acceptance or disaster recovery.
+
+## Original acceptance gates (historical, not the current board selection)
 
 User decision, 2026-09-26: retain the existing Hyper implementation until migration
 is complete; cleanup is allowed only after the user approves the verified result.
@@ -19,6 +35,7 @@ is complete; cleanup is allowed only after the user approves the verified result
    Record the exact user approval before removing legacy source/deployment/data.
    No automatic cleanup script runs as part of startup, migration or install.
 
-No cleanup approval has been recorded. No data cutover has occurred.
+These were the original pre-cutover gates; see the current-state section above
+for the subsequent user decision. Do not infer permission for further cleanup.
 Installer removal must preserve user data by default. A different machine or
 account gets its own authentication; exported settings contain no credentials.

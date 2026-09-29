@@ -3,8 +3,9 @@
 This is an independent product inside Neo-Framework. Read README.md and
 docs/COEXISTENCE.md before changing its deployment or migration behavior.
 
-During migration, existing WorkManagement is the operational task source:
-project NEO, domain agent-orchestration, parent NAO-MIGRATION. Read the current
+The current operational task source is the independent Neo orchestration API
+backed by NeoAgentOrchestration. Product development is project NEO-ORCH;
+historical migration records remain in project NEO under NAO-MIGRATION. Read the current
 owner, chat, role, dependencies and logs before claiming or resuming an item.
 Do not take another chat's work. The user-designated main chat uses develop;
 concurrent workers use separate branches/worktrees. Preserve unrelated edits.
@@ -14,14 +15,20 @@ Markdown documents are not a second operational board.
 The reusable product skill is
 [neo-agent-orchestration](.agents/skills/neo-agent-orchestration/SKILL.md).
 Read it when using an authorized Neo workspace for task/run coordination.
-Its presence does not replace the migration board: this repository still uses
-WorkManagement until approved cutover. Do not copy live backlog records into
-the new product merely because its MCP is available.
+Use the current installation's authorized organization/workspace. For the local
+development installation the organization is 2b9b57ca-ce22-8456-b465-f71a74f66825
+and workspace is 10d4741c-b839-7f5a-8ad6-4a4f065e5b9b. Resolve projects and roles
+from the catalog, never hardcode these identifiers into the reusable product.
+Use the scoped API/MCP for task changes; do not write ownership through SQL.
+WorkManagement is retained legacy data, not a parallel live backlog. Do not
+recreate historical NAO tasks or silently mark them complete from their age.
 
-Legacy Hyper must continue operating until migration acceptance. Removing or
-redirecting the old implementation, database or settings requires the user's
-explicit approval after verification. Starting a host, installing or migrating
-this product must never trigger legacy cleanup or dispatch imported agent runs.
+The user subsequently approved independent cutover and removal of the legacy
+Hyper WorkManagement project/UI in this main chat. That approval does not
+authorize deletion of the legacy database or unrelated Hyper runtime. Preserve
+retained data. Starting a host, installing or migrating this product must never
+trigger cleanup or dispatch imported agent runs. See docs/COEXISTENCE.md for
+historical gates and current verification limits.
 
 Use actual Neo contracts. Keep Domain independent of product infrastructure;
 Web references Contracts and calls the API, with no database access.
