@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Neo.AgentOrchestration.Contracts;
 using Neo.AgentOrchestration.Web;
 using Xunit;
@@ -27,29 +28,39 @@ public sealed class HostTests
     }
 
     [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task Web_renders_with_a_separate_api_and_handles_unavailability(bool available)
+    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "d1b79f17-a937-484a-981f-b30105b827ce", true)]
+    [InlineData(null, null, false)]
+    [InlineData("invalid", "d1b79f17-a937-484a-981f-b30105b827ce", false)]
+    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "invalid", false)]
+    [InlineData("00000000-0000-0000-0000-000000000000", "d1b79f17-a937-484a-981f-b30105b827ce", false)]
+    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "00000000-0000-0000-0000-000000000000", false)]
+    public async Task Root_routes_valid_defaults_or_workspace_selection_without_calling_api(
+        string? organization, string? workspace, bool valid)
     {
-        await using var api = new WebApplicationFactory<ApiHost>().WithWebHostBuilder(b => b.UseEnvironment("Testing"));
         await using var web = new WebApplicationFactory<WebHost>().WithWebHostBuilder(b =>
         {
             b.UseEnvironment("Testing");
-            b.ConfigureServices(s => s.AddScoped(_ => new OrchestrationClient(available
-                ? api.CreateClient() : new HttpClient(new UnavailableHandler()) { BaseAddress = new Uri("http://localhost") })));
+            b.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["OrchestrationApi:DefaultOrganizationId"] = organization,
+                ["OrchestrationApi:DefaultWorkspaceId"] = workspace
+            }));
+            b.ConfigureServices(s => s.AddScoped(_ => new OrchestrationClient(
+                new HttpClient(new UnexpectedApiHandler()) { BaseAddress = new Uri("http://localhost") })));
         });
-        using var client = web.CreateClient();
+        using var client = web.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
         var response = await client.GetAsync("/", TestContext.Current.CancellationToken);
-        response.EnsureSuccessStatusCode();
-        var html = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        Assert.Contains("lang=\"fa\" dir=\"rtl\"", html);
-        Assert.Contains("Hyper", html);
-        Assert.Contains(available ? "Foundation" : "role=\"status\"", html);
+        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.Equal(valid ? $"/work/{organization}/{workspace}" : "/Workspace", response.Headers.Location?.OriginalString);
+        // Selecting a workspace must not bypass authentication outside local development.
+        var selector = await client.GetAsync("/Workspace", TestContext.Current.CancellationToken);
+        Assert.Equal(HttpStatusCode.Redirect, selector.StatusCode);
+        Assert.Contains("/Login", selector.Headers.Location!.OriginalString);
     }
 
-    private sealed class UnavailableHandler : HttpMessageHandler
+    private sealed class UnexpectedApiHandler : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
-            => Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable));
+            => throw new InvalidOperationException("Root navigation must not call the API.");
     }
 }

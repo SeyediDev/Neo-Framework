@@ -8,5 +8,13 @@ namespace Neo.AgentOrchestration.Web.Pages;
 public sealed class IndexModel(IConfiguration configuration) : PageModel
 {
     public ProductInfo? Info { get; private set; }
-    public IActionResult OnGet() => Redirect($"/work/{configuration["OrchestrationApi:DefaultOrganizationId"]}/{configuration["OrchestrationApi:DefaultWorkspaceId"]}");
+    public IActionResult OnGet()
+    {
+        if (Guid.TryParse(configuration["OrchestrationApi:DefaultOrganizationId"], out var organizationId)
+            && organizationId != Guid.Empty
+            && Guid.TryParse(configuration["OrchestrationApi:DefaultWorkspaceId"], out var workspaceId)
+            && workspaceId != Guid.Empty)
+            return RedirectToPage("/Board", new { organizationId, workspaceId });
+        return RedirectToPage("/Workspace");
+    }
 }

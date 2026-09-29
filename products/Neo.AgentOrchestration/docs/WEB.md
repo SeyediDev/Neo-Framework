@@ -43,7 +43,9 @@ dotnet run --project products/Neo.AgentOrchestration/src/Neo.AgentOrchestration.
 dotnet run --project products/Neo.AgentOrchestration/src/Neo.AgentOrchestration.Web
 ```
 
-The local Web launch profile is port 5181. Public `/` reports API connectivity;
+The local Web launch profile is port 5181. Public `/` redirects to the configured
+board when both default scope IDs are valid, nonempty GUIDs; otherwise it redirects
+to `/Workspace`. This redirect does not call the API or grant workspace access.
 `/health/live` is liveness only. `/Workspace` requires login and takes organization
 and workspace GUIDs. Missing issuer configuration keeps public pages available,
 but `/Login` returns 503 and protected pages redirect to login. No fake board is
