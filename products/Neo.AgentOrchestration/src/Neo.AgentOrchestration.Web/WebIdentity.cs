@@ -25,7 +25,8 @@ public static class WebIdentity
         !string.IsNullOrWhiteSpace(config["WebAuthentication:ClientId"]);
     public static Uri ApiAddress(IConfiguration configuration)
     {
-        if (!Uri.TryCreate(configuration["OrchestrationApi:BaseUrl"], UriKind.Absolute, out var uri) ||
+        var configured = configuration["OrchestrationApi:BaseUrl"] ?? "http://127.0.0.1:5180/";
+        if (!Uri.TryCreate(configured, UriKind.Absolute, out var uri) ||
             uri.Scheme is not ("https" or "http") || (uri.Scheme == "http" && !uri.IsLoopback) ||
             !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Query) || !string.IsNullOrEmpty(uri.Fragment))
             throw new InvalidOperationException("Use an HTTPS API base URL, or loopback HTTP for local use, without credentials/query/fragment.");

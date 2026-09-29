@@ -24,7 +24,9 @@ public abstract class WorkspaceControllerBase(ISender sender) : ControllerBase
     protected WorkspaceScope Scope => new(Guid.Parse((string)RouteData.Values["organizationId"]!), Guid.Parse((string)RouteData.Values["workspaceId"]!));
     protected WorkActor Actor()
     {
-        var subject = WorkspaceSecurity.Subject(User) ?? throw new UnauthorizedAccessException();
+        var subject = WorkspaceSecurity.Subject(User) ??
+            (WorkspaceSecurity.IsLocalDevelopment(HttpContext) && Request.Headers.TryGetValue("X-Orchestration-Local", out var local) && local == "true" ? "local-web" : null)
+            ?? throw new UnauthorizedAccessException();
         var chats = Request.Headers["X-Orchestration-Chat"];
         if (chats.Count != 1 || string.IsNullOrWhiteSpace(chats[0]) || chats[0]!.Length > 200 || chats[0]!.Any(char.IsControl))
             throw new ArgumentException("One chat correlation identifier is required.");

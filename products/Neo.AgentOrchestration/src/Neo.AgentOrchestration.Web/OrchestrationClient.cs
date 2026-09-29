@@ -17,17 +17,20 @@ public sealed class OrchestrationClient(HttpClient http, IHttpContextAccessor? a
         if (organization == Guid.Empty || workspace == Guid.Empty) throw new WebApiException(400);
         if (resource.StartsWith('/') || resource.Contains("://") || resource.Split('?',2)[0].Split('/').Contains("..")) throw new WebApiException(400);
         var context = accessor?.HttpContext ?? throw new WebApiException(401);
-        var authentication = await context.AuthenticateAsync();
-        var token = authentication.Properties?.GetTokenValue("access_token");
-        if (!authentication.Succeeded || string.IsNullOrWhiteSpace(token)) throw new WebApiException(401);
+        var local = string.Equals(Environment.GetEnvironmentVariable("NEO_LOCAL_DEVELOPMENT"), "true", StringComparison.OrdinalIgnoreCase);
+        var authentication = local ? null : await context.AuthenticateAsync();
+        var token = authentication?.Properties?.GetTokenValue("access_token");
+        if (!local && (authentication is null || !authentication.Succeeded || string.IsNullOrWhiteSpace(token))) throw new WebApiException(401);
         using var request = new HttpRequestMessage(method ?? HttpMethod.Get,
             $"api/orchestration/v1/organizations/{organization:D}/workspaces/{workspace:D}/{resource}");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (!string.IsNullOrWhiteSpace(token)) request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (local) request.Headers.Add("X-Orchestration-Local", "true");
         if (method is not null && method != HttpMethod.Get)
         {
-            if (!authentication.Properties!.Items.TryGetValue(WebIdentity.ChatKey, out var chat) || string.IsNullOrWhiteSpace(chat))
+            if (local) request.Headers.Add("X-Orchestration-Chat", "local-web");
+            else if (!authentication!.Properties!.Items.TryGetValue(WebIdentity.ChatKey, out var chat) || string.IsNullOrWhiteSpace(chat))
                 throw new WebApiException(401);
-            request.Headers.Add("X-Orchestration-Chat", chat);
+            else request.Headers.Add("X-Orchestration-Chat", chat);
             if (body is not null) request.Content = JsonContent.Create(body);
         }
         try
