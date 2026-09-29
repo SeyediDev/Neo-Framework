@@ -70,7 +70,8 @@ dotnet run --project products/Neo.AgentOrchestration/src/Neo.AgentOrchestration.
 ```
 
 Run API and Web in separate terminals. Local launch profiles use ports 5180 and
-5181. The Web calls the API through HTTP and references only public contracts.
+5181. For repeatable Windows development startup, see the [guarded local launcher](docs/LOCAL-LAUNCHER.md).
+The Web calls the API through HTTP and references only public contracts.
 The API composes Neo.Endpoint and MediatR. Domain/Application/Infrastructure
 projects reference the corresponding Neo libraries. No Hyper or Neo.Bpms
 project, layout, static asset or database is required to start these hosts.
