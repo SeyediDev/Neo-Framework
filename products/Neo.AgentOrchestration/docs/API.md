@@ -10,8 +10,16 @@ No startup path migrates, seeds, imports or dispatches work.
 Set `Authentication__Authority` to your trusted HTTPS OIDC authority and
 `Authentication__Audience` to the API audience. Production refuses missing
 values. JWT signatures, issuer, audience and expiration are validated by
-JwtBearer with inbound claim mapping disabled. No built-in signing secret,
-development token bypass or token-issuing endpoint is supplied.
+JwtBearer with inbound claim mapping disabled. No built-in signing secret or
+token-issuing endpoint is supplied. There is an explicit local development mode:
+the actual host environment must be Development, `NEO_LOCAL_DEVELOPMENT=true`,
+the direct peer must be loopback, and the request must carry
+`X-Orchestration-Local: true`. Forwarded/proxied requests are not eligible.
+A header alone is never sufficient. This local actor is `local-web`; mutations
+still require the chat header and all scope, version, ownership and domain rules.
+Keep this opt-in disabled on shared/deployed machines and bind development hosts
+to loopback only. Ordinary grants require an authenticated principal. Fallback
+routes, including OpenAPI, still require authentication in local mode.
 
 The issuer must supply one non-empty `sub` (at most 200 characters) and explicit
 `nao_grant` claims. A grant is a single string binding the organization,

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Neo.AgentOrchestration.Contracts;
 namespace Neo.AgentOrchestration.Web.Pages;
-[Microsoft.AspNetCore.Authorization.AllowAnonymous]
 public sealed class BoardModel(OrchestrationClient client) : WorkPageModel(client)
 {
     [BindProperty(SupportsGet = true)] public Guid? ProjectId { get; set; }

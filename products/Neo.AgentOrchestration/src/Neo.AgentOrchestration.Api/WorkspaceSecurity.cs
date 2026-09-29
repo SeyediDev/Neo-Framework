@@ -7,9 +7,10 @@ namespace Neo.AgentOrchestration.Api;
 public static class WorkspaceSecurity
 {
     public static bool IsLocalDevelopment(HttpContext http) =>
-        string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development", StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(Environment.GetEnvironmentVariable("NEO_LOCAL_DEVELOPMENT"), "true", StringComparison.OrdinalIgnoreCase) &&
-        http.Connection.RemoteIpAddress is not null && System.Net.IPAddress.IsLoopback(http.Connection.RemoteIpAddress);
+        http.RequestServices.GetRequiredService<IHostEnvironment>().IsDevelopment() &&
+        string.Equals(http.RequestServices.GetRequiredService<IConfiguration>()["NEO_LOCAL_DEVELOPMENT"], "true", StringComparison.OrdinalIgnoreCase) &&
+        http.Connection.RemoteIpAddress is not null && System.Net.IPAddress.IsLoopback(http.Connection.RemoteIpAddress) &&
+        !http.Request.Headers.ContainsKey("Forwarded") && !http.Request.Headers.ContainsKey("X-Forwarded-For");
     public const string Read = "workspace.read";
     public const string Write = "workspace.write";
     public const string Configure = "workspace.configure";
@@ -18,9 +19,7 @@ public static class WorkspaceSecurity
 
     public static void AddPolicies(AuthorizationOptions options)
     {
-        if (!string.Equals(Environment.GetEnvironmentVariable("NEO_LOCAL_DEVELOPMENT"), "true", StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development", StringComparison.OrdinalIgnoreCase))
-            options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+        options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
         foreach (var permission in new[] { "read", "write", "configure", "approve", "execute" })
             options.AddPolicy("workspace." + permission, policy => policy.RequireAssertion(context =>
             {
@@ -31,7 +30,8 @@ public static class WorkspaceSecurity
                 // A single issuer-signed grant binds the organization, workspace
                 // AND permission; independently matching claim lists is unsafe.
                 if (http is not null && IsLocalDevelopment(http) && http.Request.Headers.TryGetValue("X-Orchestration-Local", out var local) && local == "true") return true;
-                return Subject(context.User) is not null && context.User.HasClaim("nao_grant", $"{org:D}/{workspace:D}/{permission}");
+                return context.User.Identity?.IsAuthenticated == true && Subject(context.User) is not null &&
+                    context.User.HasClaim("nao_grant", $"{org:D}/{workspace:D}/{permission}");
             }));
     }
 

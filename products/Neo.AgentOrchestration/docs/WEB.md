@@ -30,7 +30,8 @@ the issuer so the access token has the API audience, subject and workspace-bound
 `nao_grant` values documented in API.md. ID and access tokens must identify the
 same subject. Scope names and resource/audience mapping belong to your issuer;
 a successful Web login alone does not grant API access. No default identity
-server, shared application token, password form or authentication bypass is included.
+server, shared application token or password form is included. The explicit
+local development mode described below is not a deployment authentication method.
 OIDC discovery and the issuer must use HTTPS. Serve Web over HTTPS in deployment;
 if hosted behind a proxy, configure trusted forwarding and the public callback
 at the deployment layer, not arbitrary forwarded headers. Configuration changes
@@ -46,10 +47,23 @@ dotnet run --project products/Neo.AgentOrchestration/src/Neo.AgentOrchestration.
 The local Web launch profile is port 5181. Public `/` redirects to the configured
 board when both default scope IDs are valid, nonempty GUIDs; otherwise it redirects
 to `/Workspace`. This redirect does not call the API or grant workspace access.
-`/health/live` is liveness only. `/Workspace` requires login and takes organization
+`/health/live` is liveness only. `/Workspace` requires login (or the constrained
+local mode below) and takes organization
 and workspace GUIDs. Missing issuer configuration keeps public pages available,
 but `/Login` returns 503 and protected pages redirect to login. No fake board is
 substituted when SQL/API is unavailable.
+
+### Local development without login
+
+Set `NEO_LOCAL_DEVELOPMENT=true` on both Development hosts and bind them to
+loopback. Web checks the actual host environment and direct request IP on every
+protected request; remote, unknown-peer and forwarded/proxied requests do not
+qualify. The board is not globally anonymous. The Web forwards local access
+only to a loopback API destination, with the auditable `local-web` identity/chat.
+Production ignores this opt-in and continues to require authenticated sessions
+and delegated API tokens. Do not expose this local mode through a reverse proxy
+or enable it on shared machines. Tests cover both positive and negative boundaries;
+they do not replace live issuer/proxy deployment acceptance.
 
 ## Available workflow
 

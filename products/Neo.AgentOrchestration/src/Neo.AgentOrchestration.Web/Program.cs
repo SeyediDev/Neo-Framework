@@ -9,11 +9,11 @@ builder.Logging.AddConsole();
 builder.Services.AddRazorPages().AddMvcOptions(o => o.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddWebIdentity(builder.Configuration, builder.Environment);
-var localDevelopment = builder.Environment.IsDevelopment() &&
-    string.Equals(Environment.GetEnvironmentVariable("NEO_LOCAL_DEVELOPMENT"), "true", StringComparison.OrdinalIgnoreCase);
 builder.Services.AddAuthorization(o =>
 {
-    if (!localDevelopment) o.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    o.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAssertion(context =>
+        context.User.Identity?.IsAuthenticated == true ||
+        context.Resource is HttpContext http && LocalDevelopmentAccess.IsAllowed(http)).Build();
 });
 builder.Services.AddHttpClient<OrchestrationClient>((provider, c) =>
 {

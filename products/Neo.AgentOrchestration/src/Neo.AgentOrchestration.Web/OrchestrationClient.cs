@@ -17,7 +17,7 @@ public sealed class OrchestrationClient(HttpClient http, IHttpContextAccessor? a
         if (organization == Guid.Empty || workspace == Guid.Empty) throw new WebApiException(400);
         if (resource.StartsWith('/') || resource.Contains("://") || resource.Split('?',2)[0].Split('/').Contains("..")) throw new WebApiException(400);
         var context = accessor?.HttpContext ?? throw new WebApiException(401);
-        var local = string.Equals(Environment.GetEnvironmentVariable("NEO_LOCAL_DEVELOPMENT"), "true", StringComparison.OrdinalIgnoreCase);
+        var local = LocalDevelopmentAccess.IsAllowed(context) && http.BaseAddress is { IsLoopback: true };
         var authentication = local ? null : await context.AuthenticateAsync();
         var token = authentication?.Properties?.GetTokenValue("access_token");
         if (!local && (authentication is null || !authentication.Succeeded || string.IsNullOrWhiteSpace(token))) throw new WebApiException(401);
