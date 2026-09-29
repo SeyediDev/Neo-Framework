@@ -4,7 +4,7 @@ public sealed record WorkItemView(Guid Id, Guid ProjectId, Guid? ParentWorkItemI
     string Title, string Domain, string? Description, string Status, string Priority,
     Guid? OwnerRoleId, string? OwnerAgentId, string? OwnerChatId, string? Branch,
     bool IsArchived, long ElapsedSeconds, long? EstimatedSeconds, decimal? BudgetUsedPercent,
-    bool IsTracking, Guid Version, DateTimeOffset UpdatedAtUtc);
+    bool IsTracking, Guid Version, DateTimeOffset UpdatedAtUtc, string Type = "Task", string? AcceptanceCriteria = null);
 public sealed record WorkLogView(Guid Id, string AgentId, string ChatId, string Kind, string Message, DateTimeOffset CreatedAtUtc);
 public sealed record WorkEvidenceView(Guid Id, string Kind, string Reference, string Outcome,
     string? Details, DateTimeOffset CreatedAtUtc, int Sequence, string? CommitSha);

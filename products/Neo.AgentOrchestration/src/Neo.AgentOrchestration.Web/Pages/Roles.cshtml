@@ -7,6 +7,7 @@
 <p>کارهای هر رول به ترتیب مراحل کانبان؛ تکمیل‌شده‌ها و لغوشده‌ها در انتهای لیست. کارهای بایگانی نمایش داده نمی‌شوند.</p>
 @if(Model.Catalog is {} catalog){
 <form method="get" class="filters panel">
+<label>نوع کار<select name="ItemType"><option value="">همه انواع</option>@foreach(var type in ItemTypes){<option value="@type" selected="@(Model.ItemType==type)">@ItemTypeLabel(type)</option>}</select></label>
 <label>پروژه<select name="ProjectId"><option value="">همه پروژه‌ها</option>@foreach(var p in catalog.Projects){<option value="@p.Id" selected="@(Model.ProjectId==p.Id)">@p.Name</option>}</select></label>
 <label>رول<select name="RoleId"><option value="">همه رول‌ها</option>@foreach(var r in catalog.Roles){<option value="@r.Id" selected="@(Model.RoleId==r.Id)">@r.Name</option>}</select></label>
 <label>دامین<input name="Domain" value="@Model.Domain" maxlength="80" /></label><button>اعمال فیلتر</button>
@@ -24,7 +25,7 @@ var tasks=Model.Items.Where(x=>x.OwnerRoleId==role.Id).ToArray();
 <div class="card-meta"><span dir="ltr">@item.Key</span><span class="flow-badge" data-state="@item.Status">@Status(item.Status)</span></div>
 <h3><a asp-page="/Item" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@item.Id">@item.Title</a></h3>
 @if(item.ParentWorkItemId.HasValue){<span class="tag">زیرتسک</span>}
-<p class="description">@item.Description</p><div class="tags"><span>@Model.Project(item.ProjectId)</span><span>@item.Domain</span></div>
+<p class="description">@item.Description</p><div class="tags"><span>@ItemTypeLabel(item.Type)</span><span>@Model.Project(item.ProjectId)</span><span>@item.Domain</span></div>
 <p class="small">@Time(item.ElapsedSeconds) @(item.IsTracking ? "· زمان‌سنج فعال" : "")</p>
 @if(item.BudgetUsedPercent is {} budget){<progress max="100" value="@Math.Min(100m,budget).ToString(System.Globalization.CultureInfo.InvariantCulture)" aria-label="مصرف برآورد زمانی"></progress><span class="small">@budget٪ از برآورد زمانی</span>}
 </article>}

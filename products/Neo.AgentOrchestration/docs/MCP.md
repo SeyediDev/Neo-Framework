@@ -55,9 +55,10 @@ sanitized message. The server takes no SQL connection or arbitrary HTTP route.
 | --- | --- | --- |
 | `neo_work_context` | none | Local nonsecret settings; not an API call |
 | `neo_work_catalog` | none | Catalog of projects/roles/agents/workflows |
-| `neo_work_board` | optional projectId, domain, roleId, status, includeArchived, skip, take | Filtered board; take <= 200 |
+| `neo_work_board` | optional projectId, domain, roleId, status, type, includeArchived, skip, take | Filtered board; take <= 200 |
 | `neo_work_get` | itemId | Item, children, dependencies, logs/evidence/time |
 | `neo_work_create` | request: CreateWorkItemRequest | Create task/child; write |
+| `neo_work_planning` | itemId, request: SetWorkItemPlanningRequest | Versioned type/acceptance criteria; write; preserves original description and records criteria history |
 | `neo_work_claim` | itemId, request: ClaimWorkItemRequest | Versioned exclusive claim; write |
 | `neo_work_log` | itemId, request: AppendLogRequest | Append context; write |
 | `neo_work_status` | itemId, request: ChangeStatusRequest | Domain transition; write |
@@ -146,6 +147,6 @@ only in the fixture and no SQL credential reaches the MCP process. Run it with
 the private verification connection described in DATABASE.md.
 
 This does not establish live identity-provider login, production MCP-client
-registration, a real model/gateway call or migration acceptance. During migration,
-WorkManagement remains the operational board until approved cutover; do not
-silently duplicate or redirect it into the independent Neo database.
+registration, a real model/gateway call or full migration parity. Follow the
+installation's designated operational board; current local cutover decisions
+and retained legacy-data safeguards are in AGENTS.md and COEXISTENCE.md.

@@ -22,6 +22,7 @@ not credentials or execution state. Scoped API endpoints now create/update and
 enable/disable profiles and the independent Web exposes these operations.
 
 The Work domain and CQRS handlers implement tasks/subtasks, dependency gates and
+[typed work items and acceptance criteria](docs/WORK-ITEM-TYPES.md),
 cycle rejection, owner/chat checks, status transitions, logs, commit/test/artifact
 evidence, pause/resume time tracking, forecasts, archive/restore and stale-version
 rejection. Time-budget usage is labeled separately from completion percentage.

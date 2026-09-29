@@ -1,5 +1,6 @@
 @page "/work/{organizationId:guid}/{workspaceId:guid}/new"
 @model Neo.AgentOrchestration.Web.Pages.NewItemModel
+@using static Neo.AgentOrchestration.Web.Pages.WorkPageModel
 @{ViewData["Title"]="کار جدید";}
 <partial name="_ScopeNav" model="Model" /><h1>ایجاد کار یا زیرتسک</h1>
 @if(Model.Catalog is {} catalog){<form method="post" class="panel form-grid">
@@ -8,4 +9,6 @@
 <label>اولویت<select asp-for="Priority"><option>Low</option><option>Normal</option><option>High</option><option>Critical</option></select></label>
 <label>برآورد (ثانیه)<input asp-for="EstimatedSeconds" type="number" min="1" /></label>
 <label class="wide">شناسه کار والد (اختیاری)<input asp-for="ParentWorkItemId" dir="ltr" /></label>
-<label class="wide">شرح و معیار پذیرش<textarea asp-for="Description" rows="7" maxlength="32000"></textarea></label><div class="wide"><button>ثبت کار</button><span class="muted">وضعیت اولیه: بک‌لاگ</span></div></form>}
+<label>نوع کار<select asp-for="ItemType">@foreach(var type in ItemTypes){<option value="@type">@ItemTypeLabel(type)</option>}</select></label>
+<label class="wide">شرح درخواست<textarea asp-for="Description" rows="7" maxlength="32000"></textarea></label>
+<label class="wide">معیار پذیرش<textarea asp-for="AcceptanceCriteria" rows="5" maxlength="8000"></textarea></label><div class="wide"><button>ثبت کار</button><span class="muted">وضعیت اولیه: بک‌لاگ</span></div></form>}

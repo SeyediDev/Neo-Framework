@@ -9,7 +9,8 @@ internal static class WorkItemProjection
         item.Id, item.ProjectId, item.ParentWorkItemId, item.Key, item.Title, item.Domain,
         item.Description, item.Status.ToString(), item.Priority.ToString(), item.OwnerRoleId,
         item.OwnerAgentId, item.OwnerChatId, item.Branch, item.IsArchived, item.GetElapsedSeconds(now),
-        item.EstimatedSeconds, item.GetBudgetUsedPercent(now), item.IsTracking, item.Version, item.UpdatedAtUtc);
+        item.EstimatedSeconds, item.GetBudgetUsedPercent(now), item.IsTracking, item.Version, item.UpdatedAtUtc,
+        item.Type.ToString(), item.AcceptanceCriteria);
 
     public static WorkItemDetails Details(WorkItem item, IReadOnlyList<WorkItem> projectItems, DateTimeOffset now)
         => new(View(item, now),

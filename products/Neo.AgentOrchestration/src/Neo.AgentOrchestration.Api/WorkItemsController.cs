@@ -13,8 +13,9 @@ public sealed class WorkItemsController(ISender sender) : WorkspaceControllerBas
     [HttpGet("items")]
     public Task<WorkBoard> Board(CancellationToken ct, [FromQuery] Guid? projectId = null, [FromQuery] string? domain = null,
         [FromQuery] Guid? roleId = null, [FromQuery] string? status = null, [FromQuery] bool includeArchived = false,
-        [FromQuery] int skip = 0, [FromQuery] int take = 50)
-        => Sender.Send(new GetWorkBoard(Scope, projectId, domain, roleId, status is null ? null : Value<WorkItemStatus>(status), includeArchived, skip, take), ct);
+        [FromQuery] int skip = 0, [FromQuery] int take = 50, [FromQuery] string? type = null)
+        => Sender.Send(new GetWorkBoard(Scope, projectId, domain, roleId, status is null ? null : Value<WorkItemStatus>(status),
+            includeArchived, skip, take, type is null ? null : Value<WorkItemType>(type)), ct);
 
     [HttpGet("items/{id:guid}")]
     public Task<WorkItemDetails> Details(Guid id, CancellationToken ct) => Sender.Send(new GetWorkItem(Scope, id), ct);
@@ -24,13 +25,18 @@ public sealed class WorkItemsController(ISender sender) : WorkspaceControllerBas
     public async Task<ActionResult<WorkItemDetails>> Create(CreateWorkItemRequest body, CancellationToken ct)
     {
         var value = await Sender.Send(new CreateWorkItem(Scope, body.ProjectId, body.Key, body.Title, body.Domain, Actor(),
-            body.Description, Value<WorkItemPriority>(body.Priority), body.ParentWorkItemId, body.EstimatedSeconds), ct);
+            body.Description, Value<WorkItemPriority>(body.Priority), body.ParentWorkItemId, body.EstimatedSeconds,
+            Value<WorkItemType>(body.Type), body.AcceptanceCriteria), ct);
         return CreatedAtAction(nameof(Details), new { organizationId = Scope.OrganizationId, workspaceId = Scope.WorkspaceId, id = value.Item.Id }, value);
     }
 
     [HttpPost("items/{id:guid}/claim"), Authorize(Policy = WorkspaceSecurity.Write)]
     public Task<WorkItemDetails> Claim(Guid id, ClaimWorkItemRequest body, CancellationToken ct)
         => Sender.Send(new ClaimWorkItem(Scope, id, body.RoleId, Actor(), body.ExpectedVersion, body.Branch), ct);
+
+    [HttpPut("items/{id:guid}/planning"), Authorize(Policy = WorkspaceSecurity.Write)]
+    public Task<WorkItemDetails> Planning(Guid id, SetWorkItemPlanningRequest body, CancellationToken ct)
+        => Change(id, body.ExpectedVersion, new PlanningChange(Value<WorkItemType>(body.Type), body.AcceptanceCriteria), ct);
 
     [HttpPost("items/{id:guid}/status"), Authorize(Policy = WorkspaceSecurity.Write)]
     public Task<WorkItemDetails> Status(Guid id, ChangeStatusRequest body, CancellationToken ct)

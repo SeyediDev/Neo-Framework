@@ -3,7 +3,14 @@
 The destination is `NeoAgentOrchestration`; `NeoAgentOrchestration_<installation>`
 is also accepted by the initial provisioner. Each installation has one database,
 with organizations/workspaces/projects inside it. Product tables use schema `nao`.
-`WorkManagement` remains the live coordination source until accepted cutover.
+The local installation now uses the Neo API operational board after user-approved
+cutover; `WorkManagement` remains retained legacy data (see COEXISTENCE.md).
+`TypedWorkItems` adds Type (default Task) and nullable AcceptanceCriteria. It also
+formally adopts the import-created owner-history table in place, repairs its
+known timestamp/rowversion drift and adds scoped constraints/indexes. Existing
+history rows are retained. This migration is forward-only: downgrade cannot
+delete imported history or acceptance data; use a reviewed forward repair or
+an explicitly approved backup restore.
 The additive delivery migration reuses Neo Outbox and adds scoped delivery/inbox
 records; see [DELIVERY.md](DELIVERY.md) for atomicity, retries and worker boundaries.
 There is no automatic import, dispatch, redirect, dual write or legacy cleanup.

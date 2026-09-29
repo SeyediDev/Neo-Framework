@@ -70,7 +70,8 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
 
     public Task<WorkBoard> Handle(GetWorkBoard r, CancellationToken ct)
     {
-        if (r.Skip < 0 || r.Take is < 1 or > 200 || r.Domain?.Length > 80 || (r.Status.HasValue && !Enum.IsDefined(r.Status.Value)))
+        if (r.Skip < 0 || r.Take is < 1 or > 200 || r.Domain?.Length > 80 ||
+            (r.Status.HasValue && !Enum.IsDefined(r.Status.Value)) || (r.Type.HasValue && !Enum.IsDefined(r.Type.Value)))
             throw new ArgumentException("Invalid board filter or page size.");
         return store.ExecuteAsync(r.Scope, async (s, token) =>
         {
@@ -83,7 +84,8 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
             var now = clock.GetUtcNow();
             var filtered = items.Where(x => (r.IncludeArchived || !x.IsArchived) &&
                 (r.Domain is null || string.Equals(x.Domain, r.Domain.Trim(), StringComparison.OrdinalIgnoreCase)) &&
-                (!r.RoleId.HasValue || x.OwnerRoleId == r.RoleId) && (!r.Status.HasValue || x.Status == r.Status))
+                (!r.RoleId.HasValue || x.OwnerRoleId == r.RoleId) && (!r.Status.HasValue || x.Status == r.Status) &&
+                (!r.Type.HasValue || x.Type == r.Type))
                 .OrderByDescending(x => x.UpdatedAtUtc).ThenBy(x => x.Id).Select(x => WorkItemProjection.View(x, now)).ToArray();
             return new WorkBoard(filtered.Skip(r.Skip).Take(r.Take).ToArray(), filtered.Length, r.Skip, r.Take,
                 new WorkBoardMetrics(filtered.Sum(x => x.ElapsedSeconds), filtered.Sum(x => x.EstimatedSeconds ?? 0),

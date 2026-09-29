@@ -162,11 +162,15 @@ public sealed class ProvisioningTests
 
     private static async Task<(int Code, string Output, string Error)> Cli(string? connection, params string[] args)
     {
-        var root = new DirectoryInfo(AppContext.BaseDirectory);
-        while (root is not null && !File.Exists(Path.Combine(root.FullName, "Neo.AgentOrchestration.slnx"))) root = root.Parent;
-        Assert.NotNull(root);
-        var configuration = typeof(ProvisioningTests).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
-        var dll = Path.Combine(root.FullName, "src", "Neo.AgentOrchestration.Provisioning", "bin", configuration, "net10.0", "neo-agent.dll");
+        var dll = Path.Combine(AppContext.BaseDirectory, "neo-agent.dll");
+        if (!File.Exists(dll))
+        {
+            var root = new DirectoryInfo(AppContext.BaseDirectory);
+            while (root is not null && !File.Exists(Path.Combine(root.FullName, "Neo.AgentOrchestration.slnx"))) root = root.Parent;
+            Assert.NotNull(root);
+            var configuration = typeof(ProvisioningTests).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
+            dll = Path.Combine(root.FullName, "src", "Neo.AgentOrchestration.Provisioning", "bin", configuration, "net10.0", "neo-agent.dll");
+        }
         Assert.True(File.Exists(dll));
         var start = new ProcessStartInfo("dotnet") { UseShellExecute = false, CreateNoWindow = true,
             RedirectStandardOutput = true, RedirectStandardError = true };

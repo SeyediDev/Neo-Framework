@@ -28,4 +28,7 @@ public abstract class WorkPageModel(OrchestrationClient client) : PageModel
         "Backlog" => "بک‌لاگ", "Ready" => "آماده", "InProgress" => "در حال انجام", "Review" => "بازبینی",
         "Blocked" => "مسدود", "Done" => "تکمیل‌شده", "Cancelled" => "لغوشده", _ => value };
     public static readonly string[] Statuses = ["Backlog", "Ready", "InProgress", "Review", "Blocked", "Done", "Cancelled"];
+    public static readonly string[] ItemTypes = ["Task", "UserStory", "Bug", "Epic"];
+    public static string ItemTypeLabel(string value) => value switch {
+        "Task" => "تسک", "UserStory" => "یوزر استوری", "Bug" => "اشکال", "Epic" => "اپیک", _ => value };
 }

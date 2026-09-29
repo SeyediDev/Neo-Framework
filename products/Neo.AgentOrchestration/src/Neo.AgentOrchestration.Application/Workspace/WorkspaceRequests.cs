@@ -24,7 +24,8 @@ public sealed record ConfigureTransition(Guid WorkflowId, Guid ExpectedVersion, 
     Guid FromRoleId, WorkItemStatus FromStatus, Guid? ToRoleId, WorkItemStatus ToStatus,
     WorkflowGates Gates, bool Enabled) : WorkspaceChange;
 public sealed record GetWorkBoard(WorkspaceScope Scope, Guid? ProjectId = null, string? Domain = null,
-    Guid? RoleId = null, WorkItemStatus? Status = null, bool IncludeArchived = false, int Skip = 0, int Take = 50) : IRequest<WorkBoard>;
+    Guid? RoleId = null, WorkItemStatus? Status = null, bool IncludeArchived = false, int Skip = 0, int Take = 50,
+    WorkItemType? Type = null) : IRequest<WorkBoard>;
 public sealed record PreviewWorkflow(WorkspaceScope Scope, Guid WorkflowId, PreviewWorkflowRequest Value) : IRequest<WorkflowPlan>;
 public sealed record ApproveWorkflow(WorkspaceScope Scope, Guid WorkflowId, WorkActor Reviewer,
     ApproveWorkflowRequest Value) : IRequest<WorkflowApprovalView>;

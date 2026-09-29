@@ -33,7 +33,8 @@ public sealed class OperationalMcpTests
         var catalog = await mcp.Call<WorkspaceCatalog>("neo_work_catalog");
         Assert.Contains(catalog.Roles, x => x.Id == f.Role.Id);
         var tools = (await mcp.Request("tools/list", new { })).GetProperty("tools").EnumerateArray().ToArray();
-        Assert.Equal(18, tools.Length);
+        Assert.Equal(19, tools.Length);
+        Assert.Contains(tools, x => x.GetProperty("name").GetString() == "neo_work_planning");
         Assert.True(tools.Single(x => x.GetProperty("name").GetString() == "neo_work_get").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
         Assert.False(tools.Single(x => x.GetProperty("name").GetString() == "neo_run_start").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
         var startSchema = tools.Single(x => x.GetProperty("name").GetString() == "neo_run_start").GetProperty("inputSchema").GetRawText();
@@ -43,6 +44,12 @@ public sealed class OperationalMcpTests
         Assert.DoesNotContain(identity.DefaultRequestHeaders.Authorization!.Parameter!, context.GetRawText());
 
         var parent = await mcp.Call<WorkItemDetails>("neo_work_create", new { request = new CreateWorkItemRequest(f.Project.Id, "mcp-parent", "Parent", "mcp", "Original chat request") });
+        parent = await mcp.Call<WorkItemDetails>("neo_work_planning", new { itemId = parent.Item.Id,
+            request = new SetWorkItemPlanningRequest(parent.Item.Version, "UserStory", "Observable outcome") });
+        Assert.Equal("UserStory", parent.Item.Type);
+        Assert.Equal("Observable outcome", parent.Item.AcceptanceCriteria);
+        var typed = await mcp.Call<WorkBoard>("neo_work_board", new { projectId = f.Project.Id, type = "UserStory" });
+        Assert.Equal(parent.Item.Id, Assert.Single(typed.Items).Id);
         var child = await mcp.Call<WorkItemDetails>("neo_work_create", new { request = new CreateWorkItemRequest(f.Project.Id, "mcp-child", "Child", "api", ParentWorkItemId: parent.Item.Id, EstimatedSeconds: 100) });
         Assert.Single((await mcp.Call<WorkItemDetails>("neo_work_get", new { itemId = parent.Item.Id })).Children);
         child = await mcp.Call<WorkItemDetails>("neo_work_status", new { itemId = child.Item.Id, request = new ChangeStatusRequest(child.Item.Version, "Ready") });
@@ -151,11 +158,15 @@ public sealed class OperationalMcpTests
         }
         public static async Task<McpProcess> Start(ApiFixture api, HttpClient identity, WorkspaceScope scope)
         {
-            var root = new DirectoryInfo(AppContext.BaseDirectory);
-            while (root is not null && !File.Exists(Path.Combine(root.FullName, "Neo.AgentOrchestration.slnx"))) root = root.Parent;
-            Assert.NotNull(root);
-            var configuration = typeof(OperationalMcpTests).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
-            var dll = Path.Combine(root.FullName, "src", "Neo.AgentOrchestration.Mcp", "bin", configuration, "net10.0", "Neo.AgentOrchestration.Mcp.dll");
+            var dll = Path.Combine(AppContext.BaseDirectory, "Neo.AgentOrchestration.Mcp.dll");
+            if (!File.Exists(dll))
+            {
+                var root = new DirectoryInfo(AppContext.BaseDirectory);
+                while (root is not null && !File.Exists(Path.Combine(root.FullName, "Neo.AgentOrchestration.slnx"))) root = root.Parent;
+                Assert.NotNull(root);
+                var configuration = typeof(OperationalMcpTests).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
+                dll = Path.Combine(root.FullName, "src", "Neo.AgentOrchestration.Mcp", "bin", configuration, "net10.0", "Neo.AgentOrchestration.Mcp.dll");
+            }
             Assert.True(File.Exists(dll));
             var url = api.Factory.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single();
             var start = new ProcessStartInfo("dotnet") {

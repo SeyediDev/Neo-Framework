@@ -18,10 +18,11 @@ public sealed class WorkTools(McpApiClient api)
     [McpServerTool(Name = "neo_work_board", ReadOnly = true, Destructive = false, OpenWorld = true)]
     [Description("Read the filtered paged board and full-filter time metrics. Inspect role ownership across ALL projects before a claim; a project-filtered board alone cannot prove a workspace role is free.")]
     public Task<string> Board(CancellationToken ct, Guid? projectId = null, string? domain = null, Guid? roleId = null,
-        string? status = null, bool includeArchived = false, int skip = 0, int take = 50)
+        string? status = null, bool includeArchived = false, int skip = 0, int take = 50, string? type = null)
     {
         var query = new Dictionary<string,string?> { ["projectId"] = projectId?.ToString("D"), ["domain"] = domain,
             ["roleId"] = roleId?.ToString("D"), ["status"] = status, ["includeArchived"] = includeArchived.ToString(),
+            ["type"] = type,
             ["skip"] = skip.ToString(System.Globalization.CultureInfo.InvariantCulture),
             ["take"] = take.ToString(System.Globalization.CultureInfo.InvariantCulture) };
         return api.Send<WorkBoard>("items?" + string.Join("&", query.Where(x => x.Value is not null)
@@ -35,6 +36,11 @@ public sealed class WorkTools(McpApiClient api)
     [McpServerTool(Name = "neo_work_create", ReadOnly = false, Destructive = false, OpenWorld = true)]
     [Description("Create an authorized task or same-project child. Preserve the original request in description and append later context with log. Not idempotent: after an uncertain response, search the board by project/key before retrying.")]
     public Task<string> Create(CreateWorkItemRequest request, CancellationToken ct) => api.Send<WorkItemDetails>("items", ct, request);
+
+    [McpServerTool(Name = "neo_work_planning", ReadOnly = false, Destructive = false, OpenWorld = true)]
+    [Description("Set Task/UserStory/Bug/Epic type and acceptance criteria (max 8000 characters) at expectedVersion. Preserves original description and criteria history; rejects foreign ownership and closed/archived items. Does not approve or complete work.")]
+    public Task<string> Planning(Guid itemId, SetWorkItemPlanningRequest request, CancellationToken ct)
+        => api.Send<WorkItemDetails>($"items/{itemId:D}/planning", ct, request, HttpMethod.Put);
 
     [McpServerTool(Name = "neo_work_claim", ReadOnly = false, Destructive = false, OpenWorld = true)]
     [Description("Claim a Ready task at its current expectedVersion for a free enabled role. API takes agent identity from the issuer token and chat from server settings, starts time, and rejects takeover/dependency/role/version conflicts.")]

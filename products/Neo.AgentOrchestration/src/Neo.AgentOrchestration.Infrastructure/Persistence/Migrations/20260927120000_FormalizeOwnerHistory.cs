@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Neo.AgentOrchestration.Infrastructure.Persistence.Migrations;
 
+// Historical unregistered draft: it intentionally has no Migration/DbContext
+// attributes and was never applied by EF. TypedWorkItems adopts the imported
+// table with data-preserving guards and a generated model snapshot instead.
 public partial class FormalizeOwnerHistory : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)

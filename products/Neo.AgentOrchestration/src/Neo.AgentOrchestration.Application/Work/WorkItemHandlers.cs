@@ -21,7 +21,8 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
                 ? await Item(session, request.Scope, request.ParentWorkItemId.Value, token) : null;
             var now = clock.GetUtcNow();
             var item = WorkItem.Create(request.Scope, project, request.Key, request.Title, request.Domain,
-                request.Actor, now, request.Description, request.Priority, parent, request.EstimatedSeconds);
+                request.Actor, now, request.Description, request.Priority, parent, request.EstimatedSeconds,
+                request.Type, request.AcceptanceCriteria);
             var items = await ProjectItems(session, request.Scope, project.Id, token);
             if (items.Any(x => string.Equals(x.Key, item.Key, StringComparison.OrdinalIgnoreCase)))
                 throw new WorkItemConflictException("Work item key already exists in this project.");
@@ -74,6 +75,8 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
     {
         switch (request.Change)
         {
+            case PlanningChange change:
+                item.SetPlanning(request.Scope, request.Actor, change.Type, change.AcceptanceCriteria, now); break;
             case StatusChange change:
                 if (change.Status == WorkItemStatus.Done)
                 {

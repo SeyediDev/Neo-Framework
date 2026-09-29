@@ -66,6 +66,7 @@ All routes below are relative to:
 | GET `items` | Paged board plus metrics over **all filtered** items |
 | GET `items/{id}` | Item, direct children, dependencies, full logs, evidence and time intervals |
 | POST `items` | Create a task/subtask; 201 with a resolvable Location |
+| PUT `items/{id}/planning` | ExpectedVersion, Type (Task/UserStory/Bug/Epic), AcceptanceCriteria (null clears, max 8000); owner/version checks and retained history |
 | POST `items/{id}/claim` | ExpectedVersion, RoleId, Branch; identity from token/chat |
 | POST `items/{id}/status` | ExpectedVersion, named Status, optional Note |
 | POST `items/{id}/logs` | ExpectedVersion, Message; append, not overwrite description |
@@ -100,7 +101,7 @@ after an uncertain response, query by project/key before attempting creation
 again. Unique constraints reject duplicate keys with 409; automatic command
 replay is not enabled.
 
-Board filters are `projectId`, `domain`, `roleId`, `status`, `includeArchived`,
+Board filters are `projectId`, `domain`, `roleId`, `status`, `type`, `includeArchived`,
 `skip` and `take` (default 50, maximum 200). Filters combine with AND. Sorting
 is updated-time descending, then identifier. Metrics count the same filtered
 set before pagination. Subtasks are ordinary board rows with ParentWorkItemId;

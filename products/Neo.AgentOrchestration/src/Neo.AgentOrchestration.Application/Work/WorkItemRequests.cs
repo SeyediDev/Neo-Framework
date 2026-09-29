@@ -7,7 +7,8 @@ namespace Neo.AgentOrchestration.Application.Work;
 
 public sealed record CreateWorkItem(WorkspaceScope Scope, Guid ProjectId, string Key, string Title,
     string Domain, WorkActor Actor, string? Description = null, WorkItemPriority Priority = WorkItemPriority.Normal,
-    Guid? ParentWorkItemId = null, long? EstimatedSeconds = null) : IRequest<WorkItemDetails>;
+    Guid? ParentWorkItemId = null, long? EstimatedSeconds = null, WorkItemType Type = WorkItemType.Task,
+    string? AcceptanceCriteria = null) : IRequest<WorkItemDetails>;
 public sealed record ClaimWorkItem(WorkspaceScope Scope, Guid WorkItemId, Guid RoleId, WorkActor Actor,
     Guid ExpectedVersion, string? Branch = null) : IRequest<WorkItemDetails>;
 public sealed record GetWorkItem(WorkspaceScope Scope, Guid WorkItemId) : IRequest<WorkItemDetails>;
@@ -15,6 +16,7 @@ public sealed record UpdateWorkItem(WorkspaceScope Scope, Guid WorkItemId, WorkA
     Guid ExpectedVersion, WorkItemChange Change) : IRequest<WorkItemDetails>;
 
 public abstract record WorkItemChange;
+public sealed record PlanningChange(WorkItemType Type, string? AcceptanceCriteria) : WorkItemChange;
 public sealed record StatusChange(WorkItemStatus Status, string? Note = null) : WorkItemChange;
 public sealed record LogChange(string Message) : WorkItemChange;
 public sealed record EstimateChange(long? Seconds) : WorkItemChange;

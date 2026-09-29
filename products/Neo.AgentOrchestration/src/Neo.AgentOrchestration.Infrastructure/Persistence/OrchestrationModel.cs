@@ -52,6 +52,8 @@ internal static class OrchestrationModel
         work.Property(x => x.Version).IsConcurrencyToken();
         work.Property(x => x.Key).HasMaxLength(80); work.Property(x => x.Title).HasMaxLength(200);
         work.Property(x => x.Domain).HasMaxLength(80); work.Property(x => x.Description).HasMaxLength(32000);
+        work.Property(x => x.Type).HasDefaultValue(WorkItemType.Task);
+        work.Property(x => x.AcceptanceCriteria).HasMaxLength(8000);
         work.Property(x => x.OwnerAgentId).HasMaxLength(200); work.Property(x => x.OwnerChatId).HasMaxLength(200);
         work.Property(x => x.Branch).HasMaxLength(250);
         work.HasAlternateKey(x => new { x.Id, x.ProjectId });
@@ -67,6 +69,7 @@ internal static class OrchestrationModel
         work.ToTable("WorkItems", "nao", t =>
         {
             t.HasCheckConstraint("CK_WorkItems_Status", "[Status] BETWEEN 1 AND 7 AND [Priority] BETWEEN 1 AND 4");
+            t.HasCheckConstraint("CK_WorkItems_Type", "[Type] BETWEEN 1 AND 4");
             t.HasCheckConstraint("CK_WorkItems_Estimate", "[EstimatedSeconds] IS NULL OR [EstimatedSeconds] > 0");
             t.HasCheckConstraint("CK_WorkItems_Owner", "([OwnerRoleId] IS NULL AND [OwnerAgentId] IS NULL AND [OwnerChatId] IS NULL AND [Status] <> 3) OR ([OwnerRoleId] IS NOT NULL AND [OwnerAgentId] IS NOT NULL AND [OwnerChatId] IS NOT NULL)");
             t.HasCheckConstraint("CK_WorkItems_Parent", "[ParentWorkItemId] IS NULL OR [ParentWorkItemId] <> [Id]");

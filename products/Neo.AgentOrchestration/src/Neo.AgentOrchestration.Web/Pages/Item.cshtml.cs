@@ -5,6 +5,8 @@ public sealed class ItemModel(OrchestrationClient client) : WorkPageModel(client
 {
     [BindProperty(SupportsGet=true)] public Guid Id { get; set; }
     [BindProperty] public Guid Version { get; set; }
+    [BindProperty] public string ItemType { get; set; } = "Task";
+    [BindProperty] public string? AcceptanceCriteria { get; set; }
     [BindProperty] public Guid RoleId { get; set; }
     [BindProperty] public string? Branch { get; set; }
     [BindProperty] public string NextStatus { get; set; } = "Ready";
@@ -43,6 +45,7 @@ public sealed class ItemModel(OrchestrationClient client) : WorkPageModel(client
         await Attempt(()=>Load(ct));return Page();
     }
     public Task<IActionResult> OnPostClaimAsync(CancellationToken ct)=>Change("claim",new ClaimWorkItemRequest(Version,RoleId,Branch),ct);
+    public Task<IActionResult> OnPostPlanningAsync(CancellationToken ct)=>Change("planning",new SetWorkItemPlanningRequest(Version,ItemType,AcceptanceCriteria),ct,true);
     public Task<IActionResult> OnPostStatusAsync(CancellationToken ct)=>Change("status",new ChangeStatusRequest(Version,NextStatus,Message),ct);
     public Task<IActionResult> OnPostLogAsync(CancellationToken ct)=>Change("logs",new AppendLogRequest(Version,Message??""),ct);
     public Task<IActionResult> OnPostEstimateAsync(CancellationToken ct)=>Change("estimate",new SetEstimateRequest(Version,Seconds),ct,true);

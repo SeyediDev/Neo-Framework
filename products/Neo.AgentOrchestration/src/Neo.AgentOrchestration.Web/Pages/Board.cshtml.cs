@@ -8,6 +8,7 @@ public sealed class BoardModel(OrchestrationClient client) : WorkPageModel(clien
     [BindProperty(SupportsGet = true)] public Guid? RoleId { get; set; }
     [BindProperty(SupportsGet = true)] public string? Domain { get; set; }
     [BindProperty(SupportsGet = true)] public string? State { get; set; }
+    [BindProperty(SupportsGet = true)] public string? ItemType { get; set; }
     [BindProperty(SupportsGet = true)] public bool IncludeArchived { get; set; }
     [BindProperty(SupportsGet = true)] public int Skip { get; set; }
     public WorkBoard? Board { get; private set; }
@@ -19,6 +20,7 @@ public sealed class BoardModel(OrchestrationClient client) : WorkPageModel(clien
         if (RoleId.HasValue) query += "&roleId=" + RoleId;
         if (!string.IsNullOrWhiteSpace(Domain)) query += "&domain=" + Uri.EscapeDataString(Domain);
         if (!string.IsNullOrWhiteSpace(State)) query += "&status=" + Uri.EscapeDataString(State);
+        if (!string.IsNullOrWhiteSpace(ItemType)) query += "&type=" + Uri.EscapeDataString(ItemType);
         Board = await Get<WorkBoard>(query, ct);
     });
 }

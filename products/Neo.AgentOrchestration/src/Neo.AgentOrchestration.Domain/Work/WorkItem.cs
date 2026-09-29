@@ -19,6 +19,8 @@ public sealed partial class WorkItem : BaseEntity<Guid>
     public string Title { get; private set; } = "";
     public string Domain { get; private set; } = "";
     public string? Description { get; private set; }
+    public WorkItemType Type { get; private set; } = WorkItemType.Task;
+    public string? AcceptanceCriteria { get; private set; }
     public WorkItemStatus Status { get; private set; } = WorkItemStatus.Backlog;
     public WorkItemPriority Priority { get; private set; }
     public Guid? OwnerRoleId { get; private set; }
@@ -42,13 +44,15 @@ public sealed partial class WorkItem : BaseEntity<Guid>
 
     public static WorkItem Create(WorkspaceScope scope, Project project, string key, string title,
         string domain, WorkActor actor, DateTimeOffset now, string? description = null,
-        WorkItemPriority priority = WorkItemPriority.Normal, WorkItem? parent = null, long? estimatedSeconds = null)
+        WorkItemPriority priority = WorkItemPriority.Normal, WorkItem? parent = null, long? estimatedSeconds = null,
+        WorkItemType type = WorkItemType.Task, string? acceptanceCriteria = null)
     {
         ArgumentNullException.ThrowIfNull(project);
         ArgumentNullException.ThrowIfNull(actor);
         project.RequireScope(scope);
         if (!project.IsEnabled) throw new InvalidOperationException("Project is disabled.");
         if (!Enum.IsDefined(priority)) throw new ArgumentOutOfRangeException(nameof(priority));
+        if (!Enum.IsDefined(type)) throw new ArgumentOutOfRangeException(nameof(type));
         ValidateEstimate(estimatedSeconds);
         if (parent is not null)
         {
@@ -62,10 +66,30 @@ public sealed partial class WorkItem : BaseEntity<Guid>
             ProjectId = ProjectRules.Id(project.Id), ParentWorkItemId = parent?.Id,
             Key = ProjectRules.Key(key), Title = WorkRules.Required(title, 200),
             Domain = WorkRules.Required(domain, 80), Description = WorkRules.Optional(description, 32000),
+            Type = type, AcceptanceCriteria = WorkRules.Optional(acceptanceCriteria, 8000),
             Priority = priority, EstimatedSeconds = estimatedSeconds, CreatedAtUtc = now.ToUniversalTime()
         };
         item.Record(actor, "Created", "Work item created.", now);
+        if (item.AcceptanceCriteria is not null)
+            item.Record(actor, "AcceptanceCriteriaChanged", item.AcceptanceCriteria, now);
         return item;
+    }
+
+    public void SetPlanning(WorkspaceScope scope, WorkActor actor, WorkItemType type,
+        string? acceptanceCriteria, DateTimeOffset now)
+    {
+        RequireEditable(scope, actor, now);
+        if (OwnerAgentId is not null) RequireOwner(actor);
+        if (IsClosed) throw new InvalidOperationException("Closed work cannot change its acceptance criteria or type.");
+        if (!Enum.IsDefined(type)) throw new ArgumentOutOfRangeException(nameof(type));
+        var criteria = WorkRules.Optional(acceptanceCriteria, 8000);
+        if (Type == type && AcceptanceCriteria == criteria) return;
+        var previousType = Type;
+        var changedCriteria = AcceptanceCriteria != criteria;
+        Type = type;
+        AcceptanceCriteria = criteria;
+        Record(actor, "PlanningChanged", $"Type: {previousType} -> {type}.", now);
+        if (changedCriteria) Record(actor, "AcceptanceCriteriaChanged", criteria ?? "(cleared)", now);
     }
 
     public void RequireScope(WorkspaceScope scope)
