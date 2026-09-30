@@ -1,5 +1,17 @@
 # Fanasa visual identity
 
+The shared workspace navigation displays the user-approved English signature
+"Seeking The Best For The Best" with LTR typography inside the RTL layout.
+This replaces the visible imported workspace label only; stored workspace names,
+identifiers and navigation routes are not renamed. Decorative accents belong to
+the signature, never to the original logo.
+
+The navigation marks the current page with `aria-current`; creating work is a
+distinct action. Filters wrap with wider desktop fields and two mobile columns.
+The horizontally scrollable board is keyboard-focusable with a text hint.
+Card, metric, table and pagination treatments share the same visual hierarchy.
+No client-side scripts, task-state changes or new drag-and-drop behavior are added.
+
 The user requested the Fanasa identity for Neo Agent Orchestration Web.
 Neo remains the product name; this is not a rename to a capability center.
 

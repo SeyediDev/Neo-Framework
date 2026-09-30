@@ -1,9 +1,10 @@
 @model Neo.AgentOrchestration.Web.Pages.WorkPageModel
+@{ var currentPage = ViewContext.RouteData.Values["page"]?.ToString(); }
 <link rel="stylesheet" href="~/flows.css" asp-append-version="true" />
-<div class="workspace-bar"><span>@Model.Catalog?.Workspace.Name</span><nav aria-label="فضای کاری">
-<a asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">برد کارها</a>
-<a asp-page="/Roles" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">کارهای رول‌ها</a>
-<a asp-page="/Manage" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پروژه‌ها، رول‌ها و فلوها</a>
-<a asp-page="/Templates" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">الگوهای پروژه</a>
-<a asp-page="/NewItem" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">کار جدید</a></nav></div>
+<div class="workspace-bar"><div class="workspace-signature" dir="ltr" lang="en"><span class="signature-lead">Seeking The Best</span> <span class="signature-finish">For The Best</span></div><nav aria-label="فضای کاری">
+<a aria-current="@(currentPage == "/Board" ? "page" : null)" asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">برد کارها</a>
+<a aria-current="@(currentPage == "/Roles" ? "page" : null)" asp-page="/Roles" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">کارهای رول‌ها</a>
+<a aria-current="@(currentPage == "/Manage" ? "page" : null)" asp-page="/Manage" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پروژه‌ها، رول‌ها و فلوها</a>
+<a aria-current="@(currentPage == "/Templates" ? "page" : null)" asp-page="/Templates" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">الگوهای پروژه</a>
+<a class="new-work-link" aria-current="@(currentPage == "/NewItem" ? "page" : null)" asp-page="/NewItem" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId"><span aria-hidden="true">＋</span> کار جدید</a></nav></div>
 @if (Model.Error is { } error) { <div class="alert" role="alert">@error <a asp-page="/Login">ورود مجدد</a></div> }

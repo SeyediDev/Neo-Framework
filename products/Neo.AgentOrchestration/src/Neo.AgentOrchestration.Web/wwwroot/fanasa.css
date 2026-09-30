@@ -58,3 +58,63 @@ footer { background: var(--paper); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; }
 }
+/* Editorial signature: readable text, not a replacement for the Fanasa mark. */
+/* Shared workbench ergonomics: no changes to task or filter semantics. */
+main { padding-top: 20px; }
+h1 { font-size: clamp(25px, 3vw, 34px); letter-spacing: -.5px; }
+.page-heading > div > p:last-child { color: var(--muted); margin-bottom: 4px; }
+.workspace-bar { gap: 16px; padding: 14px 18px; margin-bottom: 24px; box-shadow: 0 4px 18px #141c3305; }
+.workspace-bar nav { gap: 6px; }
+.workspace-bar nav a { display: inline-flex; align-items: center; gap: 6px; min-height: 42px; padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--muted); }
+.workspace-bar nav a:hover { color: var(--accent); background: #edf2fa; }
+.workspace-bar nav a[aria-current="page"] { color: var(--accent); background: #e9effa; font-weight: 700; box-shadow: inset 0 -2px var(--accent); }
+.workspace-bar nav a.new-work-link { color: #fff; background: var(--accent); font-weight: 700; }
+.filters.panel { padding: 18px; gap: 12px 16px; border-radius: 14px; }
+.filters label { flex: 1 1 190px; min-width: 170px; }
+.filters select, .filters input:not([type="checkbox"]) { margin-bottom: 0; }
+.filters select { text-overflow: ellipsis; padding-inline-end: 26px; }
+.filters button { min-height: 44px; }
+.filters > a { padding: 10px 4px; font-size: 13px; }
+.metrics { gap: 12px; }
+.metrics section { padding: 16px; border-radius: 12px; }
+.metrics strong { font-variant-numeric: tabular-nums; line-height: 1.7; font-size: 17px; }
+.kanban { gap: 14px; scrollbar-width: auto; scrollbar-color: #8899b5 #e8edf5; }
+.kanban:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.column { flex-basis: 300px; padding: 12px; }
+.column > h2 { align-items: center; min-height: 36px; }
+.card { padding: 16px; border-radius: 10px; }
+.card:hover, .card:focus-within { box-shadow: 0 5px 18px #141c3312; }
+.card h3 { margin: 12px 0; }
+.card h3 a { display: block; }
+.card-meta { gap: 12px; align-items: center; overflow-wrap: anywhere; }
+.card .description { line-height: 1.9; margin-bottom: 12px; }
+.card .tags { gap: 5px; }
+.card .small { margin-block: 12px 4px; }
+body .role-column { background: #edf0f6; }
+.role-board { grid-template-columns: repeat(auto-fit,minmax(min(100%,300px),1fr)); }
+.count { min-width: 28px; text-align: center; font-size: 13px; }
+.pagination { justify-content: center; flex-wrap: wrap; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--paper); }
+.pagination a { min-height: 42px; padding: 8px 16px; border-radius: 8px; background: #edf2fa; text-decoration: none; }
+.table-scroll { border: 1px solid var(--border); border-radius: 10px; }
+tbody tr:hover { background: #f7f9fc; }
+summary { padding-block: 5px; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+@media (max-width: 760px) {
+  .workspace-bar { align-items: stretch; }
+  .workspace-signature { width: 100%; }
+  .workspace-bar nav { width: 100%; }
+  .workspace-bar nav a { flex: 1 1 auto; justify-content: center; }
+  .filters label { flex-basis: calc(50% - 16px); min-width: 0; }
+  .filters .check { min-width: 140px; }
+  .filters button { flex: 1 1 140px; }
+  .metrics { gap: 8px; }
+  .metrics section { padding: 12px; min-width: 0; }
+  .metrics strong { font-size: 14px; overflow-wrap: anywhere; }
+  .column { flex-basis: min(300px, 84vw); }
+}
+.workspace-signature { position: relative; isolation: isolate; padding: 8px 18px 12px 24px; color: var(--fanasa-ink); line-height: 1.35; }
+.workspace-signature::before { content: ""; position: absolute; left: 0; top: 15px; width: 8px; height: 8px; background: var(--fanasa-saffron); transform: rotate(45deg); }
+.workspace-signature::after { content: ""; position: absolute; left: 24px; bottom: 3px; width: 72px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--fanasa-lapis), var(--fanasa-turquoise), var(--fanasa-saffron)); }
+.signature-lead { display: block; font-size: 11px; font-weight: 400; letter-spacing: 2px; }
+.signature-finish { display: block; font-size: clamp(20px, 2vw, 26px); font-weight: 700; letter-spacing: -.5px; color: var(--fanasa-lapis); }
+@media (forced-colors: active) { .workspace-signature::before, .workspace-signature::after { background: CanvasText; } }

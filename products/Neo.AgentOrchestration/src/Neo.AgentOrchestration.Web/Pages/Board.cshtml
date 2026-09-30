@@ -16,7 +16,7 @@
 <div class="metrics"><section><span>کارهای مطابق فیلتر</span><strong>@board.Total</strong></section><section><span>زمان سپری‌شده</span><strong>@Time(board.Metrics.ElapsedSeconds)</strong></section><section><span>برآورد کل</span><strong>@Time(board.Metrics.EstimatedSeconds)</strong></section><section><span>زمان‌سنج فعال</span><strong>@board.Metrics.TrackingCount</strong></section></div>
 <p class="muted">آمار برای همه نتایج فیلتر است؛ کارت‌ها صفحه‌ای نمایش داده می‌شوند. مصرف برآورد زمانی، درصد تکمیل کار نیست.</p>
 @if (board.Items.Count == 0) { <section class="panel empty"><h2>کاری برای این فیلتر پیدا نشد</h2><p>فیلترها را تغییر دهید یا یک کار جدید بسازید.</p></section> }
-else { <div class="kanban" aria-label="کانبان">
+else { <p class="small board-hint" id="board-hint">برای دیدن همهٔ مراحل، برد را افقی پیمایش کنید. برای جزئیات و سابقه، عنوان کار را انتخاب کنید.</p><div class="kanban" role="region" tabindex="0" aria-label="کانبان" aria-describedby="board-hint">
 @foreach(var state in Statuses.Where(s=>Model.State is null or "" || s==Model.State)) {
 <section class="column flow-column" data-state="@state"><h2>@Status(state) <span class="count">@(board.Metrics.StatusCounts.GetValueOrDefault(state))</span></h2>
 @foreach(var item in board.Items.Where(x=>x.Status==state)) {
