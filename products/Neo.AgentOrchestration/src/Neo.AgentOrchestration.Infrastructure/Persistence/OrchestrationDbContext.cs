@@ -36,6 +36,7 @@ public sealed class OrchestrationDbContext(DbContextOptions<OrchestrationDbConte
         OrchestrationModel.Configure(builder);
         AgentRunModel.Configure(builder);
         DeliveryModel.Configure(builder);
+        TemplateModel.Configure(builder);
     }
 }
 

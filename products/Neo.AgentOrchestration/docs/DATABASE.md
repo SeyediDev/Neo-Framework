@@ -11,6 +11,10 @@ known timestamp/rowversion drift and adds scoped constraints/indexes. Existing
 history rows are retained. This migration is forward-only: downgrade cannot
 delete imported history or acceptance data; use a reviewed forward repair or
 an explicitly approved backup restore.
+The forward-only ProjectTemplates migration adds immutable template revisions
+and scoped instantiation receipts. Unique workspace/request IDs make replay
+durable; generated projects remain linked to their original template version.
+It adds tables only and does not update existing tasks or start workflows.
 The additive delivery migration reuses Neo Outbox and adds scoped delivery/inbox
 records; see [DELIVERY.md](DELIVERY.md) for atomicity, retries and worker boundaries.
 There is no automatic import, dispatch, redirect, dual write or legacy cleanup.

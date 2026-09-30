@@ -13,6 +13,8 @@ using Neo.AgentOrchestration.Domain.Workflows;
 using Neo.AgentOrchestration.Domain.Runs;
 using Neo.AgentOrchestration.Application.Runs;
 using Neo.AgentOrchestration.Contracts;
+using Neo.AgentOrchestration.Application.Templates;
+using Neo.AgentOrchestration.Domain.Templates;
 using Neo.Infrastructure.Data.Repository.Ef;
 
 namespace Neo.AgentOrchestration.Infrastructure.Persistence;
@@ -51,8 +53,16 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         // context is never reused. Operations are not automatically replayed.
     }
 
-    internal sealed class Session(OrchestrationDbContext db, WorkspaceScope scope) : IRunSession
+    internal sealed class Session(OrchestrationDbContext db, WorkspaceScope scope) : IRunSession, ITemplateSession
     {
+        public async Task<IReadOnlyList<ProjectTemplate>> GetTemplatesAsync(CancellationToken ct)
+            => await db.Set<ProjectTemplate>().Where(x => x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId)
+                .OrderBy(x => x.Key).ThenByDescending(x => x.Revision).ToArrayAsync(ct);
+        public async Task<IReadOnlyList<TemplateInstantiation>> GetTemplateInstantiationsAsync(CancellationToken ct)
+            => await db.Set<TemplateInstantiation>().Where(x => x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId)
+                .OrderByDescending(x => x.CreatedAtUtc).ToArrayAsync(ct);
+        public void Add(ProjectTemplate template) { template.RequireScope(scope); db.Add(template); }
+        public void Add(TemplateInstantiation receipt) { scope.Require(receipt.OrganizationId, receipt.WorkspaceId); db.Add(receipt); }
         public async Task<AgentRun?> GetRunAsync(Guid id, CancellationToken ct)
             => db.AgentRuns.Local.SingleOrDefault(x => x.Id == id && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId)
                 ?? await db.AgentRuns.SingleOrDefaultAsync(x => x.Id == id && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId, ct);

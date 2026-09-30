@@ -7,6 +7,10 @@ No startup path migrates, seeds, imports or dispatches work.
 
 ## Configuration and access
 
+[Project template routes](PROJECT-TEMPLATES.md) add scoped version publication,
+read-only preview and atomic idempotent instantiation. Configure/write grants are
+required as documented; generated workflows remain disabled.
+
 `POST items` accepts optional `requestId` (nonempty GUID). The same ID, source
 agent/chat and exact body is retry-safe across projects in the authorized workspace.
 Replay returns the existing item/current state at the same creation route (201),

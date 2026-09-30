@@ -1,0 +1,41 @@
+@page "/work/{organizationId:guid}/{workspaceId:guid}/templates"
+@model Neo.AgentOrchestration.Web.Pages.TemplatesModel
+@{ ViewData["Title"] = "الگوهای پروژه"; }
+<partial name="_ScopeNav" model="Model" />
+<h1>الگوهای نسخه‌دار پروژه</h1>
+<p>هر انتشار یک نسخهٔ مستقل است. پروژه‌های ساخته‌شده تغییر نمی‌کنند. پیش‌نمایش داده‌ای ثبت نمی‌کند و ساخت پروژه هیچ ایجنتی را اجرا نمی‌کند.</p>
+@if(Model.Templates is {} catalog){
+<section class="panel"><h2>انتشار نسخه</h2>
+<form method="post" asp-page-handler="Publish" class="form-grid">
+<label>کلید الگو<input asp-for="Key" maxlength="80" required dir="ltr" /></label>
+<label>نام<input asp-for="Name" maxlength="200" required /></label>
+<label>آخرین نسخهٔ مورد انتظار (برای الگوی جدید: صفر)<input asp-for="ExpectedLatestRevision" type="number" min="0" required /></label>
+<label class="wide">تعریف الگو؛ JSON بدون اطلاعات محرمانه<textarea asp-for="DefinitionJson" rows="18" maxlength="64000" dir="ltr" required></textarea></label>
+<button>انتشار نسخهٔ بعدی</button></form></section>
+<section class="panel"><h2>پیش‌نمایش ساخت پروژه</h2>
+<form method="post" asp-page-handler="Preview" class="form-grid">
+<input type="hidden" asp-for="RequestId" />
+<label>نسخهٔ الگو<select asp-for="TemplateId" required>@foreach(var t in catalog.Templates){<option value="@t.Id">@t.Name · @t.Key · نسخه @t.Revision</option>}</select></label>
+<label>کلید پروژهٔ جدید<input asp-for="ProjectKey" required maxlength="80" dir="ltr" /></label>
+<label>نام پروژه<input asp-for="ProjectName" required maxlength="200" /></label>
+<label class="wide">پارامترها، مثلاً {"feature":"قابلیت جدید"}<textarea asp-for="ParametersJson" rows="4" maxlength="40000" dir="ltr" required></textarea></label>
+<button>پیش‌نمایش بدون ذخیره</button></form></section>
+@if(Model.Preview is {} preview){
+<section class="panel"><h2>پیش‌نمایش: @preview.ProjectName</h2>
+<p>نسخه @preview.Revision · @preview.Items.Count آیتم · @preview.RoleKeys.Count رول · @preview.WorkflowKeys.Count فلو (غیرفعال)</p>
+<table><thead><tr><th>کلید</th><th>عنوان</th><th>نوع</th><th>والد</th><th>وابستگی</th><th>معیار پذیرش</th></tr></thead><tbody>
+@foreach(var item in preview.Items){<tr><td>@item.Key</td><td>@item.Title</td><td>@item.Type</td><td>@item.ParentKey</td><td>@string.Join(", ",item.DependsOn)</td><td>@item.AcceptanceCriteria</td></tr>}
+</tbody></table>
+<form method="post" asp-page-handler="Instantiate">
+<input type="hidden" asp-for="TemplateId" /><input type="hidden" asp-for="RequestId" />
+<input type="hidden" asp-for="ProjectKey" /><input type="hidden" asp-for="ProjectName" /><input type="hidden" asp-for="ParametersJson" />
+<button>تأیید و ساخت اتمیک پروژه</button></form></section>}
+<section class="panel"><h2>نسخه‌های منتشرشده</h2>
+@foreach(var template in catalog.Templates){<details><summary>@template.Name · @template.Key · نسخه @template.Revision</summary>
+<p dir="ltr">@template.ContentHash</p><pre dir="ltr">@template.DefinitionJson</pre></details>}
+</section>
+<section class="panel"><h2>سابقهٔ ساخت از الگو</h2>
+@foreach(var instance in catalog.Instantiations){var template=catalog.Templates.SingleOrDefault(x=>x.Id==instance.TemplateId);
+<details><summary><a asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-ProjectId="@instance.ProjectId">@Model.Project(instance.ProjectId)</a> · @template?.Name · نسخه @template?.Revision</summary>
+<p>@instance.CreatedAtUtc</p><pre dir="ltr">@instance.ParametersJson</pre><pre dir="ltr">@instance.MappingJson</pre></details>}
+</section>}

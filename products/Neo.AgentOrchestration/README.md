@@ -75,6 +75,8 @@ The Web calls the API through HTTP and references only public contracts.
 The API composes Neo.Endpoint and MediatR. Domain/Application/Infrastructure
 projects reference the corresponding Neo libraries. No Hyper or Neo.Bpms
 project, layout, static asset or database is required to start these hosts.
+[Versioned project templates](docs/PROJECT-TEMPLATES.md) support read-only preview
+and atomic project/task/role/workflow creation with immutable provenance.
 No database is created or migrated on startup.
 
 The public system endpoint and liveness expose no task data.
