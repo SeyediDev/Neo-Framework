@@ -9,5 +9,7 @@
 @if (User.Identity?.IsAuthenticated == true) { <form method="post" asp-page="/Logout"><button class="quiet" type="submit">خروج از پنل</button></form> }
 else { <a asp-page="/Login">ورود</a> }
 </nav></header>
-<main id="content">@RenderBody()</main><footer>مدیریت کار و هماهنگی ایجنت‌ها · Neo <span aria-hidden="true">／</span> با هویت بصری فن‌آسا</footer>
+<div id="spa-feedback" class="spa-feedback" hidden><span id="spa-message" role="status" aria-live="polite"></span><button id="spa-refresh" type="button" hidden>دریافت آخرین وضعیت</button><a id="spa-login" href="/Login" hidden>ورود مجدد</a><button id="spa-dismiss" type="button" aria-label="بستن پیام">×</button></div>
+<main id="content" tabindex="-1">@RenderBody()</main><footer>مدیریت کار و هماهنگی ایجنت‌ها · Neo <span aria-hidden="true">／</span> با هویت بصری فن‌آسا</footer>
+<script src="~/workbench.js" asp-append-version="true" defer></script>
 </body></html>

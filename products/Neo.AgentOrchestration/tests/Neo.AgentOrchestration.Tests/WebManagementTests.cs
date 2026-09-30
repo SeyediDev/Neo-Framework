@@ -90,10 +90,13 @@ public sealed class WebManagementTests
         Assert.Throws<InvalidOperationException>(()=>WebIdentity.ChatId("https://identity.example.test",new ClaimsPrincipal()));
     }
 
-    [Fact]
-    public async Task Sql_web_forms_manage_task_history_time_children_filters_and_archive_through_the_api()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Sql_web_forms_manage_task_history_time_children_filters_and_archive_through_the_api(bool spa)
     {
         var f=await Fixture.Create();await using var web=await WebFixture.Create(f);
+        if(spa) web.Client.DefaultRequestHeaders.Add("X-Neo-Navigation","1");
         var root=web.Root;var title="کار قابل پیگیری";var description="خط اول\nخط دوم <script>alert('x')</script>";
         var created=await web.Submit(root+"/new",null,new(){["ProjectId"]=f.Project.Id.ToString(),["Key"]="web-parent",["Title"]=title,["Domain"]="integration",["Description"]=description,["EstimatedSeconds"]="100"});
         Assert.Equal(HttpStatusCode.Redirect,created.StatusCode);var itemUrl=created.Headers.Location!.ToString();
@@ -152,10 +155,13 @@ public sealed class WebManagementTests
         Assert.Equal(HttpStatusCode.Redirect,(await web.Submit(finishedUrl,"Return",[])).StatusCode);
         await web.Export("manage",await web.Html(manage));await web.Export("run",await web.Html(finishedUrl));
     }
-    [Fact]
-    public async Task Web_writes_require_antiforgery_and_api_grants_and_cannot_cross_workspaces()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Web_writes_require_antiforgery_and_api_grants_and_cannot_cross_workspaces(bool spa)
     {
         var f=await Fixture.Create();await using var web=await WebFixture.Create(f,["read"]);
+        if(spa) web.Client.DefaultRequestHeaders.Add("X-Neo-Navigation","1");
         var response=await web.Client.PostAsync(web.Root+"/new",new FormUrlEncodedContent(new Dictionary<string,string>{["Title"]="forged"}),Ct);
         Assert.Equal(HttpStatusCode.BadRequest,response.StatusCode);
         Assert.Equal(HttpStatusCode.Forbidden,(await web.Submit(web.Root+"/new",null,new(){["ProjectId"]=f.Project.Id.ToString(),["Key"]="forbidden",["Title"]="No permission",["Domain"]="test"})).StatusCode);

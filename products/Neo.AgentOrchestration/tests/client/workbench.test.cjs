@@ -1,0 +1,83 @@
+// Unit tests for request/error behavior, not a replacement for browser acceptance.
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const vm = require('node:vm');
+const fs = require('node:fs');
+const path = require('node:path');
+const source = fs.readFileSync(path.join(__dirname, '../../src/Neo.AgentOrchestration.Web/wwwroot/workbench.js'), 'utf8');
+const origin = 'https://neo.example.test';
+const current = origin + '/work/org/workspace/items/item';
+function harness(fetcher, status = 409) {
+    const listeners = {}, mainListeners = {}, messages = {};
+    const field = { name: 'Message', type: 'textarea', value: 'retained draft', closest: () => form };
+    const form = { action: current + '?handler=Log', method: 'post', elements: [field],
+        getAttribute: name => name === 'action' ? form.action : null,
+        hasAttribute: () => false, reportValidity: () => true };
+    const main = { setAttribute() {}, contains: x => x === form || x === field,
+        querySelectorAll: selector => selector === 'form' ? [form] : [],
+        addEventListener: (name, fn) => mainListeners[name] = fn,
+        replaceChildren() { throw new Error('An error response must not replace main'); } };
+    const document = { getElementById: id => id === 'content' ? main : (messages[id] ??= { dataset: {}, addEventListener() {} }),
+        documentElement: { dataset: {}, classList: { toggle() {} } }, activeElement: null,
+        addEventListener: (name, fn) => listeners[name] = fn };
+    const window = { fetch: fetcher, DOMParser: class {}, addEventListener: (name, fn) => listeners[name] = fn };
+    const context = { window, document, fetch: fetcher, location: new URL(current),
+        history: { state: null, replaceState() {}, pushState() {} },
+        crypto: { randomUUID: () => 'document-one' }, URL, URLSearchParams,
+        setTimeout, clearTimeout, AbortController, scrollX: 0, scrollY: 0,
+        FormData: class { entries() { return [['Message', field.value]]; } },
+        DOMParser: class { parseFromString() { return { getElementById: () => null }; } } };
+    vm.runInNewContext(source, context);
+    const response = () => ({ status, ok: false, url: current, headers: { get: () => 'text/html' }, text: async () => '' });
+    return { window, listeners, mainListeners, messages, main, field, form, response };
+}
+test('default submitter URL cannot replace the form handler; duplicate submission is blocked', async () => {
+    const calls = [];
+    let resolve;
+    const h = harness((url, options) => { calls.push({ url, options }); return new Promise(r => resolve = r); });
+    const event = { target: h.form, submitter: { formAction: current, hasAttribute: () => false }, preventDefault() {} };
+    h.listeners.submit(event);
+    h.listeners.submit(event);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].url, current + '?handler=Log');
+    assert.equal(calls[0].options.method, 'POST');
+    assert.equal(calls[0].options.credentials, 'same-origin');
+    assert.equal(calls[0].options.headers['X-Neo-Navigation'], '1');
+    assert.equal(h.main.inert, true);
+    resolve(h.response());
+    await new Promise(setImmediate);
+    assert.equal(h.window.NeoWorkbench.busy, false);
+    assert.equal(h.main.inert, false);
+    assert.equal(h.field.value, 'retained draft');
+});
+for (const status of [400, 403, 409, 500]) {
+    test(`HTTP ${status} preserves inputs, shows feedback and does not retry`, async () => {
+        let count = 0;
+        const h = harness(async () => { count++; return h.response(); }, status);
+        assert.equal(await h.window.NeoWorkbench.navigate(current, { body: {} }), false);
+        assert.equal(count, 1);
+        assert.equal(h.field.value, 'retained draft');
+        assert.equal(h.messages['spa-feedback'].hidden, false);
+        assert.equal(h.messages['spa-refresh'].hidden, false);
+        assert.equal(h.window.NeoWorkbench.busy, false);
+    });
+}
+test('401 shows native login without following an identity navigation', async () => {
+    const h = harness(async () => h.response(), 401);
+    await h.window.NeoWorkbench.navigate(current);
+    assert.equal(h.messages['spa-login'].hidden, false);
+    assert.equal(h.messages['spa-refresh'].hidden, true);
+    assert.equal(h.field.value, 'retained draft');
+});
+test('lost POST response warns about uncertain commit and never retries', async () => {
+    let count = 0;
+    const h = harness(async () => { count++; throw new TypeError('network'); });
+    await h.window.NeoWorkbench.navigate(current, { body: {} });
+    assert.equal(count, 1);
+    assert.match(h.messages['spa-message'].textContent, /ممکن است عملیات ثبت شده باشد/);
+    assert.equal(h.field.value, 'retained draft');
+});
+test('external destinations are never fetched', async () => {
+    const h = harness(() => { throw new Error('must not fetch'); });
+    assert.equal(await h.window.NeoWorkbench.navigate('https://other.example.test/work/x'), false);
+});

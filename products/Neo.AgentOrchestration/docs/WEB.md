@@ -93,11 +93,13 @@ Writes are anti-forgery-protected POST forms; the server forwards a per-user
 access token to the API. The API still requires `read` plus `write`, `configure`,
 `approve` or `execute` for the respective operation. The UI is not a permission
 boundary; seeing a form does not grant its permission. Foreign scopes are denied
-by the API. HTML encodes text and preserves line breaks. No JavaScript, external
-assets or browser token storage is used.
+by the API. HTML encodes text and preserves line breaks. A self-hosted JavaScript
+navigation layer provides the [server-driven SPA](SPA.md); no external scripts
+or browser token storage are used. Native Razor forms remain the no-script fallback.
 
 Record versions accompany work/workflow mutations. A 409 displays a safe error
-and reloads current data; inspect it before submitting again. Commands are not
+and preserves entered data in SPA mode; explicitly refresh current data and inspect
+it before submitting again. Commands are not
 automatically retried. Creation forms now carry a stable request ID: resubmitting
 the identical form returns the existing task; different content under that ID
 conflicts. After an uncertain result inspect the board before changing intent.
@@ -106,7 +108,7 @@ Simulation/reevaluation forms carry request IDs;
 refreshing the page starts a new user command, not a retry mechanism.
 
 Time and progress bars are **elapsed time / estimated budget**, not percentage of
-work completed. Values and execution states refresh on page reload, not by live
+work completed. Values and execution states refresh on navigation/refresh, not by live
 polling. Subtasks appear as board rows and as direct children in item details.
 Archived Blocked/Done items can be restored. No hard deletion is exposed.
 

@@ -43,6 +43,18 @@ public static class WebIdentity
             o.Cookie.SecurePolicy = environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
             o.LoginPath = "/Login"; o.AccessDeniedPath = "/Denied";
             o.ExpireTimeSpan = TimeSpan.FromMinutes(30); o.SlidingExpiration = false;
+            o.Events.OnRedirectToLogin = context =>
+            {
+                if (context.Request.Headers["X-Neo-Navigation"] == "1") context.Response.StatusCode = 401;
+                else context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            };
+            o.Events.OnRedirectToAccessDenied = context =>
+            {
+                if (context.Request.Headers["X-Neo-Navigation"] == "1") context.Response.StatusCode = 403;
+                else context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            };
         });
         services.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
             .Configure<ITicketStore>((options, tickets) => options.SessionStore = tickets);

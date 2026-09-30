@@ -1,6 +1,7 @@
 /* Fanasa palette; provenance and usage rules: docs/BRANDING.md.
    Flow identity is owned by the board: never override inline flow colors. */
 :root {
+  --spa-progress: #149a8e;
   --fanasa-lapis: #1f4b9a;
   --fanasa-turquoise: #21b5a8;
   --fanasa-turquoise-on-light: #149a8e;
@@ -15,6 +16,14 @@
   --border: #d7dce5;
 }
 body { background: var(--bg); }
+.spa-feedback { position: sticky; top: 0; z-index: 50; background: #edf7f5; color: #16443d; border-bottom: 1px solid #b9dcd5; padding: 10px 24px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+.spa-feedback[hidden], .spa-feedback [hidden] { display: none; }
+.spa-feedback[data-error="true"] { background: #fff3df; color: #623e04; border-color: #e2c99a; }
+.spa-feedback button { min-height: 34px; padding: 4px 12px; font-size: 12px; }
+#spa-dismiss { margin-inline-start: auto; background: transparent; color: inherit; border: 0; font-size: 22px; }
+.spa-busy { cursor: progress; }
+.spa-busy main { opacity: .75; }
+.spa-busy .topbar { border-top-color: var(--spa-progress); }
 .topbar { border-top: 4px solid var(--fanasa-lapis); border-bottom-color: var(--border); gap: 16px; }
 .brand { display: flex; align-items: center; gap: 24px; letter-spacing: normal; min-width: 0; }
 /* Keep one quarter of the mark height clear on every side; no mirroring/effects. */
