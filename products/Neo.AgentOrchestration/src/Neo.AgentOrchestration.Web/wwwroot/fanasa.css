@@ -1,0 +1,60 @@
+/* Fanasa palette; provenance and usage rules: docs/BRANDING.md.
+   Flow identity is owned by the board: never override inline flow colors. */
+:root {
+  --fanasa-lapis: #1f4b9a;
+  --fanasa-turquoise: #21b5a8;
+  --fanasa-turquoise-on-light: #149a8e;
+  --fanasa-saffron: #e0a334;
+  --fanasa-plaster: #f6f1e7;
+  --fanasa-ink: #141c33;
+  --ink: var(--fanasa-ink);
+  --accent: var(--fanasa-lapis);
+  --bg: var(--fanasa-plaster);
+  --paper: #fff;
+  --muted: #566176;
+  --border: #d7dce5;
+}
+body { background: var(--bg); }
+.topbar { border-top: 4px solid var(--fanasa-lapis); border-bottom-color: var(--border); gap: 16px; }
+.brand { display: flex; align-items: center; gap: 24px; letter-spacing: normal; min-width: 0; }
+/* Keep one quarter of the mark height clear on every side; no mirroring/effects. */
+.brand-logo { display: block; width: auto; height: 40px; margin: 10px; flex: none; }
+.brand-product { border-inline-start: 1px solid var(--border); padding-inline-start: 24px; font-size: 17px; line-height: 1.8; }
+.brand-product small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; letter-spacing: .4px; }
+.topbar nav a { font-size: 13px; font-weight: 700; }
+.workspace-bar { padding: 16px 20px; background: var(--paper); border: 1px solid var(--border); border-inline-start: 4px solid var(--fanasa-turquoise-on-light); border-radius: 12px; }
+.workspace-bar nav, .tabs { gap: 12px 20px; }
+.tabs { padding-block: 8px; }
+.panel { box-shadow: 0 4px 20px #141c3305; }
+.hero { border-inline-start: 4px solid var(--fanasa-saffron); padding-inline-start: 24px; }
+label { color: var(--ink); }
+input, select, textarea { border-color: #a5afbf; }
+input[readonly] { background: #f2f4f8; }
+button.secondary, button.quiet { color: var(--accent); }
+button.secondary { background: #edf2fa; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--fanasa-lapis); outline-offset: 3px; }
+.metrics section { background: var(--paper); border-top: 3px solid var(--fanasa-turquoise-on-light); }
+.metrics strong { color: var(--fanasa-lapis); }
+.column { background: #eceff5; }
+.column > h2 { color: var(--fanasa-ink); }
+.card { box-shadow: 0 2px 8px #141c3307; }
+.card h3 a:hover { color: var(--fanasa-lapis); text-decoration: underline; }
+.tags span, .tag { background: #edf2fa; color: #28446c; }
+.notice { background: #edf7f5; border-color: #b9dcd5; }
+.forms > form, .forms > div { background: #f7f8fb; }
+th { background: #f4f6fa; }
+footer { background: var(--paper); }
+@media (max-width: 760px) {
+  .topbar { flex-wrap: wrap; gap: 8px; }
+  .brand { gap: 10px; }
+  .brand-logo { height: 32px; margin: 8px; }
+  .brand-product { padding-inline-start: 12px; font-size: 14px; }
+  .brand-product small { font-size: 10px; }
+  .topbar nav { width: 100%; justify-content: flex-end; gap: 16px; }
+  .workspace-bar { padding: 14px; }
+  .hero { padding-inline-start: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}

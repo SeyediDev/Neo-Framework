@@ -1,0 +1,27 @@
+# Fanasa visual identity
+
+The user requested the Fanasa identity for Neo Agent Orchestration Web.
+Neo remains the product name; this is not a rename to a capability center.
+
+Source: the Fanasa brand guide captured in the Basalam project's
+`Fanasa/_work/fanasa_brand.html`, referenced by the conversation
+«تهیه پروپوزال و قرارداد» (01a0e1fa-8caf-77c0-b132-bdf609862dfb).
+The horizontal Persian color SVG is extracted unchanged from the preview
+immediately preceding `/brand-assets/fanasa-logo-horizontal-fa-color.svg`.
+It is a brand asset, not newly generated artwork. Brand rights remain with Fanasa.
+No contract text, customer information or local configuration is included.
+
+Palette: lapis #1F4B9A, turquoise #21B5A8, turquoise on light #149A8E,
+saffron #E0A334, plaster #F6F1E7, ink #141C33.
+`wwwroot/fanasa.css` is the shared presentation layer for all Razor pages.
+Saffron/turquoise are accents, not low-contrast body text. Links/actions use
+lapis. Error states and dynamic per-flow colors retain their semantic meaning.
+
+Preserve logo proportions, original colors, and a clear zone of one quarter
+of its height. Never mirror, recolor, add shadows/gradients, or stretch the logo.
+Horizontal lockups must remain at least 24px high (Web uses 40px/32px).
+Keep the user's self-hosted Vazir font and RTL throughout, including controls.
+
+Future PWA clients should reuse these palette and asset rules. The theme-color
+metadata does not imply a manifest, offline support or installable PWA exists.
+This presentation-only change does not alter API/MCP/skill tool contracts.
