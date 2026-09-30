@@ -78,6 +78,8 @@ project, layout, static asset or database is required to start these hosts.
 [Versioned project templates](docs/PROJECT-TEMPLATES.md) support read-only preview
 and atomic project/task/role/workflow creation with immutable provenance.
 No database is created or migrated on startup.
+The explicit [read-only LSP probe](docs/LSP.md) supports approved local language
+servers, diagnostics and scoped definition/reference navigation with task evidence.
 
 The public system endpoint and liveness expose no task data.
 Production requires Authentication:Authority and Authentication:Audience;
