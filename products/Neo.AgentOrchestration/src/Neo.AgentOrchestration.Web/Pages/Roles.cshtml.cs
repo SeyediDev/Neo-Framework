@@ -9,13 +9,15 @@ public sealed class RolesModel(OrchestrationClient client) : WorkPageModel(clien
     [BindProperty(SupportsGet = true)] public string? Domain { get; set; }
     [BindProperty(SupportsGet = true)] public string? ItemType { get; set; }
     public IReadOnlyList<WorkItemView> Items { get; private set; } = [];
+    public IReadOnlyList<RoleWorkGroup> Groups { get; private set; } = [];
     public Task OnGetAsync(CancellationToken ct) => Attempt(async () =>
     {
         await LoadCatalog(ct);
         var items = new List<WorkItemView>();
         var query = "items?take=200";
         if (ProjectId.HasValue) query += "&projectId=" + ProjectId;
-        if (RoleId.HasValue) query += "&roleId=" + RoleId;
+        // This display includes history-only roles. API roleId intentionally
+        // remains current-owner-only for claim/availability checks.
         if (!string.IsNullOrWhiteSpace(Domain)) query += "&domain=" + Uri.EscapeDataString(Domain);
         if (!string.IsNullOrWhiteSpace(ItemType)) query += "&type=" + Uri.EscapeDataString(ItemType);
         for (var skip = 0; ;)
@@ -27,5 +29,6 @@ public sealed class RolesModel(OrchestrationClient client) : WorkPageModel(clien
         }
         Items = items.DistinctBy(x => x.Id).OrderBy(x => Array.IndexOf(Statuses, x.Status))
             .ThenByDescending(x => x.UpdatedAtUtc).ThenBy(x => x.Key).ToArray();
+        Groups = RoleWorkGrouping.Create(Items, Catalog!.Roles, RoleId);
     });
 }

@@ -10,7 +10,10 @@ internal static class WorkItemProjection
         item.Description, item.Status.ToString(), item.Priority.ToString(), item.OwnerRoleId,
         item.OwnerAgentId, item.OwnerChatId, item.Branch, item.IsArchived, item.GetElapsedSeconds(now),
         item.EstimatedSeconds, item.GetBudgetUsedPercent(now), item.IsTracking, item.Version, item.UpdatedAtUtc,
-        item.Type.ToString(), item.AcceptanceCriteria);
+        item.Type.ToString(), item.AcceptanceCriteria,
+        item.OwnerHistory.OrderByDescending(x => x.CreatedAtUtc).ThenByDescending(x => x.Id)
+            .Select(x => new WorkItemOwnerHistoryView(x.Id, x.SourceWorkItemId, x.OriginalStatus,
+                x.OwnerRole, x.OwnerAgent, x.OwnerChat, x.CreatedAtUtc)).FirstOrDefault());
 
     public static WorkItemDetails Details(WorkItem item, IReadOnlyList<WorkItem> projectItems, DateTimeOffset now)
         => new(View(item, now),

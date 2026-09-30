@@ -7,6 +7,10 @@ No startup path migrates, seeds, imports or dispatches work.
 
 ## Configuration and access
 
+Work item views include optional `lastOwnerHistory` for display of imported
+ownership. It never replaces `ownerRoleId` or grants ownership. Board `roleId`
+filters remain current-owner-only; full history remains in item details.
+
 Set `Authentication__Authority` to your trusted HTTPS OIDC authority and
 `Authentication__Audience` to the API audience. Production refuses missing
 values. JWT signatures, issuer, audience and expiration are validated by

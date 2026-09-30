@@ -96,6 +96,13 @@ work completed. Values and execution states refresh on page reload, not by live
 polling. Subtasks appear as board rows and as direct children in item details.
 Archived Blocked/Done items can be restored. No hard deletion is exposed.
 
+The role board groups by current owner first, then the latest imported ownership
+record when no current owner exists. Historical role keys/IDs are matched to the
+catalog; unknown historical roles stay visibly separate rather than disappearing.
+Historical labels never imply active/planned assignment. The role-board filter
+covers this display grouping after retrieving all filtered pages. API `roleId`
+continues to mean current owner only, so agent availability checks stay unchanged.
+
 Simulation requires explicit API/worker opt-in from [RUNS.md](RUNS.md); a queued
 request does not mean an agent executed. Configured `http.<connection-key>`
 providers require the separate [Harness setup](HARNESS.md) and explicit consent
