@@ -87,8 +87,11 @@ assets or browser token storage is used.
 
 Record versions accompany work/workflow mutations. A 409 displays a safe error
 and reloads current data; inspect it before submitting again. Commands are not
-automatically retried. After an uncertain creation, query the board by project
-and key before trying again. Simulation/reevaluation forms carry request IDs;
+automatically retried. Creation forms now carry a stable request ID: resubmitting
+the identical form returns the existing task; different content under that ID
+conflicts. After an uncertain result inspect the board before changing intent.
+The original description remains unchanged and subsequent context goes into logs.
+Simulation/reevaluation forms carry request IDs;
 refreshing the page starts a new user command, not a retry mechanism.
 
 Time and progress bars are **elapsed time / estimated budget**, not percentage of

@@ -8,7 +8,7 @@ namespace Neo.AgentOrchestration.Application.Work;
 public sealed record CreateWorkItem(WorkspaceScope Scope, Guid ProjectId, string Key, string Title,
     string Domain, WorkActor Actor, string? Description = null, WorkItemPriority Priority = WorkItemPriority.Normal,
     Guid? ParentWorkItemId = null, long? EstimatedSeconds = null, WorkItemType Type = WorkItemType.Task,
-    string? AcceptanceCriteria = null) : IRequest<WorkItemDetails>;
+    string? AcceptanceCriteria = null, Guid? RequestId = null) : IRequest<WorkItemDetails>;
 public sealed record ClaimWorkItem(WorkspaceScope Scope, Guid WorkItemId, Guid RoleId, WorkActor Actor,
     Guid ExpectedVersion, string? Branch = null) : IRequest<WorkItemDetails>;
 public sealed record GetWorkItem(WorkspaceScope Scope, Guid WorkItemId) : IRequest<WorkItemDetails>;

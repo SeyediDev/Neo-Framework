@@ -24,7 +24,7 @@ and server-configured chat; never add agentId/owner/chat properties to a request
 
 | Tool | Fields inside request |
 | --- | --- |
-| `neo_work_create` | projectId, key, title, domain; optional description, priority="Normal", parentWorkItemId, estimatedSeconds, type="Task", acceptanceCriteria (max 8000 characters) |
+| `neo_work_create` | projectId, key, title, domain; optional description, priority="Normal", parentWorkItemId, estimatedSeconds, type="Task", acceptanceCriteria (max 8000 characters), requestId (stable nonempty GUID for identical retry) |
 | `neo_work_planning` | expectedVersion, type, acceptanceCriteria (null clears); preserves description and records criteria history; owner-only when assigned; rejects closed/archived items |
 | `neo_work_claim` | expectedVersion, roleId; optional branch |
 | `neo_work_log` | expectedVersion, message |
@@ -58,8 +58,11 @@ Example log call shape (replace placeholders with readback, not literal text):
 }
 ```
 
-Task mutations need API read/write grants. Creation is not idempotent: after an
-uncertain result, query project/key before retrying. Fields containing credentials
+Task mutations need API read/write grants. With requestId, creation is atomic and
+retry-safe within the workspace: identical body/agent/chat returns the existing
+item, including its current status, without new logs or resetting ownership/time.
+Changed content/source under the same ID returns 409. Without requestId, query
+project/key after an uncertain result before retrying. Fields containing credentials
 are not valid task context. Keep the original request in description and later
 messages in logs; do not overwrite the original intake.
 

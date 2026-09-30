@@ -43,7 +43,12 @@ public sealed class OperationalMcpTests
         Assert.Equal(f.Scope.WorkspaceId, context.GetProperty("workspaceId").GetGuid());
         Assert.DoesNotContain(identity.DefaultRequestHeaders.Authorization!.Parameter!, context.GetRawText());
 
-        var parent = await mcp.Call<WorkItemDetails>("neo_work_create", new { request = new CreateWorkItemRequest(f.Project.Id, "mcp-parent", "Parent", "mcp", "Original chat request") });
+        var intake = new CreateWorkItemRequest(f.Project.Id, "mcp-parent", "Parent", "mcp", "Original chat request", RequestId: Guid.NewGuid());
+        var parent = await mcp.Call<WorkItemDetails>("neo_work_create", new { request = intake });
+        var replay = await mcp.Call<WorkItemDetails>("neo_work_create", new { request = intake });
+        Assert.Equal(parent.Item.Id, replay.Item.Id);
+        Assert.Equal(parent.Item.Version, replay.Item.Version);
+        await mcp.Error("neo_work_create", new { request = intake with { Title = "Changed request" } }, "api-409");
         parent = await mcp.Call<WorkItemDetails>("neo_work_planning", new { itemId = parent.Item.Id,
             request = new SetWorkItemPlanningRequest(parent.Item.Version, "UserStory", "Observable outcome") });
         Assert.Equal("UserStory", parent.Item.Type);

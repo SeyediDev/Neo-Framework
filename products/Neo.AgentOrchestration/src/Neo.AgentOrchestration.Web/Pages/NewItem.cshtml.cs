@@ -13,11 +13,16 @@ public sealed class NewItemModel(OrchestrationClient client) : WorkPageModel(cli
     [BindProperty] public string? AcceptanceCriteria { get; set; }
     [BindProperty] public string Priority { get; set; } = "Normal";
     [BindProperty] public long? EstimatedSeconds { get; set; }
-    public Task OnGetAsync(CancellationToken ct) => Attempt(()=>LoadCatalog(ct));
+    [BindProperty] public Guid RequestId { get; set; }
+    public Task OnGetAsync(CancellationToken ct)
+    {
+        RequestId = Guid.NewGuid();
+        return Attempt(()=>LoadCatalog(ct));
+    }
     public async Task<IActionResult> OnPostAsync(CancellationToken ct)
     {
         WorkItemDetails? created = null;
-        if (await Attempt(async()=>created = await Send<WorkItemDetails>("items", new CreateWorkItemRequest(ProjectId,Key,Title,Domain,Description,Priority,ParentWorkItemId,EstimatedSeconds,ItemType,AcceptanceCriteria),ct)))
+        if (await Attempt(async()=>created = await Send<WorkItemDetails>("items", new CreateWorkItemRequest(ProjectId,Key,Title,Domain,Description,Priority,ParentWorkItemId,EstimatedSeconds,ItemType,AcceptanceCriteria,RequestId),ct)))
             return RedirectToPage("/Item",new{OrganizationId,WorkspaceId,id=created!.Item.Id});
         await Attempt(()=>LoadCatalog(ct)); return Page();
     }

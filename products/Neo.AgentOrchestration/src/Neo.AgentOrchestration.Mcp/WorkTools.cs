@@ -34,7 +34,7 @@ public sealed class WorkTools(McpApiClient api)
     public Task<string> Get(Guid itemId, CancellationToken ct) => api.Send<WorkItemDetails>($"items/{itemId:D}", ct);
 
     [McpServerTool(Name = "neo_work_create", ReadOnly = false, Destructive = false, OpenWorld = true)]
-    [Description("Create an authorized task or same-project child. Preserve the original request in description and append later context with log. Not idempotent: after an uncertain response, search the board by project/key before retrying.")]
+    [Description("Create an authorized task or same-project child. Preserve the original request in description and append later context with log. Supply a stable requestId GUID for identical retries: same source identity/body returns existing work without mutation; changed content/identity conflicts. Without requestId, reconcile by project/key before retrying. Never generate a new requestId merely to retry an uncertain request.")]
     public Task<string> Create(CreateWorkItemRequest request, CancellationToken ct) => api.Send<WorkItemDetails>("items", ct, request);
 
     [McpServerTool(Name = "neo_work_planning", ReadOnly = false, Destructive = false, OpenWorld = true)]

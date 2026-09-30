@@ -7,7 +7,8 @@ machine paths or dependencies on Hyper documents/global skills.
 
 It applies when a project has explicitly chosen an authorized Neo workspace
 for operational coordination. It does not silently migrate an existing board.
-During this product migration the current WorkManagement source remains active.
+This installation uses the independent Neo API as its operational source;
+WorkManagement is retained legacy data, per AGENTS.md and COEXISTENCE.md.
 The skill's presence is guidance, not a claim that every running chat loaded it
 or a substitute for the API's ownership and version checks.
 

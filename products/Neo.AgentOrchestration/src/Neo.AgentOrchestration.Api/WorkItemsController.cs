@@ -26,7 +26,7 @@ public sealed class WorkItemsController(ISender sender) : WorkspaceControllerBas
     {
         var value = await Sender.Send(new CreateWorkItem(Scope, body.ProjectId, body.Key, body.Title, body.Domain, Actor(),
             body.Description, Value<WorkItemPriority>(body.Priority), body.ParentWorkItemId, body.EstimatedSeconds,
-            Value<WorkItemType>(body.Type), body.AcceptanceCriteria), ct);
+            Value<WorkItemType>(body.Type), body.AcceptanceCriteria, body.RequestId), ct);
         return CreatedAtAction(nameof(Details), new { organizationId = Scope.OrganizationId, workspaceId = Scope.WorkspaceId, id = value.Item.Id }, value);
     }
 

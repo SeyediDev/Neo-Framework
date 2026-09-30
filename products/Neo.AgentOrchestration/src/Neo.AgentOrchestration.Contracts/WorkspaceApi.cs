@@ -8,7 +8,7 @@ public sealed record CreateProjectRequest(string Key, string Name);
 public sealed record RenameProjectRequest(string Name);
 public sealed record CreateWorkItemRequest(Guid ProjectId, string Key, string Title, string Domain,
     string? Description = null, string Priority = "Normal", Guid? ParentWorkItemId = null, long? EstimatedSeconds = null,
-    string Type = "Task", string? AcceptanceCriteria = null);
+    string Type = "Task", string? AcceptanceCriteria = null, Guid? RequestId = null);
 public sealed record SetWorkItemPlanningRequest(Guid ExpectedVersion, string Type, string? AcceptanceCriteria = null);
 public sealed record ClaimWorkItemRequest(Guid ExpectedVersion, Guid RoleId, string? Branch = null);
 public sealed record ChangeStatusRequest(Guid ExpectedVersion, string Status, string? Note = null);

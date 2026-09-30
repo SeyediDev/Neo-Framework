@@ -1,4 +1,7 @@
 using MediatR;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using Neo.AgentOrchestration.Contracts;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
@@ -14,6 +17,31 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
     public Task<WorkItemDetails> Handle(CreateWorkItem request, CancellationToken ct)
         => store.ExecuteAsync(request.Scope, async (session, token) =>
         {
+            string? fingerprint = null;
+            if (request.RequestId is { } requestId)
+            {
+                if (requestId == Guid.Empty) throw new ArgumentException("RequestId must be nonempty when supplied.");
+                fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
+                {
+                    request.ProjectId, request.Key, request.Title, request.Domain, request.Description,
+                    request.Priority, request.ParentWorkItemId, request.EstimatedSeconds, request.Type, request.AcceptanceCriteria
+                }))));
+                var prefix = $"{requestId:D}:";
+                // Include all projects and archived records in this workspace.
+                // The store's transaction lock serializes concurrent identical intake.
+                foreach (var candidateProject in await session.GetProjectsAsync(token))
+                {
+                    var candidates = await ProjectItems(session, request.Scope, candidateProject.Id, token);
+                    foreach (var candidate in candidates)
+                    {
+                        var receipt = candidate.Logs.SingleOrDefault(x => x.Kind == "ChatIntake" && x.Message.StartsWith(prefix, StringComparison.Ordinal));
+                        if (receipt is null) continue;
+                        if (receipt.Message != prefix + fingerprint || receipt.AgentId != request.Actor.AgentId || receipt.ChatId != request.Actor.ChatId)
+                            throw new WorkItemConflictException("RequestId was already used with different content or source identity.");
+                        return WorkItemProjection.Details(candidate, candidates, clock.GetUtcNow());
+                    }
+                }
+            }
             var project = await session.GetProjectAsync(request.ProjectId, token)
                 ?? throw new KeyNotFoundException("Project not found.");
             project.RequireScope(request.Scope);
@@ -26,6 +54,7 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
             var items = await ProjectItems(session, request.Scope, project.Id, token);
             if (items.Any(x => string.Equals(x.Key, item.Key, StringComparison.OrdinalIgnoreCase)))
                 throw new WorkItemConflictException("Work item key already exists in this project.");
+            if (request.RequestId is { } intakeId) item.RecordIntake(request.Scope, request.Actor, intakeId, fingerprint!, now);
             session.Add(item);
             return WorkItemProjection.Details(item, items, now);
         }, ct);

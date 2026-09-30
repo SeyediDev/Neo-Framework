@@ -99,10 +99,14 @@ Ownership and role exclusivity are workspace-wide: include all projects/pages
 when checking a role. Scope isolation does not prevent overlapping files in
 different repositories/worktrees; coordinate file scope too.
 
-Creation is not idempotent: after an uncertain response search for project/key.
+Creation accepts optional stable `requestId` for deduplicated intake: identical
+body and source agent/chat returns the existing task; changed content/source under
+that ID conflicts. Without it, reconcile uncertain responses by project/key.
 Preserve the original authorized request in description and append follow-up
-context via log. This is explicit intake using existing task contracts, not a
-new deduplicated chat-intake API. Do not make tasks from advice-only discussion.
+context via log. Intake receipts are atomic reserved history entries; ordinary
+notes cannot forge them. No chat is silently captured, and advice-only discussion
+must not create tasks. This is an extension of the existing create tool, not a
+second source of truth or an extra tool; the server still exposes 19 tools.
 
 ## Manual work versus managed runs
 

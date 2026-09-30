@@ -7,6 +7,17 @@ No startup path migrates, seeds, imports or dispatches work.
 
 ## Configuration and access
 
+`POST items` accepts optional `requestId` (nonempty GUID). The same ID, source
+agent/chat and exact body is retry-safe across projects in the authorized workspace.
+Replay returns the existing item/current state at the same creation route (201),
+not another row. Changed body/source conflicts with 409; omit the ID for the legacy
+create semantics. Use a new ID only for a genuinely new request. Receipt and item
+are persisted atomically in the workspace-serialized transaction; receipt is a
+reserved `ChatIntake` log containing ID and payload hash, never credentials.
+Replay also covers archived/closed work and never reopens or reassigns it. Reads
+scan workspace intake history; this initial implementation favors correctness
+over large-scale indexed intake throughput. There is no hard-delete endpoint.
+
 Work item views include optional `lastOwnerHistory` for display of imported
 ownership. It never replaces `ownerRoleId` or grants ownership. Board `roleId`
 filters remain current-owner-only; full history remains in item details.
@@ -108,10 +119,11 @@ Configuration writes return the committed workspace catalog (200). Their
 readback is a subsequent transaction and can include intervening authorized
 changes. Project/role/agent edits are serialized last-writer-wins; only work
 items and workflows currently have client-visible version preconditions.
-There are no hard-delete endpoints. Creation is not idempotent by an HTTP key:
-after an uncertain response, query by project/key before attempting creation
-again. Unique constraints reject duplicate keys with 409; automatic command
-replay is not enabled.
+There are no hard-delete endpoints. Work-item creation supports the explicit
+body `requestId` described above, not an arbitrary HTTP idempotency header.
+Without it, query by project/key after uncertainty before creating again.
+Unique constraints still reject duplicate keys with 409. No command is
+automatically retried by the server.
 
 Board filters are `projectId`, `domain`, `roleId`, `status`, `type`, `includeArchived`,
 `skip` and `take` (default 50, maximum 200). Filters combine with AND. Sorting
