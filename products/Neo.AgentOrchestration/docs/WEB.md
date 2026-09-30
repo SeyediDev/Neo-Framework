@@ -1,5 +1,12 @@
 # Independent management Web
 
+`/product` is the public, static Fanasa-branded introduction, linked from the
+shared header. It makes no API requests and exposes no tenant/task data. Its
+illustrative workflow is labeled as a demo; SaaS, token metering and mobile
+features are labeled as roadmap. `/` retains the configured board redirect.
+`ProductPageTests` check anonymous access without private API calls and confirm
+workspace selection remains protected outside opt-in local development.
+
 The Razor Web is an HTTP client of API v1. Its only product project reference is
 Contracts: it does not read SQL, import legacy data, start a worker or reference
 Hyper, Neo.Bpms, Domain or Infrastructure. API permission and domain rules remain

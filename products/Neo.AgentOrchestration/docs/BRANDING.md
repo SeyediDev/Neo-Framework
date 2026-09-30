@@ -1,5 +1,11 @@
 # Fanasa visual identity
 
+The public introduction lives at `/product`, reachable from the shared header.
+It uses `product.css`, static illustrative data, and no workspace/API access.
+The existing `/` entry still selects the configured board. Operational pages
+keep their authentication rules. Roadmap features are explicitly labeled, not
+marketed as production-ready SaaS. No tracking scripts or external assets load.
+
 The shared workspace navigation displays the user-approved English signature
 "Seeking The Best For The Best" with LTR typography inside the RTL layout.
 This replaces the visible imported workspace label only; stored workspace names,
