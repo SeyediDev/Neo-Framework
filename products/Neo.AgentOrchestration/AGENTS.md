@@ -20,6 +20,10 @@ development installation the organization is 2b9b57ca-ce22-8456-b465-f71a74f6682
 and workspace is 10d4741c-b839-7f5a-8ad6-4a4f065e5b9b. Resolve projects and roles
 from the catalog, never hardcode these identifiers into the reusable product.
 Use the scoped API/MCP for task changes; do not write ownership through SQL.
+For GitHub destinations, follow the skill's
+[active-project binding](.agents/skills/neo-agent-orchestration/references/project-binding.md):
+primary project Git remote selects the repository; the current application's
+active project label selects the GitHub Project title, not the internal backlog key.
 WorkManagement is retained legacy data, not a parallel live backlog. Do not
 recreate historical NAO tasks or silently mark them complete from their age.
 

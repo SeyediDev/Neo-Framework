@@ -36,6 +36,15 @@ with the generic, read-only Neo Companion documentation tools.
   does not apply to other workers. Separate branches/worktrees and nonoverlapping
   file scope are still needed across chats, even across different Neo workspaces.
 
+## Resolve the external work project from the active chat
+
+For GitHub work/project setup or synchronization, read
+[active-project binding](references/project-binding.md) before choosing a destination.
+Use the active chat's application project name as the GitHub Project title and
+the verified primary repository's Git remote as its repository identity. Do not
+substitute the chat title, current folder name, branch, or Neo backlog key. Reuse
+verified external IDs; ask only for unresolved ambiguity or missing access.
+
 ## Manual task workflow
 
 Use manual work tools when this chat is doing the requested work itself.

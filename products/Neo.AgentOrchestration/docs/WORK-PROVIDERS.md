@@ -27,6 +27,17 @@ subscription. Its Web retains board, details, roles, agents, workflows, timing
 and history. Optional integrations do not reduce it to a read-only runtime log.
 Future decisions about stopping native feature development are not assumed.
 
+## Repository and external Project identity
+
+Follow the canonical skill's
+[active-project binding rule](../.agents/skills/neo-agent-orchestration/references/project-binding.md).
+The repository comes from the active chat project's verified primary Git remote;
+the GitHub Project title comes from the active project label in the host app.
+Those are distinct from Neo's internal project key and the chat title. Resolve
+and reuse external IDs, including for worktrees/junctions, before publication.
+This is the instructed selection policy; automatic runtime resolution/binding
+is still part of the unfinished provider integration, not implemented by this text.
+
 ## One linked work item, explicit field ownership
 
 Retain Neo's internal scoped work ID. Store external references separately using

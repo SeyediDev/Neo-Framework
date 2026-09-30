@@ -15,6 +15,13 @@ Normal Neo connections require HTTPS and `NEO_ORCHESTRATION_TOKEN`; the explicit
 `-LocalDevelopment` option works only with loopback addresses and still requires
 the server's authorized local-development setup.
 
+Before setting Repository, apply the
+[active-project binding rule](../.agents/skills/neo-agent-orchestration/references/project-binding.md).
+Derive owner/repository from the primary Git remote of the active app project;
+do not use a dependency checkout or infer it from the internal Neo project key.
+The future GitHub Project title uses the app's active project name. This tool
+still accepts an explicit Repository parameter and does not discover/create boards.
+
 Prepare a JSON array manually, e.g.:
 
 ```json
