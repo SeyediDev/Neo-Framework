@@ -10,6 +10,15 @@ public sealed class AgentProfileTests
     private static Workspace Workspace() => Domain.Projects.Workspace.Create(
         Organization.Create("org", "Organization"), "work", "Workspace");
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(17)]
+    public void Role_capacity_must_be_between_one_and_sixteen(int capacity)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => RoleProfile.Create(Workspace(), "role", "Role",
+            maxConcurrentWorkItems: capacity));
+    }
+
     [Fact]
     public void Profiles_are_distinct_executors_for_a_role()
     {

@@ -36,7 +36,7 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
                 var item = await Item(s, r.WorkItemId, token); Version(item.Version, r.Body.ExpectedWorkItemVersion);
                 var workflow = await Workflow(s, r.Body.WorkflowId, token); Version(workflow.Version, r.Body.ExpectedWorkflowVersion);
                 var role = await s.GetRoleAsync(r.Body.RoleId, token) ?? throw new KeyNotFoundException("Role not found.");
-                if (await s.IsRoleBusyAsync(role.Id, item.Id, token) || (await s.GetRunsAsync(item.Id, token))
+                if (await s.IsRoleBusyAsync(role.Id, role.MaxConcurrentWorkItems, item.Id, token) || (await s.GetRunsAsync(item.Id, token))
                     .Any(x => x.Status is AgentRunStatus.Queued or AgentRunStatus.AwaitingResult))
                     throw new WorkItemConflictException("Role or task already has an active execution.");
                 item.RequireCompletedDependencies(await s.GetProjectItemsAsync(item.ProjectId, token));

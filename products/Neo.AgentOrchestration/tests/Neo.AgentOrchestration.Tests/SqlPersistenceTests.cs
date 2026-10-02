@@ -17,7 +17,7 @@ public sealed class SqlPersistenceTests
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
 
     [Fact]
-    public void Model_and_migration_have_scope_keys_concurrency_and_unique_claims()
+    public void Model_and_migration_have_scope_keys_concurrency_and_capacity_claims()
     {
         using var db = new OrchestrationDesignFactory().CreateDbContext([]);
         var model = db.GetService<Microsoft.EntityFrameworkCore.Metadata.IDesignTimeModel>().Model;
@@ -25,7 +25,9 @@ public sealed class SqlPersistenceTests
         var item = model.FindEntityType(typeof(WorkItem))!;
         Assert.True(item.FindProperty(nameof(WorkItem.Version))!.IsConcurrencyToken);
         Assert.True(item.FindProperty("RowVersion")!.IsConcurrencyToken);
-        Assert.Contains(item.GetIndexes(), x => x.IsUnique && x.GetFilter()?.Contains("[Status] = 3") == true);
+        Assert.Contains(item.GetIndexes(), x => !x.IsUnique && x.GetFilter()?.Contains("[Status] = 3") == true);
+        var role = model.FindEntityType(typeof(RoleProfile))!;
+        Assert.Equal(1, role.FindProperty(nameof(RoleProfile.MaxConcurrentWorkItems))!.GetDefaultValue());
         var sql = db.GetService<IMigrator>().GenerateScript(options: MigrationsSqlGenerationOptions.Idempotent);
         Assert.Contains("CREATE TABLE [nao].[WorkItems]", sql);
         Assert.Contains("__EFMigrationsHistory", sql);

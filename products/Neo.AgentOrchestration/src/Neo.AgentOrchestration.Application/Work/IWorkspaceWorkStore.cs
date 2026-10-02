@@ -35,6 +35,6 @@ public interface IWorkItemSession
     Task<WorkItem?> GetItemAsync(Guid id, CancellationToken ct);
     Task<WorkHistoryPage> GetHistoryPageAsync(Guid itemId, int skip, int take, Guid? snapshotVersion, CancellationToken ct);
     Task<IReadOnlyList<WorkItem>> GetProjectItemsAsync(Guid projectId, CancellationToken ct);
-    Task<bool> IsRoleBusyAsync(Guid roleId, Guid exceptItemId, CancellationToken ct);
+    Task<bool> IsRoleBusyAsync(Guid roleId, int capacity, Guid exceptItemId, CancellationToken ct);
     void Add(WorkItem item);
 }

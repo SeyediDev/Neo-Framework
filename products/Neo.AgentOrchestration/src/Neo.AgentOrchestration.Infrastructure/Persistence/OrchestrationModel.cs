@@ -30,6 +30,7 @@ internal static class OrchestrationModel
         var role = Entity<RoleProfile>(b, "RoleProfiles");
         role.Property(x => x.Key).HasMaxLength(80); role.Property(x => x.Name).HasMaxLength(200);
         role.Property(x => x.ScopeDescription).HasMaxLength(4000);
+        role.Property(x => x.MaxConcurrentWorkItems).HasDefaultValue(1);
         role.HasAlternateKey(x => new { x.Id, x.WorkspaceId, x.OrganizationId });
         role.HasIndex(x => new { x.WorkspaceId, x.Key }).IsUnique();
         role.HasOne<Workspace>().WithMany().HasForeignKey(x => new { x.WorkspaceId, x.OrganizationId })
@@ -59,7 +60,7 @@ internal static class OrchestrationModel
         work.HasAlternateKey(x => new { x.Id, x.ProjectId });
         work.HasIndex(x => new { x.ProjectId, x.Key }).IsUnique();
         work.HasIndex(x => new { x.WorkspaceId, x.ProjectId, x.Domain, x.Status });
-        work.HasIndex(x => x.OwnerRoleId).IsUnique().HasFilter("[Status] = 3 AND [OwnerRoleId] IS NOT NULL");
+        work.HasIndex(x => x.OwnerRoleId).HasFilter("[Status] = 3 AND [OwnerRoleId] IS NOT NULL");
         work.HasOne<Project>().WithMany().HasForeignKey(x => new { x.ProjectId, x.WorkspaceId, x.OrganizationId })
             .HasPrincipalKey(x => new { x.Id, x.WorkspaceId, x.OrganizationId }).OnDelete(DeleteBehavior.Restrict);
         work.HasOne<WorkItem>().WithMany().HasForeignKey(x => new { x.ParentWorkItemId, x.ProjectId })

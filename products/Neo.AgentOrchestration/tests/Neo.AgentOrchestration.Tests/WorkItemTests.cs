@@ -75,6 +75,24 @@ public sealed class WorkItemTests
     }
 
     [Fact]
+    public async Task A_role_with_capacity_two_can_work_on_two_items_but_not_three()
+    {
+        using var f = new WorkFixture(roleCapacity: 2);
+        var first = await f.Create("first");
+        var second = await f.Create("second");
+        var third = await f.Create("third");
+        foreach (var item in new[] { first, second, third })
+            await f.Change(item.Item.Id, new StatusChange(WorkItemStatus.Ready));
+
+        await f.Claim(first.Item.Id);
+        await f.Claim(second.Item.Id);
+        await Assert.ThrowsAsync<WorkItemConflictException>(() => f.Claim(third.Item.Id));
+
+        await f.Change(first.Item.Id, new StatusChange(WorkItemStatus.Review));
+        Assert.Equal("InProgress", (await f.Claim(third.Item.Id)).Item.Status);
+    }
+
+    [Fact]
     public async Task Parent_cannot_complete_with_an_open_child_and_child_keeps_full_history()
     {
         using var f = new WorkFixture();

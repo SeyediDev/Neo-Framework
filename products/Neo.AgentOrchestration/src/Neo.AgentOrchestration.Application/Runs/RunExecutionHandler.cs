@@ -103,7 +103,7 @@ public sealed class RunExecutionHandler(ISimulationHarness harness, TimeProvider
         }
         if (run.Hop >= 20) { run.Wait("handoff-limit-reached", now); return; }
         var nextRole = roles.Single(x => x.Id == plan.TargetRoleId);
-        if (await s.IsRoleBusyAsync(nextRole.Id, item.Id, ct)) { run.Wait("target-role-busy", now); return; }
+        if (await s.IsRoleBusyAsync(nextRole.Id, nextRole.MaxConcurrentWorkItems, item.Id, ct)) { run.Wait("target-role-busy", now); return; }
         var nextProfile = profiles.Single(x => x.Id == plan.AgentProfileId);
         try { providers.RequireAvailable(nextProfile.Provider, operation.Scope); }
         catch (RunProviderUnavailableException) { run.Wait("target-provider-unavailable", now); return; }

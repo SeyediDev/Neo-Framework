@@ -31,10 +31,10 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
                 case DisableProject change:
                     (await Project(s, change.Id, token)).Disable(r.Scope); break;
                 case NewRole change:
-                    var role = RoleProfile.Create(await s.GetWorkspaceAsync(token), change.Value.Key, change.Value.Name, change.Value.ScopeDescription);
+                    var role = RoleProfile.Create(await s.GetWorkspaceAsync(token), change.Value.Key, change.Value.Name, change.Value.ScopeDescription, change.Value.MaxConcurrentWorkItems);
                     Unique((await s.GetRolesAsync(token)).Any(x => x.Key == role.Key)); s.Add(role); break;
                 case EditRole change:
-                    (await Role(s, change.Id, token)).Update(r.Scope, change.Value.Name, change.Value.ScopeDescription); break;
+                    (await Role(s, change.Id, token)).Update(r.Scope, change.Value.Name, change.Value.ScopeDescription, change.Value.MaxConcurrentWorkItems); break;
                 case EnableRole change:
                     (await Role(s, change.Id, token)).SetEnabled(r.Scope, change.Enabled); break;
                 case NewAgent change:
@@ -131,7 +131,7 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
         var w = await s.GetWorkspaceAsync(ct);
         return new(new(w.OrganizationId, w.Id, w.Key, w.Name),
             (await s.GetProjectsAsync(ct)).Select(x => new ProjectView(x.Id, x.Key, x.Name, x.IsEnabled)).ToArray(),
-            (await s.GetRolesAsync(ct)).Select(x => new RoleProfileView(x.Id, x.Key, x.Name, x.ScopeDescription, x.IsEnabled)).ToArray(),
+            (await s.GetRolesAsync(ct)).Select(x => new RoleProfileView(x.Id, x.Key, x.Name, x.ScopeDescription, x.IsEnabled, x.MaxConcurrentWorkItems)).ToArray(),
             (await s.GetAgentsAsync(ct)).Select(x => new AgentProfileView(x.Id, x.RoleProfileId, x.Key, x.Name, x.Provider, x.Model, x.Instructions, x.SkillPath, x.IsEnabled)).ToArray(),
             (await s.GetWorkflowsAsync(ct)).Select(x => new WorkflowView(x.Id, x.ProjectId, x.Key, x.Name, x.IsEnabled, x.Version,
                 x.Transitions.Select(t => new WorkflowTransitionView(t.Id, t.Key, t.FromRoleId, t.FromStatus.ToString(), t.ToRoleId,

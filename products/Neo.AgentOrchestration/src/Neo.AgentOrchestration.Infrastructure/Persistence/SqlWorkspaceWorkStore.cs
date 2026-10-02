@@ -128,9 +128,9 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         }
         public async Task<IReadOnlyList<WorkItem>> GetProjectItemsAsync(Guid projectId, CancellationToken ct)
             => await Items.Where(x => x.ProjectId == projectId).ToArrayAsync(ct);
-        public Task<bool> IsRoleBusyAsync(Guid roleId, Guid exceptItemId, CancellationToken ct) => db.WorkItems.AnyAsync(x =>
-            x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId && x.Id != exceptItemId &&
-            x.OwnerRoleId == roleId && x.Status == WorkItemStatus.InProgress, ct);
+        public async Task<bool> IsRoleBusyAsync(Guid roleId, int capacity, Guid exceptItemId, CancellationToken ct)
+            => await db.WorkItems.CountAsync(x => x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId &&
+                x.Id != exceptItemId && x.OwnerRoleId == roleId && x.Status == WorkItemStatus.InProgress, ct) >= capacity;
         public void Add(WorkItem item)
         {
             item.RequireScope(scope);

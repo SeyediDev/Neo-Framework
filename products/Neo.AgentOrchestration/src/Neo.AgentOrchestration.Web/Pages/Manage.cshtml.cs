@@ -10,6 +10,7 @@ public sealed class ManageModel(OrchestrationClient client) : WorkPageModel(clie
     [BindProperty] public string Key { get; set; }="";
     [BindProperty] public string Name { get; set; }="";
     [BindProperty] public string? ScopeDescription { get; set; }
+    [BindProperty] public int MaxConcurrentWorkItems { get; set; } = 1;
     [BindProperty] public string Provider { get; set; }="fake";
     [BindProperty] public string? AgentModel { get; set; }
     [BindProperty] public string? Instructions { get; set; }
@@ -33,7 +34,7 @@ public sealed class ManageModel(OrchestrationClient client) : WorkPageModel(clie
         ?Change("projects",new CreateProjectRequest(Key,Name),ct):Change($"projects/{Id}",new RenameProjectRequest(Name),ct,true);
     public Task<IActionResult> OnPostDisableProjectAsync(CancellationToken ct)=>Change($"projects/{Id}/disable",null,ct);
     public Task<IActionResult> OnPostRoleAsync(CancellationToken ct)=>Id==Guid.Empty
-        ?Change("roles",new CreateRoleProfileRequest(Key,Name,ScopeDescription),ct):Change($"roles/{Id}",new UpdateRoleProfileRequest(Name,ScopeDescription),ct,true);
+        ?Change("roles",new CreateRoleProfileRequest(Key,Name,ScopeDescription,MaxConcurrentWorkItems),ct):Change($"roles/{Id}",new UpdateRoleProfileRequest(Name,ScopeDescription,MaxConcurrentWorkItems),ct,true);
     public Task<IActionResult> OnPostRoleEnabledAsync(CancellationToken ct)=>Change($"roles/{Id}/enabled",new SetProfileEnabledRequest(Enabled),ct,true);
     public Task<IActionResult> OnPostAgentAsync(CancellationToken ct)=>Id==Guid.Empty
         ?Change("agents",new CreateAgentProfileRequest(RoleId,Key,Name,Provider,AgentModel,Instructions,SkillPath),ct)

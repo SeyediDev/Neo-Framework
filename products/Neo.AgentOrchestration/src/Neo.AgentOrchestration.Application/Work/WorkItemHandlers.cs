@@ -70,8 +70,8 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
             if (!project.IsEnabled) throw new InvalidOperationException("Project is disabled.");
             var role = await session.GetRoleAsync(request.RoleId, token) ?? throw new KeyNotFoundException("Role not found.");
             role.RequireScope(request.Scope);
-            if (await session.IsRoleBusyAsync(role.Id, item.Id, token))
-                throw new WorkItemConflictException("Role already has an active work item.");
+            if (await session.IsRoleBusyAsync(role.Id, role.MaxConcurrentWorkItems, item.Id, token))
+                throw new WorkItemConflictException("Role has reached its active work-item capacity.");
             var items = await ProjectItems(session, request.Scope, item.ProjectId, token);
             item.RequireCompletedDependencies(items);
             var now = clock.GetUtcNow();

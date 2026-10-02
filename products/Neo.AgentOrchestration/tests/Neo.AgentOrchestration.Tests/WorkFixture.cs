@@ -25,10 +25,10 @@ internal sealed class WorkFixture : IDisposable
     public WorkspaceScope Scope => Workspace.Scope;
     public CancellationToken Ct => TestContext.Current.CancellationToken;
 
-    public WorkFixture()
+    public WorkFixture(int roleCapacity = 1)
     {
         Project = Project.Create(Workspace, "project", "Project");
-        Role = RoleProfile.Create(Workspace, "developer", "Developer");
+        Role = RoleProfile.Create(Workspace, "developer", "Developer", maxConcurrentWorkItems: roleCapacity);
         Store = new MemoryWorkStore(Workspace, [Project], [Role]);
         var collection = new ServiceCollection();
         collection.AddLogging();
@@ -128,9 +128,9 @@ internal sealed class MemoryWorkStore(Workspace workspace, List<Project> project
         public Task<IReadOnlyList<WorkItem>> GetProjectItemsAsync(Guid projectId, CancellationToken ct)
             => Task.FromResult<IReadOnlyList<WorkItem>>(store.Items.Where(x => x.ProjectId == projectId &&
                 Matches(x.OrganizationId, x.WorkspaceId)).ToArray());
-        public Task<bool> IsRoleBusyAsync(Guid roleId, Guid exceptItemId, CancellationToken ct)
-            => Task.FromResult(store.Items.Any(x => x.Id != exceptItemId && x.OwnerRoleId == roleId &&
-                x.Status == WorkItemStatus.InProgress && Matches(x.OrganizationId, x.WorkspaceId)));
+        public Task<bool> IsRoleBusyAsync(Guid roleId, int capacity, Guid exceptItemId, CancellationToken ct)
+            => Task.FromResult(store.Items.Count(x => x.Id != exceptItemId && x.OwnerRoleId == roleId &&
+                x.Status == WorkItemStatus.InProgress && Matches(x.OrganizationId, x.WorkspaceId)) >= capacity);
         public void Add(WorkItem item) { scope.Require(item.OrganizationId, item.WorkspaceId); store.Items.Add(item); }
     }
 }
