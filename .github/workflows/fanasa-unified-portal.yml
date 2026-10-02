@@ -1,0 +1,91 @@
+name: Fanasa Unified Portal
+
+on:
+  push:
+    branches: [ master, develop ]
+    paths:
+      - 'products/Fanasa.UnifiedPortal/**'
+      - 'deploy/fanasa-unified-portal/**'
+      - '.github/workflows/fanasa-unified-portal.yml'
+  pull_request:
+    paths:
+      - 'products/Fanasa.UnifiedPortal/**'
+      - 'deploy/fanasa-unified-portal/**'
+      - '.github/workflows/fanasa-unified-portal.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '10.0.x' }
+      - name: Restore
+        run: dotnet restore products/Fanasa.UnifiedPortal/Fanasa.UnifiedPortal.slnx
+      - name: Build
+        run: dotnet build products/Fanasa.UnifiedPortal/Fanasa.UnifiedPortal.slnx -c Release --no-restore -m:1
+      - name: Publish smoke test
+        run: dotnet publish products/Fanasa.UnifiedPortal/src/Fanasa.UnifiedPortal.Web/Fanasa.UnifiedPortal.Web.csproj -c Release --no-restore -o .artifacts/portal
+
+  package:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '10.0.x' }
+      - name: Restore
+        run: dotnet restore products/Fanasa.UnifiedPortal/Fanasa.UnifiedPortal.slnx
+      - name: Package
+        shell: pwsh
+        run: ./products/Fanasa.UnifiedPortal/tools/Package-Local.ps1 -OutputDirectory "$env:GITHUB_WORKSPACE/.artifacts/fanasa-unified-portal"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fanasa-unified-portal-${{ github.sha }}
+          path: .artifacts/fanasa-unified-portal.zip
+
+  deploy-development:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: package
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: fanasa-unified-portal-${{ github.sha }}, path: bundle }
+      - name: Configure SSH
+        env: { DEPLOY_SSH_KEY: '${{ secrets.DEPLOY_SSH_KEY }}', DEPLOY_KNOWN_HOSTS: '${{ secrets.DEPLOY_KNOWN_HOSTS }}' }
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Deploy
+        env: { DEPLOY_HOST: '${{ secrets.DEPLOY_HOST }}', DEPLOY_USER: '${{ secrets.DEPLOY_USER }}' }
+        run: |
+          scp bundle/fanasa-unified-portal-${{ github.sha }}.zip "$DEPLOY_USER@$DEPLOY_HOST:/tmp/fanasa-unified-portal-${{ github.sha }}.zip"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "sudo /usr/local/sbin/fanasa-unified-portal-deploy development '${{ github.sha }}' '/tmp/fanasa-unified-portal-${{ github.sha }}.zip'"
+
+  deploy-production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: package
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: fanasa-unified-portal-${{ github.sha }}, path: bundle }
+      - name: Configure SSH
+        env: { DEPLOY_SSH_KEY: '${{ secrets.DEPLOY_SSH_KEY }}', DEPLOY_KNOWN_HOSTS: '${{ secrets.DEPLOY_KNOWN_HOSTS }}' }
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Deploy
+        env: { DEPLOY_HOST: '${{ secrets.DEPLOY_HOST }}', DEPLOY_USER: '${{ secrets.DEPLOY_USER }}' }
+        run: |
+          scp bundle/fanasa-unified-portal-${{ github.sha }}.zip "$DEPLOY_USER@$DEPLOY_HOST:/tmp/fanasa-unified-portal-${{ github.sha }}.zip"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "sudo /usr/local/sbin/fanasa-unified-portal-deploy production '${{ github.sha }}' '/tmp/fanasa-unified-portal-${{ github.sha }}.zip'"

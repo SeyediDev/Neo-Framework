@@ -55,6 +55,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo.AgentOrchestration.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "products", "products", "{91DB166F-8FA8-D710-9FF9-784B929F57E0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fanasa.UnifiedPortal", "Fanasa.UnifiedPortal", "{A4B8A06C-6B99-4C4C-9F4A-34EE7D4D35F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanasa.UnifiedPortal.Web", "products\Fanasa.UnifiedPortal\src\Fanasa.UnifiedPortal.Web\Fanasa.UnifiedPortal.Web.csproj", "{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Debug|x64.Build.0 = Debug|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Debug|x86.Build.0 = Debug|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Release|x64.ActiveCfg = Release|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Release|x64.Build.0 = Release|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Release|x86.ActiveCfg = Release|Any CPU
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A}.Release|x86.Build.0 = Release|Any CPU
 		{1F94BBF1-FEC2-43F5-89C7-A05958E6FD9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F94BBF1-FEC2-43F5-89C7-A05958E6FD9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F94BBF1-FEC2-43F5-89C7-A05958E6FD9E}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -298,6 +314,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{A4B8A06C-6B99-4C4C-9F4A-34EE7D4D35F2} = {91DB166F-8FA8-D710-9FF9-784B929F57E0}
+		{E48AB2B2-1C80-4A56-9BCA-9E88E51F2F7A} = {A4B8A06C-6B99-4C4C-9F4A-34EE7D4D35F2}
 		{1F94BBF1-FEC2-43F5-89C7-A05958E6FD9E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{840074EE-F7F3-4A7E-9C63-A9075D6CBA5B} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{5146C522-571F-4EE5-AF58-FDDC9BE5E9B6} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}

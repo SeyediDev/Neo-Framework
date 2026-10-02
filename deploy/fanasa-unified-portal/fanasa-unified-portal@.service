@@ -1,0 +1,23 @@
+[Unit]
+Description=Fanasa Unified Portal (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=fanasa-portal
+Group=fanasa-portal
+WorkingDirectory=/opt/fanasa-unified-portal/%i/current/web
+EnvironmentFile=/etc/fanasa-unified-portal/%i.env
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_ENVIRONMENT=Production
+ExecStart=/usr/bin/dotnet /opt/fanasa-unified-portal/%i/current/web/Fanasa.UnifiedPortal.Web.dll --urls=http://127.0.0.1:${FANASA_PORTAL_PORT}
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/fanasa-unified-portal
+
+[Install]
+WantedBy=multi-user.target

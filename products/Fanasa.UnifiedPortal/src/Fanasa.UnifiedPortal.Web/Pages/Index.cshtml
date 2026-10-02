@@ -1,0 +1,35 @@
+@page
+@using System.Security.Claims
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "پورتال مرکزی";
+    var authenticated = User.Identity?.IsAuthenticated == true;
+    var workManagementUrl = Configuration["Products:WorkManagementUrl"];
+    var contractManagementUrl = Configuration["Products:ContractManagementUrl"];
+}
+<header class="hero">
+    <img src="~/brand/fanasa-horizontal-fa.svg" alt="فن‌آسا" />
+    <span class="eyebrow">پنجره واحد</span>
+    <h1>@(authenticated ? "خوش آمدید" : "محصولات فن‌آسا")</h1>
+    <p>@(authenticated ? "هویت شما توسط سامانه مرکزی فن‌آسا تأیید شده است." : "برای دسترسی به سامانه‌های مجاز، با حساب سازمانی خود وارد شوید.")</p>
+</header>
+@if (!authenticated)
+{
+    <a class="button" href="/login">ورود با SSO فن‌آسا</a>
+}
+else
+{
+    <section class="products" aria-label="محصولات فن‌آسا">
+        <a class="product-card" href="@(workManagementUrl ?? "#")" aria-disabled="@(string.IsNullOrWhiteSpace(workManagementUrl))">
+            <span class="product-mark turquoise">W</span>
+            <span><strong>مدیریت کار ایجنتیک</strong><small>برنامه‌ریزی، کانبان و ارکستراسیون ایجنت‌ها</small></span>
+            <span class="arrow">←</span>
+        </a>
+        <a class="product-card" href="@(contractManagementUrl ?? "#")" aria-disabled="@(string.IsNullOrWhiteSpace(contractManagementUrl))">
+            <span class="product-mark saffron">C</span>
+            <span><strong>مدیریت قرارداد</strong><small>@(string.IsNullOrWhiteSpace(contractManagementUrl) ? "در حال آماده‌سازی" : "مدیریت چرخه عمر قراردادها")</small></span>
+            <span class="arrow">←</span>
+        </a>
+    </section>
+    <div class="account"><span>@(User.FindFirstValue("preferred_username") ?? User.FindFirstValue("email") ?? "کاربر سازمانی")</span><a href="/logout">خروج امن</a></div>
+}
