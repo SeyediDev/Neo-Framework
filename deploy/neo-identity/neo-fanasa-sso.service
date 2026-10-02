@@ -1,0 +1,23 @@
+[Unit]
+Description=Neo Fanasa SSO Page
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=neo-sso
+Group=neo-sso
+WorkingDirectory=/opt/neo-fanasa-sso/current
+EnvironmentFile=/etc/neo-fanasa-sso.env
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_ENVIRONMENT=Production
+ExecStart=/usr/bin/dotnet /opt/neo-fanasa-sso/current/Neo.FanasaSso.Web.dll --urls=http://127.0.0.1:${FANASA_SSO_PORT}
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/neo-fanasa-sso
+
+[Install]
+WantedBy=multi-user.target

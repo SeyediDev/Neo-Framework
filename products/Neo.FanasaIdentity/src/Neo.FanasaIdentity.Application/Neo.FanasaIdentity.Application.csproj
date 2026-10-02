@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><TargetFramework>net10.0</TargetFramework></PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Neo.FanasaIdentity.Contracts\Neo.FanasaIdentity.Contracts.csproj" />
-    <ProjectReference Include="..\Neo.FanasaIdentity.Domain\Neo.FanasaIdentity.Domain.csproj" />
-  </ItemGroup>
-</Project>

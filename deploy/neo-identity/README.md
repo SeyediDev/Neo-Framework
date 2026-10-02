@@ -31,10 +31,24 @@ The bootstrap admin password is only read when the Keycloak database is first
 created. Store it in the server secret file and rotate it after first login.
 Do not commit `.env`, export it in CI, or put it in application settings.
 
-The initial VPS setup also creates the `neo` realm, a local `admin` user and the
+The initial VPS setup also creates the `fanasa` realm, a local `admin` user and the
 `platform-admin` realm role. This is a bootstrap account only; after the Fanasa
 broker is configured, prefer centrally managed human identities and disable or
 rotate the bootstrap credential.
+
+## Neo.FanasaSso page on the VPS
+
+Publish `Neo.FanasaSso.Web` from the repository and copy the output to the VPS.
+Install `neo-fanasa-sso.service`, activate the release under
+`/opt/neo-fanasa-sso/current`, then enable:
+
+```sh
+systemctl enable --now neo-fanasa-sso
+curl --fail http://127.0.0.1:18100/health
+```
+
+The SSO page only listens on loopback. Put it behind the approved HTTPS gateway when
+the public hostname is ready; never expose port `18100` directly to the Internet.
 
 ## Fanasa central SSO
 
