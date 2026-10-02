@@ -1,9 +1,11 @@
 # Neo Identity deployment
 
-This stack provides the independent identity boundary for Neo SaaS:
+This stack provides the independent identity boundary for Fanasa SaaS:
 
 - Keycloak is the local identity broker and authorization server.
 - PostgreSQL is dedicated to Keycloak and is not shared with orchestration data.
+- The `fanasa` login theme is mounted from `keycloak/themes/fanasa` and keeps the
+  Keycloak login experience aligned with the Fanasa brand book.
 - The Keycloak HTTP port is bound to `127.0.0.1:18080` by default; publish it
   through the existing HTTPS reverse proxy only after the public hostname and
   TLS certificate are ready.
@@ -17,6 +19,11 @@ docker compose --env-file .env up -d
 docker compose --env-file .env ps
 curl --fail http://127.0.0.1:18080/realms/master/.well-known/openid-configuration
 ```
+
+After the first realm bootstrap, select the custom theme for the `fanasa` realm
+from **Realm settings → Themes → Login theme → fanasa**, or apply it with the
+Keycloak Admin API as part of the server bootstrap. Restarting the container is
+not enough to change an already-created realm's `loginTheme` setting.
 
 Required secrets:
 
@@ -35,20 +42,6 @@ The initial VPS setup also creates the `fanasa` realm, a local `admin` user and 
 `platform-admin` realm role. This is a bootstrap account only; after the Fanasa
 broker is configured, prefer centrally managed human identities and disable or
 rotate the bootstrap credential.
-
-## Neo.FanasaSso page on the VPS
-
-Publish `Neo.FanasaSso.Web` from the repository and copy the output to the VPS.
-Install `neo-fanasa-sso.service`, activate the release under
-`/opt/neo-fanasa-sso/current`, then enable:
-
-```sh
-systemctl enable --now neo-fanasa-sso
-curl --fail http://127.0.0.1:18100/health
-```
-
-The SSO page only listens on loopback. Put it behind the approved HTTPS gateway when
-the public hostname is ready; never expose port `18100` directly to the Internet.
 
 ## Fanasa central SSO
 

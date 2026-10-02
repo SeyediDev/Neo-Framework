@@ -28,6 +28,8 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD}
       KC_PROXY_HEADERS: xforwarded
       KC_HOSTNAME_STRICT: "false"
+    volumes:
+      - ./keycloak/themes:/opt/keycloak/themes:ro
     ports:
       - "127.0.0.1:${KEYCLOAK_HTTP_PORT:-18080}:8080"
     depends_on:

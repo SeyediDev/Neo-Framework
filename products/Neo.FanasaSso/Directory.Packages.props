@@ -1,6 +1,0 @@
-<Project>
-  <Import Project="../../Directory.Packages.props" />
-  <ItemGroup>
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.8" />
-  </ItemGroup>
-</Project>

@@ -67,7 +67,7 @@ public static class WebIdentity
                 o.Authority = config["WebAuthentication:Authority"];
                 o.ClientId = config["WebAuthentication:ClientId"];
                 o.ClientSecret = config["WebAuthentication:ClientSecret"];
-                o.ResponseType = "code"; o.UsePkce = true; o.RequireHttpsMetadata = true;
+                o.ResponseType = "code"; o.UsePkce = true; o.RequireHttpsMetadata = !environment.IsDevelopment();
                 o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 o.MapInboundClaims = false; o.SaveTokens = true; o.GetClaimsFromUserInfoEndpoint = false;
                 o.Scope.Clear(); o.Scope.Add("openid"); o.Scope.Add("profile");

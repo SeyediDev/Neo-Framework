@@ -1,0 +1,112 @@
+:root {
+  --fanasa-lapis: #1f4b9a;
+  --fanasa-turquoise: #21b5a8;
+  --fanasa-turquoise-dark: #149a8e;
+  --fanasa-saffron: #e0a334;
+  --fanasa-plaster: #f6f1e7;
+  --fanasa-ink: #141c33;
+}
+
+body.kcBody {
+  background: var(--fanasa-plaster);
+  background-image: linear-gradient(135deg, rgba(31, 75, 154, .06), transparent 42%),
+    linear-gradient(315deg, rgba(33, 181, 168, .08), transparent 38%);
+  color: var(--fanasa-ink);
+  font-family: Vazir, Tahoma, Arial, sans-serif;
+  direction: rtl;
+}
+
+body.kcBody:before,
+body.kcBody:after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  width: 360px;
+  height: 360px;
+  border: 1px solid rgba(33, 181, 168, .22);
+  border-radius: 50% 50% 0 0;
+  pointer-events: none;
+}
+
+body.kcBody:before { left: -160px; bottom: -145px; }
+body.kcBody:after { right: -180px; top: -170px; transform: rotate(180deg); }
+
+#kc-header { padding: 42px 20px 18px; }
+#kc-header-wrapper {
+  color: var(--fanasa-lapis);
+  font-size: 0;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+#kc-header-wrapper:before {
+  content: "فن‌آسا";
+  display: block;
+  font-size: 34px;
+  line-height: 1.4;
+  letter-spacing: -1px;
+}
+#kc-header-wrapper:after {
+  content: "ورود مرکزی";
+  display: block;
+  color: var(--fanasa-turquoise-dark);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.pf-v5-c-login__main,
+.card-pf {
+  border: 1px solid rgba(31, 75, 154, .12);
+  border-top: 4px solid var(--fanasa-lapis);
+  border-radius: 22px;
+  box-shadow: 0 22px 60px rgba(20, 28, 51, .14);
+  background: rgba(255, 253, 249, .96);
+}
+.pf-v5-c-login__main { overflow: hidden; }
+.pf-v5-c-login__main-header { padding-bottom: 8px; }
+.pf-v5-c-login__main-header h1,
+#kc-page-title {
+  color: var(--fanasa-ink);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+label, .pf-v5-c-form__label { color: var(--fanasa-ink); font-weight: 700; }
+input.pf-c-form-control,
+input.pf-v5-c-form-control {
+  min-height: 48px;
+  border: 1px solid #c8d0dc;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--fanasa-ink);
+  direction: ltr;
+}
+input.pf-c-form-control:focus,
+input.pf-v5-c-form-control:focus {
+  border-color: var(--fanasa-turquoise-dark);
+  box-shadow: 0 0 0 3px rgba(33, 181, 168, .2);
+}
+
+button, input[type="submit"], .pf-v5-c-button.pf-m-primary,
+.pf-c-button.pf-m-primary {
+  min-height: 48px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--fanasa-saffron) !important;
+  color: var(--fanasa-ink) !important;
+  font-family: inherit;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(224, 163, 52, .3);
+}
+button:hover, input[type="submit"]:hover, .pf-v5-c-button.pf-m-primary:hover,
+.pf-c-button.pf-m-primary:hover { background: #edb340 !important; }
+
+a { color: var(--fanasa-lapis); font-weight: 600; }
+.alert-error, .pf-v5-c-alert.pf-m-danger { border-radius: 10px; }
+@media (max-width: 600px) {
+  #kc-header { padding-top: 24px; }
+  #kc-header-wrapper:before { font-size: 29px; }
+  .pf-v5-c-login__main, .card-pf { margin-inline: 14px; }
+}
