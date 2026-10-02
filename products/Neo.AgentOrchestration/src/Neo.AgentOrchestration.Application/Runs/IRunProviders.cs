@@ -7,7 +7,7 @@ public interface IRunProviders
     void RequireAvailable(string provider, WorkspaceScope scope);
     HarnessBinding Bind(string provider, WorkspaceScope scope, Guid runId);
 }
-public sealed record HarnessBinding(string Fingerprint, string CallbackUrl);
+public sealed record HarnessBinding(string Fingerprint, string CallbackUrl, bool CompactContextOptIn = false);
 public sealed class RunProviderUnavailableException(string provider) : InvalidOperationException("Execution provider is unavailable.")
 {
     public string Code => provider == "fake" ? "simulation-disabled" : "harness-unavailable";

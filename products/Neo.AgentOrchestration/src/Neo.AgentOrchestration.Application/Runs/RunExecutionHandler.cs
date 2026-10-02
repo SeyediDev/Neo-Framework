@@ -37,9 +37,13 @@ public sealed class RunExecutionHandler(ISimulationHarness harness, TimeProvider
                 {
                     var binding = providers.Bind(run.Provider, operation.Scope, run.Id);
                     var context = WorkItemProjection.Details(item, await s.GetProjectItemsAsync(item.ProjectId, ct), clock.GetUtcNow());
-                    run.PrepareHarness(binding.Fingerprint, JsonSerializer.Serialize(new HarnessRequest("neo-harness/v1", run.Id,
-                        run.OrganizationId, run.WorkspaceId, run.RoleId, run.AgentProfileId, run.Model, run.Instructions,
-                        run.SkillPath, run.Branch, binding.CallbackUrl, context), new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+                    object payload = binding.CompactContextOptIn
+                        ? new HarnessCompactRequest("neo-harness/v2", run.Id, run.OrganizationId, run.WorkspaceId, run.RoleId,
+                            run.AgentProfileId, run.Model, run.Instructions, run.SkillPath, run.Branch, binding.CallbackUrl,
+                            WorkContextProjection.Create(context))
+                        : new HarnessRequest("neo-harness/v1", run.Id, run.OrganizationId, run.WorkspaceId, run.RoleId,
+                            run.AgentProfileId, run.Model, run.Instructions, run.SkillPath, run.Branch, binding.CallbackUrl, context);
+                    run.PrepareHarness(binding.Fingerprint, JsonSerializer.Serialize(payload, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
                     run.MarkDispatched(item, clock.GetUtcNow());
                     await s.StageMessageAsync(Message(run, "http-dispatch", new { run.Id }), WorkDeliveryKind.SendHarnessRequest, clock, ct);
                     break;

@@ -23,6 +23,7 @@ the same connection and secret references on both API and worker:
 | `Harness__Connections__demo__CallbackBaseUrl` | Public HTTPS API root (optional path prefix) |
 | `Harness__Connections__demo__DispatchSecretRef` | `env:NEO_GATEWAY_DISPATCH_KEY` |
 | `Harness__Connections__demo__CallbackSecretRef` | `env:NEO_GATEWAY_CALLBACK_KEY` |
+| `Harness__Connections__demo__CompactContextOptIn` | Optional explicit `true` to send the versioned `neo-harness/v2` bounded context contract |
 
 Supply those two **different** secret values privately through the environment
 or deployment secret store: 32-1024 characters, no whitespace/control characters.
@@ -56,11 +57,21 @@ that workflow chain. A fake-only chain without consent cannot switch to an
 external provider automatically. Gate, ownership, approval, version, dependency
 and 20-hop checks still apply; consent bypasses none of them.
 
-Dispatch freezes a maximum 256-KiB UTF-8 snapshot before sending:
+By default, dispatch freezes the unchanged `neo-harness/v1` maximum 256-KiB UTF-8 snapshot before sending:
 
 - `protocol`, `runId`, `organizationId`, `workspaceId`, `roleId`, `agentProfileId`;
 - `model`, `instructions`, `skillPath`, `branch`, `callbackUrl`;
 - `work`: the `WorkItemDetails` contract, including logs, time and evidence.
+
+`CompactContextOptIn=true` is a connection-level opt-in and changes the frozen
+payload to `neo-harness/v2`. It replaces `work` with `context: WorkContextView`:
+bounded task/acceptance text, current owner/version, up to three recent logs and
+evidence, and bounded child/dependency links with explicit `omitted` markers.
+It does not include full time entries, owner history or the full task graph.
+The gateway must explicitly support v2; no connection uses it by default, and
+changing the setting changes the destination fingerprint and holds existing
+snapshots for reconciliation. This is a context-size optimization, not a
+measured provider-token saving or a substitute for reading omitted history.
 
 The request uses POST JSON, `Authorization: Bearer <dispatch-secret>` and
 `Idempotency-Key: <run GUID without hyphens>`. **Only 202 means accepted**, not

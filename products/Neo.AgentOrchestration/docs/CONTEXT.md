@@ -33,8 +33,8 @@ or billed-token measure.
   completion; no invented planner/reviewer/human gates. Existing managed workflow
   approvals and security requirements still apply, including independent review.
 - Check free-role total with roleId, InProgress and take=1 across the workspace;
-  no full-board scan needed. Atomic claim resolves races. Capacity remains one
-  active item per role; changing it needs explicit capacity/file-lock design.
+  no full-board scan needed. Atomic claim resolves races. Each role exposes a
+  validated capacity from 1 to 16; claims remain workspace-scoped and atomic.
 - Cache unchanged instructions/catalog knowledge in the current context. Refresh
   on relevant configuration changes/conflicts, not every tool call.
 - Log milestones, scope changes, blockers and handoffs. Checkpoints record decisions,
@@ -43,9 +43,10 @@ or billed-token measure.
 - A role change by the same agent is not independent review. Don't spawn a chain
   for trivial work. Do not poll unchanged state or auto-retry uncertain writes.
 
-The `neo-harness/v1` external dispatch snapshot is unchanged for compatibility;
-the external gateway owns prompt assembly and must be upgraded explicitly before
-claiming end-to-end harness prompt savings. This work neither dispatches a gateway
+The `neo-harness/v1` external dispatch snapshot remains the default for
+compatibility. A connection may explicitly opt into versioned `neo-harness/v2`
+bounded context; the external gateway must support it before claiming any
+end-to-end harness prompt savings. This work neither dispatches a gateway
 nor changes approvals/profiles in the live catalog. Physical provider token usage
 requires provider telemetry, not a character/4 estimate presented as fact.
 

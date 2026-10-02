@@ -24,10 +24,11 @@ public sealed class EnvironmentHarnessSecrets : IHarnessSecrets
         return secret;
     }
 }
-public sealed record HttpHarnessConnection(string Key, Uri Endpoint, Uri CallbackBaseUrl, string DispatchSecretRef, string CallbackSecretRef)
+public sealed record HttpHarnessConnection(string Key, Uri Endpoint, Uri CallbackBaseUrl, string DispatchSecretRef, string CallbackSecretRef,
+    bool CompactContextOptIn)
 {
     public string Fingerprint => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
-        JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef }))));
+        JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef, CompactContextOptIn }))));
 }
 public sealed class ConfiguredRunProviders(IConfiguration configuration, IHostEnvironment environment, IHarnessSecrets? secrets = null) : IRunProviders
 {
@@ -51,7 +52,8 @@ public sealed class ConfiguredRunProviders(IConfiguration configuration, IHostEn
     {
         var connection = Resolve(provider, scope);
         return new(connection.Fingerprint, new Uri(connection.CallbackBaseUrl,
-            $"api/orchestration/v1/organizations/{scope.OrganizationId:D}/workspaces/{scope.WorkspaceId:D}/harness/{connection.Key}/runs/{runId:D}/result").AbsoluteUri);
+            $"api/orchestration/v1/organizations/{scope.OrganizationId:D}/workspaces/{scope.WorkspaceId:D}/harness/{connection.Key}/runs/{runId:D}/result").AbsoluteUri,
+            connection.CompactContextOptIn);
     }
     public HttpHarnessConnection Resolve(string provider, WorkspaceScope scope)
     {
@@ -75,7 +77,7 @@ public sealed class ConfiguredRunProviders(IConfiguration configuration, IHostEn
                 if (!Regex.IsMatch(reference, @"\Aenv:[A-Z][A-Z0-9_]{0,100}\z", RegexOptions.CultureInvariant))
                     throw new RunProviderUnavailableException(provider);
             if (dispatchRef == callbackRef) throw new RunProviderUnavailableException(provider);
-            return new(key, endpoint, callback, dispatchRef, callbackRef);
+            return new(key, endpoint, callback, dispatchRef, callbackRef, section.GetValue<bool>("CompactContextOptIn"));
         }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FormatException)
         { throw new RunProviderUnavailableException(provider); }

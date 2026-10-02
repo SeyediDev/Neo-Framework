@@ -98,8 +98,8 @@ Example tool arguments, using actual identifiers and versions from readback:
 A claim starts time. Resume existing ownership instead of claiming/starting
 another interval. Each mutation returns the new version. After 409, reload and
 reassess ownership/dependencies/state; never replace a version and blindly replay.
-Ownership and role exclusivity are workspace-wide: include all projects/pages
-when checking a role. Scope isolation does not prevent overlapping files in
+Ownership and role capacity are workspace-wide: include all projects/pages when
+checking a role, and use the catalog's configured capacity (1-16). Scope isolation does not prevent overlapping files in
 different repositories/worktrees; coordinate file scope too.
 
 Creation accepts optional stable `requestId` for deduplicated intake: identical

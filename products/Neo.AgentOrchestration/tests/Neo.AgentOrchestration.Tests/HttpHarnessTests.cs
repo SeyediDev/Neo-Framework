@@ -185,6 +185,26 @@ public sealed class HttpHarnessTests
         await using var db = f.Factory.CreateDbContext(); Assert.False(await db.AgentRuns.AnyAsync(x => x.WorkItemId == h.Item.Id, Ct));
     }
 
+    [Fact]
+    public async Task Compact_context_is_sent_only_when_connection_explicitly_opts_in()
+    {
+        var f = await Fixture.Create(); await using var h = await HarnessFixture.Create(f);
+        h.Settings["Harness:Connections:demo:CompactContextOptIn"] = "true";
+        using var http = new HttpClient(new DelegateHandler(async (request, _) =>
+        {
+            var json = await request.Content!.ReadAsStringAsync(Ct);
+            using var document = JsonDocument.Parse(json);
+            Assert.Equal("neo-harness/v2", document.RootElement.GetProperty("protocol").GetString());
+            Assert.True(document.RootElement.TryGetProperty("context", out var context));
+            Assert.False(context.TryGetProperty("timeEntries", out JsonElement timeEntries));
+            Assert.False(document.RootElement.TryGetProperty("work", out JsonElement fullWork));
+            return new HttpResponseMessage(HttpStatusCode.Accepted);
+        }));
+        var run = await h.Start();
+        await h.Drain(h.Job(http));
+        Assert.Equal("AwaitingResult", (await h.Read(run.Run.Id)).Run.Status);
+    }
+
     internal sealed class HarnessFixture : IAsyncDisposable
     {
         public required Fixture Sql { get; init; }

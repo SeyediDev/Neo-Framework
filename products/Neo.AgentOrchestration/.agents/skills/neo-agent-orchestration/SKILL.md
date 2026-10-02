@@ -34,7 +34,9 @@ Resume only this subject/chat's assignment. Old timestamps or restarts do not
 authorize takeover, including reserved `neo-run:` owners. Check a role's InProgress
 board with take=1 and no project filter; total=0 is a hint, atomic claim decides.
 Claim an eligible Ready item with current version, then verify owner/chat/branch
-and timer from the receipt. One active item per role remains enforced.
+and timer from the receipt. Role capacity is configurable from 1 to 16; claims
+remain workspace-scoped and atomic, so check the configured capacity before
+planning parallel work.
 
 Announce task, project/domain, role and file scope once or when they change.
 Follow the repository's branch policy; the user's main-chat develop exception
