@@ -8,6 +8,9 @@ public partial class TokenUsageReports : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
+        migrationBuilder.AddUniqueConstraint(
+            name: "AK_AgentRuns_Id_WorkItemId", schema: "nao", table: "AgentRuns",
+            columns: new[] { "Id", "WorkItemId" });
         migrationBuilder.CreateTable(
             name: "TokenUsageReports", schema: "nao",
             columns: table => new
@@ -39,5 +42,8 @@ public partial class TokenUsageReports : Migration
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
-        => migrationBuilder.DropTable(name: "TokenUsageReports", schema: "nao");
+    {
+        migrationBuilder.DropTable(name: "TokenUsageReports", schema: "nao");
+        migrationBuilder.DropUniqueConstraint(name: "AK_AgentRuns_Id_WorkItemId", schema: "nao", table: "AgentRuns");
+    }
 }
