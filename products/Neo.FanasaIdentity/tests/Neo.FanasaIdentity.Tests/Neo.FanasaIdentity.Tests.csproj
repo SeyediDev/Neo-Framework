@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework><IsTestProject>true</IsTestProject><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" /><PackageReference Include="xunit.runner.visualstudio" />
+    <ProjectReference Include="..\..\src\Neo.FanasaIdentity.Domain\Neo.FanasaIdentity.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Neo.FanasaIdentity.Application\Neo.FanasaIdentity.Application.csproj" />
+  </ItemGroup>
+</Project>

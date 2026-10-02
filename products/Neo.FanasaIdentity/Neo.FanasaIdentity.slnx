@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/Neo.FanasaIdentity.Contracts/Neo.FanasaIdentity.Contracts.csproj" />
+  <Project Path="src/Neo.FanasaIdentity.Domain/Neo.FanasaIdentity.Domain.csproj" />
+  <Project Path="src/Neo.FanasaIdentity.Application/Neo.FanasaIdentity.Application.csproj" />
+  <Project Path="src/Neo.FanasaIdentity.Infrastructure/Neo.FanasaIdentity.Infrastructure.csproj" />
+  <Project Path="src/Neo.FanasaIdentity.Api/Neo.FanasaIdentity.Api.csproj" />
+  <Project Path="tests/Neo.FanasaIdentity.Tests/Neo.FanasaIdentity.Tests.csproj" />
+</Solution>
