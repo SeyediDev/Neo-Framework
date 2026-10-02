@@ -12,6 +12,7 @@ public sealed record CreateWorkItem(WorkspaceScope Scope, Guid ProjectId, string
 public sealed record ClaimWorkItem(WorkspaceScope Scope, Guid WorkItemId, Guid RoleId, WorkActor Actor,
     Guid ExpectedVersion, string? Branch = null) : IRequest<WorkItemDetails>;
 public sealed record GetWorkItem(WorkspaceScope Scope, Guid WorkItemId) : IRequest<WorkItemDetails>;
+public sealed record GetWorkHistory(WorkspaceScope Scope, Guid WorkItemId, int Skip, int Take, Guid? SnapshotVersion) : IRequest<WorkHistoryPage>;
 public sealed record UpdateWorkItem(WorkspaceScope Scope, Guid WorkItemId, WorkActor Actor,
     Guid ExpectedVersion, WorkItemChange Change) : IRequest<WorkItemDetails>;
 

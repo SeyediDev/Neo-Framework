@@ -4,6 +4,9 @@ Bounded agent reads: `GET items/{id}/context?knownVersion={guid}` and
 `GET items/{id}/history?skip=0&take=10&snapshotVersion={guid}` use the same
 workspace/read authorization as item details. History take is 1-20; a changed
 snapshot returns 409. See [context contracts and limits](CONTEXT.md).
+The history endpoint executes a scoped root-version lookup, `COUNT`, and ordered
+`OFFSET/FETCH` projection of only the requested log columns; it does not load the
+item's evidence, time entries, owner history or full log collection.
 
 The independent API composes Neo.Endpoint (MVC, versioning and NSwag), MediatR
 application commands and the product SQL transaction store. It does not use
@@ -181,3 +184,11 @@ A compatible real gateway is operator-supplied, not an embedded model client. Th
 [management Web](WEB.md) now consumes these HTTP contracts with per-user OIDC
 access tokens. Bootstrap installer, legacy import, live gateway setup and user
 acceptance remain pending. Existing Companion MCP/skills contracts are unchanged.
+@@
+ Bounded agent reads: `GET items/{id}/context?knownVersion={guid}` and
+ `GET items/{id}/history?skip=0&take=10&snapshotVersion={guid}` use the same
+ workspace/read authorization as item details. History take is 1-20; a changed
+ snapshot returns 409. See [context contracts and limits](CONTEXT.md).
++The history endpoint executes a scoped root-version lookup, `COUNT`, and ordered
++`OFFSET/FETCH` projection of only the requested log columns; it does not load the
++item's evidence, time entries, owner history or full log collection.

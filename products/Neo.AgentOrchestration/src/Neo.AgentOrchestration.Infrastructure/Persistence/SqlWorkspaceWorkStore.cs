@@ -112,6 +112,20 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         public Task<RoleProfile?> GetRoleAsync(Guid id, CancellationToken ct) => db.Roles.SingleOrDefaultAsync(x =>
             x.Id == id && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId, ct);
         public Task<WorkItem?> GetItemAsync(Guid id, CancellationToken ct) => Items.SingleOrDefaultAsync(x => x.Id == id, ct);
+        public async Task<WorkHistoryPage> GetHistoryPageAsync(Guid itemId, int skip, int take, Guid? snapshotVersion, CancellationToken ct)
+        {
+            var root = await db.WorkItems.AsNoTracking().Where(x => x.Id == itemId &&
+                x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId)
+                .Select(x => new { x.Version }).SingleOrDefaultAsync(ct)
+                ?? throw new KeyNotFoundException("Work item not found.");
+            if (snapshotVersion.HasValue && snapshotVersion != root.Version)
+                throw new WorkItemConflictException("Work item changed; reload before reading the next history page.");
+            var query = db.Set<WorkItemLog>().AsNoTracking().Where(x => x.WorkItemId == itemId);
+            var total = await query.CountAsync(ct);
+            var logs = await query.OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id).Skip(skip).Take(take)
+                .Select(x => new WorkLogView(x.Id, x.AgentId, x.ChatId, x.Kind, x.Message, x.CreatedAtUtc)).ToArrayAsync(ct);
+            return new(root.Version, logs, total, (long)skip + logs.Length < total ? skip + logs.Length : null);
+        }
         public async Task<IReadOnlyList<WorkItem>> GetProjectItemsAsync(Guid projectId, CancellationToken ct)
             => await Items.Where(x => x.ProjectId == projectId).ToArrayAsync(ct);
         public Task<bool> IsRoleBusyAsync(Guid roleId, Guid exceptItemId, CancellationToken ct) => db.WorkItems.AnyAsync(x =>

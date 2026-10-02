@@ -29,9 +29,7 @@ public sealed class WorkItemsController(ISender sender) : WorkspaceControllerBas
         [FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] Guid? snapshotVersion = null)
     {
         if (skip < 0 || take is < 1 or > 20) return BadRequest();
-        var details = await Sender.Send(new GetWorkItem(Scope, id), ct);
-        if (snapshotVersion.HasValue && snapshotVersion != details.Item.Version) return Conflict();
-        return WorkContextProjection.History(details, skip, take);
+        return await Sender.Send(new GetWorkHistory(Scope, id, skip, take, snapshotVersion), ct);
     }
 
     [HttpPost("items"), Authorize(Policy = WorkspaceSecurity.Write)]

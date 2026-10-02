@@ -115,6 +115,16 @@ internal sealed class MemoryWorkStore(Workspace workspace, List<Project> project
             store.Roles.SingleOrDefault(x => x.Id == id && Matches(x.OrganizationId, x.WorkspaceId)));
         public Task<WorkItem?> GetItemAsync(Guid id, CancellationToken ct) => Task.FromResult(
             store.Items.SingleOrDefault(x => x.Id == id && Matches(x.OrganizationId, x.WorkspaceId)));
+        public Task<WorkHistoryPage> GetHistoryPageAsync(Guid itemId, int skip, int take, Guid? snapshotVersion, CancellationToken ct)
+        {
+            var item = store.Items.SingleOrDefault(x => x.Id == itemId && Matches(x.OrganizationId, x.WorkspaceId))
+                ?? throw new KeyNotFoundException("Work item not found.");
+            if (snapshotVersion.HasValue && snapshotVersion != item.Version) throw new WorkItemConflictException("Work item changed; reload before reading the next history page.");
+            var logs = item.Logs.OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id).Skip(skip).Take(take)
+                .Select(x => new WorkLogView(x.Id, x.AgentId, x.ChatId, x.Kind, x.Message, x.CreatedAtUtc)).ToArray();
+            return Task.FromResult(new WorkHistoryPage(item.Version, logs, item.Logs.Count,
+                (long)skip + logs.Length < item.Logs.Count ? skip + logs.Length : null));
+        }
         public Task<IReadOnlyList<WorkItem>> GetProjectItemsAsync(Guid projectId, CancellationToken ct)
             => Task.FromResult<IReadOnlyList<WorkItem>>(store.Items.Where(x => x.ProjectId == projectId &&
                 Matches(x.OrganizationId, x.WorkspaceId)).ToArray());

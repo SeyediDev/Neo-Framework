@@ -2,6 +2,7 @@ using Neo.AgentOrchestration.Domain.Agents;
 using Neo.AgentOrchestration.Domain.Projects;
 using Neo.AgentOrchestration.Domain.Work;
 using Neo.AgentOrchestration.Domain.Workflows;
+using Neo.AgentOrchestration.Contracts;
 
 namespace Neo.AgentOrchestration.Application.Work;
 
@@ -32,6 +33,7 @@ public interface IWorkItemSession
     Task<Project?> GetProjectAsync(Guid id, CancellationToken ct);
     Task<RoleProfile?> GetRoleAsync(Guid id, CancellationToken ct);
     Task<WorkItem?> GetItemAsync(Guid id, CancellationToken ct);
+    Task<WorkHistoryPage> GetHistoryPageAsync(Guid itemId, int skip, int take, Guid? snapshotVersion, CancellationToken ct);
     Task<IReadOnlyList<WorkItem>> GetProjectItemsAsync(Guid projectId, CancellationToken ct);
     Task<bool> IsRoleBusyAsync(Guid roleId, Guid exceptItemId, CancellationToken ct);
     void Add(WorkItem item);

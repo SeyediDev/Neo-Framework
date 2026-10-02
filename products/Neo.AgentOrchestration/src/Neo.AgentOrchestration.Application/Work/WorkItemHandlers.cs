@@ -12,7 +12,7 @@ namespace Neo.AgentOrchestration.Application.Work;
 // owns commit/rollback; domain objects own invariants and owner/version checks.
 public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clock) :
     IRequestHandler<CreateWorkItem, WorkItemDetails>, IRequestHandler<ClaimWorkItem, WorkItemDetails>,
-    IRequestHandler<UpdateWorkItem, WorkItemDetails>, IRequestHandler<GetWorkItem, WorkItemDetails>
+    IRequestHandler<UpdateWorkItem, WorkItemDetails>, IRequestHandler<GetWorkItem, WorkItemDetails>, IRequestHandler<GetWorkHistory, WorkHistoryPage>
 {
     public Task<WorkItemDetails> Handle(CreateWorkItem request, CancellationToken ct)
         => store.ExecuteAsync(request.Scope, async (session, token) =>
@@ -86,6 +86,10 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
             var items = await ProjectItems(session, request.Scope, item.ProjectId, token);
             return WorkItemProjection.Details(item, items, clock.GetUtcNow());
         }, ct);
+
+    public Task<WorkHistoryPage> Handle(GetWorkHistory request, CancellationToken ct)
+        => store.ExecuteAsync(request.Scope, (session, token) =>
+            session.GetHistoryPageAsync(request.WorkItemId, request.Skip, request.Take, request.SnapshotVersion, token), ct);
 
     public Task<WorkItemDetails> Handle(UpdateWorkItem request, CancellationToken ct)
         => store.ExecuteAsync(request.Scope, async (session, token) =>

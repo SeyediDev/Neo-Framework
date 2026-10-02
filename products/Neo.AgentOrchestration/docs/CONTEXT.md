@@ -20,10 +20,12 @@ of silently skipping history; reassess against the new snapshot. No truncation o
 a paged log message occurs. Full details remain available for evidence/time/owners.
 
 MCP task mutation receipts eliminate repeated history in model-facing output by
-default, retaining current owner/version/status/time and counts. They do not reduce
-the API-to-MCP full response or database hydration yet. Brief/history reduce API
-wire output but use the existing authorized read handler: **not SQL pagination**.
-No claim of database latency improvement or measured token savings is made.
+default, retaining current owner/version/status/time and counts. Brief still uses
+the full context projection for now; history uses real SQL pagination. The SQL
+store projects root version, count and requested log columns without hydrating the
+full item graph. A local three-log sample returned 1,136 bytes versus 6,819 bytes
+for full details in 731ms. This is one local sample, not a production latency SLO
+or billed-token measure.
 
 ## Agent policy
 
