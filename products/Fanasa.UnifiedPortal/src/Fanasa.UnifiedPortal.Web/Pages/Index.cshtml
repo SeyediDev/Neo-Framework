@@ -22,7 +22,7 @@ else
     <section class="products" aria-label="محصولات فن‌آسا">
         <a class="product-card" href="@(workManagementUrl ?? "#")" aria-disabled="@(string.IsNullOrWhiteSpace(workManagementUrl))">
             <span class="product-mark turquoise">W</span>
-            <span><strong>مدیریت کار ایجنتیک</strong><small>برنامه‌ریزی، کانبان و ارکستراسیون ایجنت‌ها</small></span>
+            <span><strong>مدیریت کار ایجنتیک</strong><small>@(string.IsNullOrWhiteSpace(workManagementUrl) ? "به‌زودی در دسترس" : "برنامه‌ریزی، کانبان و ارکستراسیون ایجنت‌ها")</small></span>
             <span class="arrow">←</span>
         </a>
         <a class="product-card" href="@(contractManagementUrl ?? "#")" aria-disabled="@(string.IsNullOrWhiteSpace(contractManagementUrl))">
