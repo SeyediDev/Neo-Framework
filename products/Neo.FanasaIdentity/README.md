@@ -19,18 +19,18 @@
 
 ## پیکربندی فعلی
 
-پیش‌فرض محلی روی realm `neo` در Keycloak VPS تنظیم شده است. برای محیط عمومی باید
+پیش‌فرض محصول روی realm مرکزی `fanasa` در Keycloak VPS تنظیم شده است. برای محیط عمومی باید
 `FanasaIdentity:Authority` به hostname HTTPS نهایی SSO تغییر کند و audience برابر
 client API ثبت‌شده در Keycloak باشد.
 
-در استقرار فعلی client محافظت‌شده‌ی `neo-api` در realm `neo` ساخته شده است؛ این
+در استقرار فعلی client محافظت‌شده‌ی `fanasa-api` در realm `fanasa` ساخته شده است؛ این
 client از نوع bearer-only است و برای نگهداری secret یا ورود مستقیم کاربر استفاده
 نمی‌شود. clientهای UI هر محصول باید جداگانه و با redirect URL همان محصول ثبت شوند.
 
 ## اتصال SSO مرکزی فناسا
 
 پس از تحویل issuer/client registration از تیم امنیت فناسا، federation OIDC یا
-SAML در realm `neo` ثبت می‌شود. claimهای `tenant`، `tenants`، `human_role` و
+SAML در realm `fanasa` ثبت می‌شود. claimهای `tenant`، `tenants`، `human_role` و
 `sub` قرارداد مشترک تمام سامانه‌ها هستند. ایجاد کاربر در سامانه‌های دیگر باید از
 endpoint ثبت هویت همین محصول یا provisioning رسمی انجام شود، نه از Keycloak Admin
 API.
