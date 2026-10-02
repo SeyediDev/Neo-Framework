@@ -1,0 +1,22 @@
+[Unit]
+Description=Neo Agent Orchestration API (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=neo-orch
+Group=neo-orch
+WorkingDirectory=/opt/neo-agent-orchestration/%i/current/api
+EnvironmentFile=/etc/neo-agent-orchestration/%i.env
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_ENVIRONMENT=Production
+ExecStart=/usr/bin/dotnet /opt/neo-agent-orchestration/%i/current/api/Neo.AgentOrchestration.Api.dll --urls=http://127.0.0.1:${NEO_API_PORT}
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

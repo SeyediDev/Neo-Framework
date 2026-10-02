@@ -2,7 +2,7 @@ name: Neo Agent Orchestration
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ master, develop ]
     paths:
       - 'products/Neo.AgentOrchestration/**'
       - 'src/**'
@@ -58,3 +58,69 @@ jobs:
           path: |
             .artifacts/neo-agent-orchestration-local.zip
             .artifacts/neo-agent-orchestration-local/MANIFEST.json
+
+  deploy-development:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: package
+    runs-on: ubuntu-latest
+    environment: development
+    concurrency:
+      group: neo-agent-orchestration-development
+      cancel-in-progress: true
+    steps:
+      - name: Download local bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: neo-agent-orchestration-local-${{ github.sha }}
+          path: bundle
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+      - name: Upload and activate development release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          ARCHIVE: bundle/neo-agent-orchestration-local.zip
+        run: |
+          scp "$ARCHIVE" "$DEPLOY_USER@$DEPLOY_HOST:/tmp/neo-agent-orchestration-${GITHUB_SHA}.zip"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "sudo /usr/local/sbin/neo-agent-orchestration-deploy development '$GITHUB_SHA' '/tmp/neo-agent-orchestration-${GITHUB_SHA}.zip'"
+
+  deploy-production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: package
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: neo-agent-orchestration-production
+      cancel-in-progress: false
+    steps:
+      - name: Download local bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: neo-agent-orchestration-local-${{ github.sha }}
+          path: bundle
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+      - name: Upload and activate production release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          ARCHIVE: bundle/neo-agent-orchestration-local.zip
+        run: |
+          scp "$ARCHIVE" "$DEPLOY_USER@$DEPLOY_HOST:/tmp/neo-agent-orchestration-${GITHUB_SHA}.zip"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "sudo /usr/local/sbin/neo-agent-orchestration-deploy production '$GITHUB_SHA' '/tmp/neo-agent-orchestration-${GITHUB_SHA}.zip'"

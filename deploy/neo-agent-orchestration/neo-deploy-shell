@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+set -- ${SSH_ORIGINAL_COMMAND:-}
+if [ "$#" -ne 5 ] || [ "$1" != "sudo" ] || [ "$2" != "/usr/local/sbin/neo-agent-orchestration-deploy" ]; then
+  echo "This key is restricted to Neo deployment." >&2
+  exit 1
+fi
+case "$3" in development|production) ;; *) exit 1 ;; esac
+printf '%s' "$4" | grep -Eq '^[0-9a-f]{40}$' || exit 1
+case "$4" in
+  [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
+  *) exit 1 ;;
+esac
+case "$5" in /tmp/neo-agent-orchestration-*.zip) ;; *) exit 1 ;; esac
+exec /usr/bin/sudo /usr/local/sbin/neo-agent-orchestration-deploy "$3" "$4" "$5"

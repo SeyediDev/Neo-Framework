@@ -1,0 +1,21 @@
+[Unit]
+Description=Neo Agent Orchestration Worker (%i)
+After=network-online.target neo-agent-orchestration-api@%i.service
+Wants=network-online.target
+
+[Service]
+User=neo-orch
+Group=neo-orch
+WorkingDirectory=/opt/neo-agent-orchestration/%i/current/worker
+EnvironmentFile=/etc/neo-agent-orchestration/%i.env
+Environment=DOTNET_ENVIRONMENT=Production
+ExecStart=/usr/bin/dotnet /opt/neo-agent-orchestration/%i/current/worker/Neo.AgentOrchestration.Worker.dll
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
