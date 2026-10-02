@@ -28,7 +28,9 @@ public sealed record HttpHarnessConnection(string Key, Uri Endpoint, Uri Callbac
     bool CompactContextOptIn)
 {
     public string Fingerprint => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
-        JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef, CompactContextOptIn }))));
+        CompactContextOptIn
+            ? JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef, CompactContextOptIn = true })
+            : JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef }))));
 }
 public sealed class ConfiguredRunProviders(IConfiguration configuration, IHostEnvironment environment, IHarnessSecrets? secrets = null) : IRunProviders
 {
