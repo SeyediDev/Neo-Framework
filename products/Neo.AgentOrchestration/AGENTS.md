@@ -6,7 +6,10 @@ docs/COEXISTENCE.md before changing its deployment or migration behavior.
 The current operational task source is the independent Neo orchestration API
 backed by NeoAgentOrchestration. Product development is project NEO-ORCH;
 historical migration records remain in project NEO under NAO-MIGRATION. Read the current
-owner, chat, role, dependencies and logs before claiming or resuming an item.
+owner, chat, role, dependencies and relevant context before claiming or resuming.
+Prefer the bounded context endpoint/neo_work_brief and milestone checkpoints;
+read older history only when needed. Do not reload unchanged instructions or the
+whole board for each edit. A compact receipt supplies the latest mutation version.
 Do not take another chat's work. The user-designated main chat uses develop;
 concurrent workers use separate branches/worktrees. Preserve unrelated edits.
 Record time, commit and test evidence in the task database. The planning

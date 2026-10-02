@@ -6,6 +6,7 @@ using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using ModelContextProtocol;
+using Neo.AgentOrchestration.Contracts;
 
 namespace Neo.AgentOrchestration.Mcp;
 
@@ -14,7 +15,7 @@ public static class McpJson
     public static JsonSerializerOptions Options { get; } = new(JsonSerializerDefaults.Web)
     { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow, TypeInfoResolver = new DefaultJsonTypeInfoResolver() };
 }
-public sealed record McpConnection(Uri ApiBaseUrl, Guid OrganizationId, Guid WorkspaceId, string ChatId, string TokenSecretRef)
+public sealed record McpConnection(Uri ApiBaseUrl, Guid OrganizationId, Guid WorkspaceId, string ChatId, string TokenSecretRef, bool CompactResponses = true)
 {
     public string ScopePath => $"api/orchestration/v1/organizations/{OrganizationId:D}/workspaces/{WorkspaceId:D}/";
     public static McpConnection Load(IConfiguration configuration)
@@ -33,7 +34,11 @@ public sealed record McpConnection(Uri ApiBaseUrl, Guid OrganizationId, Guid Wor
             !Regex.IsMatch(reference, @"\Aenv:[A-Z][A-Z0-9_]{0,100}\z", RegexOptions.CultureInvariant))
             throw new ArgumentException("Invalid chat or secret reference.");
         if (!url.AbsolutePath.EndsWith('/')) url = new Uri(url.AbsoluteUri + "/");
-        return new(url, org, workspace, chat, reference);
+        var compactSetting = section["CompactResponses"];
+        var compact = true;
+        if (compactSetting is not null && !bool.TryParse(compactSetting, out compact))
+            throw new ArgumentException("Invalid CompactResponses setting.");
+        return new(url, org, workspace, chat, reference, compact);
     }
 }
 
@@ -43,7 +48,8 @@ public sealed class McpApiClient(HttpClient http, McpConnection connection)
     public string Context() => JsonSerializer.Serialize(new {
         apiBaseUrl = connection.ApiBaseUrl.AbsoluteUri, connection.OrganizationId, connection.WorkspaceId, connection.ChatId,
         authority = "API issuer subject and workspace grants; these settings do not grant access",
-        transport = "stdio", execution = "No shell/model execution in this MCP server"
+        transport = "stdio", execution = "No shell/model execution in this MCP server",
+        compactResponses = connection.CompactResponses
     }, McpJson.Options);
 
     public async Task<string> Send<T>(string resource, CancellationToken ct, object? body = null, HttpMethod? method = null)
@@ -73,6 +79,8 @@ public sealed class McpApiClient(HttpClient http, McpConnection connection)
             var json = await response.Content.ReadAsStringAsync(ct);
             if (json.Contains(token, StringComparison.Ordinal)) throw new McpException("unsafe-response: credential reflection rejected.");
             var value = JsonSerializer.Deserialize<T>(json, McpJson.Options) ?? throw new JsonException();
+            if (body is not null && connection.CompactResponses && value is WorkItemDetails details)
+                return JsonSerializer.Serialize(WorkContextProjection.Receipt(details), McpJson.Options);
             return JsonSerializer.Serialize(value, McpJson.Options);
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException ||

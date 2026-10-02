@@ -33,7 +33,7 @@ public sealed class OperationalMcpTests
         var catalog = await mcp.Call<WorkspaceCatalog>("neo_work_catalog");
         Assert.Contains(catalog.Roles, x => x.Id == f.Role.Id);
         var tools = (await mcp.Request("tools/list", new { })).GetProperty("tools").EnumerateArray().ToArray();
-        Assert.Equal(19, tools.Length);
+        Assert.Equal(21, tools.Length);
         Assert.Contains(tools, x => x.GetProperty("name").GetString() == "neo_work_planning");
         Assert.True(tools.Single(x => x.GetProperty("name").GetString() == "neo_work_get").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
         Assert.False(tools.Single(x => x.GetProperty("name").GetString() == "neo_run_start").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
@@ -53,6 +53,25 @@ public sealed class OperationalMcpTests
             request = new SetWorkItemPlanningRequest(parent.Item.Version, "UserStory", "Observable outcome") });
         Assert.Equal("UserStory", parent.Item.Type);
         Assert.Equal("Observable outcome", parent.Item.AcceptanceCriteria);
+        var brief = await mcp.Call<WorkContextView>("neo_work_brief", new { itemId = parent.Item.Id });
+        Assert.Equal(parent.Item.Version, brief.Item.Version);
+        Assert.False(brief.Unchanged);
+        var unchanged = await mcp.Call<WorkContextView>("neo_work_brief", new { itemId = parent.Item.Id, knownVersion = brief.Item.Version });
+        Assert.True(unchanged.Unchanged); Assert.Null(unchanged.Item.Description);
+        var page = await mcp.Call<WorkHistoryPage>("neo_work_history", new { itemId = parent.Item.Id, take = 1 });
+        Assert.Single(page.Logs); Assert.Equal(1, page.NextSkip);
+        await mcp.Error("neo_work_history", new { itemId = parent.Item.Id, take = 21 }, "api-400");
+        await mcp.Error("neo_work_history", new { itemId = parent.Item.Id, snapshotVersion = Guid.NewGuid() }, "api-409");
+        await using (var compact = await McpProcess.Start(api, identity, f.Scope, compact: true))
+        {
+            var receipt = await compact.Call<WorkMutationReceipt>("neo_work_log", new { itemId = parent.Item.Id,
+                request = new AppendLogRequest(parent.Item.Version, "Checkpoint: scope and acceptance retained; next verify.") });
+            Assert.NotEqual(parent.Item.Version, receipt.Item.Version);
+            Assert.Null(receipt.Item.Description); Assert.True(receipt.LogCount > 0);
+            parent = await mcp.Call<WorkItemDetails>("neo_work_get", new { itemId = parent.Item.Id });
+            Assert.Equal("Original chat request", parent.Item.Description);
+            Assert.Contains(parent.Logs, x => x.Message.StartsWith("Checkpoint:"));
+        }
         var typed = await mcp.Call<WorkBoard>("neo_work_board", new { projectId = f.Project.Id, type = "UserStory" });
         Assert.Equal(parent.Item.Id, Assert.Single(typed.Items).Id);
         var child = await mcp.Call<WorkItemDetails>("neo_work_create", new { request = new CreateWorkItemRequest(f.Project.Id, "mcp-child", "Child", "api", ParentWorkItemId: parent.Item.Id, EstimatedSeconds: 100) });
@@ -109,6 +128,8 @@ public sealed class OperationalMcpTests
         await readOnly.Error("neo_work_create", new { request = new CreateWorkItemRequest(f.Project.Id, "forbidden", "Forbidden", "api") }, "api-403");
         await using var foreign = await McpProcess.Start(api, owner, new(f.Scope.OrganizationId, Guid.NewGuid()));
         await foreign.Error("neo_work_board", new { }, "api-403");
+        await foreign.Error("neo_work_brief", new { itemId = item.Item.Id }, "api-403");
+        await foreign.Error("neo_work_history", new { itemId = item.Item.Id }, "api-403");
         await mcp.Error("neo_work_board", new { take = 201 }, "api-400");
         await mcp.Error("neo_work_log", new { itemId = item.Item.Id, request = new AppendLogRequest(item.Item.Version, owner.DefaultRequestHeaders.Authorization!.Parameter!) }, "credential");
         var saved = await mcp.Call<WorkItemDetails>("neo_work_get", new { itemId = item.Item.Id });
@@ -161,7 +182,7 @@ public sealed class OperationalMcpTests
                     if (errors.Length < 65536) errors.AppendLine(line);
             });
         }
-        public static async Task<McpProcess> Start(ApiFixture api, HttpClient identity, WorkspaceScope scope)
+        public static async Task<McpProcess> Start(ApiFixture api, HttpClient identity, WorkspaceScope scope, bool compact = false)
         {
             var dll = Path.Combine(AppContext.BaseDirectory, "Neo.AgentOrchestration.Mcp.dll");
             if (!File.Exists(dll))
@@ -187,6 +208,7 @@ public sealed class OperationalMcpTests
             start.Environment["NeoMcp__OrganizationId"] = scope.OrganizationId.ToString("D");
             start.Environment["NeoMcp__WorkspaceId"] = scope.WorkspaceId.ToString("D");
             start.Environment["NeoMcp__ChatId"] = "mcp-test-chat";
+            start.Environment["NeoMcp__CompactResponses"] = compact.ToString();
             start.Environment["NEO_ORCHESTRATION_ACCESS_TOKEN"] = identity.DefaultRequestHeaders.Authorization!.Parameter!;
             var child = new McpProcess(Process.Start(start)!);
             try {

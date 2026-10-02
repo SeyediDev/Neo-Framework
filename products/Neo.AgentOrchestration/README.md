@@ -5,6 +5,9 @@ separate Razor management Web. Task/configuration APIs and the independent P0
 management Web and opt-in HTTP execution gateway adapter are implemented.
 A compatible external gateway and its account/setup remain operator-supplied.
 
+[Lean agent context](docs/CONTEXT.md) provides bounded task briefs, versioned
+history pages and compact MCP mutation receipts; full records remain available.
+
 The domain now includes Organization, Workspace and Project factories, normalized
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
 operation from a different organization/workspace. These are domain invariants;

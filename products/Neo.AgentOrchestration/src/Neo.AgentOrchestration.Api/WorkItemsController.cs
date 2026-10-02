@@ -20,6 +20,20 @@ public sealed class WorkItemsController(ISender sender) : WorkspaceControllerBas
     [HttpGet("items/{id:guid}")]
     public Task<WorkItemDetails> Details(Guid id, CancellationToken ct) => Sender.Send(new GetWorkItem(Scope, id), ct);
 
+    [HttpGet("items/{id:guid}/context")]
+    public async Task<WorkContextView> Context(Guid id, CancellationToken ct, [FromQuery] Guid? knownVersion = null)
+        => WorkContextProjection.Create(await Sender.Send(new GetWorkItem(Scope, id), ct), knownVersion);
+
+    [HttpGet("items/{id:guid}/history")]
+    public async Task<ActionResult<WorkHistoryPage>> History(Guid id, CancellationToken ct,
+        [FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] Guid? snapshotVersion = null)
+    {
+        if (skip < 0 || take is < 1 or > 20) return BadRequest();
+        var details = await Sender.Send(new GetWorkItem(Scope, id), ct);
+        if (snapshotVersion.HasValue && snapshotVersion != details.Item.Version) return Conflict();
+        return WorkContextProjection.History(details, skip, take);
+    }
+
     [HttpPost("items"), Authorize(Policy = WorkspaceSecurity.Write)]
     [ProducesResponseType<WorkItemDetails>(201)]
     public async Task<ActionResult<WorkItemDetails>> Create(CreateWorkItemRequest body, CancellationToken ct)

@@ -5,6 +5,11 @@ The canonical skill lives at
 It is self-contained (entrypoint, tool reference and UI metadata), without
 machine paths or dependencies on Hyper documents/global skills.
 
+The entrypoint now uses progressive context, compact mutation receipts and
+milestone checkpoints. Read [context policy](CONTEXT.md) for bounds and version
+semantics. Existing sessions must reread the updated skill; this does not forcibly
+inject instructions into other running chats or change their configuration.
+
 It applies when a project has explicitly chosen an authorized Neo workspace
 for operational coordination. It does not silently migrate an existing board.
 This installation uses the independent Neo API as its operational source;

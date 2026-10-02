@@ -13,14 +13,23 @@ Clients may add a server prefix to the names.
 | `neo_work_catalog` | No arguments; projects, roles, agent profiles and workflows, including enabled flags. |
 | `neo_work_board` | Optional projectId, domain, roleId, status, type, includeArchived=false, skip=0, take=50 (max 200). AND filters; page all results needed for role checks. |
 | `neo_work_get` | itemId; item/owner/version, direct children, dependency IDs, logs, evidence and time entries. Read dependency items separately for status. |
+| `neo_work_brief` | itemId, optional knownVersion; bounded context (latest 3 logs/evidence, 50 child/dependency references, text caps) with totals and explicit omitted markers. Default entry point; never complete history. |
+| `neo_work_history` | itemId, skip=0, take=10 (1-20), optional snapshotVersion; chronological original logs, total and nextSkip. Reuse returned version for later pages; 409 on changed snapshot. |
 | `neo_run_list` | itemId; run chain and linked deliveries. |
 | `neo_run_get` | runId; result/decision/delivery diagnostics, not raw dispatch context. |
 
 ## Manual mutations
 
 Except time/archive, tools below take an itemId and a nested `request` object.
-Create takes only `request`. The API provides identity from the issuer subject
-and server-configured chat; never add agentId/owner/chat properties to a request.
+Create takes only `request`.
+
+MCP task mutations default to a compact receipt: item (without description,
+acceptance text or owner history), logCount, evidenceCount, detailResource, note.
+Set process option NeoMcp__CompactResponses=false only for legacy clients needing
+WorkItemDetails responses. Full API/Web responses and stored history are unchanged.
+Use receipts for current ownership/version/status/time; read details on demand.
+The API provides identity from the issuer subject and server-configured chat;
+never add agentId/owner/chat properties to a request.
 
 | Tool | Fields inside request |
 | --- | --- |

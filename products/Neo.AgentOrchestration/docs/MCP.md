@@ -28,6 +28,7 @@ Supply environment variables privately to **that server process**:
 | `NeoMcp__OrganizationId` | Exact organization GUID |
 | `NeoMcp__WorkspaceId` | Exact workspace GUID |
 | `NeoMcp__ChatId` | Stable real chat/session identity, 1-200 characters |
+| `NeoMcp__CompactResponses` | Default true: task mutations return WorkMutationReceipt; false preserves legacy WorkItemDetails output |
 | `NeoMcp__TokenSecretRef` | Defaults to `env:NEO_ORCHESTRATION_ACCESS_TOKEN` |
 | `NEO_ORCHESTRATION_ACCESS_TOKEN` | Private access token issued for this API, never a tool argument |
 | `NeoMcp__AllowLoopbackHttp` | Explicit `true` only for local HTTP tests/development |
@@ -57,6 +58,8 @@ sanitized message. The server takes no SQL connection or arbitrary HTTP route.
 | `neo_work_catalog` | none | Catalog of projects/roles/agents/workflows |
 | `neo_work_board` | optional projectId, domain, roleId, status, type, includeArchived, skip, take | Filtered board; take <= 200 |
 | `neo_work_get` | itemId | Item, children, dependencies, logs/evidence/time |
+| `neo_work_brief` | itemId, optional knownVersion | Bounded task context with explicit omissions |
+| `neo_work_history` | itemId, skip=0, take=10, snapshotVersion | Original log pages, max 20; version conflict returns 409 |
 | `neo_work_create` | request: CreateWorkItemRequest | Create task/child; write |
 | `neo_work_planning` | itemId, request: SetWorkItemPlanningRequest | Versioned type/acceptance criteria; write; preserves original description and records criteria history |
 | `neo_work_claim` | itemId, request: ClaimWorkItemRequest | Versioned exclusive claim; write |
@@ -106,7 +109,15 @@ Preserve the original authorized request in description and append follow-up
 context via log. Intake receipts are atomic reserved history entries; ordinary
 notes cannot forge them. No chat is silently captured, and advice-only discussion
 must not create tasks. This is an extension of the existing create tool, not a
-second source of truth or an extra tool; the server still exposes 19 tools.
+second source of truth. With brief/history reads the server exposes 21 tools.
+
+Task mutations now return a compact receipt by default: item (description,
+acceptanceCriteria and lastOwnerHistory omitted as null), logCount, evidenceCount,
+detailResource and note. Its item includes the authoritative new version, owner,
+status and timer state. Existing clients deserializing full WorkItemDetails must
+set NeoMcp__CompactResponses=false until upgraded. API/Web mutation response
+contracts have not changed. Read [context policy](CONTEXT.md) for progressive
+disclosure and measurement limits.
 
 ## Manual work versus managed runs
 
