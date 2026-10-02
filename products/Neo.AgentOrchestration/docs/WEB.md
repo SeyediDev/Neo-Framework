@@ -74,6 +74,9 @@ they do not replace live issuer/proxy deployment acceptance.
 
 ## Available workflow
 
+The board supports [confirmed Kanban transitions](KANBAN.md) with pointer handles
+and a keyboard/touch-accessible move menu, using the same SPA and API boundaries.
+
 The scoped /templates page manages [versioned project templates](PROJECT-TEMPLATES.md):
 immutable publication, parameterized preview, explicit atomic instantiation and
 provenance. It uses the same authorization and anti-forgery boundaries.

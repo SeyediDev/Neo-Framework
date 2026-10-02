@@ -127,3 +127,17 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .signature-lead { display: block; font-size: 11px; font-weight: 400; letter-spacing: 2px; }
 .signature-finish { display: block; font-size: clamp(20px, 2vw, 26px); font-weight: 700; letter-spacing: -.5px; color: var(--fanasa-lapis); }
 @media (forced-colors: active) { .workspace-signature::before, .workspace-signature::after { background: CanvasText; } }
+.move-handle { touch-action: none; cursor: grab; margin-top: .6rem; }
+.move-handle:active { cursor: grabbing; }
+.move-handle[hidden], .claim-fields[hidden] { display: none; }
+.move-menu { margin-top: .6rem; }
+.move-menu summary { cursor: pointer; color: #1f4b9a; }
+.move-form { display: grid; gap: .65rem; padding-top: .7rem; }
+.move-form label { display: grid; gap: .3rem; }
+.move-form textarea { min-height: 4rem; }
+.move-form .claim-fields { display: grid; gap: .6rem; }
+.move-form .claim-fields[hidden] { display: none; }
+.moving-card { outline: 3px solid #1f4b9a; }
+.column.drop-allowed { outline: 2px dashed #149a8e; outline-offset: -3px; }
+.column.drop-denied { opacity: .45; }
+.column.drop-target { outline: 4px solid #149a8e; background: #e6f5f2; }

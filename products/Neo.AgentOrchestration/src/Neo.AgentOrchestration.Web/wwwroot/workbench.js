@@ -23,7 +23,7 @@
             (/^\/work\//i.test(url.pathname) || ['/', '/workspace', '/product'].includes(url.pathname.toLowerCase()));
     };
     const forms = () => [...main.querySelectorAll('form')];
-    const formKey = (form, number) => `${number}:${new URL(form.getAttribute('action') || active, active).pathname}:${new URL(form.getAttribute('action') || active, active).search}`;
+    const formKey = (form, number) => `${form.getAttribute('data-draft-key') || number}:${new URL(form.getAttribute('action') || active, active).pathname}:${new URL(form.getAttribute('action') || active, active).search}`;
     const editable = field => field.name && !['hidden', 'password', 'file', 'submit', 'button'].includes(field.type);
     function snapshot() {
         const values = new Map();
@@ -34,7 +34,8 @@
             })));
         });
         return { values, dirty, x: scrollX, y: scrollY,
-            details: [...main.querySelectorAll('details')].map(x => x.open),
+            details: [...main.querySelectorAll('details')].map((x, i) => ({
+                key: x.querySelector('form')?.getAttribute('data-draft-key') || `detail:${i}`, open: x.open })),
             horizontal: [...main.querySelectorAll('.kanban,.table-scroll')].map(x => x.scrollLeft) };
     }
     function remember() {
@@ -59,7 +60,10 @@
                 else field.value = prior.value;
             });
         });
-        [...main.querySelectorAll('details')].forEach((x, i) => x.open = saved.details[i] ?? false);
+        [...main.querySelectorAll('details')].forEach((x, i) => {
+            const key = x.querySelector('form')?.getAttribute('data-draft-key') || `detail:${i}`;
+            x.open = saved.details.find(entry => entry.key === key)?.open ?? false;
+        });
         [...main.querySelectorAll('.kanban,.table-scroll')].forEach((x, i) => x.scrollLeft = saved.horizontal[i] ?? 0);
         dirty = dirtyForms.size > 0;
     }
