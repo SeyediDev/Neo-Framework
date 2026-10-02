@@ -11,6 +11,7 @@
 <label>نوع کار<select name="ItemType"><option value="">همه انواع</option>@foreach(var type in ItemTypes){<option value="@type" selected="@(Model.ItemType==type)">@ItemTypeLabel(type)</option>}</select></label>
 <label>پروژه<select name="ProjectId"><option value="">همه پروژه‌ها</option>@foreach(var p in catalog.Projects){<option value="@p.Id" selected="@(Model.ProjectId==p.Id)">@p.Name</option>}</select></label>
 <label>رول<select name="RoleId"><option value="">همه رول‌ها</option>@foreach(var r in catalog.Roles){<option value="@r.Id" selected="@(Model.RoleId==r.Id)">@r.Name</option>}</select></label>
+<label>وضعیت<select name="State"><option value="">همه وضعیت‌ها</option>@foreach(var state in Statuses){<option value="@state" selected="@(string.Equals(Model.State,state,StringComparison.OrdinalIgnoreCase))">@Status(state)</option>}</select></label>
 <label>دامین<input name="Domain" value="@Model.Domain" maxlength="80" /></label><button>اعمال فیلتر</button>
 <a asp-page="/Roles" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پاک‌کردن</a></form>
 <div class="flow-legend" aria-label="راهنمای رنگ مراحل">@foreach(var state in Statuses){<span class="flow-badge" data-state="@state">@Status(state)</span>}</div>
@@ -18,7 +19,9 @@
 <div class="role-board">
 @foreach(var role in Model.Groups){
 var tasks=role.Items.ToArray();
-<section class="role-column"><h2>@role.Name <span class="count">@tasks.Length</span></h2>
+<section class="role-column"><h2><span>@role.Name</span> <span class="count">@tasks.Length</span></h2>
+@{var roleDefinition = catalog.Roles.FirstOrDefault(x => x.Id == role.RoleId); var activeCount = tasks.Count(x => x.OwnerRoleId == role.RoleId && x.Status is not ("Done" or "Cancelled")); var capacity = roleDefinition?.MaxConcurrentWorkItems ?? 0; var capacityPercent = capacity > 0 ? Math.Min(100, activeCount * 100 / capacity) : 0;}
+@if(roleDefinition is not null){<div class="capacity-summary"><span>@activeCount از @capacity کار فعال</span><span>@(roleDefinition.IsEnabled ? "رول فعال" : "رول غیرفعال")</span></div><progress max="100" value="@capacityPercent" aria-label="مصرف ظرفیت رول"></progress>}
 <p class="small">@tasks.Count(x=>x.Status is not ("Done" or "Cancelled")) کار ناتمام</p>
 @if(tasks.Length==0){<p class="muted">کاری برای این رول پیدا نشد.</p>}
 @foreach(var item in tasks){

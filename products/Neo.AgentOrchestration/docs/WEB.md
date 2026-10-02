@@ -119,8 +119,11 @@ The role board groups by current owner first, then the latest imported ownership
 record when no current owner exists. Historical role keys/IDs are matched to the
 catalog; unknown historical roles stay visibly separate rather than disappearing.
 Historical labels never imply active/planned assignment. The role-board filter
-covers this display grouping after retrieving all filtered pages. API `roleId`
-continues to mean current owner only, so agent availability checks stay unchanged.
+covers project, domain, type, role and status after retrieving all filtered pages.
+Each catalog role also shows its configured concurrent capacity, active current
+work count and a capacity bar; historical-only items do not consume that bar.
+API `roleId` continues to mean current owner only, so agent availability checks
+stay unchanged.
 
 Simulation requires explicit API/worker opt-in from [RUNS.md](RUNS.md); a queued
 request does not mean an agent executed. Configured `http.<connection-key>`

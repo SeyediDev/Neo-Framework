@@ -4,3 +4,4 @@
 @font-face{font-family:Vazir;src:url('fonts/vazir/Vazir-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
 html body,body .brand,body .count{font-family:Vazir,Tahoma,Arial,sans-serif}
 button,input,select,textarea{font-family:inherit}
+.capacity-summary{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:11px;margin:2px 0 4px}.role-column>h2{display:flex;justify-content:space-between;align-items:center;gap:10px}.role-column>progress{margin:4px 0 8px;height:6px}
