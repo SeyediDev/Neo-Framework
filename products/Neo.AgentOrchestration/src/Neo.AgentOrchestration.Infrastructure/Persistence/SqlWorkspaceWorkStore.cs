@@ -76,6 +76,12 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
             return rows.Select(x => new RunDeliveryView(x.Id, x.OutboxId, x.Kind.ToString(), x.Outbox.OutboxState.ToString(),
                 x.Outbox.PublishTryCount ?? 0, x.Outbox.ProcessTryCount ?? 0, x.Outbox.ProcessError ?? x.Outbox.PublishError, x.Outbox.NextAttemptAtUtc)).ToArray();
         }
+        public async Task<IReadOnlyList<TokenUsageReport>> GetTokenUsageAsync(Guid runId, CancellationToken ct)
+            => await db.TokenUsageReports.Where(x => x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId && x.AgentRunId == runId)
+                .OrderBy(x => x.RecordedAtUtc).ThenBy(x => x.Id).ToArrayAsync(ct);
+        public Task<TokenUsageReport?> FindTokenUsageAsync(string idempotencyKey, CancellationToken ct)
+            => db.TokenUsageReports.SingleOrDefaultAsync(x => x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId && x.IdempotencyKey == idempotencyKey, ct);
+        public void Add(TokenUsageReport usage) { scope.Require(usage.OrganizationId, usage.WorkspaceId); db.TokenUsageReports.Add(usage); }
         public void Add(AgentRun run) { scope.Require(run.OrganizationId, run.WorkspaceId); db.AgentRuns.Add(run); }
         public async Task StageMessageAsync(WorkDeliveryRequest request, WorkDeliveryKind kind, TimeProvider clock, CancellationToken ct)
             => _ = await SqlDurableWorkStore.StageAsync(db, scope, request, (_, _) => Task.CompletedTask, false, kind, clock, ct);

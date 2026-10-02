@@ -122,6 +122,7 @@ All routes below are relative to:
 | POST `workflows/{id}/approvals` | Both expected versions, WorkItemId, TransitionId, Approved, Reason |
 | GET `workflows/{id}/approvals?workItemId=...` | Persisted approval history for the scoped item/workflow |
 | GET `items/{id}/runs`; GET `runs/{id}` | Scoped run details and linked delivery outcomes |
+| POST `runs/{id}/token-usage` | Record provider usage with stable RequestId/idempotency key; provider must match the run; unknown counters remain `null` |
 | POST `items/{id}/runs` | Opt-in fake or configured HTTP start with stable RequestId and versions; HTTP requires AllowExternalExecution; 202 |
 | POST `harness/{connection}/runs/{id}/result` | Separate connection-scoped HarnessKey authentication; idempotent result/evidence receipt (200) |
 | POST `runs/{id}/evaluate` | Explicit versioned gate reevaluation with stable RequestId; 202 |

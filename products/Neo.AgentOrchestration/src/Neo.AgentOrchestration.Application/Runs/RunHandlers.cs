@@ -18,11 +18,12 @@ public sealed record EvaluateAgentRun(WorkspaceScope Scope, Guid RunId, WorkActo
 public sealed record GetAgentRun(WorkspaceScope Scope, Guid RunId) : IRequest<AgentRunDetails>;
 public sealed record ReturnRunAssignment(WorkspaceScope Scope, Guid RunId, WorkActor Requestor, ReturnRunAssignmentRequest Body) : IRequest<AgentRunDetails>;
 public sealed record GetAgentRuns(WorkspaceScope Scope, Guid WorkItemId) : IRequest<IReadOnlyList<AgentRunDetails>>;
+public sealed record RecordAgentRunUsage(WorkspaceScope Scope, Guid RunId, RecordTokenUsageRequest Body) : IRequest<AgentRunDetails>;
 
 public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore durable, TimeProvider clock, IRunProviders? providers = null) :
     IRequestHandler<StartAgentRun, AgentRunDetails>, IRequestHandler<EvaluateAgentRun, AgentRunDetails>,
     IRequestHandler<GetAgentRun, AgentRunDetails>, IRequestHandler<GetAgentRuns, IReadOnlyList<AgentRunDetails>>,
-    IRequestHandler<ReturnRunAssignment, AgentRunDetails>
+    IRequestHandler<ReturnRunAssignment, AgentRunDetails>, IRequestHandler<RecordAgentRunUsage, AgentRunDetails>
 {
     private readonly IRunProviders providers = providers ?? new SimulationRunProviders();
     public async Task<AgentRunDetails> Handle(StartAgentRun r, CancellationToken ct)
@@ -73,11 +74,11 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
         => store.ExecuteAsync(r.Scope, async (session, token) =>
         {
             var s = Session(session); var run = await Run(s, r.RunId, token);
-            return new AgentRunDetails(View(run), await s.GetRunDeliveriesAsync(run.Id, token));
+            return new AgentRunDetails(View(run), await s.GetRunDeliveriesAsync(run.Id, token), Usage(await s.GetTokenUsageAsync(run.Id, token)));
         }, ct);
     public async Task<AgentRunDetails> Handle(ReturnRunAssignment r, CancellationToken ct)
     {
-        await store.ExecuteAsync(r.Scope, async (session, token) =>
+        await store.ExecuteAsync<bool>(r.Scope, async (session, token) =>
         {
             var s = Session(session); var run = await Run(s, r.RunId, token); var item = await Item(s, run.WorkItemId, token);
             Version(item.Version, r.Body.ExpectedWorkItemVersion);
@@ -90,9 +91,36 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
         {
             var s = Session(session); _ = await Item(s, r.WorkItemId, token); var result = new List<AgentRunDetails>();
             foreach (var run in await s.GetRunsAsync(r.WorkItemId, token))
-                result.Add(new(View(run), await s.GetRunDeliveriesAsync(run.Id, token)));
+                result.Add(new(View(run), await s.GetRunDeliveriesAsync(run.Id, token), Usage(await s.GetTokenUsageAsync(run.Id, token))));
             return result;
         }, ct);
+
+    public async Task<AgentRunDetails> Handle(RecordAgentRunUsage r, CancellationToken ct)
+    {
+        if (r.Body.RequestId == Guid.Empty) throw new ArgumentException("Request ID is required.");
+        var key = string.IsNullOrWhiteSpace(r.Body.IdempotencyKey) ? r.Body.RequestId.ToString("N") : r.Body.IdempotencyKey.Trim();
+        await store.ExecuteAsync<bool>(r.Scope, async (session, token) =>
+        {
+            var s = Session(session); var run = await Run(s, r.RunId, token);
+            var existing = await s.FindTokenUsageAsync(key, token);
+            if (existing is not null)
+            {
+                if (existing.AgentRunId != run.Id) throw new WorkItemConflictException("Usage idempotency key belongs to another run.");
+                return true;
+            }
+            var provider = string.IsNullOrWhiteSpace(r.Body.Provider) ? run.Provider : r.Body.Provider.Trim();
+            if (!string.Equals(provider, run.Provider, StringComparison.OrdinalIgnoreCase))
+                throw new UnauthorizedAccessException("Usage provider does not belong to this run.");
+            var source = r.Body.Source.Trim().ToLowerInvariant();
+            if (source is not ("reported" or "estimated" or "imported")) throw new ArgumentException("Unknown usage source.");
+            var usage = TokenUsageReport.Create(r.Scope, r.Body.RequestId, run.Id, run.WorkItemId, provider, r.Body.Model ?? run.Model,
+                r.Body.InputTokens, r.Body.OutputTokens, r.Body.CachedInputTokens, r.Body.ReasoningTokens, source, key,
+                r.Body.RecordedAtUtc ?? clock.GetUtcNow());
+            s.Add(usage);
+            return true;
+        }, ct);
+        return await Handle(new GetAgentRun(r.Scope, r.RunId), ct);
+    }
 
     internal static IRunSession Session(IWorkItemSession session) => session as IRunSession
         ?? throw new InvalidOperationException("A durable run session is required.");
@@ -123,4 +151,7 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
         x.InitialWorkflowVersion, x.WorkflowVersion, x.WorkItemVersion, x.PreviousRunId, x.NextRunId, x.Hop, x.Provider,
         x.Model, x.Instructions, x.SkillPath, x.Branch, x.RequestedByAgentId, x.RequestedByChatId, x.Status.ToString(), x.Decision.ToString(),
         x.DecisionReason, x.SimulationOutcome.ToString(), x.ResultSummary, x.CreatedAtUtc, x.DispatchedAtUtc, x.CompletedAtUtc, x.UpdatedAtUtc);
+    private static IReadOnlyList<TokenUsageView> Usage(IReadOnlyList<TokenUsageReport> rows) => rows.Select(x => new TokenUsageView(x.Id,
+        x.AgentRunId, x.WorkItemId, x.Provider, x.Model, x.InputTokens, x.OutputTokens, x.CachedInputTokens,
+        x.ReasoningTokens, x.Source, x.IdempotencyKey, x.RecordedAtUtc)).ToArray();
 }

@@ -11,6 +11,13 @@ public sealed record AgentRunView(Guid Id, Guid WorkItemId, Guid RoleId, Guid Ag
     string RequestedByAgentId, string RequestedByChatId, string Status, string Decision, string? DecisionReason,
     string SimulationOutcome, string? ResultSummary, DateTimeOffset CreatedAtUtc, DateTimeOffset? DispatchedAtUtc,
     DateTimeOffset? CompletedAtUtc, DateTimeOffset UpdatedAtUtc);
+public sealed record RecordTokenUsageRequest(Guid RequestId, string? Provider, string? Model,
+    long? InputTokens, long? OutputTokens, long? CachedInputTokens, long? ReasoningTokens,
+    string Source = "reported", string? IdempotencyKey = null, DateTimeOffset? RecordedAtUtc = null);
+public sealed record TokenUsageView(Guid Id, Guid AgentRunId, Guid WorkItemId, string Provider, string? Model,
+    long? InputTokens, long? OutputTokens, long? CachedInputTokens, long? ReasoningTokens,
+    string Source, string IdempotencyKey, DateTimeOffset RecordedAtUtc);
 public sealed record RunDeliveryView(Guid OperationId, long OutboxId, string Kind, string State,
     int DispatchAttempts, int ExecutionAttempts, string? Error, DateTime? RetryAtUtc);
-public sealed record AgentRunDetails(AgentRunView Run, IReadOnlyList<RunDeliveryView> Deliveries);
+public sealed record AgentRunDetails(AgentRunView Run, IReadOnlyList<RunDeliveryView> Deliveries,
+    IReadOnlyList<TokenUsageView>? TokenUsage = null);

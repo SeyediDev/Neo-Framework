@@ -12,6 +12,9 @@ public interface IRunSession : IWorkItemSession
     Task<AgentRun?> GetRunAsync(Guid id, CancellationToken ct);
     Task<IReadOnlyList<AgentRun>> GetRunsAsync(Guid workItemId, CancellationToken ct);
     Task<IReadOnlyList<RunDeliveryView>> GetRunDeliveriesAsync(Guid runId, CancellationToken ct);
+    Task<IReadOnlyList<TokenUsageReport>> GetTokenUsageAsync(Guid runId, CancellationToken ct);
+    Task<TokenUsageReport?> FindTokenUsageAsync(string idempotencyKey, CancellationToken ct);
+    void Add(TokenUsageReport usage);
     void Add(AgentRun run);
     Task StageMessageAsync(WorkDeliveryRequest request, WorkDeliveryKind kind, TimeProvider clock, CancellationToken ct);
     Task<bool> StageInboxAsync(WorkDeliveryRequest request, Func<IWorkItemSession, CancellationToken, Task> mutation,

@@ -26,6 +26,7 @@ public sealed class OrchestrationDbContext(DbContextOptions<OrchestrationDbConte
     public DbSet<WorkflowDefinition> Workflows => Set<WorkflowDefinition>();
     public DbSet<WorkflowApproval> Approvals => Set<WorkflowApproval>();
     public DbSet<AgentRun> AgentRuns => Set<AgentRun>();
+    public DbSet<TokenUsageReport> TokenUsageReports => Set<TokenUsageReport>();
     public DbSet<DeliveryRecord> Deliveries => Set<DeliveryRecord>();
     public DbSet<InboxReceipt> InboxReceipts => Set<InboxReceipt>();
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();

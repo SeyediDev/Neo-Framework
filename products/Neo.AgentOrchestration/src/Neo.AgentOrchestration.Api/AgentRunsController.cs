@@ -39,4 +39,8 @@ public sealed class AgentRunsController(ISender sender) : WorkspaceControllerBas
         // installation operator disables further simulation dispatch.
         return Sender.Send(new ReturnRunAssignment(Scope, id, Actor(), body), ct);
     }
+
+    [HttpPost("runs/{id:guid}/token-usage"), Authorize(Policy = WorkspaceSecurity.Execute)]
+    public Task<AgentRunDetails> RecordUsage(Guid id, RecordTokenUsageRequest body, CancellationToken ct)
+        => Sender.Send(new RecordAgentRunUsage(Scope, id, body), ct);
 }
