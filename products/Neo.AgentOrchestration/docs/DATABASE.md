@@ -54,7 +54,9 @@ with empty candidate sets. This avoids serializable key-range locks overlapping
 between independent workspaces. Every writer must use this scope-lock protocol;
 raw DbContext access is reserved for provisioning and controlled internal work.
 Errors/cancellation roll back and discard the context; commands are not silently
-replayed. Database unique indexes enforce one active item per role and one open
+replayed. The role active-work index is non-unique because each role has a
+configured capacity from 1 to 16; the workspace transaction lock plus an atomic
+count enforce that capacity. A separate unique index still enforces one open
 timer per item. Row versions and item/workflow GUID versions reject stale writes.
 Composite foreign keys reject foreign-project parents/dependencies and
 foreign-workspace project/role/agent/workflow relationships. All deletes restrict.

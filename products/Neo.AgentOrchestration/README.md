@@ -31,7 +31,9 @@ evidence, pause/resume time tracking, forecasts, archive/restore and stale-versi
 rejection. Time-budget usage is labeled separately from completion percentage.
 Application tests use a scoped memory fixture, not a runtime storage fallback.
 The SQL store uses Neo EF repositories, workspace transaction locks, scoped
-foreign keys, unique assignment/timer indexes and optimistic concurrency. Explicit
+foreign keys, capacity-aware role assignment/timer indexes and optimistic
+concurrency. Each role has a validated active-work capacity from 1 to 16.
+Explicit
 versioned provisioning targets an independent database; see [database setup and
 verification](docs/DATABASE.md). [API v1](docs/API.md) exposes the task lifecycle,
 filtered/paged board, nested history, time and configuration via authenticated
