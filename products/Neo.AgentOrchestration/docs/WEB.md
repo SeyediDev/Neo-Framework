@@ -13,6 +13,11 @@ Hyper, Neo.Bpms, Domain or Infrastructure. API permission and domain rules remai
 authoritative. Native work management is independent of future GitHub/GitLab/
 Azure DevOps adapters; those adapters are not implemented or activated here.
 
+The Web also exposes a minimal installable PWA shell. It caches only versioned
+static CSS, JavaScript, manifest and the brand asset. It never caches HTML,
+authenticated API responses, cookies, task content or tenant data; authenticated
+navigation therefore still requires network access and the normal OIDC session.
+
 ## Setup
 
 Run the API using [API.md](API.md) and provision the independent catalog using

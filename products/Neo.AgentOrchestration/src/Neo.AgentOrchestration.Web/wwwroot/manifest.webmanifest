@@ -1,0 +1,13 @@
+{
+  "name": "مدیریت کار فن‌آسا",
+  "short_name": "مدیریت کار",
+  "description": "مدیریت پروژه، کارها و هماهنگی ایجنت‌ها",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f1e7",
+  "theme_color": "#1f4b9a",
+  "categories": ["business", "productivity"]
+}
