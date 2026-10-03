@@ -96,6 +96,20 @@
         if (handle && Date.now() >= suppressClickUntil) openMove(handle.closest('.card'));
     });
     document.addEventListener('change', event => { if (event.target.matches?.('.move-form [name="Destination"]')) updateClaim(event.target.form); });
+    document.addEventListener('neo:board-updated', event => {
+        const before = event.detail?.before;
+        if (!(before instanceof Map)) return;
+        document.querySelectorAll('.kanban-card-compact[data-item-id]').forEach(card => {
+            const previous = before.get(card.dataset.itemId);
+            if (!previous || !previous.agent || previous.state === card.dataset.state || card.dataset.agentOwned !== 'true') return;
+            card.classList.remove('agent-move-arrival');
+            void card.offsetWidth;
+            card.classList.add('agent-move-arrival');
+            const announcement = document.getElementById('kanban-announcement');
+            if (announcement) announcement.textContent = `ایجنت کارت ${card.querySelector('[dir="ltr"]')?.textContent?.trim() || ''} را به مرحله جدید برد.`;
+            setTimeout(() => card.classList.remove('agent-move-arrival'), 1100);
+        });
+    });
     function enhance() {
         cleanup();
         document.querySelectorAll('.move-handle').forEach(x => x.hidden = false);

@@ -11,14 +11,14 @@ function fixture() {
     const message = {}, menu = {open:false}, claim = {};
     const form = {elements:{Destination:{value:'', focus(){this.focused=true;},dispatchEvent(){listeners.change({target:this});},matches:()=>true},ClaimRoleId:{required:false}},querySelector:()=>claim};
     form.elements.Destination.form=form;
-    const card = {isConnected:true,classList:classes(),querySelector:s=>s==='.move-menu'?menu:form,
+    const card = {isConnected:true,dataset:{itemId:'item-1',agentOwned:'true',state:'Backlog'},classList:classes(),querySelector:s=>s==='.move-menu'?menu:form,
         querySelectorAll:()=>[{value:''},{value:'Ready'},{value:'InProgress'}],scrollIntoView(){}};
     const handle = {hidden:true,closest:()=>card,setPointerCapture(){this.captured=true;},hasPointerCapture(){return this.captured;},releasePointerCapture(){this.captured=false;}};
     const region = {querySelectorAll:()=>columns,getBoundingClientRect:()=>({left:0,right:600,top:0,bottom:600}),scrollBy(x){this.scrolled=x;}};
     let hit = columns[1];
     const document = {addEventListener:(name,fn)=>listeners[name]=fn,
         getElementById:()=>message,querySelector:()=>region,elementFromPoint:()=>hit,
-        querySelectorAll:s=>s==='.move-handle'?[handle]:s==='.move-form'?[form]:s==='.drop-target'?columns.filter(x=>x.classList.contains('drop-target')):columns};
+        querySelectorAll:s=>s==='.move-handle'?[handle]:s==='.move-form'?[form]:s==='.kanban-card-compact'?[card]:s==='.drop-target'?columns.filter(x=>x.classList.contains('drop-target')):columns};
     const window = {NeoWorkbench:{busy:false}};
     vm.runInNewContext(source,{document,window,innerWidth:600,Date,Event:class {},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){}});
     const pointer=(overrides={})=>({target:{closest:()=>handle},button:0,isPrimary:true,pointerId:1,clientX:100,clientY:100,preventDefault(){},...overrides});

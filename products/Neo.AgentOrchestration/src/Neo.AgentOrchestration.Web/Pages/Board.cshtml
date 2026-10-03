@@ -20,7 +20,7 @@ else { <p class="small board-hint" id="board-hint">برد را افقی پیما
 @foreach(var state in Statuses.Where(s=>Model.State is null or "" || s==Model.State)) {
 <section class="column flow-column" data-state="@state"><h2>@Status(state) <span class="count">@(board.Metrics.StatusCounts.GetValueOrDefault(state))</span></h2>
 @foreach(var item in board.Items.Where(x=>x.Status==state)) {
-<article class="card flow-card" data-state="@item.Status" data-item-id="@item.Id"><div class="card-meta"><span dir="ltr">@item.Key</span><span>@item.Priority</span></div>
+<article class="card flow-card kanban-card-compact" data-state="@item.Status" data-item-id="@item.Id" data-agent-owned="@((item.OwnerAgentId?.StartsWith("neo-run:", StringComparison.Ordinal) ?? false).ToString().ToLowerInvariant())"><div class="card-meta"><span dir="ltr">@item.Key</span><span>@item.Priority</span></div>
 <h3><a asp-page="/Item" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@item.Id">@item.Title</a></h3>
 @if(item.ParentWorkItemId.HasValue){<span class="tag">زیرتسک</span>} @if(item.IsArchived){<span class="tag">بایگانی</span>}
 <p class="description">@item.Description</p><div class="tags"><span>@ItemTypeLabel(item.Type)</span><span>@item.Domain</span><span>@Model.Project(item.ProjectId)</span><span>@Model.Role(item.OwnerRoleId)</span></div>

@@ -141,3 +141,27 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .column.drop-allowed { outline: 2px dashed #149a8e; outline-offset: -3px; }
 .column.drop-denied { opacity: .45; }
 .column.drop-target { outline: 4px solid #149a8e; background: #e6f5f2; }
+.kanban-card-compact .description,
+.kanban-card-compact .tags,
+.kanban-card-compact progress,
+.kanban-card-compact > .small,
+.kanban-card-compact > .muted { display: none; }
+.kanban-card-compact { min-height: 82px; transition: box-shadow .2s ease, transform .2s ease, opacity .2s ease; }
+.kanban-card-compact:hover,
+.kanban-card-compact:focus-within,
+.kanban-card-compact.agent-move-arrival { min-height: 0; }
+.kanban-card-compact:hover .description,
+.kanban-card-compact:hover .tags,
+.kanban-card-compact:hover progress,
+.kanban-card-compact:hover > .small,
+.kanban-card-compact:focus-within .description,
+.kanban-card-compact:focus-within .tags,
+.kanban-card-compact:focus-within progress,
+.kanban-card-compact:focus-within > .small,
+.kanban-card-compact.agent-move-arrival .description,
+.kanban-card-compact.agent-move-arrival .tags,
+.kanban-card-compact.agent-move-arrival progress,
+.kanban-card-compact.agent-move-arrival > .small { display: block; }
+.kanban-card-compact.agent-move-arrival { animation: agent-card-arrival 1s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 0 4px #149a8e55, 0 12px 28px #1f4b9a2b; }
+@keyframes agent-card-arrival { 0% { transform: translateY(-18px) scale(.96); opacity: .25; } 55% { transform: translateY(4px) scale(1.02); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .kanban-card-compact, .kanban-card-compact.agent-move-arrival { animation: none; transition: none; } }

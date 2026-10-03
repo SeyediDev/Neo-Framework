@@ -11,6 +11,7 @@
     const drafts = new Map();
     let dirtyForms = new Set();
     let busy = false, writing = false, dirty = false, active = location.href;
+    let pollTimer = 0;
     let index = Number(history.state?.neoIndex ?? 0);
     const initialDocument = crypto.randomUUID();
     document.documentElement.dataset.spaDocument = initialDocument;
@@ -80,18 +81,33 @@
         main.inert = value;
         document.documentElement.classList.toggle('spa-busy', value);
     }
+    function boardSnapshot() {
+        return [...main.querySelectorAll('.kanban-card-compact[data-item-id]')].reduce((map, card) => {
+            map.set(card.dataset.itemId, { state: card.dataset.state, agent: card.dataset.agentOwned === 'true' });
+            return map;
+        }, new Map());
+    }
+    function scheduleBoardPoll() {
+        clearTimeout(pollTimer);
+        pollTimer = 0;
+        if (!main.querySelector?.('.kanban')) return;
+        pollTimer = setTimeout(async () => {
+            if (!busy && document.visibilityState === 'visible') await show(active, { preserve: true, silent: true, poll: true });
+            scheduleBoardPoll();
+        }, 6000);
+    }
     async function show(url, options = {}) {
         if (busy) { tell('درخواست قبلی هنوز در حال انجام است.'); return false; }
         if (!route(url)) return false;
         remember();
-        const from = active, saved = drafts.get(from);
+        const from = active, saved = drafts.get(from), beforeBoard = boardSnapshot();
         const method = options.body ? 'POST' : 'GET';
         const oldFocus = document.activeElement;
         const focusName = oldFocus?.getAttribute('name');
         const focusedForm = oldFocus?.closest('form');
         const focusFormIndex = focusedForm ? forms().indexOf(focusedForm) : -1;
         setBusy(true, method === 'POST');
-        tell(method === 'POST' ? 'در حال ثبت…' : 'در حال دریافت…');
+        if (!options.silent) tell(method === 'POST' ? 'در حال ثبت…' : 'در حال دریافت…');
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 45000);
         try {
@@ -114,6 +130,7 @@
                 if (/^on/i.test(attribute.name)) node.removeAttribute(attribute.name);
             }));
             main.replaceChildren(...[...next.childNodes].map(node => document.importNode(node, true)));
+            document.dispatchEvent(new CustomEvent('neo:board-updated', { detail: { before: beforeBoard, poll: !!options.poll } }));
             main.inert = false;
             document.title = page.title;
             const target = new URL(response.url);
@@ -141,7 +158,7 @@
                 const field = [...(forms()[focusFormIndex]?.elements ?? [])].find(x => x.name === focusName);
                 field?.focus({ preventScroll: true });
             } else main.focus({ preventScroll: true });
-            tell(method === 'POST' ? 'عملیات ثبت شد.' : '');
+            if (!options.silent) tell(method === 'POST' ? 'عملیات ثبت شد.' : '');
             document.dispatchEvent(new CustomEvent('neo:navigated', { detail: { url: active } }));
             return true;
         } catch {
@@ -201,6 +218,9 @@
     });
     refresh.addEventListener('click', () => { void show(active, { preserve: true }); });
     document.getElementById('spa-dismiss').addEventListener('click', () => { feedback.hidden = true; });
+    document.addEventListener('neo:navigated', scheduleBoardPoll);
+    document.addEventListener('visibilitychange', scheduleBoardPoll);
+    scheduleBoardPoll();
     window.NeoWorkbench = Object.freeze({ navigate: show, reload: () => show(active, { preserve: true }),
         get busy() { return busy; }, documentId: initialDocument });
 })();
