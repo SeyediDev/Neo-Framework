@@ -16,7 +16,7 @@ Clients may add a server prefix to the names.
 | `neo_work_brief` | itemId, optional knownVersion; bounded context (latest 3 logs/evidence, 50 child/dependency references, text caps) with totals and explicit omitted markers. Default entry point; never complete history. |
 | `neo_work_history` | itemId, skip=0, take=10 (1-20), optional snapshotVersion; chronological original logs, total and nextSkip. Reuse returned version for later pages; 409 on changed snapshot. |
 | `neo_run_list` | itemId; run chain and linked deliveries. |
-| `neo_run_get` | runId; result/decision/delivery diagnostics, not raw dispatch context. |
+| `neo_run_get` | runId; result/decision/delivery diagnostics and token usage, not raw dispatch context. |
 
 ## Manual mutations
 
@@ -84,6 +84,7 @@ All three mutation tools below require read/execute, not only write:
 | `neo_run_start` | itemId; requestId, expectedWorkItemVersion, workflowId, expectedWorkflowVersion, roleId; optional agentProfileId, branch, simulationOutcome="Succeeded", allowExternalExecution=false |
 | `neo_run_handoff` | runId; requestId, expectedWorkItemVersion, expectedWorkflowVersion |
 | `neo_run_return` | runId; expectedWorkItemVersion |
+| `neo_run_usage` | runId; requestId, optional provider/model, nullable inputTokens/outputTokens/cachedInputTokens/reasoningTokens, source (`reported`, `estimated`, `imported`), optional idempotencyKey and recordedAtUtc |
 
 All listed fields other than itemId/runId go in the nested `request`.
 A stable requestId identifies an identical start/evaluation; changed payload
@@ -91,6 +92,12 @@ under that key conflicts. External execution needs explicit authorization and
 allowExternalExecution=true. Starting a run gives ownership to a managed run,
 not to the calling chat. Handoff is gate reevaluation and can stay Waiting;
 return is restricted to the initiating subject and a stopped assignment.
+
+`neo_run_usage` records observed or estimated provider counters independently of
+run completion and elapsed-time budget. Use `null` when a provider did not expose
+a counter; do not replace it with zero. The API derives the provider from the run
+when omitted, rejects a mismatched provider, scopes idempotency to the workspace,
+and returns the run details including all recorded usage rows.
 
 There are no configuration, approval, callback, arbitrary HTTP, SQL or shell
 tools in this MCP. Use authorized Web/API operations for configuration/independent

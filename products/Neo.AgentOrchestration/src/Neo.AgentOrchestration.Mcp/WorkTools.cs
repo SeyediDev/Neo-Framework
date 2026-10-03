@@ -101,6 +101,11 @@ public sealed class WorkTools(McpApiClient api)
     [Description("Read one scoped run and its delivery diagnostics. Result and workflow decision are separate; no raw credentials or dispatch snapshot is returned.")]
     public Task<string> Run(Guid runId, CancellationToken ct) => api.Send<AgentRunDetails>($"runs/{runId:D}", ct);
 
+    [McpServerTool(Name = "neo_run_usage", ReadOnly = false, Destructive = false, OpenWorld = true)]
+    [Description("Record provider token usage for a run. Requires execute grant; use a stable requestId/idempotency key for retries. Unknown provider counters must remain null, and cached/reasoning tokens are not silently added to input/output totals.")]
+    public Task<string> Usage(Guid runId, RecordTokenUsageRequest request, CancellationToken ct)
+        => api.Send<AgentRunDetails>($"runs/{runId:D}/token-usage", ct, request);
+
     [McpServerTool(Name = "neo_run_start", ReadOnly = false, Destructive = false, OpenWorld = true)]
     [Description("Request configured workflow execution of a Ready task with stable requestId and current item/workflow versions. Needs execute grant. External HTTP requires explicit user authorization and allowExternalExecution=true for context transmission and chain execution; fake never proves real work. Never start merely to claim a manual coding task.")]
     public Task<string> Start(Guid itemId, StartAgentRunRequest request, CancellationToken ct)

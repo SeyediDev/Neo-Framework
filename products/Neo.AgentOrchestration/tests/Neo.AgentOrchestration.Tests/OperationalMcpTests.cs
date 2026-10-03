@@ -33,10 +33,12 @@ public sealed class OperationalMcpTests
         var catalog = await mcp.Call<WorkspaceCatalog>("neo_work_catalog");
         Assert.Contains(catalog.Roles, x => x.Id == f.Role.Id);
         var tools = (await mcp.Request("tools/list", new { })).GetProperty("tools").EnumerateArray().ToArray();
-        Assert.Equal(21, tools.Length);
+        Assert.Equal(22, tools.Length);
         Assert.Contains(tools, x => x.GetProperty("name").GetString() == "neo_work_planning");
         Assert.True(tools.Single(x => x.GetProperty("name").GetString() == "neo_work_get").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
         Assert.False(tools.Single(x => x.GetProperty("name").GetString() == "neo_run_start").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
+        Assert.False(tools.Single(x => x.GetProperty("name").GetString() == "neo_run_usage").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
+        Assert.Contains("inputTokens", tools.Single(x => x.GetProperty("name").GetString() == "neo_run_usage").GetProperty("inputSchema").GetRawText());
         var startSchema = tools.Single(x => x.GetProperty("name").GetString() == "neo_run_start").GetProperty("inputSchema").GetRawText();
         Assert.Contains("allowExternalExecution", startSchema);
         var context = await mcp.Call<JsonElement>("neo_work_context");
