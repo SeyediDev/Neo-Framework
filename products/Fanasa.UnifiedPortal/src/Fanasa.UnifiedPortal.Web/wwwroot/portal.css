@@ -1,4 +1,4 @@
-:root{--lapis:#1f4b9a;--turquoise:#149a8e;--saffron:#e0a334;--ink:#141c33;--muted:#68748a;--paper:#fffdf9;--line:#e8e2d7}
+:root{--lapis:#1f4b9a;--turquoise:#149a8e;--saffron:#e0a334;--ink:#141c33;--muted:#68748a;--paper:#fffdf9;--line:#e8e2d7}.center-pillar{display:block;margin-top:12px;color:var(--turquoise);font-size:10px;font-weight:700}
 .portal-hero{display:grid;grid-template-columns:1.35fr .65fr;gap:40px;align-items:center;padding:18px 0 42px;border-bottom:1px solid var(--line)}
 .hero-copy{max-width:660px}.hero-copy h1{font-size:clamp(34px,5.2vw,62px);line-height:1.35;color:var(--lapis);margin:16px 0 14px;letter-spacing:-1px}.hero-copy h1 em{color:var(--turquoise);font-style:normal}.hero-copy p{font-size:16px;line-height:2;color:#52617a;max-width:600px}
 .identity-chip{display:flex;align-items:center;gap:9px;margin-top:24px;width:max-content;max-width:100%;padding:9px 13px;border:1px solid #dce8e3;border-radius:999px;color:#52617a;font-size:12px}.identity-chip a{margin-inline-start:9px;color:var(--lapis);text-decoration:none;font-weight:700}.status-dot{width:8px;height:8px;border-radius:50%;background:#21b5a8;box-shadow:0 0 0 4px #21b5a822}
