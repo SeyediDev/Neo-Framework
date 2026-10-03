@@ -1,0 +1,25 @@
+namespace Fanasa.AccessManagement.Web.Domain.Access;
+
+public sealed record Tenant(Guid Id, string Key, string DisplayName, bool IsActive, DateTimeOffset CreatedAt);
+public sealed record Product(Guid Id, string Key, string DisplayName, string Audience, string? RepositoryUrl, string CenterSlug, IReadOnlyDictionary<string, string> Attributes);
+public sealed record ProductClient(Guid Id, Guid ProductId, string Key, string DisplayName, string ClientType, IReadOnlyCollection<string> RedirectUris, IReadOnlyCollection<string> AllowedScopes, bool IsActive);
+public sealed record ContractEntitlement(Guid Id, Guid TenantId, string ExternalContractId, string ProductKey, string CenterSlug, string PlanKey, decimal? IncludedQuantity, string Unit, DateTimeOffset EffectiveFrom, DateTimeOffset? EffectiveTo, string Status, DateTimeOffset UpdatedAt);
+public sealed record UsageEvent(Guid Id, Guid TenantId, string ProductKey, string CenterSlug, string Metric, decimal Quantity, string Unit, DateTimeOffset OccurredAt, string Source, string IdempotencyKey, string? CorrelationId, DateTimeOffset RecordedAt);
+public sealed record UsageSummary(Guid TenantId, string ProductKey, string CenterSlug, string Metric, decimal Quantity, string Unit, int EventCount, DateTimeOffset From, DateTimeOffset To);
+public sealed record ContractLifecycleEvent(string EventId, Guid TenantId, string ContractId, string ProductKey, string CenterSlug, string PlanKey, string EventType, decimal? IncludedQuantity, string Unit, DateTimeOffset EffectiveAt);
+public sealed record RecordUsageCommand(Guid TenantId, string ProductKey, string CenterSlug, string Metric, decimal Quantity, string Unit, DateTimeOffset OccurredAt, string Source, string IdempotencyKey, string? CorrelationId);
+public sealed record RegisterProductRequest(string Key, string DisplayName, string Audience, string? RepositoryUrl, string CenterSlug, IReadOnlyDictionary<string, string>? Attributes);
+public sealed record RegisterClientRequest(string Key, string DisplayName, string ClientType, IReadOnlyCollection<string>? RedirectUris, IReadOnlyCollection<string>? AllowedScopes);
+public sealed record PricingPlan(Guid Id, string ProductKey, string Key, string DisplayName, string BillingMode, string Currency, decimal FixedMonthlyAmount, decimal IncludedCredit, bool IsActive);
+public sealed record PricingRule(Guid Id, Guid PlanId, string Metric, string Unit, decimal UnitPrice, decimal IncludedQuantity, decimal? MaximumQuantity);
+public sealed record AccountBalance(Guid TenantId, string AccountType, decimal Available, decimal Reserved, string Currency, DateTimeOffset UpdatedAt);
+public sealed record UsageCharge(Guid Id, Guid TenantId, string ProductKey, string Metric, decimal Quantity, decimal Amount, string Currency, string IdempotencyKey, DateTimeOffset CalculatedAt);
+public sealed record RevenueSnapshot(string ProductKey, string Currency, decimal GrossRevenue, decimal ProducerShare, decimal PlatformShare, int PayingTenants, DateTimeOffset From, DateTimeOffset To);
+public sealed record RegisterPlanRequest(string ProductKey, string Key, string DisplayName, string BillingMode, string Currency, decimal FixedMonthlyAmount, decimal IncludedCredit);
+public sealed record AddPricingRuleRequest(string Metric, string Unit, decimal UnitPrice, decimal IncludedQuantity, decimal? MaximumQuantity);
+public sealed record TenantSubscription(Guid Id, Guid TenantId, string ProductKey, Guid PricingPlanId, string Status, DateTimeOffset StartedAt, DateTimeOffset? RenewsAt, int SeatLimit, int ActiveSeats);
+public sealed record TenantUser(Guid Id, Guid TenantId, string KeycloakSubject, string? DisplayName, bool IsActive, DateTimeOffset JoinedAt);
+public sealed record AccessRole(Guid Id, Guid TenantId, string ProductKey, string Key, string DisplayName, IReadOnlyCollection<string> Permissions);
+public sealed record CreateSubscriptionRequest(Guid TenantId, string ProductKey, Guid PricingPlanId, int SeatLimit);
+public sealed record AddTenantUserRequest(Guid TenantId, string KeycloakSubject, string? DisplayName);
+public sealed record CreateRoleRequest(Guid TenantId, string ProductKey, string Key, string DisplayName, IReadOnlyCollection<string> Permissions);

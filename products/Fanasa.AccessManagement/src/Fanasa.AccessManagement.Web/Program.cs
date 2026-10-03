@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Fanasa.AccessManagement.Web.Application.Access;
 
 var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/"));
+builder.Services.AddControllers();
+builder.Services.AddSingleton<IAccessManagement, InMemoryAccessManagement>();
 builder.Services.AddAuthentication(options => { options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme; })
  .AddCookie(options => { options.Cookie.Name = "fanasa.access.session"; options.Cookie.HttpOnly = true; options.Cookie.SecurePolicy = isDevelopment ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always; options.Cookie.SameSite = SameSiteMode.Lax; options.LoginPath = "/login"; options.LogoutPath = "/logout"; })
  .AddOpenIdConnect(options =>
@@ -33,5 +36,5 @@ app.UseExceptionHandler("/Error"); app.UseStaticFiles(); app.UseRouting(); app.U
 app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy" })).AllowAnonymous();
 app.MapGet("/login", (HttpContext context) => Results.Challenge(new AuthenticationProperties { RedirectUri = "/" }, [OpenIdConnectDefaults.AuthenticationScheme]));
 app.MapGet("/logout", async (HttpContext context) => { await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); await context.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties { RedirectUri = "/" }); });
-app.MapRazorPages(); app.Run();
+app.MapControllers().RequireAuthorization(); app.MapRazorPages(); app.Run();
 public partial class AccessManagementHost;
