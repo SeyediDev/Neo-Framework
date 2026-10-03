@@ -1,0 +1,251 @@
+:root {
+  --fanasa-lapis:#1f4b9a;
+  --fanasa-chalk:#f6f1e7;
+  --fanasa-ink:#141c33;
+  --pf-v5-global--FontFamily--text:Vazirmatn,Tahoma,sans-serif;
+  --pf-v5-global--FontFamily--heading:Vazirmatn,Tahoma,sans-serif;
+  --keycloak-card-top-color:transparent
+}
+
+.login-pf body.fanasa-body {
+  margin:0;
+  min-height:100vh;
+  height:auto;
+  background:var(--fanasa-chalk);
+  color:var(--fanasa-ink);
+  font-family:Vazirmatn,Tahoma,sans-serif
+}
+
+.fanasa-body::before,.fanasa-body::after {
+  content:'';
+  position:fixed;
+  width:380px;
+  height:560px;
+  border:1px solid #21b5a833;
+  border-radius:50% 50% 0 0;
+  outline:1px solid #21b5a81f;
+  outline-offset:18px;
+  pointer-events:none;
+  z-index:0
+}
+
+.fanasa-body::before {
+  inset-inline-start:-235px;
+  bottom:-180px
+}
+.fanasa-body::after {
+  inset-inline-end:-245px;
+  top:-180px;
+  transform:rotate(180deg)
+}
+
+.fanasa-body .pf-v5-c-login {
+  min-height:100vh;
+  padding:40px 20px;
+  background:transparent;
+  position:relative;
+  z-index:1
+}
+
+.fanasa-body .pf-v5-c-login__container {
+  display:grid;
+  grid-template-columns:minmax(0,460px);
+  grid-template-areas:'header' 'main';
+  gap:24px;
+  width:100%;
+  max-width:460px;
+  margin:auto
+}
+
+#kc-header {
+  padding:0;
+  text-align:center
+}
+#kc-header-wrapper {
+  font-size:0;
+  letter-spacing:0;
+  color:var(--fanasa-ink)!important
+}
+
+#kc-header-wrapper .fanasa-logo {
+  display:block;
+  width:186px;
+  height:68px;
+  margin:17px auto;
+  object-fit:contain
+}
+
+#kc-header-wrapper::after {
+  content:'ورود یکپارچه فن‌آسا';
+  display:block;
+  font-size:14px;
+  line-height:1.8;
+  font-weight:500
+}
+
+html[lang='en'] #kc-header-wrapper::after {
+  content:'Fanasa single sign-on'
+}
+
+.fanasa-body .pf-v5-c-login__main {
+  background:#fff;
+  border:1px solid #1f4b9a20;
+  border-radius:20px;
+  box-shadow:0 16px 48px #141c3310;
+  min-width:0;
+  overflow:hidden
+}
+
+.fanasa-body .pf-v5-c-login__main-header {
+  padding:30px 32px 16px;
+  border-top:0;
+  gap:12px;
+  grid-template-columns:1fr auto;
+  align-items:center
+}
+
+.fanasa-body #kc-page-title {
+  font-family:inherit;
+  font-size:23px;
+  line-height:1.7;
+  font-weight:750;
+  color:var(--fanasa-lapis)
+}
+
+.fanasa-body .pf-v5-c-login__main-body {
+  padding:8px 32px 32px
+}
+.fanasa-body .pf-v5-c-form {
+  gap:24px
+}
+
+.fanasa-body .pf-v5-c-form__label {
+  font-weight:600;
+  font-size:14px;
+  color:var(--fanasa-ink)
+}
+
+.fanasa-body .pf-v5-c-form-control {
+  --pf-v5-c-form-control--after--BorderBottomWidth:0;
+  min-height:48px;
+  border:1px solid #c5cedd;
+  border-radius:8px;
+  background:#fff;
+  color:var(--fanasa-ink)
+}
+
+.fanasa-body .pf-v5-c-form-control:focus-within {
+  border-color:var(--fanasa-lapis);
+  outline:3px solid #1f4b9a26;
+  outline-offset:2px
+}
+
+.fanasa-body input {
+  font-family:inherit
+}
+.fanasa-body input#username,.fanasa-body input#password {
+  direction:ltr;
+  text-align:start;
+  min-height:46px
+}
+
+.fanasa-body .pf-v5-c-button {
+  min-height:48px;
+  font-family:inherit;
+  font-weight:600;
+  border-radius:8px;
+  box-shadow:none
+}
+
+.fanasa-body .pf-v5-c-button.pf-m-primary {
+  background:var(--fanasa-lapis);
+  color:#fff;
+  border:0
+}
+.fanasa-body .pf-v5-c-button.pf-m-primary:hover {
+  background:#16326c
+}
+
+.fanasa-body .pf-v5-c-button.pf-m-control {
+  background:#f6f1e7;
+  color:var(--fanasa-lapis);
+  border:1px solid #c5cedd;
+  width:48px
+}
+.fanasa-body .pf-v5-c-button.pf-m-control:hover {
+  background:#edf7f5
+}
+
+.fanasa-body button:focus-visible,.fanasa-body a:focus-visible,.fanasa-body select:focus-visible {
+  outline:3px solid #149a8e;
+  outline-offset:3px
+}
+
+.fanasa-body .pf-v5-c-input-group {
+  gap:8px
+}
+.fanasa-body a {
+  color:var(--fanasa-lapis);
+  text-underline-offset:4px
+}
+.fanasa-body a:hover {
+  text-decoration:underline
+}
+
+.fanasa-body .pf-v5-c-alert {
+  border-radius:8px;
+  font-family:inherit
+}
+.fanasa-body .pf-v5-c-login__main-footer:empty {
+  display:none
+}
+
+.fanasa-body #login-select-toggle {
+  font:inherit;
+  font-size:12px
+}
+.fanasa-body .pf-v5-c-login__main-header-utilities .pf-v5-c-form-control {
+  min-height:36px
+}
+
+@media(max-width:540px) {
+  .fanasa-body .pf-v5-c-login {
+  padding:24px 16px
+}
+.fanasa-body .pf-v5-c-login__main-header {
+  padding:24px 22px 12px
+}
+.fanasa-body .pf-v5-c-login__main-body {
+  padding:8px 22px 24px
+}
+.fanasa-body #kc-page-title {
+  font-size:20px
+}
+#kc-header-wrapper .fanasa-logo {
+  width:164px;
+  height:60px
+}
+
+}
+/* Keep the card full width within the responsive container. */
+.fanasa-body .pf-v5-c-login__main {
+  width: 100%;
+  justify-self: stretch;
+}
+.fanasa-body .pf-v5-c-form-control > input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.fanasa-body .pf-v5-c-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fanasa-body .pf-v5-c-login__container {
+  padding: 0;
+}

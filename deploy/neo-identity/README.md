@@ -71,3 +71,34 @@ Keep these records in the separate Identity/Tenant domain:
 
 The orchestration domain consumes stable identity and authorization claims through
 an adapter. It must not contain Keycloak entities or provider-specific code.
+
+## Fanasa login branding
+
+The login theme uses the official horizontal Persian logo and SVG favicon, the
+brand colors (#1F4B9A, #149A8E, #F6F1E7), subtle mihrab outlines and locally
+hosted Vazirmatn. Font files retain the SIL OFL license. Asset provenance is in
+`keycloak/themes/fanasa/provenance.json`.
+
+The `template.ftl` override comes from the deployed Keycloak **26.4.7** bundled
+`keycloak.v2` template; only the logo and favicon markup is changed. Compare it
+with the bundled template when upgrading Keycloak. Password, error, session and
+alternate authentication flows remain inherited.
+
+For the Persian Fanasa installation set `loginTheme=fanasa`,
+`internationalizationEnabled=true`, `supportedLocales=["fa"]` and
+`defaultLocale=fa`. This prevents an English browser preference from selecting
+English; translations also support English if explicitly enabled later.
+The authenticated account/admin consoles have independent themes.
+
+Back up the mounted theme before updating it. Restart Keycloak to clear template
+caches and clear only `/opt/keycloak/data/tmp/kc-gzip-cache` if old static assets
+are still served. Keep production theme caching enabled. When HTTPS overrides
+exist, include both compose files when recreating the service:
+
+```sh
+docker compose --env-file .env -f docker-compose.yml -f compose.https.yml up -d
+```
+
+Validated on the VPS: desktop 1440px and mobile 390px login, Persian labels and
+RTL, official logo, local font, password visibility, invalid-password feedback,
+contract administrator/viewer permissions and shared login to the portal.

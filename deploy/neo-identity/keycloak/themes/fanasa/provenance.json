@@ -1,0 +1,45 @@
+{
+  "source": "https://fanasa.net/fa/brand",
+  "observedAt": "2026-09-30T04:15:03.841Z",
+  "referenceThread": "01a0e1fa-8caf-77c0-b132-bdf609862dfb",
+  "referenceTitle": "تهیه پروپوزال و قرارداد",
+  "referenceCover": "E:/SJVS/Basalam/Fanasa/Input/Fanasa-Cover-05-Mihrab.docx",
+  "files": [
+    {
+      "path": "brand/fanasa-logo-horizontal-fa-color.svg",
+      "sourceUrl": "https://fanasa.net/brand-assets/fanasa-logo-horizontal-fa-color.svg",
+      "sha256": "2566a0edfd493a16a2c51d87da67dc97fd46797144476dbe369153bcfbb90785",
+      "bytes": 4093
+    },
+    {
+      "path": "brand/fanasa-favicon.svg",
+      "sourceUrl": "https://fanasa.net/brand-assets/fanasa-favicon.svg",
+      "sha256": "86686398e24d85fc97414fa100d59fc9af08a1b2a7aae4c2b37fca183e197bcb",
+      "bytes": 970
+    },
+    {
+      "path": "fonts/Vazirmatn-Fa.woff2",
+      "sourceUrl": "https://fanasa.net/_next/static/media/f1d25eabcf1db66d-s.p.21se6xk6bxqs6.woff2",
+      "sha256": "07c90f3690c05c7722300d9933824191a77f5eb8367e498a07ffc9552f2c2635",
+      "bytes": 46272
+    },
+    {
+      "path": "fonts/Vazirmatn-LatinExt.woff2",
+      "sourceUrl": "https://fanasa.net/_next/static/media/3be67f396f7d45c3-s.10ayu6ka6csf1.woff2",
+      "sha256": "a448627c36553c00e67cc488376e13f8f4211f3ddc9d12de22e48a468d306a90",
+      "bytes": 21796
+    },
+    {
+      "path": "fonts/Vazirmatn-Latin.woff2",
+      "sourceUrl": "https://fanasa.net/_next/static/media/ec8f59eafded4799-s.2avnhkksosb5d.woff2",
+      "sha256": "454d44a1112afe0a95f40216cd231d0fb725269e31c8692ff36003c56eb23d7c",
+      "bytes": 34444
+    },
+    {
+      "path": "fonts/OFL.txt",
+      "sourceUrl": "https://raw.githubusercontent.com/google/fonts/main/ofl/vazirmatn/OFL.txt",
+      "sha256": "17e355067c8284f47743a1ee3b1ef7ff684ff0601eda357f9353b10b3016ab31",
+      "bytes": 4391
+    }
+  ]
+}
