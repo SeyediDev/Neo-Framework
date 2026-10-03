@@ -2,34 +2,30 @@
 @using System.Security.Claims
 @inject IConfiguration Configuration
 @{
-    ViewData["Title"] = "پورتال مرکزی";
+    ViewData["Title"] = "پنجره واحد";
     var authenticated = User.Identity?.IsAuthenticated == true;
     var workManagementUrl = Configuration["Products:WorkManagementUrl"];
     var contractManagementUrl = Configuration["Products:ContractManagementUrl"];
+    var centers = new[]
+    {
+        new { Number = "01", Icon = "◈", Name = "مدیریت کار و پروژه", Description = "برنامه‌ریزی، کانبان و تحویل نتیجه", Product = "مدیریت کار ایجنتیک", Url = workManagementUrl ?? "", Color = "turquoise" },
+        new { Number = "02", Icon = "✦", Name = "ارکستراسیون ایجنت‌ها", Description = "رول‌ها، فلوها و همکاری انسان و ایجنت", Product = "مدیریت کار ایجنتیک", Url = workManagementUrl ?? "", Color = "lapis" },
+        new { Number = "03", Icon = "⌘", Name = "توسعه و DevOps", Description = "کد، بازبینی، انتشار و عملیات توسعه", Product = "مدیریت کار ایجنتیک", Url = workManagementUrl ?? "", Color = "saffron" },
+        new { Number = "04", Icon = "▱", Name = "قرارداد و امور حقوقی", Description = "چرخه عمر قراردادها و تعهدات حقوقی", Product = "مدیریت قرارداد", Url = contractManagementUrl ?? "", Color = "plum" },
+        new { Number = "05", Icon = "◎", Name = "مشتری و ارتباطات", Description = "شناخت مشتری و تعاملات سازمانی", Product = "در حال طراحی", Url = "", Color = "turquoise" },
+        new { Number = "06", Icon = "↗", Name = "فروش و رشد", Description = "فرصت‌ها، پیشنهادها و رشد پایدار", Product = "در حال طراحی", Url = "", Color = "lapis" },
+        new { Number = "07", Icon = "₿", Name = "مالی و حسابداری", Description = "کنترل مالی، پرداخت و گزارش‌دهی", Product = "در حال طراحی", Url = "", Color = "saffron" },
+        new { Number = "08", Icon = "♧", Name = "منابع انسانی", Description = "سرمایه انسانی، نقش‌ها و تجربه کارکنان", Product = "در حال طراحی", Url = "", Color = "plum" },
+        new { Number = "09", Icon = "⌁", Name = "عملیات و فرآیند", Description = "استانداردسازی و بهبود جریان‌های کاری", Product = "در حال طراحی", Url = "", Color = "turquoise" },
+        new { Number = "10", Icon = "▤", Name = "اسناد و دانش", Description = "دانش سازمانی، مستندات و جست‌وجو", Product = "در حال طراحی", Url = "", Color = "lapis" },
+        new { Number = "11", Icon = "◌", Name = "همکاری و ارتباطات", Description = "هم‌افزایی تیم‌ها و گفتگوهای هدفمند", Product = "در حال طراحی", Url = "", Color = "saffron" },
+        new { Number = "12", Icon = "⌬", Name = "داده و هوش مصنوعی", Description = "بینش داده‌محور و تصمیم‌سازی هوشمند", Product = "در حال طراحی", Url = "", Color = "plum" },
+        new { Number = "13", Icon = "⛨", Name = "هویت و امنیت", Description = "دسترسی امن، نقش‌ها و حاکمیت", Product = "Keycloak مرکزی فن‌آسا", Url = "", Color = "turquoise" },
+        new { Number = "14", Icon = "⇄", Name = "یکپارچه‌سازی و API", Description = "اتصال سامانه‌ها و جریان امن اطلاعات", Product = "در حال طراحی", Url = "", Color = "lapis" }
+    };
 }
-<header class="hero">
-    <img src="~/brand/fanasa-horizontal-fa.svg" alt="فن‌آسا" />
-    <span class="eyebrow">پنجره واحد</span>
-    <h1>@(authenticated ? "خوش آمدید" : "محصولات فن‌آسا")</h1>
-    <p>@(authenticated ? "هویت شما توسط سامانه مرکزی فن‌آسا تأیید شده است." : "برای دسترسی به سامانه‌های مجاز، با حساب سازمانی خود وارد شوید.")</p>
-</header>
-@if (!authenticated)
-{
-    <a class="button" href="/login">ورود با SSO فن‌آسا</a>
-}
-else
-{
-    <section class="products" aria-label="محصولات فن‌آسا">
-        <a class="product-card" href="@(workManagementUrl ?? "#")" aria-disabled="@(string.IsNullOrWhiteSpace(workManagementUrl))">
-            <span class="product-mark turquoise">W</span>
-            <span><strong>مدیریت کار ایجنتیک</strong><small>@(string.IsNullOrWhiteSpace(workManagementUrl) ? "به‌زودی در دسترس" : "برنامه‌ریزی، کانبان و ارکستراسیون ایجنت‌ها")</small></span>
-            <span class="arrow">←</span>
-        </a>
-        <a class="product-card" href="@(contractManagementUrl ?? "#")" aria-disabled="@(string.IsNullOrWhiteSpace(contractManagementUrl))">
-            <span class="product-mark saffron">C</span>
-            <span><strong>مدیریت قرارداد</strong><small>@(string.IsNullOrWhiteSpace(contractManagementUrl) ? "در حال آماده‌سازی" : "مدیریت چرخه عمر قراردادها")</small></span>
-            <span class="arrow">←</span>
-        </a>
-    </section>
-    <div class="account"><span>@(User.FindFirstValue("preferred_username") ?? User.FindFirstValue("email") ?? "کاربر سازمانی")</span><a href="/logout">خروج امن</a></div>
-}
+<header class="portal-hero"><div class="hero-copy"><span class="eyebrow">پنجره واحد فن‌آسا · ۱۴ مرکز قابلیت</span><h1>هر قابلیت،<br /><em>یک قدم نزدیک‌تر</em> به نتیجه.</h1><p>یک ورودی برای محصولات و قابلیت‌های فن‌آسا؛ از مدیریت کار ایجنتیک تا قرارداد، و مسیرهایی که در ادامه به این پنجره اضافه می‌شوند.</p>@if (!authenticated){<a class="button" href="/login">ورود با SSO فن‌آسا <span aria-hidden="true">↗</span></a>}else{<div class="identity-chip"><span class="status-dot"></span><span>@(User.FindFirstValue("preferred_username") ?? User.FindFirstValue("email") ?? "کاربر سازمانی")</span><a href="/logout">خروج امن</a></div>}</div><div class="hero-orbit" aria-hidden="true"><span class="orbit-ring ring-one"></span><span class="orbit-ring ring-two"></span><span class="orbit-core">F</span><i class="orbit-node node-one">✦</i><i class="orbit-node node-two">◈</i><i class="orbit-node node-three">⌁</i></div></header>
+<section class="portal-summary" aria-label="نمای کلی پنجره واحد"><div><strong>۱۴</strong><span>مرکز قابلیت</span></div><div><strong>۲</strong><span>محصول فعال</span></div><div><strong>∞</strong><span>مسیر برای رشد</span></div></section>
+<section class="catalog" id="centers"><div class="catalog-heading"><div><span class="eyebrow">نقشه قابلیت‌های فن‌آسا</span><h2>از همین‌جا انتخاب کن</h2></div><p><span id="visible-count">۱۴</span> مرکز برای کشف و توسعه</p></div><div class="catalog-tools"><label class="search-box"><span aria-hidden="true">⌕</span><input id="center-search" type="search" placeholder="جست‌وجو در مراکز قابلیت" aria-label="جست‌وجو در مراکز قابلیت" /></label><div class="filter-pills" role="group" aria-label="فیلتر مراکز"><button class="filter-pill is-active" type="button" data-filter="all">همه</button><button class="filter-pill" type="button" data-filter="active">فعال</button><button class="filter-pill" type="button" data-filter="soon">به‌زودی</button></div></div><div class="center-grid" id="center-grid">@foreach (var center in centers){var isAvailable = !string.IsNullOrWhiteSpace(center.Url);<article class="center-card @(isAvailable ? "is-available" : "is-soon")" data-state="@(isAvailable ? "active" : "soon")" data-search="@center.Name @center.Description @center.Product"><div class="center-top"><span class="center-number">@center.Number</span><span class="center-icon @center.Color">@center.Icon</span></div><h3>@center.Name</h3><p>@center.Description</p><div class="center-bottom"><span class="center-product">@center.Product</span>@if (isAvailable && authenticated){<a class="center-link" href="@center.Url" aria-label="ورود به @center.Name">←</a>}else{<span class="soon-label">@(isAvailable ? "ورود لازم است" : "به‌زودی")</span>}</div></article>}</div><p class="no-results" id="no-results" hidden>مرکزی با این جست‌وجو پیدا نشد.</p></section>
+<section class="portal-note"><span class="note-mark">✦</span><div><strong>یک پنجره، چند مسیر، یک هویت</strong><p>ورود، نقش‌ها و دسترسی‌ها در SSO مرکزی فن‌آسا مدیریت می‌شوند و هر محصول دامنه مستقل خودش را حفظ می‌کند.</p></div></section>
+<script>(()=>{const cards=[...document.querySelectorAll('.center-card')],search=document.getElementById('center-search'),count=document.getElementById('visible-count'),empty=document.getElementById('no-results');let filter='all';const render=()=>{const query=(search.value||'').trim().toLocaleLowerCase();let shown=0;cards.forEach(card=>{const matches=(filter==='all'||card.dataset.state===filter)&&(!query||card.dataset.search.toLocaleLowerCase().includes(query));card.hidden=!matches;if(matches)shown++});count.textContent=shown;empty.hidden=shown!==0};search.addEventListener('input',render);document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(item=>item.classList.toggle('is-active',item===button));render()}));})();</script>
