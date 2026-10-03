@@ -31,6 +31,12 @@ builder.Services.AddAuthentication(options =>
     options.UsePkce = true;
     options.RequireHttpsMetadata = !isDevelopment;
     options.SaveTokens = false;
+    // Identify the client during logout without retaining tokens in the cookie.
+    options.Events.OnRedirectToIdentityProviderForSignOut = context =>
+    {
+        context.ProtocolMessage.ClientId = context.Options.ClientId;
+        return Task.CompletedTask;
+    };
     options.GetClaimsFromUserInfoEndpoint = true;
     options.Scope.Clear();
     options.Scope.Add("openid");

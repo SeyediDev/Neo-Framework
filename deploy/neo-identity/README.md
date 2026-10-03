@@ -102,3 +102,22 @@ docker compose --env-file .env -f docker-compose.yml -f compose.https.yml up -d
 Validated on the VPS: desktop 1440px and mobile 390px login, Persian labels and
 RTL, official logo, local font, password visibility, invalid-password feedback,
 contract administrator/viewer permissions and shared login to the portal.
+
+## Current local HTTPS endpoints
+
+- `https://sso.fanasa.net.local`: Keycloak and the Fanasa OIDC issuer
+  `https://sso.fanasa.net.local/realms/fanasa`.
+- `https://access.fanasa.net.local`: user and access management application.
+- `https://panel.fanasa.net.local`: compatibility redirect to `access`.
+
+The SSO hostname is distinct from the user management application. Configure
+Keycloak `KC_HOSTNAME`, every application's OIDC Authority/issuer, and the local
+hosts mappings together. Access management redirects and post-logout redirects
+are registered on the `access` host. Previous Keycloak bookmarks under
+`access/realms/` and `access/admin/` redirect to `sso`; all active integrations
+use the new issuer directly. The existing wildcard certificate covers both names.
+When updating the issuer, users may need to sign in again.
+
+Both .NET applications send `client_id` in the OIDC logout request while keeping
+`SaveTokens=false`. Verified on the renamed hosts: fresh login, logout
+confirmation, registered callback and removal of the application session cookie.
