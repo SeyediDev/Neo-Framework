@@ -150,16 +150,27 @@ third-party products. Those products must map their own roles explicitly.
 
 - `https://sso.fanasa.net.local`: Keycloak and the Fanasa OIDC issuer
   `https://sso.fanasa.net.local/realms/fanasa`.
-- `https://access.fanasa.net.local`: user and access management application.
+- `https://platform.fanasa.net.local`: مرکز راهبری پلتفرم فن‌آسا
+  (`Fanasa Platform Control Center`), the new canonical application host.
+- `https://access.fanasa.net.local`: legacy compatibility host for that application.
 - `https://panel.fanasa.net.local`: compatibility redirect to `access`.
 
 The SSO hostname is distinct from the user management application. Configure
 Keycloak `KC_HOSTNAME`, every application's OIDC Authority/issuer, and the local
 hosts mappings together. Access management redirects and post-logout redirects
-are registered on the `access` host. Previous Keycloak bookmarks under
+are registered on the `platform` host, retaining the previous `access` callbacks
+during migration. Previous Keycloak bookmarks under
 `access/realms/` and `access/admin/` redirect to `sso`; all active integrations
 use the new issuer directly. The existing wildcard certificate covers both names.
 When updating the issuer, users may need to sign in again.
+
+For the application-host migration (not an issuer change), authenticate `kcadm`
+in the Keycloak container and run `migrate-platform-host.py` first in preview mode,
+then with `--apply`. It preserves legacy routing and callbacks, backs up routing
+and environment files on the VPS, verifies nginx configuration, and rolls back
+on deployment errors. Add only the new hostname to client DNS/hosts; do not change
+certificate trust. Verify `/login` redirects with the new exact callback before
+reporting the new link as deployed. Central SSO remains `sso.fanasa.net.local`.
 
 Both .NET applications send `client_id` in the OIDC logout request while keeping
 `SaveTokens=false`. Verified on the renamed hosts: fresh login, logout
