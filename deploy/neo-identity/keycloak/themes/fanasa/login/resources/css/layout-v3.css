@@ -16,7 +16,7 @@
   padding:0;
 }
 .fanasa-body #kc-header { margin:0; padding:0; }
-.fanasa-body #kc-header-wrapper { padding:0; }
+.fanasa-body #kc-header-wrapper { margin:0; padding:0; }
 .fanasa-body #kc-header-wrapper .fanasa-logo { margin:0 auto 10px; }
 @media (max-height:720px) {
   .fanasa-body .pf-v5-c-login { padding-block:16px; }

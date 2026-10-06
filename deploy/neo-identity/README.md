@@ -24,7 +24,7 @@ git clone --filter=blob:none --sparse --branch develop https://github.com/Seyedi
 git -C /opt/neo-framework sparse-checkout set deploy/neo-identity
 ```
 
-The compact login layout is loaded from `css/layout-v2.css` to avoid serving the
+The compact login layout is loaded from `css/layout-v3.css` to avoid serving the
 old layout from Keycloak's gzip cache. Verify the rendered page's scroll height
 at a 1366×636 viewport after deployment; do not hide vertical overflow, since
 MFA and error pages may legitimately need scrolling.
