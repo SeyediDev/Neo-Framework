@@ -2,12 +2,19 @@ using Neo.AgentOrchestration.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Services.AddRazorPages().AddMvcOptions(o => o.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+    options.KnownProxies.Add(IPAddress.Loopback);
+});
 builder.Services.AddWebIdentity(builder.Configuration, builder.Environment);
 builder.Services.AddAuthorization(o =>
 {
@@ -27,6 +34,7 @@ if (!WebIdentity.Configured(app.Configuration))
     app.Services.GetRequiredService<IAuthenticationSchemeProvider>().RemoveScheme(OpenIdConnectDefaults.AuthenticationScheme);
 _ = WebIdentity.ApiAddress(app.Configuration);
 app.UseExceptionHandler("/Error");
+app.UseForwardedHeaders();
 if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing")) app.UseHsts();
 app.UseStaticFiles();
 app.Use(async (context, next) =>
