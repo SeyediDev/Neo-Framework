@@ -131,6 +131,10 @@ uses `platform-permission-mapper.json` to emit the administrator-only user
 attribute `fanasa_permissions` as `permission`; set `platform.admin` only on
 explicitly authorized administrator accounts. Ordinary users must not have
 write access to this attribute.
+Merge `platform-permission-profile-attribute.json` into the existing realm
+`users/profile.attributes` list without replacing other attribute definitions.
+Keycloak discards an unmanaged attribute unless its profile policy allows it;
+verify the saved attribute with the Admin API before reporting admin access.
 
 After authenticating `kcadm` inside the container, run the versioned maintenance
 script to enroll that verified identity in existing active tenants:

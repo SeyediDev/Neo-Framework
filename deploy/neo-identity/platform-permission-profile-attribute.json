@@ -1,0 +1,9 @@
+{
+  "name": "fanasa_permissions",
+  "displayName": "Platform permissions",
+  "multivalued": true,
+  "permissions": {
+    "view": ["admin"],
+    "edit": ["admin"]
+  }
+}
