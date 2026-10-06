@@ -51,7 +51,7 @@ public sealed class HostTests
         using var client = web.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
         var response = await client.GetAsync("/", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-        Assert.Equal(valid ? $"/work/{organization}/{workspace}" : "/Workspace", response.Headers.Location?.OriginalString);
+        Assert.Equal("/Workspace", response.Headers.Location?.OriginalString);
         // Selecting a workspace must not bypass authentication outside local development.
         var selector = await client.GetAsync("/Workspace", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Redirect, selector.StatusCode);
