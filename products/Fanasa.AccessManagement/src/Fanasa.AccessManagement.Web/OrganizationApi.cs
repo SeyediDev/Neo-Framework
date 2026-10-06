@@ -35,6 +35,7 @@ public sealed class OrganizationApi(OrganizationStore store) : ControllerBase
     public IActionResult Execute(Guid tenantId, OrgCommand command)
     {
         if (!OrgAuthorization.Allows(User, tenantId, true)) return Forbid();
+        if (command.Operation == "appointment.transfer") return BadRequest(new { error = "انتقال از گردش تأیید راهبری هویت انجام می‌شود؛ اجرای آن هنوز فعال نشده است." });
         try { return Ok(store.Execute(tenantId, command, OrgAuthorization.Subject(User))); }
         catch (UnauthorizedAccessException) { return Forbid(); }
         catch (KeyNotFoundException) { return NotFound(); }

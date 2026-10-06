@@ -47,7 +47,7 @@ public sealed class PersistentAccessManagement : IAccessManagement
         var member = GetUsers(tenant).SingleOrDefault(x => x.Id == memberId) ?? throw new KeyNotFoundException();
         var seats = GetUsers(tenant).Count(x => x.IsActive && x.Id != memberId) + (active ? 1 : 0);
         var subscriptions = GetSubscriptions(tenant).ToArray();
-        if (subscriptions.Any(x => x.Status == "active" && (!x.RenewsAt.HasValue || x.RenewsAt > DateTimeOffset.UtcNow) && seats > x.SeatLimit)) throw new InvalidOperationException("Subscription seat limit reached.");
+        if (active && subscriptions.Any(x => x.Status == "active" && (!x.RenewsAt.HasValue || x.RenewsAt > DateTimeOffset.UtcNow) && seats > x.SeatLimit)) throw new InvalidOperationException("Subscription seat limit reached.");
         member = member with { IsActive = active }; Save("membership", member.Id, member);
         foreach (var subscription in subscriptions) Save("subscription", subscription.Id, subscription with { ActiveSeats = seats });
         if (!active)
@@ -75,7 +75,7 @@ public sealed class PersistentAccessManagement : IAccessManagement
         var item = GetSubscriptions(tenant).SingleOrDefault(x => x.Id == subscriptionId) ?? throw new KeyNotFoundException();
         if (status == "active" && GetSubscriptions(tenant).Any(x => x.Id != item.Id && x.ProductKey == item.ProductKey && x.Status == "active" && (!x.RenewsAt.HasValue || x.RenewsAt > DateTimeOffset.UtcNow))) throw new InvalidOperationException("Another active subscription exists.");
         var seats = GetUsers(tenant).Count(x => x.IsActive);
-        if (seats > item.SeatLimit) throw new InvalidOperationException("Seat limit exceeded.");
+        if (status == "active" && seats > item.SeatLimit) throw new InvalidOperationException("Seat limit exceeded.");
         item = item with { Status = status, RenewsAt = renewsAt, ActiveSeats = seats }; Save("subscription", item.Id, item);
         db.Emit("subscription:" + Guid.NewGuid(), "TenantSubscriptionChanged", new { TenantId = tenant, item.Id, Status = status, RenewsAt = renewsAt, Actor = actor, Reason = reason }, DateTimeOffset.UtcNow);
         return item;

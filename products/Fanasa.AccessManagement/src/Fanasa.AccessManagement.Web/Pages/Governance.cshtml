@@ -1,0 +1,40 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.GovernanceModel
+@{ ViewData["Title"] = "گردش هویت و الگوهای دسترسی"; }
+<link rel="stylesheet" href="~/css/organization.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/governance.css" asp-append-version="true" />
+<section class="org-hero"><div><span class="eyebrow">JOINER · MOVER · LEAVER</span><h2>از مسئولیت سازمانی تا تصمیم دسترسی</h2><p>درخواست تغییر، بررسی مستقل و الگوهای نقش و زمان را در یک مسیر دنبال کنید.</p></div><span class="pill amber">تعریف و شبیه‌سازی · اجرای زنده غیرفعال</span></section>
+<section class="governance-points" aria-label="نقاط کنترل دسترسی">
+<article class="panel"><span class="pill teal">PAP</span><h3>تعریف سیاست</h3><p>الگو، نسخه، انتشار مستقل و بازنشستگی</p></article>
+<article class="panel"><span class="pill blue">PIP</span><h3>اطلاعات معتبر</h3><p>عضویت فعال، نقش، واحد و انتصاب زمان‌دار</p></article>
+<article class="panel"><span class="pill amber">PDP</span><h3>تصمیم سیاست</h3><p>Permit، Deny، NotApplicable و Indeterminate</p></article>
+<article class="panel"><span class="pill slate">PEP</span><h3>اعمال در API</h3><p>کنترل مجوز جاری فعال است؛ اتصال سیاست جدید هنوز فعال نیست.</p></article>
+</section>
+@if(!Model.SelectedTenant.HasValue){<section class="panel empty-state"><h2>سازمان مجاز برای نمایش وجود ندارد</h2><p>مجوز مشاهده عضویت و چارت هر دو لازم‌اند.</p></section>}
+else {
+<div id="governance-app" data-tenant="@Model.SelectedTenant" data-subject="@Model.Subject" data-admin="@Model.IsAdmin.ToString().ToLowerInvariant()" data-review="@Model.CanReview.ToString().ToLowerInvariant()">
+@Html.AntiForgeryToken()
+<div class="org-toolbar"><form method="get"><label>سازمان <select name="tenant">@foreach(var tenant in Model.Tenants){<option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option>}</select></label><button class="button secondary">نمایش</button></form><button class="button secondary" id="governance-refresh">تازه‌سازی</button></div>
+<p id="governance-message" role="status" aria-live="polite"></p>
+<section class="panel org-editor"><h3>درخواست ورود، جابه‌جایی یا خروج</h3><p class="muted">تأیید مستقل لازم است. درخواست تأییدشده در این مرحله هنوز عضویت یا مجوز را تغییر نمی‌دهد.</p><form id="lifecycle-form">
+<label>نوع درخواست <select name="operation"><option value="join">ورود عضو</option><option value="move">جابه‌جایی عضو</option><option value="leave">خروج عضو</option></select></label>
+<label>شناسه هویت مرکزی <input name="subject" required maxlength="200" /></label><label>نام نمایشی برای ورود <input name="displayName" maxlength="200" /></label>
+<label>سمت جدید <select name="positionId"></select></label><label>انتصاب قبلی برای جابه‌جایی <select name="previousAppointmentId"></select></label>
+<label>زمان مؤثر <input name="effectiveAt" type="datetime-local" required /></label><label>پایان انتصاب جدید <input name="endsAt" type="datetime-local" /></label>
+<label class="org-reason">دلیل <input name="reason" maxlength="1000" required /></label><button class="button primary" type="submit">ثبت درخواست</button>
+</form></section>
+<section class="panel org-history"><h3>درخواست‌ها و بررسی</h3><p class="muted">۱۰۰ درخواست اخیر؛ نسخه و وضعیت هر درخواست برای جلوگیری از بررسی هم‌زمان کنترل می‌شود.</p><div id="lifecycle-requests"></div></section>
+@if(Model.IsAdmin){
+<section class="panel org-editor"><h3>الگوی جدید دسترسی · PAP</h3><p class="muted">پیش‌نویس هیچ مجوزی اعطا نمی‌کند. انتشار توسط مدیر دوم انجام می‌شود. سیاست منتشرشده فعلاً فقط در شبیه‌سازی ارزیابی می‌شود.</p><form id="pattern-form">
+<label>نام الگو <input name="name" required maxlength="200" /></label><label>الگو <select name="template"><option value="role">نقش سازمانی و انتصاب فعال</option><option value="member-window">عضویت فعال و پنجره زمانی</option></select></label>
+<label>عملیات مجاز / ممنوع <select name="permission"></select></label><label>اثر <select name="effect"><option>Permit</option><option>Deny</option></select></label>
+<label>نقش <select name="roleId"></select></label><label>واحد عضو <select name="unitId"></select></label>
+<label>اعتبار از <input name="startsAt" type="datetime-local" /></label><label>اعتبار تا <input name="endsAt" type="datetime-local" /></label>
+<label>ساعت شروع روزانه UTC <input name="utcStartHour" type="number" min="0" max="23" /></label><label>ساعت پایان روزانه UTC <input name="utcEndHour" type="number" min="0" max="24" /></label>
+<label class="org-reason">دلیل تعریف <input name="reason" required maxlength="1000" /></label><button class="button primary">ذخیره پیش‌نویس</button>
+</form></section>}
+<section class="panel org-history"><h3>کاتالوگ الگوها</h3><p class="muted">ترکیب سیاست‌ها: deny-overrides. بازه اعتبار و انتصاب شامل شروع و غیرشامل پایان است؛ ساعت روزانه به UTC ارزیابی می‌شود.</p><div id="access-patterns"></div></section>
+<section class="panel org-editor"><h3>پنجره‌های تصمیم دسترسی · PDP</h3><div class="governance-points"><div><b>Subject · هویت</b><p>عضویت، نقش و واحد از اطلاعات ثبت‌شده</p></div><div><b>Resource · منبع</b><p>سازمان انتخاب‌شده</p></div><div><b>Action · عملیات</b><p>مجوز مورد درخواست</p></div><div><b>Environment · محیط</b><p>زمان ارزیابی و پنجره اعتبار</p></div></div><form id="decision-form"><label>هویت <input name="subject" value="@Model.Subject" readonly="@(!Model.IsAdmin)" required maxlength="200" /></label><label>عملیات <select name="permission"></select></label><label>زمان شبیه‌سازی <input name="at" type="datetime-local" /></label><button class="button secondary">شبیه‌سازی تصمیم</button></form><div id="access-decision" role="status" aria-live="polite"></div></section>
+<p class="muted">این پیاده‌سازی یک پروفایل محدود مبتنی بر مفاهیم XACML است؛ مفسر عمومی XML یا ادعای انطباق کامل استاندارد نیست. <a href="https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html" target="_blank" rel="noopener">مشخصات رسمی OASIS</a></p>
+</div>}
+@section Scripts {<script src="~/js/governance.js" asp-append-version="true" defer></script>}

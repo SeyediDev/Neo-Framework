@@ -102,5 +102,19 @@ public sealed class FabricDatabase : IDisposable
         while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), DateTimeOffset.Parse(reader.GetString(4), System.Globalization.CultureInfo.InvariantCulture)));
         return result.ToArray();
     });
+    public T[] TenantDocuments<T>(string kind, Guid tenant, int take = 100) => Documents<T>(kind, "json_extract(json,'$.TenantId')=$tenant", tenant.ToString(), null, take);
+    public T[] DueDocuments<T>(string kind, DateTimeOffset now, int take = 100) => Documents<T>(kind, "json_extract(json,'$.Status')='approved' AND julianday(json_extract(json,'$.Command.EffectiveAt'))<=julianday($now)", null, now.ToString("O"), take);
+    private T[] Documents<T>(string kind, string condition, string? tenant, string? now, int take) => WithConnection((connection, transaction) =>
+    {
+        if (take is < 1 or > 100) throw new ArgumentException("Invalid document limit.");
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT json FROM fabric_documents WHERE kind=$kind AND " + condition + " ORDER BY rowid DESC LIMIT $take";
+        command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$take", take);
+        if (tenant is not null) command.Parameters.AddWithValue("$tenant", tenant);
+        if (now is not null) command.Parameters.AddWithValue("$now", now);
+        using var reader = command.ExecuteReader(); var result = new List<T>();
+        while (reader.Read()) result.Add(JsonSerializer.Deserialize<T>(reader.GetString(0)) ?? throw new InvalidDataException());
+        return result.ToArray();
+    });
     public void Dispose() => context.Dispose();
 }

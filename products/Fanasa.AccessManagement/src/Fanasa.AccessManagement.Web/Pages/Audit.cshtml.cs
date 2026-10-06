@@ -20,7 +20,16 @@ public sealed class AuditModel(IAccessManagement access, FabricDatabase database
         ("TenantSubscribed", "tenancy.read", "ثبت اشتراک"),
         ("TenantGrantChanged", "tenancy.read", "تغییر مجوز سازمانی"),
         ("TenantMembershipChanged", "tenancy.read", "تغییر وضعیت عضویت"),
-        ("TenantSubscriptionChanged", "tenancy.read", "تغییر وضعیت اشتراک")];
+        ("TenantSubscriptionChanged", "tenancy.read", "تغییر وضعیت اشتراک"),
+        ("PolicyDrafted", "tenancy.read", "تعریف پیش‌نویس سیاست"),
+        ("PolicyPublished", "tenancy.read", "انتشار سیاست"),
+        ("PolicyRetired", "tenancy.read", "بازنشستگی سیاست"),
+        ("AccessDecisionApplied", "tenancy.read", "ثبت تصمیم دسترسی"),
+        ("LifecycleRequested", "tenancy.read", "ثبت درخواست چرخه هویت"),
+        ("LifecycleReviewed", "tenancy.read", "بررسی درخواست چرخه هویت"),
+        ("LifecycleCancelled", "tenancy.read", "لغو درخواست چرخه هویت"),
+        ("LifecycleApplied", "tenancy.read", "اعمال تغییر چرخه هویت"),
+        ("LifecycleFailed", "tenancy.read", "توقف اجرای درخواست هویت")];
     public Tenant[] Tenants { get; private set; } = [];
     public Guid? SelectedTenant { get; private set; }
     public string? SelectedKind { get; private set; }

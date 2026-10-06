@@ -128,6 +128,16 @@ public sealed class OrganizationStore
                     appointments.Add(new(Guid.NewGuid(), target.Id, command.Subject, start, command.To));
                     ValidateCapacity(target, appointments);
                     break;
+                case "appointment.transfer":
+                    var previousAppointment = appointments.SingleOrDefault(x => x.Id == command.Id && x.Subject == command.Subject) ?? throw new KeyNotFoundException();
+                    var transferAt = command.From ?? throw new ArgumentException("زمان انتقال الزامی است.");
+                    var nextPosition = positions.SingleOrDefault(x => x.Id == command.PositionId && x.Active) ?? throw new KeyNotFoundException();
+                    if (!access.GetUsers(tenant).Any(x => x.KeycloakSubject == command.Subject && x.IsActive) || nextPosition.Id == previousAppointment.PositionId || transferAt <= previousAppointment.From || previousAppointment.To.HasValue && transferAt >= previousAppointment.To || command.To.HasValue && command.To <= transferAt) throw new ArgumentException("انتقال معتبر نیست.");
+                    appointments[appointments.IndexOf(previousAppointment)] = previousAppointment with { To = transferAt };
+                    if (appointments.Any(x => x.PositionId == nextPosition.Id && x.Subject == command.Subject && transferAt < (x.To ?? DateTimeOffset.MaxValue) && x.From < (command.To ?? DateTimeOffset.MaxValue))) throw new ArgumentException("انتصاب هم‌پوشان وجود دارد.");
+                    appointments.Add(new(Guid.NewGuid(), nextPosition.Id, command.Subject!, transferAt, command.To));
+                    ValidateCapacity(nextPosition, appointments);
+                    break;
                 case "appointment.end":
                     var appointment = appointments.SingleOrDefault(x => x.Id == command.Id) ?? throw new KeyNotFoundException();
                     var end = command.To ?? throw new ArgumentException("زمان پایان الزامی است.");

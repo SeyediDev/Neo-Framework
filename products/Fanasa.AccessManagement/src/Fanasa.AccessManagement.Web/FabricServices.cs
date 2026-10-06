@@ -22,6 +22,10 @@ public static class FabricServices
             configuration.GetValue("Organization:RequireSubscription", !environment.IsDevelopment()), sp.GetRequiredService<FabricDatabase>(),
             configuration.GetValue("Organization:MeterChanges", false) ? sp.GetRequiredService<AccountingStore>() : null)));
         services.AddTransient<IClaimsTransformation, FabricClaimsTransformation>();
+        // Governance authoring/simulation only. Live enforcement and scheduled execution are not enabled here.
+        services.AddSingleton<Governance.AccessPolicyStore>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddSingleton<Governance.IdentityLifecycle>();
         var paymentOptions = configuration.GetSection("Payments:Zarinpal").Get<Payments.ZarinpalOptions>() ?? new();
         if (paymentOptions.Enabled)
         {

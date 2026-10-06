@@ -51,6 +51,9 @@ static class TestPreview
         builder.Services.AddSingleton(access); builder.Services.AddSingleton(registry); builder.Services.AddTransient<IClaimsTransformation, FabricClaimsTransformation>();
         builder.Services.AddSingleton(new Fanasa.AccessManagement.Web.Payments.ZarinpalOptions { Enabled = true, Sandbox = true, MerchantId = Guid.NewGuid().ToString(), CallbackUrl = "https://preview.example/api/payments/zarinpal/callback" });
         builder.Services.AddSingleton(database);
+        builder.Services.AddSingleton<Fanasa.AccessManagement.Web.Governance.AccessPolicyStore>();
+        builder.Services.AddSingleton(TimeProvider.System);
+        builder.Services.AddSingleton<Fanasa.AccessManagement.Web.Governance.IdentityLifecycle>();
         builder.Services.AddSingleton<Fanasa.AccessManagement.Web.Payments.IZarinpalGateway, PreviewPaymentGateway>();
         builder.Services.AddTransient<Fanasa.AccessManagement.Web.Payments.ZarinpalPayments>();
         builder.Services.AddRazorPages(); builder.Services.AddControllers(options => options.Filters.Add<Fanasa.AccessManagement.Web.Api.AccessBoundaryFilter>());
