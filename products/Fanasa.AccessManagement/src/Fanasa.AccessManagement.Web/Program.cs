@@ -8,6 +8,13 @@ var isDevelopment = builder.Environment.IsDevelopment();
 builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/"));
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IAccessManagement, InMemoryAccessManagement>();
+builder.Services.AddSingleton(sp => new Fanasa.AccessManagement.Web.Organization.OrganizationStore(
+    builder.Configuration["Organization:DataDirectory"] ?? Path.Combine(builder.Environment.ContentRootPath, "App_Data", "organization"),
+    sp.GetRequiredService<IAccessManagement>(), builder.Configuration.GetValue("Organization:RequireSubscription", !isDevelopment)));
+builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+builder.Services.AddSingleton(sp => new Fanasa.AccessManagement.Web.Accounting.AccountingStore(
+    builder.Configuration["Accounting:DataDirectory"] ?? Path.Combine(builder.Environment.ContentRootPath, "App_Data", "accounting"),
+    sp.GetRequiredService<IAccessManagement>()));
 builder.Services.AddAuthentication(options => { options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme; })
  .AddCookie(options => { options.Cookie.Name = "fanasa.access.session"; options.Cookie.HttpOnly = true; options.Cookie.SecurePolicy = isDevelopment ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always; options.Cookie.SameSite = SameSiteMode.Lax; options.LoginPath = "/login"; options.LogoutPath = "/logout"; })
  .AddOpenIdConnect(options =>

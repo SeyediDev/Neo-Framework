@@ -1,0 +1,23 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.AccountingModel
+@{ ViewData["Title"] = "اکانتینگ و صورتحساب"; }
+<link rel="stylesheet" href="~/css/organization.css" asp-append-version="true" />
+<section class="org-hero"><div><span class="eyebrow">USAGE ACCOUNTING</span><h2>مصرف شفاف، پرداخت منعطف</h2><p>پرداخت بر اساس مصرف با کیف اعتبار، یا پس‌پرداخت دوره‌ای با سقف اعتبار.</p></div><span class="pill teal">Pay as you go · Postpaid</span></section>
+@if (!Model.SelectedTenant.HasValue){<section class="panel empty-state"><h2>حساب مجاز برای نمایش وجود ندارد</h2><p>دسترسی مشاهده اکانتینگ سازمان لازم است.</p></section>}
+else {
+<div id="accounting-app" data-tenant="@Model.SelectedTenant">
+@Html.AntiForgeryToken()
+<div class="org-toolbar"><form method="get"><label>سازمان <select name="tenant" onchange="this.form.submit()">@foreach(var tenant in Model.Tenants){<option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option>}</select></label></form><button class="button secondary" id="billing-refresh">بارگذاری مجدد</button><span id="billing-mode" class="pill blue"></span></div>
+<p id="billing-message" role="status" aria-live="polite"></p><div id="billing-metrics" class="metrics"></div>
+@if(Model.CanWrite){<section class="panel org-editor"><h3>مدیریت حساب</h3><form id="billing-command">
+<label>عملیات <select name="operation"><option value="configure">تنظیم مدل و سقف اعتبار</option><option value="tariff">تعرفه شاخص مصرف</option><option value="credit">ثبت شارژ تأییدشده</option><option value="invoice">صدور صورتحساب دوره بسته</option><option value="payment">ثبت تسویه تأییدشده</option></select></label>
+<label>مدل <select name="mode"><option value="payg">پرداخت بر اساس مصرف</option><option value="postpaid">پس‌پرداخت</option></select></label>
+<label>ارز <select name="currency"><option value="IRR">ریال</option><option value="USD">دلار</option><option value="EUR">یورو</option></select></label>
+<label>سقف اعتبار <input type="number" min="0" step="0.01" name="creditLimit" value="0" /></label>
+<label>کلید محصول <input name="productKey" placeholder="کلید محصول ثبت‌شده" /></label><label>شاخص مصرف <input name="metric" placeholder="organization.unit-month" /></label><label>تعرفه هر واحد <input name="unitPrice" type="number" min="0" step="0.000001" /></label>
+<label>مبلغ <input name="amount" type="number" min="0" step="0.01" /></label><label>دوره میلادی <input name="period" type="month" /></label><label>صورتحساب <select name="invoiceId"></select></label>
+<label class="org-reason">مرجع / دلیل <input name="reference" required maxlength="1000" placeholder="مرجع تأیید پرداخت یا تصمیم تعرفه" /></label><button class="button primary" type="submit">ثبت</button>
+</form></section>}
+<section class="panel org-history"><h3>تعرفه‌های فعال</h3><div id="billing-tariffs"></div></section><section class="panel org-history"><h3>صورتحساب‌های ماهانه</h3><div id="billing-invoices"></div></section><section class="panel org-history"><h3>دفتر مصرف و پرداخت</h3><ol id="billing-ledger"></ol></section>
+</div>}
+@section Scripts {<script src="~/js/accounting.js" asp-append-version="true" defer></script>}

@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj" />
+  <Project Path="tests/Organization.Tests/Organization.Tests.csproj" />
 </Solution>

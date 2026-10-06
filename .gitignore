@@ -68,6 +68,7 @@ TestResults/
 
 # Node (for any frontend tools)
 node_modules/
+products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/App_Data/
 
 
 

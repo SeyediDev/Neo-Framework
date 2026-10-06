@@ -1,0 +1,34 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.OrganizationModel
+@{ ViewData["Title"] = "استودیو ساختار سازمانی"; }
+<link rel="stylesheet" href="~/css/organization.css" asp-append-version="true" />
+<section class="org-hero"><div><span class="eyebrow">ORGANIZATION FABRIC</span><h2>ساختار روشن، مسئولیت مشخص</h2><p>واحدها، سمت‌ها و انتصاب‌ها را در یک نمای زنده مدیریت کنید.</p></div><span class="pill teal">سرویس سازمانی چندمستاجری</span></section>
+@if (!Model.SelectedTenant.HasValue)
+{
+    <section class="panel empty-state"><h2>سازمان مجاز برای نمایش وجود ندارد</h2><p>دسترسی خواندن ساختار سازمانی باید برای سازمان شما ثبت شود.</p></section>
+}
+else
+{
+<div id="organization-app" data-tenant="@Model.SelectedTenant" data-write="@Model.CanWrite.ToString().ToLowerInvariant()">
+    @Html.AntiForgeryToken()
+    <div class="org-toolbar"><form method="get"><label>سازمان <select name="tenant" onchange="this.form.submit()">@foreach(var tenant in Model.Tenants){<option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option>}</select></label></form><label>جست‌وجو <input id="org-search" type="search" placeholder="نام یا کد واحد" /></label><button class="button secondary" id="org-refresh">بارگذاری مجدد</button><span id="org-revision" class="pill blue"></span></div>
+    <p id="org-message" role="status" aria-live="polite"></p>
+    <div class="metrics" id="org-metrics"></div>
+    <div class="org-workspace"><section class="panel org-chart-panel"><div class="panel-heading"><h3>نقشه سازمان</h3><div><button class="button secondary" id="zoom-out" aria-label="کوچک‌نمایی">−</button><button class="button secondary" id="zoom-reset">۱۰۰٪</button><button class="button secondary" id="zoom-in" aria-label="بزرگ‌نمایی">+</button></div></div><div class="org-viewport"><div id="org-tree" role="tree" aria-label="چارت سازمانی"></div></div></section><aside class="panel" id="org-detail"><h3>جزئیات واحد</h3><p class="muted">یک واحد را روی نمودار انتخاب کنید.</p></aside></div>
+    @if(Model.CanWrite){
+    <section class="panel org-editor"><h3>ثبت تغییر سازمانی</h3><p class="muted">هر تغییر همراه با دلیل، عامل و نسخه ثبت می‌شود.</p><form id="org-command">
+        <label>عملیات <select name="operation"><option value="unit.save">ثبت / ویرایش / انتقال واحد</option><option value="unit.archive">بایگانی واحد</option><option value="role.save">تعریف / ویرایش نقش سازمانی</option><option value="position.save">ثبت / ویرایش سمت سازمانی</option><option value="position.archive">بایگانی سمت</option><option value="appointment.add">انتصاب عضو</option><option value="appointment.end">خاتمه انتصاب</option></select></label>
+        <label>رکورد موجود <select name="id"><option value="">رکورد جدید</option></select></label>
+        <label>نام <input name="name" maxlength="200" /></label><label>کد <input name="code" maxlength="80" /></label>
+        <label>واحد والد <select name="parentId"><option value="">ریشه سازمان</option></select></label>
+        <label>نوع واحد <select name="kind"><option value="department">اداره</option><option value="division">معاونت</option><option value="team">تیم</option><option value="branch">شعبه</option></select></label>
+        <label>واحد سمت <select name="unitId"></select></label><label>ظرفیت سمت <input name="capacity" type="number" value="1" min="1" max="10000" /></label>
+        <label>نقش سازمانی سمت <select name="roleId"></select></label>
+        <label>سمت انتصاب <select name="positionId"></select></label><label>شناسه هویت عضو <input name="subject" placeholder="شناسه پایدار عضو سازمان" /></label>
+        <label>شروع <input name="from" type="datetime-local" /></label><label>پایان <input name="to" type="datetime-local" /></label>
+        <label class="org-reason">دلیل تغییر <input name="reason" required maxlength="1000" /></label><button class="button primary" type="submit">ثبت تغییر</button>
+    </form></section>}
+    <section class="panel org-history"><div class="panel-heading"><h3>مسیر تغییرات</h3><label>نمایش نسخه <select id="org-history"><option value="">نسخه جاری</option></select></label></div><p class="muted">نسخه‌های پیشین فقط برای مشاهده هستند.</p><ol id="org-timeline"></ol></section>
+</div>
+}
+@section Scripts {<script src="~/js/organization.js" asp-append-version="true" defer></script>}
