@@ -9,6 +9,7 @@
 
 .login-pf body.fanasa-body {
   margin:0;
+  padding:0;
   min-height:100vh;
   height:auto;
   background:var(--fanasa-chalk);
@@ -40,8 +41,10 @@
 }
 
 .fanasa-body .pf-v5-c-login {
+  box-sizing:border-box;
   min-height:100vh;
-  padding:40px 20px;
+  min-height:100dvh;
+  padding:24px 20px;
   background:transparent;
   position:relative;
   z-index:1
@@ -50,18 +53,21 @@
 .fanasa-body .pf-v5-c-login__container {
   display:grid;
   grid-template-columns:minmax(0,460px);
+  grid-template-rows:auto auto;
   grid-template-areas:'header' 'main';
-  gap:24px;
+  gap:18px;
   width:100%;
   max-width:460px;
-  margin:auto
+  margin:0
 }
 
 #kc-header {
+  margin:0;
   padding:0;
   text-align:center
 }
 #kc-header-wrapper {
+  padding:0;
   font-size:0;
   letter-spacing:0;
   color:var(--fanasa-ink)!important
@@ -71,7 +77,7 @@
   display:block;
   width:186px;
   height:68px;
-  margin:17px auto;
+  margin:0 auto 10px;
   object-fit:contain
 }
 
@@ -248,4 +254,14 @@ html[lang='en'] #kc-header-wrapper::after {
 }
 .fanasa-body .pf-v5-c-login__container {
   padding: 0;
+}
+
+/* Keep short desktop viewports usable without clipping longer login flows. */
+@media (max-height:720px) {
+  .fanasa-body .pf-v5-c-login { padding-block:16px; }
+  .fanasa-body .pf-v5-c-login__container { gap:14px; }
+  #kc-header-wrapper .fanasa-logo { width:164px; height:60px; }
+  .fanasa-body .pf-v5-c-login__main-header { padding-block:20px 10px; }
+  .fanasa-body .pf-v5-c-login__main-body { padding-block:8px 20px; }
+  .fanasa-body .pf-v5-c-form { gap:18px; }
 }

@@ -1,0 +1,5 @@
+services:
+  keycloak:
+    environment:
+      KC_HOSTNAME: ${KEYCLOAK_PUBLIC_URL:?set KEYCLOAK_PUBLIC_URL}
+      KC_HOSTNAME_STRICT: "true"

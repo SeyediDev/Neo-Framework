@@ -1,0 +1,28 @@
+/* Separate asset invalidates the previous Keycloak static-resource cache. */
+.login-pf body.fanasa-body { margin:0; padding:0; }
+.fanasa-body .pf-v5-c-login {
+  box-sizing:border-box;
+  min-height:100vh;
+  min-height:100dvh;
+  padding:24px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.fanasa-body .pf-v5-c-login__container {
+  grid-template-rows:auto auto;
+  gap:18px;
+  margin:0;
+  padding:0;
+}
+.fanasa-body #kc-header { margin:0; padding:0; }
+.fanasa-body #kc-header-wrapper { padding:0; }
+.fanasa-body #kc-header-wrapper .fanasa-logo { margin:0 auto 10px; }
+@media (max-height:720px) {
+  .fanasa-body .pf-v5-c-login { padding-block:16px; }
+  .fanasa-body .pf-v5-c-login__container { gap:14px; }
+  .fanasa-body #kc-header-wrapper .fanasa-logo { width:164px; height:60px; }
+  .fanasa-body .pf-v5-c-login__main-header { padding-block:20px 10px; }
+  .fanasa-body .pf-v5-c-login__main-body { padding-block:8px 20px; }
+  .fanasa-body .pf-v5-c-form { gap:18px; }
+}

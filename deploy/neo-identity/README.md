@@ -12,6 +12,23 @@ This stack provides the independent identity boundary for Fanasa SaaS:
 
 ## Install on the VPS
 
+Source of truth: `https://github.com/SeyediDev/Neo-Framework`, branch `develop`,
+directory `deploy/neo-identity`. Keep a sparse checkout on the server at
+`/opt/neo-framework`; deploy the theme from that checkout, not an untracked
+local file. Preserve `.env` and backups outside Git. The HTTPS override is
+versioned as `compose.https.yml`; set `KEYCLOAK_PUBLIC_URL` in the server `.env`.
+Store the installed Git commit in `/opt/neo-identity/deployed-revision`.
+
+```sh
+git clone --filter=blob:none --sparse --branch develop https://github.com/SeyediDev/Neo-Framework.git /opt/neo-framework
+git -C /opt/neo-framework sparse-checkout set deploy/neo-identity
+```
+
+The compact login layout is loaded from `css/layout-v2.css` to avoid serving the
+old layout from Keycloak's gzip cache. Verify the rendered page's scroll height
+at a 1366×636 viewport after deployment; do not hide vertical overflow, since
+MFA and error pages may legitimately need scrolling.
+
 Copy this directory to `/opt/neo-identity`, create a mode `0600` `.env`, and run:
 
 ```sh
