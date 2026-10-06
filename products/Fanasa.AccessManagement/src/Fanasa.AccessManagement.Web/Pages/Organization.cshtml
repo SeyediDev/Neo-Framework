@@ -28,6 +28,7 @@ else
         <label>شروع <input name="from" type="datetime-local" /></label><label>پایان <input name="to" type="datetime-local" /></label>
         <label class="org-reason">دلیل تغییر <input name="reason" required maxlength="1000" /></label><button class="button primary" type="submit">ثبت تغییر</button>
     </form></section>}
+    <section class="panel org-history"><div class="panel-heading"><h3>مقایسه نسخه‌های ساختار</h3></div><form id="org-compare" class="org-toolbar"><label>از نسخه <select id="org-compare-from"></select></label><label>تا نسخه <select id="org-compare-to"></select></label><button type="submit" class="button secondary">مقایسه تغییرات</button></form><p id="org-compare-status" role="status" aria-live="polite"></p><div id="org-compare-results"></div><button type="button" class="button secondary" id="org-compare-more" hidden>تغییرات بیشتر</button></section>
     <section class="panel org-history"><div class="panel-heading"><h3>مسیر تغییرات</h3><label>نمایش نسخه <select id="org-history"><option value="">نسخه جاری</option></select></label></div><p class="muted">نسخه‌های پیشین فقط برای مشاهده هستند.</p><ol id="org-timeline"></ol></section>
 </div>
 }

@@ -96,6 +96,7 @@ try
     FabricStartupTests.Run(directory, Check);
     RecoveryTests.Run(directory, Check);
     AuditTests.Run(directory, Check);
+    ComparisonTests.Run(directory, Check);
     Console.WriteLine($"{count} checks passed.");
 }
 finally { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }

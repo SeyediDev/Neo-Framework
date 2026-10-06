@@ -7,6 +7,22 @@ namespace Fanasa.AccessManagement.Web.Api;
 [ApiController, Authorize, Route("api/organization/tenants/{tenantId:guid}")]
 public sealed class OrganizationApi(OrganizationStore store) : ControllerBase
 {
+    [HttpGet("compare")]
+    public IActionResult Compare(Guid tenantId, [FromQuery] long from, [FromQuery] long to, [FromQuery] int offset = 0)
+    {
+        if (!OrgAuthorization.Allows(User, tenantId, false)) return Forbid();
+        if (from < 0 || to < from || offset < 0) return BadRequest();
+        try
+        {
+            // Read first so even a comparison against the empty baseline enforces the subscription gate.
+            var current = store.Read(tenantId);
+            if (to > current.Revision) return NotFound();
+            OrgState At(long revision) => revision == 0 ? new(tenantId, 0, [], [], [], [], []) : store.History(tenantId, revision);
+            return Ok(OrganizationComparison.Compare(At(from), At(to), offset));
+        }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (UnauthorizedAccessException) { return Forbid(); }
+    }
     [HttpGet]
     public IActionResult Read(Guid tenantId, [FromQuery] long? revision)
     {

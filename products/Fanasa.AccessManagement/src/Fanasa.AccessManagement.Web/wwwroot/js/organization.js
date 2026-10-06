@@ -22,7 +22,24 @@
   const ul=node('ul',null,'org-roots');ul.append(...active.filter(x=>!x.parentId&&visible.has(x.id)).map(branch));tree.append(ul);if(!visible.size)tree.append(node('p',query?'واحدی پیدا نشد.':'اولین واحد سازمانی را ثبت کنید.','muted org-empty'));
  }
  function render(){const now=Date.now();$('org-revision').textContent='نسخه '+state.revision.toLocaleString('fa-IR');$('org-metrics').replaceChildren(...[['واحد فعال',state.units.filter(x=>x.active).length],['سمت سازمانی',state.positions.filter(x=>x.active).length],['انتصاب جاری',state.appointments.filter(x=>new Date(x.from)<=now&&(!x.to||new Date(x.to)>now)).length],['نسخه ساختار',state.revision]].map(([label,value])=>{const c=node('div',null,'metric accent');c.append(node('span',label),node('strong',value.toLocaleString('fa-IR')));return c;}));chart();detail();editor();$('org-timeline').replaceChildren(...[...state.changes].reverse().map(c=>{const li=node('li');li.append(node('b',names[c.operation]||c.operation),node('p',c.reason),node('small',date(c.recordedAt)+' · '+c.actor+' · نسخه '+c.revision));return li;}));}
- async function load(){try{current=await request(endpoint);state=current;options($('org-history'),current.changes.map(x=>({id:String(x.revision),name:'نسخه '+x.revision})),'نسخه جاری');$('org-history').value='';render();message('ساختار به‌روز است.');}catch(e){message(e.message,true);}}
+ let comparisonGeneration=0, comparisonOffset=null, comparisonRange;
+ const entityNames={unit:'واحد',role:'نقش',position:'سمت',appointment:'انتصاب'},changeNames={added:'افزوده‌شده',removed:'حذف‌شده',changed:'تغییریافته'};
+ const fieldNames={Name:'نام',Code:'کد',ParentId:'واحد والد',Kind:'نوع',Active:'وضعیت فعال',UnitId:'واحد',Capacity:'ظرفیت',RoleId:'نقش',PositionId:'سمت',Subject:'شناسه هویت',From:'شروع',To:'پایان'};
+ function resetComparison(){comparisonGeneration++;comparisonOffset=null;comparisonRange=null;$('org-compare-results').replaceChildren();$('org-compare-status').textContent='';$('org-compare-more').hidden=true;}
+ function comparisonOptions(){resetComparison();const entries=[{id:'0',name:'نسخه ۰ · ساختار خالی'},...current.changes.map(x=>({id:String(x.revision),name:'نسخه '+x.revision}))];options($('org-compare-from'),entries);options($('org-compare-to'),entries);$('org-compare-from').value=String(Math.max(0,current.revision-1));$('org-compare-to').value=String(current.revision);}
+ async function compare(append=false){
+  const from=Number($('org-compare-from').value),to=Number($('org-compare-to').value);
+  if(from>to){$('org-compare-status').textContent='نسخه آغاز باید کوچک‌تر یا مساوی نسخه پایان باشد.';return;}
+  if(!append){resetComparison();comparisonRange={from,to};}if(!comparisonRange)return;
+  const generation=comparisonGeneration,button=$('org-compare').querySelector('[type=submit]'),more=$('org-compare-more');button.disabled=true;more.disabled=true;
+  try{const result=await request(endpoint+'/compare?from='+comparisonRange.from+'&to='+comparisonRange.to+'&offset='+(append?comparisonOffset:0));if(generation!==comparisonGeneration)return;
+   $('org-compare-status').textContent=result.total?result.total.toLocaleString('fa-IR')+' رکورد تغییر کرده است.':'بین این دو نسخه تغییری وجود ندارد.';
+   for(const change of result.changes){const card=node('article',null,'org-position');card.append(node('h4',(entityNames[change.entity]||change.entity)+' · '+change.name),node('span',changeNames[change.change]||change.change,'pill blue'));for(const field of change.fields){const line=node('p');line.append(node('b',(fieldNames[field.field]||field.field)+': '),node('bdi',field.before??'—'),node('span',' ← '),node('bdi',field.after??'—'));card.append(line);}$('org-compare-results').append(card);}
+   comparisonOffset=result.nextOffset;more.hidden=comparisonOffset==null;
+  }catch(e){if(generation===comparisonGeneration)$('org-compare-status').textContent=e.message;}finally{button.disabled=false;more.disabled=false;}
+ }
+ $('org-compare').onsubmit=e=>{e.preventDefault();compare();};$('org-compare-more').onclick=()=>compare(true);$('org-compare-from').onchange=resetComparison;$('org-compare-to').onchange=resetComparison;
+ async function load(){try{current=await request(endpoint);state=current;comparisonOptions();options($('org-history'),current.changes.map(x=>({id:String(x.revision),name:'نسخه '+x.revision})),'نسخه جاری');$('org-history').value='';render();message('ساختار به‌روز است.');}catch(e){message(e.message,true);}}
  $('org-search').oninput=()=>{if(state)chart();};$('org-refresh').onclick=load;
  $('org-history').onchange=async()=>{try{state=$('org-history').value?await request(endpoint+'?revision='+$('org-history').value):current;render();message(state===current?'نسخه جاری':'نسخه پیشین؛ ثبت تغییر غیرفعال است.');}catch(e){message(e.message,true);}};
  function scale(delta){zoom=Math.max(.5,Math.min(1.5,zoom+delta));$('org-tree').style.zoom=zoom;$('zoom-reset').textContent=Math.round(zoom*100).toLocaleString('fa-IR')+'٪';}
