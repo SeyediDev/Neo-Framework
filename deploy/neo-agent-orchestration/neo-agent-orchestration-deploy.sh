@@ -34,11 +34,11 @@ rm -f -- "$archive"
 
 systemctl daemon-reload
 for unit in api web worker; do
-  systemctl restart "neo-agent-orchestration-$unit@$environment.service"
+  systemctl restart "fanasa-agentic-$unit@$environment.service"
 done
 for unit in api web worker; do
-  systemctl is-active --quiet "neo-agent-orchestration-$unit@$environment.service" || {
-    journalctl -u "neo-agent-orchestration-$unit@$environment.service" -n 80 --no-pager >&2 || true
+  systemctl is-active --quiet "fanasa-agentic-$unit@$environment.service" || {
+    journalctl -u "fanasa-agentic-$unit@$environment.service" -n 80 --no-pager >&2 || true
     exit 1
   }
 done

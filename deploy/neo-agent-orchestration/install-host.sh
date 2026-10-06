@@ -15,9 +15,9 @@ install -m 0755 neo-agent-orchestration-deploy.sh /usr/local/sbin/neo-agent-orch
 install -m 0755 neo-deploy-shell /usr/local/sbin/neo-deploy-shell
 usermod -d /home/neo-deploy -s /usr/local/sbin/neo-deploy-shell neo-deploy
 install -d -m 0700 -o neo-deploy -g neo-deploy /home/neo-deploy/.ssh
-install -m 0644 neo-agent-orchestration-api@.service /etc/systemd/system/neo-agent-orchestration-api@.service
-install -m 0644 neo-agent-orchestration-web@.service /etc/systemd/system/neo-agent-orchestration-web@.service
-install -m 0644 neo-agent-orchestration-worker@.service /etc/systemd/system/neo-agent-orchestration-worker@.service
+install -m 0644 neo-agent-orchestration-api@.service /etc/systemd/system/fanasa-agentic-api@.service
+install -m 0644 neo-agent-orchestration-web@.service /etc/systemd/system/fanasa-agentic-web@.service
+install -m 0644 neo-agent-orchestration-worker@.service /etc/systemd/system/fanasa-agentic-worker@.service
 cat >/etc/sudoers.d/neo-agent-orchestration <<'EOF'
 neo-deploy ALL=(root) NOPASSWD: /usr/local/sbin/neo-agent-orchestration-deploy
 EOF

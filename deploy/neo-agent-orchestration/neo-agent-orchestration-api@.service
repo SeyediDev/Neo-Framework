@@ -1,5 +1,5 @@
 [Unit]
-Description=Neo Agent Orchestration API (%i)
+Description=Fanasa Agentic API (%i)
 After=network-online.target
 Wants=network-online.target
 

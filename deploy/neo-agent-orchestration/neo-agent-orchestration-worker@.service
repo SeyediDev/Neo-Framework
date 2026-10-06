@@ -1,6 +1,6 @@
 [Unit]
-Description=Neo Agent Orchestration Worker (%i)
-After=network-online.target neo-agent-orchestration-api@%i.service
+Description=Fanasa Agentic Worker (%i)
+After=network-online.target fanasa-agentic-api@%i.service
 Wants=network-online.target
 
 [Service]

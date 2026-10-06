@@ -5,6 +5,12 @@ The GitHub workflow deploys verified local bundles only:
 - `develop` → `development`
 - `master` → `production`
 
+Runtime units use the Fanasa product identity and role names:
+`fanasa-agentic-api`, `fanasa-agentic-web` and `fanasa-agentic-worker`.
+The source directory and .NET namespaces retain their implementation names for
+now; they are not public product names and are intentionally not duplicated in
+the systemd unit identity.
+
 Each environment has independent releases, systemd services and environment
 files. Activation is atomic through `current`; older releases remain available
 for rollback. The manifest is checked and bundles declaring credentials are
