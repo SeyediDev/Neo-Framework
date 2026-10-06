@@ -26,10 +26,11 @@
 - عملیات: `unit.save`, `unit.archive`, `role.save`, `position.save`,
   `position.archive`, `appointment.add`, `appointment.end`.
 
-سازمان از claim دقیق `tenant_id` و مجوز از claim `permission` خوانده می‌شود.
+مجوزهای دامنه در هر درخواست از عضویت فعال و grant پایدار خوانده می‌شوند.
+claim `tenant_permission` مقدار `{tenantGuid}:{permission}` دارد؛ claim قدیمی
+`tenant_id` همراه `permission` فقط برای نشست تک‌سازمانی پذیرفته می‌شود.
 خواندن نیازمند `organization.read`، تغییر نیازمند `organization.write` است.
-این claimها باید server-side از مرجع قابل اعتماد وارد session شوند؛ کاربر حق
-انتخاب claim ندارد. OIDC ممکن است `sub` را به NameIdentifier نگاشت کند.
+لغو grant در درخواست بعدی مؤثر است؛ اعطای grant فقط برای platform.admin است.
 POST با cookie نشست و antiforgery header `X-CSRF-TOKEN` انجام می‌شود.
 خطای ورودی ۴۰۰، نبود رکورد ۴۰۴، مجوز/اشتراک نامعتبر ۴۰۳ و تعارض نسخه ۴۰۹ است.
 
@@ -63,31 +64,42 @@ Pay as you go محور قیمت‌گذاری مصرفی است؛ در این MVP
 بدهی جاری شامل مصرف صورتحساب‌نشده است و سقف اعتبار پیش از ثبت مصرف کنترل می‌شود.
 پایان دوره به UTC و ماه میلادی است؛ مصرف به زمان ثبت سرور منظور می‌شود.
 مصرف دیررس، backdating، مالیات، تخفیف، credit note، تعرفه پلکانی، هزینه ثابت،
-تبدیل ارز، دفترکل دوبل، درگاه بانکی و صورتحساب قانونی در این نسخه وجود ندارند.
+تبدیل ارز، دفترکل دوبل و صورتحساب قانونی در این نسخه وجود ندارند.
+درگاه زرین‌پال برای حساب ریالی اضافه شده است؛ تنظیمات و وضعیت‌های تطبیق در
+[ZARINPAL.md](ZARINPAL.md) آمده‌اند. درگاه پیش‌فرض خاموش است.
 این دفتر «اکانتینگ مصرف سرویس» است؛ دفترکل قانونی باید با سرویس مالی یکپارچه شود.
 
-شاخص‌های پیشنهادی سازمان: `organization.unit-month`, `organization.position-month`,
-`organization.appointment-month`, `organization.change`؛ worker اندازه‌گیری و
-outbox هنوز پیاده نشده‌اند. ثبت تغییر سازمانی و billing اکنون دو تراکنش مستقل‌اند؛
-وصل‌کردن مستقیم آن‌ها بدون outbox ممکن است ثبت مالی ناقص ایجاد کند.
+با `Organization:MeterChanges=true` شاخص `organization.change` به‌صورت داخلی
+ثبت می‌شود. تغییر چارت، تاریخچه، مصرف و outbox یک تراکنش SQLite دارند؛
+ناکافی‌بودن اعتبار کل تغییر را rollback می‌کند. قیمت واحد در دفتر snapshot می‌شود.
+کلید داخلی `organization:{tenant}:{revision}` از API عمومی قابل استفاده نیست.
+`OrgCommand.requestId` برای retry بدون هزینه تکراری است؛ actor یا payload
+متفاوت با همان شناسه تعارض دارد. اندازه‌گیری ماهانه و dispatcher بیرونی
+outbox هنوز وجود ندارند.
 
 ## persistence و حدود استقرار
 
-آداپتورهای جدید تک‌میزبان هستند: JSON هر tenant، lock درون پردازش، flush فایل
-موقت و rename اتمیک؛ snapshot هر نسخه سازمانی حفظ می‌شود. مسیرهای
-`Organization:DataDirectory` و `Accounting:DataDirectory` باید روی volume پایدار
-با ACL محدود و backup قرار گیرند. `App_Data` در git ignore است.
-history سازمان فقط تا revision منتشرشده خوانده می‌شود؛ فایل آماده‌شده پیش از
-شکست commit به کاربر نشان داده نمی‌شود. audit عامل، دلیل، زمان و snapshot دارد؛
-tamper-proof نیست. چند پردازش روی یک مسیر فایل پشتیبانی نمی‌شود.
+SQLite با WAL و synchronous=FULL مرجع tenant، عضویت، پلن، اشتراک، grant، چارت،
+تاریخچه و حساب است. `Fabric:DataDirectory` پیش‌فرض `App_Data/fabric` دارد؛
+روی volume محلی پایدار با ACL محدود و backup قرار گیرد. چند اتصال محلی و تعارض
+نسخه آزموده شده‌اند؛ استقرار چندمیزبان و filesystem شبکه‌ای تأیید نشده‌اند.
+کاتالوگ از PlatformRegistry مرکزی موجود مصرف می‌شود. SQL adapter قبلی فعال نیست.
+audit عامل، دلیل و زمان دارد و tamper-proof نیست.
 
-مرجع فعلی tenant/user/product هنوز در Program از InMemoryAccessManagement است؛
-تغییرات SQL قبلی موجود در workspace در این کار بازنویسی یا فعال نشده‌اند.
-بنابراین persistence جدید به معنی production-ready بودن کل سامانه نیست.
-پیش از SaaS عملیاتی: adapter پایدار عضویت/اشتراک، migration، کنترل tenant در
-APIهای قدیمی Access، outbox/inbox، billing worker، policy claims، backup/restore
-و آزمون واقعی SSO/دیتابیس ضروری‌اند. APIهای قدیمی فعلاً فقط authenticated هستند
-و باید جداگانه سخت‌سازی شوند؛ endpointهای جدید مجوز صریح دارند.
+صفحه `/Tenancy` اعضا، پلن، اشتراک، تعلیق/تمدید و grant/revoke را پوشش می‌دهد.
+سقف seat و سازگاری ارز/مدل حساب با پلن فعال کنترل می‌شوند. پلن با هزینه ثابت
+یا اعتبار مشمول غیرصفر فعلاً رد می‌شود. قطع عضویت grantهای دامنه را منقضی،
+انتصاب جاری را خاتمه و انتصاب آینده را لغو می‌کند؛ تاریخچه محفوظ و اقدام امنیتی
+بدون هزینه است. فعال‌سازی مجدد grant دامنه را برنمی‌گرداند. دسترسی developer
+نیز در رجیستری به عضویت فعال وابسته است؛ grant آن در همان رجیستری مدیریت می‌شود.
+APIهای tenancy دارای مجوز صریح و CSRF هستند. filter روی APIهای قدیمی Access
+محدوده tenant و antiforgery را اعمال می‌کند؛ عملیات global به platform.admin
+محدود است و metadata محصول به policy رجیستری مرکزی واگذار می‌شود.
+
+startup برای JSON منتقل‌نشده متوقف می‌شود. پس از backup و provision هویت tenant
+از مرجع معتبر، `Fabric:ImportLegacyOnStartup=true` انتقال تراکنشی را فعال می‌کند.
+منبع حذف و مقصد overwrite نمی‌شود. آزمون واقعی SSO، restore عملیاتی، dispatcher،
+پرداخت واقعی پذیرنده و استقرار نهایی هنوز نیازمند تأیید عملیاتی‌اند.
 
 ## تجربه بصری و برند
 
@@ -101,7 +113,7 @@ RTL، responsive، focus قابل مشاهده و prefers-reduced-motion رعا�
 
 ## اعتبارسنجی
 
-نتیجه این اجرا: ۳۱ بررسی رفتاری پاس شد؛ build بدون warning/error و syntax check
+نسخه نخست: ۳۱ بررسی رفتاری پاس شد؛ build بدون warning/error و syntax check
 هر دو فایل JavaScript موفق بود. در میزبان fixture، ثبت واحد از رابط با CSRF
 معتبر انجام شد و POST بدون token با ۴۰۰ رد شد. نسخه تاریخی دکمه ثبت را غیرفعال
 کرد. صفحات Organization و Accounting در مرورگر بررسی شدند؛ سرریز کل صفحه در
@@ -112,6 +124,17 @@ RTL، responsive، focus قابل مشاهده و prefers-reduced-motion رعا�
 اعتبار، صدور و تسویه صورتحساب را اجرا می‌کند. `--preview` میزبان fixture روی
 127.0.0.1:5198 برای بررسی صفحات واقعی Razor می‌سازد؛ هویت آن فقط در assembly
 آزمون است، به host محصول اضافه نشده و هیچ داده مشتری را مصرف نمی‌کند.
+
+ادامه توسعه: ۱۰۶ بررسی رفتاری برای تراکنش مشترک، restart، grants، offboarding،
+startup/migration و پرداخت پاس شد. آزمون HTTP در fixture، مبلغ رشته‌ای ریالی،
+callback عمومی با تأیید سروری، replay بدون شارژ دوباره و رد POST بدون CSRF
+در پرداخت و Access قدیمی را تأیید کرد. مسیر استعلام و تطبیق جدید نیز از HTTP
+با verify، replay بدون شارژ تکراری و رد درخواست بدون CSRF آزموده شد؛ بررسی
+بصری دکمه جدید به علت timeout ابزار مرورگر تکمیل نشد.
+ثبت عضو، پلن و اشتراک و تعرفه ۱۲٫۷۵ از
+رابط انجام شد؛ صفحات SaaS و حساب در نمای ۴۷۲px بدون سرریز کل صفحه بودند.
+request به sandbox واقعی کد 100 داد؛ verify واقعی و پرداخت بانکی عملیاتی هنوز
+تأیید نشده‌اند. درگاه fixture بدل است و به شبکه پرداخت وصل نمی‌شود.
 
 ## منابع معماری بررسی‌شده
 
@@ -124,7 +147,9 @@ RTL، responsive، focus قابل مشاهده و prefers-reduced-motion رعا�
 - [Stripe metering idempotency](https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api):
   جلوگیری از ثبت تکراری رویداد مصرف.
 
-مدیریت کار: API تنظیم‌شده محلی localhost:5180 پاسخ نداد و ابزار عملیاتی Neo
-در این نشست موجود نبود؛ claim/task/time/evidence در برد ثبت نشده است. این سند
+مدیریت کار: API تنظیم‌شده محلی localhost:5180 ابتدا پاسخ نداد؛ در ادامه این
+پورت صفحه استودیو توسعه را برگرداند و API scoped مدیریت کار در آن در دسترس
+نبود. ابزار عملیاتی Neo در این نشست موجود نبود؛ claim/task/time/evidence
+در برد ثبت نشده است. این سند
 تصمیم معماری است و برد عملیاتی دوم نیست. Git فقط تغییرات همین درخواست را ثبت
 می‌کند؛ تغییرات قبلی EF/SQL و publish از commit این کار کنار گذاشته می‌شوند.

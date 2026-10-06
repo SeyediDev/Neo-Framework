@@ -1,14 +1,17 @@
 using Fanasa.AccessManagement.Web.Application.Access;
 using Fanasa.AccessManagement.Web.Domain.Access;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Fanasa.AccessManagement.Web.Platform;
+using System.Security.Claims;
 
 namespace Fanasa.AccessManagement.Web.Api;
 
 [ApiController, Route("api/access")]
-public sealed class AccessApi(IAccessManagement access) : ControllerBase
+public sealed class AccessApi(IAccessManagement access, PlatformRegistry? registry = null) : ControllerBase
 {
-    [HttpGet("catalog/products")] public ActionResult<IReadOnlyCollection<Product>> Products([FromQuery] string? center) => Ok(access.GetProducts(center));
-    [HttpPost("catalog/products")] public ActionResult<Product> RegisterProduct(RegisterProductRequest request) { try { var x = access.RegisterProduct(request); return Created($"/api/access/catalog/products/{x.Key}", x); } catch (ArgumentException ex) { return BadRequest(new { error = ex.Message }); } catch (InvalidOperationException ex) { return Conflict(new { error = ex.Message }); } }
+    [HttpGet("catalog/products")] public ActionResult<IReadOnlyCollection<Product>> Products([FromQuery] string? center) => Ok(registry is null || PlatformAuthorization.IsAdmin(User) ? access.GetProducts(center) : registry.Products(User.FindFirstValue("sub") ?? User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "").Where(x => center is null || x.Center == center).Select(PlatformRegistry.Domain).ToArray());
+    [HttpPost("catalog/products"), Authorize(Policy = "PlatformAdmin"), ValidateAntiForgeryToken] public ActionResult<Product> RegisterProduct(RegisterProductRequest request) { try { var x = access.RegisterProduct(request); return Created($"/api/access/catalog/products/{x.Key}", x); } catch (ArgumentException ex) { return BadRequest(new { error = ex.Message }); } catch (InvalidOperationException ex) { return Conflict(new { error = ex.Message }); } }
     [HttpGet("catalog/products/{productId:guid}/clients")] public ActionResult<IReadOnlyCollection<ProductClient>> Clients(Guid productId) => Ok(access.GetClients(productId));
     [HttpPost("catalog/products/{productId:guid}/clients")] public ActionResult<ProductClient> RegisterClient(Guid productId, RegisterClientRequest request) { try { return Ok(access.RegisterClient(productId, request)); } catch (KeyNotFoundException ex) { return NotFound(new { error = ex.Message }); } catch (ArgumentException ex) { return BadRequest(new { error = ex.Message }); } }
     [HttpGet("tenants")] public ActionResult<IReadOnlyCollection<Tenant>> Tenants() => Ok(access.GetTenants());

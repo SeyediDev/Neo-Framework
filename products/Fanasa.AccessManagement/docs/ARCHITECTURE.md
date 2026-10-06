@@ -42,9 +42,10 @@ APIهای مرجع فعلی:
 - `POST /api/access/usage-events` و `.../charges`
 - `GET /api/access/catalog/products/{productKey}/revenue`
 
-پیاده‌سازی فعلی برای توسعه با adapter حافظه‌ای است؛ پیش از استقرار production
-باید adapter پایدار Neo/EF، migration، outbox رویداد و سیاست‌های tenant
-isolation به آن متصل شوند.
+ترکیب فعلی از PersistentAccessManagement و FabricDatabase استفاده می‌کند:
+عضویت و اشتراک در SQLite پایدارند؛ کاتالوگ محصول به PlatformRegistry مرکزی
+موجود واگذار می‌شود. تغییر چارت، حساب و outbox یک تراکنش دارند. dispatcher
+بیرونی، آزمون SSO و restore عملیاتی باقی مانده‌اند؛ SQL adapter قبلی فعال نیست.
 
 هیچ جدول password، refresh token یا کپی پروفایل کاربر ایجاد نمی‌شود. `sub`
 تنها شناسهٔ مرجع کاربر است و نمایش نام از claimهای session یا پروفایل Keycloak

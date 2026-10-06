@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Fanasa.AccessManagement.Web.Persistence;
+using Fanasa.AccessManagement.Web.Application.Tenancy;
+using Fanasa.AccessManagement.Web.Platform;
+using Fanasa.AccessManagement.Web.Security;
+using Microsoft.Extensions.Configuration;
 
 // Local test fixture only. Production host never references this assembly.
 static class TestPreview
@@ -18,11 +23,18 @@ static class TestPreview
         var contentRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Fanasa.AccessManagement.Web"));
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { ContentRootPath = contentRoot, ApplicationName = typeof(AccessManagementHost).Assembly.GetName().Name, EnvironmentName = "Development" });
         builder.WebHost.UseUrls("http://127.0.0.1:5198");
-        var access = new InMemoryAccessManagement(); var tenant = access.GetTenants().Single().Id;
-        access.AddUser(new AddTenantUserRequest(tenant, "demo-member", "عضو نمونه"));
-        access.RegisterProduct(new RegisterProductRequest("organization-fabric", "ساختار سازمانی", "org", null, "fanasa.ayin", null));
         var data = Path.Combine(Path.GetTempPath(), "fanasa-preview-" + Guid.NewGuid());
-        var store = new OrganizationStore(data, access);
+        builder.Configuration["Platform:RegistryPath"] = Path.Combine(data, "catalog.db");
+        var registry = new PlatformRegistry(builder.Configuration);
+        using var database = new FabricDatabase(Path.Combine(data, "fabric.db"));
+        var access = new PersistentAccessManagement(database, new InMemoryAccessManagement(registry)); var tenant = access.GetTenants().Single().Id;
+        registry.SetTenantSource(access.GetTenants);
+        registry.SetMembershipSource(access.GetUsers);
+        access.AddUser(new AddTenantUserRequest(tenant, "demo-member", "عضو نمونه"));
+        access.AddUser(new AddTenantUserRequest(tenant, "demo", "مدیر نمونه"));
+        foreach (var permission in TenantGrant.Permissions) access.SetGrant(new(tenant, "demo", permission, null), "test", "داده نمونه");
+        access.RegisterProduct(new RegisterProductRequest("organization-fabric", "ساختار سازمانی", "org", null, "fanasa.ayin", null));
+        var store = new OrganizationStore(data, access, database: database);
         OrgCommand C(string name, string code, Guid? parent = null) => new(store.Read(tenant).Revision, "unit.save", null, name, code, parent, "department", null, 1, null, null, null, null, "داده نمونه برای بررسی رابط");
         var top = store.Execute(tenant, C("راهبری سازمان", "ORG"), "demo").Units.Single().Id;
         store.Execute(tenant, C("سرمایه انسانی", "HR", top), "demo");
@@ -35,20 +47,35 @@ static class TestPreview
         var position = store.Execute(tenant, command, "demo").Positions.Single().Id;
         store.Execute(tenant, C("", "") with { Operation = "appointment.add", PositionId = position, Subject = "demo-member", From = DateTimeOffset.UtcNow.AddDays(-1) }, "demo");
         builder.Services.AddSingleton<IAccessManagement>(access); builder.Services.AddSingleton(store);
-        builder.Services.AddSingleton(new AccountingStore(data, access));
-        builder.Services.AddRazorPages(); builder.Services.AddControllers();
+        builder.Services.AddSingleton(new AccountingStore(data, access, database: database));
+        builder.Services.AddSingleton(access); builder.Services.AddSingleton(registry); builder.Services.AddTransient<IClaimsTransformation, FabricClaimsTransformation>();
+        builder.Services.AddSingleton(new Fanasa.AccessManagement.Web.Payments.ZarinpalOptions { Enabled = true, Sandbox = true, MerchantId = Guid.NewGuid().ToString(), CallbackUrl = "https://preview.example/api/payments/zarinpal/callback" });
+        builder.Services.AddSingleton(database);
+        builder.Services.AddSingleton<Fanasa.AccessManagement.Web.Payments.IZarinpalGateway, PreviewPaymentGateway>();
+        builder.Services.AddTransient<Fanasa.AccessManagement.Web.Payments.ZarinpalPayments>();
+        builder.Services.AddRazorPages(); builder.Services.AddControllers(options => options.Filters.Add<Fanasa.AccessManagement.Web.Api.AccessBoundaryFilter>());
         builder.Services.AddAntiforgery(o => o.HeaderName = "X-CSRF-TOKEN");
         builder.Services.AddAuthentication("test").AddScheme<AuthenticationSchemeOptions, PreviewIdentity>("test", _ => { }); builder.Services.AddAuthorization();
         var app = builder.Build(); app.UseStaticFiles(); app.UseRouting(); app.UseAuthentication(); app.UseAuthorization();
         app.MapControllers().RequireAuthorization(); app.MapRazorPages().RequireAuthorization();
-        try { await app.RunAsync(); } finally { Directory.Delete(data, true); }
+        try { await app.RunAsync(); } finally { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); Directory.Delete(data, true); }
     }
+}
+// No external payment network calls in this disposable preview.
+sealed class PreviewPaymentGateway : Fanasa.AccessManagement.Web.Payments.IZarinpalGateway
+{
+    public Task<Fanasa.AccessManagement.Web.Payments.GatewayRequest> Request(Fanasa.AccessManagement.Web.Payments.PaymentIntent intent, CancellationToken cancellationToken)
+        => Task.FromResult(new Fanasa.AccessManagement.Web.Payments.GatewayRequest("S" + intent.Id.ToString("N") + "000"));
+    public Task<Fanasa.AccessManagement.Web.Payments.GatewayVerification> Verify(Fanasa.AccessManagement.Web.Payments.PaymentIntent intent, CancellationToken cancellationToken)
+        => Task.FromResult(new Fanasa.AccessManagement.Web.Payments.GatewayVerification(100, 100001));
+    public Task<Fanasa.AccessManagement.Web.Payments.GatewayInquiry> Inquiry(Fanasa.AccessManagement.Web.Payments.PaymentIntent intent, CancellationToken cancellationToken)
+        => Task.FromResult(new Fanasa.AccessManagement.Web.Payments.GatewayInquiry("PAID"));
 }
 sealed class PreviewIdentity(IOptionsMonitor<AuthenticationSchemeOptions> options, Microsoft.Extensions.Logging.ILoggerFactory logger, UrlEncoder encoder) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var identity = new ClaimsIdentity(new[] { new Claim("sub", "demo"), new Claim(ClaimTypes.Name, "محیط بررسی رابط"), new Claim("tenant_id", "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), new Claim("permission", "organization.read"), new Claim("permission", "organization.write"), new Claim("permission", "billing.read"), new Claim("permission", "billing.write") }, "test");
+        var identity = new ClaimsIdentity(new[] { new Claim("sub", "demo"), new Claim(ClaimTypes.Name, "محیط بررسی رابط"), new Claim("permission", "platform.admin") }, "test");
         return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), "test")));
     }
 }

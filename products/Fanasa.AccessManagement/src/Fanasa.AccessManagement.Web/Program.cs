@@ -2,11 +2,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Fanasa.AccessManagement.Web.Application.Access;
+using Fanasa.AccessManagement.Web.Platform;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/"));
 builder.Services.AddControllers();
+builder.Services.AddSingleton<PlatformRegistry>();
 builder.Services.AddSingleton<IAccessManagement, InMemoryAccessManagement>();
 builder.Services.AddSingleton(sp => new Fanasa.AccessManagement.Web.Organization.OrganizationStore(
     builder.Configuration["Organization:DataDirectory"] ?? Path.Combine(builder.Environment.ContentRootPath, "App_Data", "organization"),
@@ -36,8 +40,34 @@ builder.Services.AddAuthentication(options => { options.DefaultScheme = CookieAu
     options.Scope.Clear();
     options.Scope.Add("openid");
     options.Scope.Add("profile");
+ })
+ .AddJwtBearer("PlatformBearer", options =>
+ {
+    options.Authority = builder.Configuration["Authentication:Authority"];
+    options.Audience = "fanasa-access-management-web";
+    options.MapInboundClaims = false;
+    options.RequireHttpsMetadata = true;
+    if (builder.Configuration["Platform:CaFile"] is string caFile)
+    {
+        var ca = X509CertificateLoader.LoadCertificateFromFile(caFile);
+        options.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = (_, certificate, _, errors) =>
+        {
+            if (certificate is null || (errors & System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch) != 0) return false;
+            using var chain = new X509Chain(); chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+            chain.ChainPolicy.CustomTrustStore.Add(ca); chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+            return chain.Build(certificate);
+        } };
+    }
  });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options => {
+    options.AddPolicy("PlatformAdmin", policy => policy.RequireAuthenticatedUser().RequireClaim("permission", "platform.admin"));
+    options.AddPolicy("PlatformService", policy =>
+    policy.AddAuthenticationSchemes("PlatformBearer").RequireAuthenticatedUser()
+        .RequireClaim("azp", "fanasa-developer-service")
+        .RequireAssertion(context => context.User.FindFirst("scope")?.Value.Split(' ').Contains("platform.registry") == true));
+});
+Fanasa.AccessManagement.Web.FabricServices.AddIdentityOrganizationFabric(builder.Services, builder.Configuration, builder.Environment);
+builder.Services.AddHostedService<PlatformInitialMembership>();
 var app = builder.Build();
 app.UseExceptionHandler("/Error"); app.UseStaticFiles(); app.UseRouting(); app.UseAuthentication(); app.UseAuthorization();
 app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy" })).AllowAnonymous();

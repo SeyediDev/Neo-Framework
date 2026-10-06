@@ -1,1 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><AssemblyName>Fanasa.AccessManagement.Web</AssemblyName><RootNamespace>Fanasa.AccessManagement.Web</RootNamespace></PropertyGroup><ItemGroup><PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" /></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <AssemblyName>Fanasa.AccessManagement.Web</AssemblyName>
+    <RootNamespace>Fanasa.AccessManagement.Web</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
+  </ItemGroup>
+</Project>

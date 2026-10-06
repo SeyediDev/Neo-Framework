@@ -1,0 +1,16 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.PlatformModel
+@{ ViewData["Title"] = "ثبت سامانه و دسترسی توسعه"; }
+<div class="page-actions"><h2>سامانه‌های ثبت‌شده</h2><a class="button primary" href="https://developer.fanasa.net.local/">استودیو توسعه</a></div>
+@if (Model.Error is not null) { <p role="alert">@Model.Error</p> }
+<section class="panel" style="margin-top:20px;overflow:auto"><table style="width:100%;text-align:right;border-collapse:collapse"><thead><tr><th>سامانه</th><th>مرکز</th><th>Audience</th><th>آدرس</th></tr></thead><tbody>
+@foreach (var product in Model.Products) { <tr><td>@product.DisplayName</td><td>@product.Center</td><td><code>@product.Audience</code></td><td>@if (product.Url is not null) { <a href="@product.Url" target="_blank" rel="noreferrer">باز کردن سامانه</a> }</td></tr> }
+</tbody></table>@if (Model.Products.Length == 0) { <p>سامانه‌ای با مجوز شما ثبت نشده است.</p> }</section>
+@if (Model.IsAdmin) {
+<section class="panel" style="margin-top:20px"><h3>اعطای مجوز توسعه</h3><form method="post" style="display:flex;flex-wrap:wrap;gap:16px;margin-top:20px;align-items:end">
+<label>Subject در Keycloak<input asp-for="Subject" required maxlength="120" dir="ltr" /></label>
+<label>سازمان<select asp-for="TenantId">@foreach(var tenant in Model.Tenants) { <option value="@tenant.Id">@tenant.Name</option> }</select></label>
+<label>مجوز<select asp-for="Permission"><option value="developer.read">مشاهده</option><option value="developer.launch">راه‌اندازی</option><option value="developer.manage">مدیریت منابع</option></select></label>
+<label>انقضا<input asp-for="ExpiresAt" type="datetime-local" /></label><button class="button primary" name="operation" value="grant">ثبت مجوز</button></form></section>
+<section class="panel" style="margin-top:20px;overflow:auto"><h3>مجوزهای توسعه</h3><table style="width:100%;text-align:right;margin-top:20px"><thead><tr><th>Subject</th><th>سازمان</th><th>مجوز</th><th>انقضا</th><th></th></tr></thead><tbody>@foreach(var grant in Model.Grants) { <tr><td><code>@grant.Subject</code></td><td>@grant.TenantId</td><td>@grant.Permission</td><td>@grant.ExpiresAt</td><td><form method="post"><input type="hidden" name="Subject" value="@grant.Subject" /><input type="hidden" name="TenantId" value="@grant.TenantId" /><input type="hidden" name="Permission" value="@grant.Permission" /><button class="button secondary" name="operation" value="revoke">لغو مجوز</button></form></td></tr> }</tbody></table></section>
+}

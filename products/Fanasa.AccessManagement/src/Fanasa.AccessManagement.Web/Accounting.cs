@@ -1,18 +1,20 @@
 using System.Text.Json;
 using Fanasa.AccessManagement.Web.Application.Access;
+using Fanasa.AccessManagement.Web.Persistence;
 
 namespace Fanasa.AccessManagement.Web.Accounting;
 
 public sealed record Tariff(string ProductKey, string Metric, decimal UnitPrice);
-public sealed record LedgerEntry(Guid Id, string Key, string Kind, string? ProductKey, string? Metric, decimal Quantity, decimal Amount, DateTimeOffset At, string Actor, string Reference, Guid? InvoiceId = null);
+public sealed record LedgerEntry(Guid Id, string Key, string Kind, string? ProductKey, string? Metric, decimal Quantity, decimal Amount, DateTimeOffset At, string Actor, string Reference, Guid? InvoiceId = null, decimal? UnitPrice = null);
 public sealed record Invoice(Guid Id, string Period, decimal Amount, DateTimeOffset IssuedAt);
 public sealed record BillingAccount(Guid TenantId, long Revision, string Mode, string Currency, decimal CreditLimit, Tariff[] Tariffs, LedgerEntry[] Entries, Invoice[] Invoices);
 public sealed record BillingCommand(long ExpectedRevision, string Operation, string Key, string? Mode, string? Currency, decimal CreditLimit, string? ProductKey, string? Metric, decimal UnitPrice, decimal Quantity, decimal Amount, string Reference, string? Period, Guid? InvoiceId);
 public sealed record AccountView(BillingAccount Account, decimal WalletBalance, decimal Outstanding, decimal AvailableCredit);
 
 // Durable single-host ledger; no gateway or general-ledger integration is implied.
-public sealed class AccountingStore(string directory, IAccessManagement access, TimeProvider? timeProvider = null)
+public sealed class AccountingStore(string directory, IAccessManagement access, TimeProvider? timeProvider = null, FabricDatabase? database = null)
 {
+    public FabricDatabase? Database => database;
     private readonly object gate = new();
     private string PathFor(Guid tenant) => Path.Combine(Path.GetFullPath(directory), tenant + ".billing.json");
     public AccountView Read(Guid tenant)
@@ -21,11 +23,14 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
         {
             if (!access.GetTenants().Any(x => x.Id == tenant && x.IsActive)) throw new KeyNotFoundException();
             var path = PathFor(tenant);
-            var account = File.Exists(path) ? JsonSerializer.Deserialize<BillingAccount>(File.ReadAllText(path)) ?? throw new InvalidDataException() : new(tenant, 0, "payg", "IRR", 0, [], [], []);
+            var account = database is not null ? database.Read<BillingAccount>("accounting", tenant.ToString()) ?? new(tenant, 0, "payg", "IRR", 0, [], [], [])
+                : File.Exists(path) ? JsonSerializer.Deserialize<BillingAccount>(File.ReadAllText(path)) ?? throw new InvalidDataException() : new(tenant, 0, "payg", "IRR", 0, [], [], []);
             return View(account);
         }
     }
     public AccountView Execute(Guid tenant, BillingCommand command, string actor)
+        => database is null ? ExecuteCore(tenant, command, actor) : database.Transaction(() => ExecuteCore(tenant, command, actor));
+    private AccountView ExecuteCore(Guid tenant, BillingCommand command, string actor)
     {
         lock (gate)
         {
@@ -43,7 +48,13 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
             {
                 case "configure":
                     if (command.Mode is not ("payg" or "postpaid") || command.Currency is not ("IRR" or "USD" or "EUR") || command.CreditLimit < 0) throw new ArgumentException("مدل، ارز یا سقف اعتبار معتبر نیست.");
+                    var activePlans = access.GetSubscriptions(tenant).Where(x => x.Status == "active" && (!x.RenewsAt.HasValue || x.RenewsAt > now))
+                        .Select(x => access.GetPlans(x.ProductKey).Single(p => p.Id == x.PricingPlanId)).ToArray();
+                    if (activePlans.Any(x => x.BillingMode != command.Mode || x.Currency != command.Currency)) throw new ArgumentException("مدل و ارز حساب باید با اشتراک‌های فعال سازگار باشند.");
                     if (account.Entries.Any(x => x.Kind != "receipt") && (command.Currency != account.Currency || command.Mode != account.Mode)) throw new ArgumentException("مدل یا ارز حساب دارای تراکنش قابل تغییر نیست.");
+                    if (database is not null && (command.Currency != account.Currency || command.Mode != account.Mode)
+                        && database.All<Fanasa.AccessManagement.Web.Payments.PaymentIntent>("payment").Any(x => x.TenantId == tenant && Fanasa.AccessManagement.Web.Payments.ZarinpalPayments.ReservesBalance(x)))
+                        throw new InvalidOperationException("تا تعیین تکلیف پرداخت‌های باز، مدل یا ارز حساب قابل تغییر نیست.");
                     if (command.Mode == "postpaid" && command.CreditLimit < view.Outstanding) throw new ArgumentException("سقف اعتبار از بدهی فعلی کمتر است.");
                     account = account with { Mode = command.Mode, Currency = command.Currency, CreditLimit = command.CreditLimit };
                     break;
@@ -58,7 +69,7 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
                     var cost = decimal.Round(checked(command.Quantity * tariff.UnitPrice), account.Currency == "IRR" ? 0 : 2, MidpointRounding.AwayFromZero);
                     if (account.Mode == "payg" && cost > view.WalletBalance) throw new InvalidOperationException("موجودی برای مصرف کافی نیست.");
                     if (account.Mode == "postpaid" && cost > view.AvailableCredit) throw new InvalidOperationException("سقف اعتبار پس‌پرداخت کافی نیست.");
-                    entries.Add(new(Guid.NewGuid(), command.Key, "usage", command.ProductKey, command.Metric, command.Quantity, cost, now, actor, command.Reference));
+                    entries.Add(new(Guid.NewGuid(), command.Key, "usage", command.ProductKey, command.Metric, command.Quantity, cost, now, actor, command.Reference, UnitPrice: tariff.UnitPrice));
                     break;
                 case "credit":
                     if (account.Mode != "payg" || command.Amount <= 0 || decimal.Round(command.Amount, account.Currency == "IRR" ? 0 : 2) != command.Amount) throw new ArgumentException("شارژ تأییدشده فقط برای حساب مصرفی و مبلغ مثبت مجاز است.");
@@ -81,6 +92,12 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
             }
             entries.Add(new(Guid.NewGuid(), command.Key, "receipt", null, null, 0, 0, now, actor, fingerprint));
             account = account with { Revision = account.Revision + 1, Tariffs = tariffs.ToArray(), Entries = entries.ToArray(), Invoices = invoices.ToArray() };
+            if (database is not null)
+            {
+                database.Put("accounting", tenant.ToString(), account);
+                database.Emit($"accounting:{tenant}:{account.Revision}", "AccountingChanged", new { TenantId = tenant, account.Revision, command.Operation, command.Key }, now);
+                return View(account);
+            }
             var path = PathFor(tenant); Directory.CreateDirectory(Path.GetDirectoryName(path)!); var temporary = path + "." + Guid.NewGuid() + ".tmp";
             try { using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { JsonSerializer.Serialize(stream, account); stream.Flush(true); } File.Move(temporary, path, true); }
             finally { if (File.Exists(temporary)) File.Delete(temporary); }

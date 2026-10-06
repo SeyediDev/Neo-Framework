@@ -45,7 +45,12 @@ public sealed class InMemoryAccessManagement : IAccessManagement
     private readonly ConcurrentDictionary<Guid, TenantUser> users = new();
     private readonly ConcurrentDictionary<Guid, AccessRole> roles = new();
 
-    public InMemoryAccessManagement() => tenants[Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")] = new(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "fanasa-internal", "سازمان فن‌آسا", true, DateTimeOffset.UtcNow);
+    private readonly Fanasa.AccessManagement.Web.Platform.PlatformRegistry? registry;
+    public InMemoryAccessManagement(Fanasa.AccessManagement.Web.Platform.PlatformRegistry? registry = null)
+    {
+        this.registry = registry;
+        tenants[Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")] = new(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "fanasa-internal", "سازمان فن‌آسا", true, DateTimeOffset.UtcNow);
+    }
     public IReadOnlyCollection<Tenant> GetTenants() => tenants.Values.OrderBy(x => x.DisplayName).ToArray();
     public Tenant CreateTenant(string key, string displayName)
     {
@@ -53,9 +58,10 @@ public sealed class InMemoryAccessManagement : IAccessManagement
         if (tenants.Values.Any(x => string.Equals(x.Key, key, StringComparison.OrdinalIgnoreCase))) throw new InvalidOperationException("A tenant with this key already exists.");
         var item = new Tenant(Guid.NewGuid(), key.Trim(), displayName.Trim(), true, DateTimeOffset.UtcNow); tenants[item.Id] = item; return item;
     }
-    public IReadOnlyCollection<Product> GetProducts(string? centerSlug = null) => products.Values.Where(x => string.IsNullOrWhiteSpace(centerSlug) || x.CenterSlug.Equals(centerSlug, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.DisplayName).ToArray();
+    public IReadOnlyCollection<Product> GetProducts(string? centerSlug = null) => (registry is null ? products.Values.AsEnumerable() : registry.Products().Select(Fanasa.AccessManagement.Web.Platform.PlatformRegistry.Domain)).Where(x => string.IsNullOrWhiteSpace(centerSlug) || x.CenterSlug.Equals(centerSlug, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.DisplayName).ToArray();
     public Product RegisterProduct(RegisterProductRequest request)
     {
+        if (registry is not null) return registry.RegisterLegacy(request);
         if (string.IsNullOrWhiteSpace(request.Key) || string.IsNullOrWhiteSpace(request.DisplayName) || string.IsNullOrWhiteSpace(request.CenterSlug)) throw new ArgumentException("Product key, display name and center are required.");
         if (!CapabilityCatalog.All.Any(x => x.Name == request.CenterSlug || x.Audience == request.CenterSlug)) throw new ArgumentException("Center must be one of the official Fanasa capability centers.");
         if (products.ContainsKey(request.Key)) throw new InvalidOperationException("A product with this key already exists.");
@@ -65,7 +71,7 @@ public sealed class InMemoryAccessManagement : IAccessManagement
     public IReadOnlyCollection<ProductClient> GetClients(Guid productId) => clients.Values.Where(x => x.ProductId == productId).OrderBy(x => x.DisplayName).ToArray();
     public ProductClient RegisterClient(Guid productId, RegisterClientRequest request)
     {
-        if (!products.Values.Any(x => x.Id == productId)) throw new KeyNotFoundException("Product was not found.");
+        if (!GetProducts().Any(x => x.Id == productId)) throw new KeyNotFoundException("Product was not found.");
         if (string.IsNullOrWhiteSpace(request.Key) || string.IsNullOrWhiteSpace(request.DisplayName)) throw new ArgumentException("Client key and display name are required.");
         var item = new ProductClient(Guid.NewGuid(), productId, request.Key.Trim(), request.DisplayName.Trim(), request.ClientType, request.RedirectUris ?? [], request.AllowedScopes ?? [], true); clients[item.Id] = item; return item;
     }
@@ -86,7 +92,7 @@ public sealed class InMemoryAccessManagement : IAccessManagement
         var item = new UsageEvent(Guid.NewGuid(), command.TenantId, command.ProductKey, command.CenterSlug, command.Metric, command.Quantity, command.Unit, command.OccurredAt, command.Source, command.IdempotencyKey, command.CorrelationId, DateTimeOffset.UtcNow); usage[command.IdempotencyKey] = item; return item;
     }
     public IReadOnlyCollection<UsageSummary> GetUsage(Guid tenantId, DateTimeOffset from, DateTimeOffset to) => usage.Values.Where(x => x.TenantId == tenantId && x.OccurredAt >= from && x.OccurredAt <= to).GroupBy(x => new { x.TenantId, x.ProductKey, x.CenterSlug, x.Metric, x.Unit }).Select(g => new UsageSummary(g.Key.TenantId, g.Key.ProductKey, g.Key.CenterSlug, g.Key.Metric, g.Sum(x => x.Quantity), g.Key.Unit, g.Count(), from, to)).ToArray();
-    public PricingPlan RegisterPlan(RegisterPlanRequest request) { if (!products.ContainsKey(request.ProductKey)) throw new KeyNotFoundException("Product was not found."); var item = new PricingPlan(Guid.NewGuid(), request.ProductKey, request.Key, request.DisplayName, request.BillingMode, request.Currency, request.FixedMonthlyAmount, request.IncludedCredit, true); plans[item.Id] = item; return item; }
+    public PricingPlan RegisterPlan(RegisterPlanRequest request) { if (!GetProducts().Any(x => x.Key.Equals(request.ProductKey, StringComparison.OrdinalIgnoreCase))) throw new KeyNotFoundException("Product was not found."); var item = new PricingPlan(Guid.NewGuid(), request.ProductKey, request.Key, request.DisplayName, request.BillingMode, request.Currency, request.FixedMonthlyAmount, request.IncludedCredit, true); plans[item.Id] = item; return item; }
     public IReadOnlyCollection<PricingPlan> GetPlans(string? productKey = null) => plans.Values.Where(x => string.IsNullOrWhiteSpace(productKey) || x.ProductKey.Equals(productKey, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.DisplayName).ToArray();
     public PricingRule AddPricingRule(Guid planId, AddPricingRuleRequest request) { if (!plans.ContainsKey(planId)) throw new KeyNotFoundException("Pricing plan was not found."); var item = new PricingRule(Guid.NewGuid(), planId, request.Metric, request.Unit, request.UnitPrice, request.IncludedQuantity, request.MaximumQuantity); rules[item.Id] = item; return item; }
     public AccountBalance GetBalance(Guid tenantId, string accountType = "consumer") => balances.GetOrAdd((tenantId, accountType), key => new AccountBalance(key.TenantId, key.Type, 0, 0, "IRR", DateTimeOffset.UtcNow));

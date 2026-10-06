@@ -1,6 +1,9 @@
 using System.Security.Claims;
 using System.Text.Json;
 using Fanasa.AccessManagement.Web.Application.Access;
+using Fanasa.AccessManagement.Web.Persistence;
+using Fanasa.AccessManagement.Web.Accounting;
+using Fanasa.AccessManagement.Web.Security;
 
 namespace Fanasa.AccessManagement.Web.Organization;
 
@@ -10,13 +13,12 @@ public sealed record OrgPosition(Guid Id, Guid UnitId, string Name, string Code,
 public sealed record OrgAppointment(Guid Id, Guid PositionId, string Subject, DateTimeOffset From, DateTimeOffset? To);
 public sealed record OrgChange(Guid Id, long Revision, string Actor, string Reason, DateTimeOffset RecordedAt, string Operation);
 public sealed record OrgState(Guid TenantId, long Revision, OrgUnit[] Units, OrgPosition[] Positions, OrgAppointment[] Appointments, OrgChange[] Changes, OrgRole[]? Roles = null);
-public sealed record OrgCommand(long ExpectedRevision, string Operation, Guid? Id, string? Name, string? Code, Guid? ParentId, string? Kind, Guid? UnitId, int Capacity, Guid? PositionId, string? Subject, DateTimeOffset? From, DateTimeOffset? To, string Reason, Guid? RoleId = null);
+public sealed record OrgCommand(long ExpectedRevision, string Operation, Guid? Id, string? Name, string? Code, Guid? ParentId, string? Kind, Guid? UnitId, int Capacity, Guid? PositionId, string? Subject, DateTimeOffset? From, DateTimeOffset? To, string Reason, Guid? RoleId = null, string? RequestId = null);
+public sealed record OrgReceipt(string Actor, string Fingerprint, long Revision);
 
 public static class OrgAuthorization
 {
-    public static bool Allows(ClaimsPrincipal user, Guid tenant, bool write) => user.Identity?.IsAuthenticated == true
-        && user.HasClaim("tenant_id", tenant.ToString())
-        && user.HasClaim("permission", write ? "organization.write" : "organization.read");
+    public static bool Allows(ClaimsPrincipal user, Guid tenant, bool write) => TenantAuthorization.Allows(user, tenant, write ? "organization.write" : "organization.read");
     public static string Subject(ClaimsPrincipal user) => user.FindFirst("sub")?.Value
         ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException();
 }
@@ -28,11 +30,15 @@ public sealed class OrganizationStore
     private readonly object gate = new();
     private readonly IAccessManagement access;
     private readonly bool requireSubscription;
-    public OrganizationStore(string directory, IAccessManagement access, bool requireSubscription = false)
+    private readonly FabricDatabase? database;
+    private readonly AccountingStore? accounting;
+    public OrganizationStore(string directory, IAccessManagement access, bool requireSubscription = false, FabricDatabase? database = null, AccountingStore? accounting = null)
     {
         this.directory = Path.GetFullPath(directory);
         this.access = access;
         this.requireSubscription = requireSubscription;
+        this.database = database; this.accounting = accounting;
+        if (accounting is not null && (database is null || !ReferenceEquals(database, accounting.Database))) throw new ArgumentException("Organization metering requires the shared transactional database.");
         Directory.CreateDirectory(this.directory);
     }
     public OrgState Read(Guid tenant)
@@ -40,16 +46,26 @@ public sealed class OrganizationStore
         lock (gate)
         {
             RequireTenant(tenant);
+            if (database is not null) return database.Read<OrgState>("organization", tenant.ToString()) ?? new(tenant, 0, [], [], [], []);
             var path = Path.Combine(directory, tenant + ".json");
             return File.Exists(path) ? JsonSerializer.Deserialize<OrgState>(File.ReadAllText(path))
                 ?? throw new InvalidDataException("Invalid organization data.") : new(tenant, 0, [], [], [], []);
         }
     }
     public OrgState Execute(Guid tenant, OrgCommand command, string actor)
+        => database is null ? ExecuteCore(tenant, command, actor) : database.Transaction(() => ExecuteCore(tenant, command, actor));
+    private OrgState ExecuteCore(Guid tenant, OrgCommand command, string actor)
     {
         lock (gate)
         {
             var state = Read(tenant);
+            if (command.RequestId is not null && (string.IsNullOrWhiteSpace(command.RequestId) || command.RequestId.Length > 100)) throw new ArgumentException("شناسه درخواست معتبر نیست.");
+            var fingerprint = JsonSerializer.Serialize(command with { ExpectedRevision = 0 });
+            if (database is not null && command.RequestId is not null && database.Read<OrgReceipt>("organization.receipt", $"{tenant}:{command.RequestId}") is { } receipt)
+            {
+                if (receipt.Actor != actor || receipt.Fingerprint != fingerprint) throw new InvalidOperationException("شناسه درخواست تکراری با محتوای متفاوت.");
+                return History(tenant, receipt.Revision);
+            }
             if (state.Revision != command.ExpectedRevision) throw new InvalidOperationException("ساختار تغییر کرده است؛ دوباره بارگذاری کنید.");
             if (string.IsNullOrWhiteSpace(actor) || string.IsNullOrWhiteSpace(command.Reason) || command.Reason.Length > 1000)
                 throw new ArgumentException("دلیل تغییر و شناسه عامل الزامی است.");
@@ -122,6 +138,21 @@ public sealed class OrganizationStore
             }
             var change = new OrgChange(Guid.NewGuid(), state.Revision + 1, actor, command.Reason.Trim(), DateTimeOffset.UtcNow, command.Operation);
             var result = new OrgState(tenant, state.Revision + 1, units.ToArray(), positions.ToArray(), appointments.ToArray(), [..state.Changes, change], roles.ToArray());
+            if (database is not null)
+            {
+                if (accounting is not null)
+                {
+                    var account = accounting.Read(tenant).Account;
+                    var charge = new BillingCommand(account.Revision, "usage", $"organization:{tenant}:{result.Revision}", null, null, 0,
+                        "organization-fabric", "organization.change", 0, 1, 0, $"organization revision {result.Revision}", null, null);
+                    accounting.Execute(tenant, charge, actor);
+                }
+                database.Put("organization", tenant.ToString(), result);
+                database.Put("organization.history", $"{tenant}:{result.Revision}", result);
+                if (command.RequestId is not null) database.Put("organization.receipt", $"{tenant}:{command.RequestId}", new OrgReceipt(actor, fingerprint, result.Revision));
+                database.Emit($"organization:{tenant}:{result.Revision}", "OrganizationChanged", new { TenantId = tenant, result.Revision, change.Operation, change.Actor }, change.RecordedAt);
+                return result;
+            }
             var path = Path.Combine(directory, tenant + ".json");
             var temporary = path + "." + Guid.NewGuid() + ".tmp";
             try
@@ -143,6 +174,7 @@ public sealed class OrganizationStore
         {
             var current = Read(tenant);
             if (revision < 1 || revision > current.Revision) throw new KeyNotFoundException();
+            if (database is not null) return database.Read<OrgState>("organization.history", $"{tenant}:{revision}") ?? throw new KeyNotFoundException();
             return JsonSerializer.Deserialize<OrgState>(File.ReadAllText(Path.Combine(directory, tenant + ".history", revision + ".json"))) ?? throw new InvalidDataException();
         }
     }

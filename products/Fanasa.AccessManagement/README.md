@@ -14,8 +14,17 @@ Keycloak نیست و هویت یا رمز عبور کاربر را ذخیره ن
 dotnet run --project products/Fanasa.AccessManagement/tests/Organization.Tests
 ```
 
-آداپتورهای جدید فایل پایدار تک‌میزبان دارند؛ مرجع tenant/user فعلی هنوز حافظه‌ای
-است. اتصال SQL، metering خودکار، درگاه پرداخت و آزمون SSO واقعی تکمیل نشده‌اند.
+عضویت، پلن، اشتراک، مجوز، چارت و حساب در SQLite پایدار می‌شوند. صفحه
+`/Tenancy` مدیریت اعضا و اشتراک را پوشش می‌دهد. با فعال‌سازی
+`Organization__MeterChanges=true`، تغییر چارت و مصرف در یک تراکنش ثبت می‌شوند؛
+تعرفه `organization.change` و اعتبار کافی باید قبلاً آماده باشند.
+
+مسیر `Fabric__DataDirectory` باید روی volume محلی پایدار با backup باشد.
+انتقال JSON قدیمی فقط با `Fabric__ImportLegacyOnStartup=true` و هویت tenant
+موجود انجام می‌شود. زرین‌پال برای شارژ و تسویه با verify سروری اضافه شده است؛
+تنظیمات و محدودیت‌ها در [راهنمای زرین‌پال](docs/ZARINPAL.md) آمده است.
+dispatcher بیرونی outbox، آزمون SSO واقعی و استقرار چندمیزبان هنوز تکمیل
+نشده‌اند. SQL adapter آزمایشی فعال نیست.
 
 ## مرز معماری
 

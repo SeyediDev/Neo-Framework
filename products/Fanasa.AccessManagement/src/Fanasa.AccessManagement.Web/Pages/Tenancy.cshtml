@@ -1,0 +1,24 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.TenancyModel
+@{ ViewData["Title"] = "سازمان، عضویت و اشتراک"; }
+<link rel="stylesheet" href="~/css/organization.css" asp-append-version="true" />
+<section class="org-hero"><div><span class="eyebrow">TENANT GOVERNANCE</span><h2>هر سازمان، یک مرز روشن</h2><p>عضویت، اعتبار اشتراک و مجوزهای سازمانی را از یک نقطه مدیریت کنید.</p></div><span class="pill teal">هویت مرکزی · عضویت پایدار</span></section>
+@if(!Model.SelectedTenant.HasValue){<section class="panel empty-state"><h2>سازمان مجاز برای مدیریت وجود ندارد</h2></section>}
+else {
+<div id="tenancy-app" data-tenant="@Model.SelectedTenant">
+@Html.AntiForgeryToken()
+<div class="org-toolbar"><form method="get"><label>سازمان <select name="tenant" onchange="this.form.submit()">@foreach(var tenant in Model.Tenants){<option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option>}</select></label></form><button id="tenancy-refresh" class="button secondary">بارگذاری مجدد</button></div>
+<p id="tenancy-message" role="status" aria-live="polite"></p><div class="grid-two"><section class="panel"><h3>اعضای سازمان</h3><div id="tenancy-members"></div></section><section class="panel"><h3>اشتراک‌های سرویس</h3><div id="tenancy-subscriptions"></div></section></div>
+@if(Model.CanManage){<section class="panel org-editor"><h3>ثبت تغییر</h3><form id="tenancy-command">
+<label>عملیات <select name="operation"><option value="member">افزودن عضو</option><option value="membership">فعال / غیرفعال کردن عضو</option><option value="subscribe">ثبت اشتراک</option><option value="subscription">تعلیق / تمدید اشتراک</option>@if(Model.IsAdmin){<option value="grant">ثبت / لغو مجوز</option><option value="plan">تعریف پلن مصرفی</option><option value="tenant">ثبت سازمان</option>}</select></label>
+<label>شناسه هویت عضو <input name="subject" maxlength="200" placeholder="شناسه پایدار کاربر در هویت مرکزی" /></label><label>نام نمایشی <input name="displayName" /></label>
+<label>عضو <select name="memberId"></select></label><label>وضعیت عضو <select name="active"><option value="true">فعال</option><option value="false">غیرفعال</option></select></label>
+<label>محصول <select name="productKey"></select></label><label>پلن <select name="planId"></select></label><label>تعداد مجاز عضو <input type="number" name="seatLimit" value="10" min="1" max="100000" /></label>
+<label>اشتراک <select name="subscriptionId"></select></label><label>وضعیت اشتراک <select name="status"><option value="active">فعال</option><option value="suspended">تعلیق</option><option value="expired">پایان‌یافته</option></select></label><label>اعتبار تا <input type="datetime-local" name="renewsAt" /></label>
+<label>مجوز <select name="permission">@foreach(var permission in Fanasa.AccessManagement.Web.Application.Tenancy.TenantGrant.Permissions){<option>@permission</option>}</select></label><label>وضعیت مجوز <select name="grantActive"><option value="true">اعطا</option><option value="false">لغو</option></select></label><label>انقضای مجوز <input type="datetime-local" name="expiresAt" /></label>
+<label>کد <input name="key" maxlength="80" /></label><label>نام <input name="name" maxlength="200" /></label><label>مدل پرداخت <select name="mode"><option value="payg">مصرفی با کیف اعتبار</option><option value="postpaid">پس‌پرداخت</option></select></label><label>ارز <select name="currency"><option value="IRR">ریال</option><option value="USD">دلار</option><option value="EUR">یورو</option></select></label>
+<label class="org-reason">دلیل <input name="reason" required maxlength="1000" /></label><button class="button primary" type="submit">ثبت تغییر</button>
+</form></section>}
+<section class="panel org-history"><h3>مجوزهای ثبت‌شده</h3><ol id="tenancy-grants"></ol></section>
+</div>}
+@section Scripts {<script src="~/js/tenancy.js" asp-append-version="true" defer></script>}

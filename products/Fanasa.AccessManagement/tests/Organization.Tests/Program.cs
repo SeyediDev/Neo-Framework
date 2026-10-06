@@ -85,9 +85,12 @@ try
     Check(billing.Read(other).Outstanding == 30 && billing.Read(other).AvailableCredit == 70, "partial invoice payment restores credit");
     Reject<ArgumentException>(() => billing.Execute(other, Bill(other, "payment", "overpay") with { InvoiceId = invoiceId, Amount = 31 }, "actor"), "overpayment rejected");
     Check(new AccountingStore(directory, access, clock).Read(other).Outstanding == 30, "billing ledger survives restart");
+    TransactionalFabricTests.Run(directory, Check);
+    ZarinpalTests.Run(directory, Check);
+    FabricStartupTests.Run(directory, Check);
     Console.WriteLine($"{count} checks passed.");
 }
-finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+finally { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }
 
 sealed class TestClock(DateTimeOffset now) : TimeProvider
 {
