@@ -27,7 +27,9 @@ internal static class AgentRunModel
         run.Property(x => x.RequestedByAgentId).HasMaxLength(200); run.Property(x => x.RequestedByChatId).HasMaxLength(200);
         run.Property(x => x.Provider).HasMaxLength(80); run.Property(x => x.Model).HasMaxLength(200);
         run.Property(x => x.Instructions).HasMaxLength(32000); run.Property(x => x.SkillPath).HasMaxLength(512);
-        run.Property(x => x.Branch).HasMaxLength(250); run.Property(x => x.DecisionReason).HasMaxLength(500);
+        run.Property(x => x.Branch).HasMaxLength(250);
+        run.Property(x => x.RepositoryKey).HasMaxLength(200); run.Property(x => x.RepositoryUrl).HasMaxLength(2000);
+        run.Property(x => x.RepositoryDefaultBranch).HasMaxLength(250); run.Property(x => x.RepositoryDevelopmentBranch).HasMaxLength(250); run.Property(x => x.DecisionReason).HasMaxLength(500);
         run.Property(x => x.ResultSummary).HasMaxLength(8000);
         run.Property(x => x.HarnessBinding).HasMaxLength(64).IsUnicode(false);
         run.Property(x => x.HarnessPayload).HasColumnType("nvarchar(max)");

@@ -112,6 +112,7 @@ All routes below are relative to:
 | POST `items/{id}/evidence` | ExpectedVersion, Kind, Reference, Outcome, optional Details/CommitSha |
 | POST `projects`; PUT `projects/{id}` | Create project; rename (Key is immutable) |
 | POST `projects/{id}/disable` | Disable without deleting history |
+| PUT `projects/{id}/repository` | Configure or update one provider-neutral repository binding; stores URL/key/branches and secret reference, never secret values |
 | POST `roles`; PUT `roles/{id}` | Create or update role configuration |
 | PUT `roles/{id}/enabled` | IsEnabled |
 | POST `agents`; PUT `agents/{id}` | Create or update agent profile (configuration, not credentials) |
@@ -128,7 +129,7 @@ All routes below are relative to:
 | POST `runs/{id}/evaluate` | Explicit versioned gate reevaluation with stable RequestId; 202 |
 | POST `runs/{id}/return-assignment` | ExpectedWorkItemVersion; initiating subject recovers its stopped assignment; 200 |
 
-Configuration writes return the committed workspace catalog (200). Their
+Configuration writes return the committed workspace catalog (200). The catalog includes an optional repository binding per project. Agent-run views include a frozen repository binding snapshot so delivery adapters can resolve the same project revision without making Work Management provider-aware. Their
 readback is a subsequent transaction and can include intervening authorized
 changes. Project/role/agent edits are serialized last-writer-wins; only work
 items and workflows currently have client-visible version preconditions.

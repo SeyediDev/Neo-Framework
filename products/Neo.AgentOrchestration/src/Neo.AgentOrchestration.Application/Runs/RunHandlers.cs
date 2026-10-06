@@ -42,12 +42,14 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
                     throw new WorkItemConflictException("Role or task already has an active execution.");
                 item.RequireCompletedDependencies(await s.GetProjectItemsAsync(item.ProjectId, token));
                 var profile = AgentSelector.Select(r.Scope, role, await s.GetAgentsAsync(token), r.Body.AgentProfileId);
+                var repositoryBinding = await s.GetRepositoryBindingAsync(item.ProjectId, token);
+                if (repositoryBinding is not null && !repositoryBinding.IsEnabled) throw new InvalidOperationException("The project repository binding is disabled.");
                 providers.RequireAvailable(profile.Provider, r.Scope);
                 if (profile.Provider != "fake" && !r.Body.AllowExternalExecution)
                     throw new ArgumentException("External execution requires explicit consent.");
                 var now = clock.GetUtcNow();
                 var run = AgentRun.Create(r.Scope, r.Body.RequestId, item, workflow, role, profile, r.Requestor, r.Body.Branch, outcome, now,
-                    allowExternalExecution: r.Body.AllowExternalExecution);
+                    allowExternalExecution: r.Body.AllowExternalExecution, repositoryBinding: repositoryBinding);
                 item.Claim(r.Scope, role, run.Actor, run.Branch, now);
                 item.AddLog(r.Scope, run.Actor, $"Execution requested by {r.Requestor.AgentId}, chat {r.Requestor.ChatId}; provider {profile.Provider}.", now);
                 run.BindClaim(item); s.Add(run);
@@ -150,7 +152,7 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
     private static AgentRunView View(AgentRun x) => new(x.Id, x.WorkItemId, x.RoleId, x.AgentProfileId, x.WorkflowId,
         x.InitialWorkflowVersion, x.WorkflowVersion, x.WorkItemVersion, x.PreviousRunId, x.NextRunId, x.Hop, x.Provider,
         x.Model, x.Instructions, x.SkillPath, x.Branch, x.RequestedByAgentId, x.RequestedByChatId, x.Status.ToString(), x.Decision.ToString(),
-        x.DecisionReason, x.SimulationOutcome.ToString(), x.ResultSummary, x.CreatedAtUtc, x.DispatchedAtUtc, x.CompletedAtUtc, x.UpdatedAtUtc);
+        x.DecisionReason, x.SimulationOutcome.ToString(), x.ResultSummary, x.CreatedAtUtc, x.DispatchedAtUtc, x.CompletedAtUtc, x.UpdatedAtUtc, x.RepositoryBindingId, x.RepositoryKey, x.RepositoryUrl, x.RepositoryDefaultBranch, x.RepositoryDevelopmentBranch);
     private static IReadOnlyList<TokenUsageView> Usage(IReadOnlyList<TokenUsageReport> rows) => rows.Select(x => new TokenUsageView(x.Id,
         x.AgentRunId, x.WorkItemId, x.Provider, x.Model, x.InputTokens, x.OutputTokens, x.CachedInputTokens,
         x.ReasoningTokens, x.Source, x.IdempotencyKey, x.RecordedAtUtc)).ToArray();

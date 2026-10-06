@@ -10,7 +10,9 @@ public sealed record AgentRunView(Guid Id, Guid WorkItemId, Guid RoleId, Guid Ag
     int Hop, string Provider, string? Model, string? Instructions, string? SkillPath, string? Branch,
     string RequestedByAgentId, string RequestedByChatId, string Status, string Decision, string? DecisionReason,
     string SimulationOutcome, string? ResultSummary, DateTimeOffset CreatedAtUtc, DateTimeOffset? DispatchedAtUtc,
-    DateTimeOffset? CompletedAtUtc, DateTimeOffset UpdatedAtUtc);
+    DateTimeOffset? CompletedAtUtc, DateTimeOffset UpdatedAtUtc, Guid? RepositoryBindingId = null,
+    string? RepositoryKey = null, string? RepositoryUrl = null, string? RepositoryDefaultBranch = null,
+    string? RepositoryDevelopmentBranch = null);
 public sealed record RecordTokenUsageRequest(Guid RequestId, string? Provider, string? Model,
     long? InputTokens, long? OutputTokens, long? CachedInputTokens, long? ReasoningTokens,
     string Source = "reported", string? IdempotencyKey = null, DateTimeOffset? RecordedAtUtc = null);

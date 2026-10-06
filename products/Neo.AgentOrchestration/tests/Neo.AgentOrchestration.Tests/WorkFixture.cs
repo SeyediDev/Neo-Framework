@@ -80,6 +80,7 @@ internal sealed class MemoryWorkStore(Workspace workspace, List<Project> project
     public List<WorkflowDefinition> Workflows { get; } = [];
     public List<WorkflowApproval> Approvals { get; } = [];
     public List<Project> Projects { get; } = projects;
+    public List<ProjectRepositoryBinding> RepositoryBindings { get; } = [];
     public List<RoleProfile> Roles { get; } = roles;
     public List<WorkItem> Items { get; } = [];
 
@@ -94,6 +95,7 @@ internal sealed class MemoryWorkStore(Workspace workspace, List<Project> project
         public Task<Workspace> GetWorkspaceAsync(CancellationToken ct) => Task.FromResult(store.Workspace);
         public Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<Project>>(
             store.Projects.Where(x => Matches(x.OrganizationId, x.WorkspaceId)).ToArray());
+        public Task<ProjectRepositoryBinding?> GetRepositoryBindingAsync(Guid projectId, CancellationToken ct) => Task.FromResult(store.RepositoryBindings.SingleOrDefault(x => x.ProjectId == projectId && Matches(x.OrganizationId, x.WorkspaceId)));
         public Task<IReadOnlyList<RoleProfile>> GetRolesAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<RoleProfile>>(
             store.Roles.Where(x => Matches(x.OrganizationId, x.WorkspaceId)).ToArray());
         public Task<IReadOnlyList<AgentProfile>> GetAgentsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<AgentProfile>>(
@@ -104,6 +106,7 @@ internal sealed class MemoryWorkStore(Workspace workspace, List<Project> project
             => Task.FromResult<IReadOnlyList<WorkflowApproval>>(store.Approvals.Where(x => x.WorkflowDefinitionId == workflowId &&
                 x.WorkItemId == workItemId && store.Workflows.Any(w => w.Id == workflowId && Matches(w.OrganizationId, w.WorkspaceId))).ToArray());
         public void Add(Project value) { value.RequireScope(scope); store.Projects.Add(value); }
+        public void Add(ProjectRepositoryBinding value) { value.RequireScope(scope); store.RepositoryBindings.Add(value); }
         public void Add(RoleProfile value) { value.RequireScope(scope); store.Roles.Add(value); }
         public void Add(AgentProfile value) { value.RequireScope(scope); store.Agents.Add(value); }
         public void Add(WorkflowDefinition value) { value.RequireScope(scope); store.Workflows.Add(value); }

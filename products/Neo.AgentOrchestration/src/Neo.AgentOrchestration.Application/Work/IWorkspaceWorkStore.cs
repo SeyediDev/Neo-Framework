@@ -19,11 +19,13 @@ public interface IWorkItemSession
 {
     Task<Domain.Projects.Workspace> GetWorkspaceAsync(CancellationToken ct);
     Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct);
+    Task<ProjectRepositoryBinding?> GetRepositoryBindingAsync(Guid projectId, CancellationToken ct);
     Task<IReadOnlyList<RoleProfile>> GetRolesAsync(CancellationToken ct);
     Task<IReadOnlyList<AgentProfile>> GetAgentsAsync(CancellationToken ct);
     Task<IReadOnlyList<WorkflowDefinition>> GetWorkflowsAsync(CancellationToken ct);
     Task<IReadOnlyList<WorkflowApproval>> GetApprovalsAsync(Guid workflowId, Guid workItemId, CancellationToken ct);
     void Add(Project project);
+    void Add(ProjectRepositoryBinding binding);
     void Add(RoleProfile role);
     void Add(AgentProfile agent);
     void Add(WorkflowDefinition workflow);

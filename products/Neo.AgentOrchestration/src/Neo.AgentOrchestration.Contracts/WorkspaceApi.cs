@@ -4,7 +4,8 @@ public sealed record WorkspaceView(Guid OrganizationId, Guid Id, string Key, str
 public sealed record AccessibleWorkspaceView(Guid OrganizationId, Guid Id, string Key, string Name);
 public sealed record AccessibleOrganizationView(Guid Id, string Key, string Name, IReadOnlyList<AccessibleWorkspaceView> Workspaces);
 public sealed record AccessibleWorkspaceCatalog(IReadOnlyList<AccessibleOrganizationView> Organizations);
-public sealed record ProjectView(Guid Id, string Key, string Name, bool IsEnabled);
+public sealed record ProjectView(Guid Id, string Key, string Name, bool IsEnabled,
+    ProjectRepositoryBindingView? RepositoryBinding = null);
 public sealed record WorkspaceCatalog(WorkspaceView Workspace, IReadOnlyList<ProjectView> Projects,
     IReadOnlyList<RoleProfileView> Roles, IReadOnlyList<AgentProfileView> Agents, IReadOnlyList<WorkflowView> Workflows);
 public sealed record CreateProjectRequest(string Key, string Name);

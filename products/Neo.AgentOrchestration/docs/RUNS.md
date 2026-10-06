@@ -160,3 +160,8 @@ is covered by timestamp-based SQL tests, not a claim of a killed-process drill.
 No test constitutes real external agent execution, browser acceptance or migration
 acceptance. The independent Web and HTTP adapter have separate verification
 guides; neither test fixture establishes a live issuer or model execution.
+
+
+## Project repository snapshot
+
+A run optionally captures the enabled project repository binding at queue time: provider-neutral repository key, URL, default/development branches, CI/CD reference and secret reference. The Work Management domain does not clone, push, create branches, call Git providers or read secret values; those operations belong to the delivery adapter. A disabled binding prevents a new run from being queued.

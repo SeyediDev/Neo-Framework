@@ -27,6 +27,18 @@ internal static class OrchestrationModel
         project.HasIndex(x => new { x.WorkspaceId, x.Key }).IsUnique();
         project.HasOne<Workspace>().WithMany().HasForeignKey(x => new { x.WorkspaceId, x.OrganizationId })
             .HasPrincipalKey(x => new { x.Id, x.OrganizationId }).OnDelete(DeleteBehavior.Restrict);
+        var binding = Entity<ProjectRepositoryBinding>(b, "ProjectRepositoryBindings");
+        binding.Property(x => x.Provider).HasMaxLength(80);
+        binding.Property(x => x.RepositoryUrl).HasMaxLength(2000);
+        binding.Property(x => x.RepositoryKey).HasMaxLength(200);
+        binding.Property(x => x.DefaultBranch).HasMaxLength(250);
+        binding.Property(x => x.DevelopmentBranch).HasMaxLength(250);
+        binding.Property(x => x.CiCdReference).HasMaxLength(500);
+        binding.Property(x => x.SecretReference).HasMaxLength(500);
+        binding.HasIndex(x => x.ProjectId).IsUnique();
+        binding.HasAlternateKey(x => new { x.Id, x.ProjectId });
+        binding.HasOne<Project>().WithMany().HasForeignKey(x => new { x.ProjectId, x.WorkspaceId, x.OrganizationId })
+            .HasPrincipalKey(x => new { x.Id, x.WorkspaceId, x.OrganizationId }).OnDelete(DeleteBehavior.Restrict);
         var role = Entity<RoleProfile>(b, "RoleProfiles");
         role.Property(x => x.Key).HasMaxLength(80); role.Property(x => x.Name).HasMaxLength(200);
         role.Property(x => x.ScopeDescription).HasMaxLength(4000);

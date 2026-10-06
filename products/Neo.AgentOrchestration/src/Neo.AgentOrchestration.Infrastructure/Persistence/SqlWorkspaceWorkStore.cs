@@ -93,6 +93,8 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
             x.Id == scope.WorkspaceId && x.OrganizationId == scope.OrganizationId, ct);
         public async Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct) => await db.Projects.Where(x =>
             x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId).OrderBy(x => x.Key).ToArrayAsync(ct);
+        public Task<ProjectRepositoryBinding?> GetRepositoryBindingAsync(Guid projectId, CancellationToken ct) => db.ProjectRepositoryBindings
+            .SingleOrDefaultAsync(x => x.ProjectId == projectId && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId, ct);
         public async Task<IReadOnlyList<RoleProfile>> GetRolesAsync(CancellationToken ct) => await db.Roles.Where(x =>
             x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId).OrderBy(x => x.Key).ToArrayAsync(ct);
         public async Task<IReadOnlyList<AgentProfile>> GetAgentsAsync(CancellationToken ct) => await db.Agents.Where(x =>
@@ -104,6 +106,8 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
                 db.Workflows.Any(w => w.Id == x.WorkflowDefinitionId && w.OrganizationId == scope.OrganizationId &&
                     w.WorkspaceId == scope.WorkspaceId)).OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id).ToArrayAsync(ct);
         public void Add(Project project) { project.RequireScope(scope); db.Projects.Add(project); }
+
+        public void Add(ProjectRepositoryBinding binding) { binding.RequireScope(scope); db.ProjectRepositoryBindings.Add(binding); }
         public void Add(RoleProfile role) { role.RequireScope(scope); db.Roles.Add(role); }
         public void Add(AgentProfile agent) { agent.RequireScope(scope); db.Agents.Add(agent); }
         public void Add(WorkflowDefinition workflow) { workflow.RequireScope(scope); db.Workflows.Add(workflow); }

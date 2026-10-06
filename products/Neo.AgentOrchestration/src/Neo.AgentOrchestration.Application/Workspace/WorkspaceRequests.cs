@@ -12,6 +12,7 @@ public abstract record WorkspaceChange;
 public sealed record NewProject(CreateProjectRequest Value) : WorkspaceChange;
 public sealed record RenameProject(Guid Id, string Name) : WorkspaceChange;
 public sealed record DisableProject(Guid Id) : WorkspaceChange;
+public sealed record UpsertRepositoryBinding(Guid ProjectId, UpsertProjectRepositoryBindingRequest Value) : WorkspaceChange;
 public sealed record NewRole(CreateRoleProfileRequest Value) : WorkspaceChange;
 public sealed record EditRole(Guid Id, UpdateRoleProfileRequest Value) : WorkspaceChange;
 public sealed record EnableRole(Guid Id, bool Enabled) : WorkspaceChange;

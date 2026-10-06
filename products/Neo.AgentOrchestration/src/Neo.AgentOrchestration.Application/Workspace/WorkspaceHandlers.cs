@@ -28,6 +28,11 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
                     Unique((await s.GetProjectsAsync(token)).Any(x => x.Key == project.Key)); s.Add(project); break;
                 case RenameProject change:
                     (await Project(s, change.Id, token)).Rename(r.Scope, change.Name); break;
+                case UpsertRepositoryBinding change:
+                    var repositoryProject = await Project(s, change.ProjectId, token);
+                    var existingBinding = await s.GetRepositoryBindingAsync(repositoryProject.Id, token);
+                    if (existingBinding is null) s.Add(ProjectRepositoryBinding.Create(r.Scope, repositoryProject, change.Value.Provider, change.Value.RepositoryUrl, change.Value.RepositoryKey, change.Value.DefaultBranch, change.Value.DevelopmentBranch, change.Value.CiCdReference, change.Value.SecretReference, clock.GetUtcNow()));
+                    else existingBinding.Update(r.Scope, change.Value.Provider, change.Value.RepositoryUrl, change.Value.RepositoryKey, change.Value.DefaultBranch, change.Value.DevelopmentBranch, change.Value.CiCdReference, change.Value.SecretReference, change.Value.IsEnabled, clock.GetUtcNow()); break;
                 case DisableProject change:
                     (await Project(s, change.Id, token)).Disable(r.Scope); break;
                 case NewRole change:
@@ -129,15 +134,23 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
     private static async Task<WorkspaceCatalog> Catalog(IWorkItemSession s, CancellationToken ct)
     {
         var w = await s.GetWorkspaceAsync(ct);
-        return new(new(w.OrganizationId, w.Id, w.Key, w.Name),
-            (await s.GetProjectsAsync(ct)).Select(x => new ProjectView(x.Id, x.Key, x.Name, x.IsEnabled)).ToArray(),
+        var projects = await s.GetProjectsAsync(ct);
+        var projectViews = new List<ProjectView>(projects.Count);
+        foreach (var project in projects)
+        {
+            var binding = await s.GetRepositoryBindingAsync(project.Id, ct);
+            projectViews.Add(new ProjectView(project.Id, project.Key, project.Name, project.IsEnabled,
+                binding is null ? null : new ProjectRepositoryBindingView(binding.Id, binding.ProjectId, binding.Provider,
+                    binding.RepositoryUrl, binding.RepositoryKey, binding.DefaultBranch, binding.DevelopmentBranch,
+                    binding.CiCdReference, binding.SecretReference, binding.IsEnabled, binding.UpdatedAtUtc)));
+        }
+        return new(new(w.OrganizationId, w.Id, w.Key, w.Name), projectViews,
             (await s.GetRolesAsync(ct)).Select(x => new RoleProfileView(x.Id, x.Key, x.Name, x.ScopeDescription, x.IsEnabled, x.MaxConcurrentWorkItems)).ToArray(),
             (await s.GetAgentsAsync(ct)).Select(x => new AgentProfileView(x.Id, x.RoleProfileId, x.Key, x.Name, x.Provider, x.Model, x.Instructions, x.SkillPath, x.IsEnabled)).ToArray(),
             (await s.GetWorkflowsAsync(ct)).Select(x => new WorkflowView(x.Id, x.ProjectId, x.Key, x.Name, x.IsEnabled, x.Version,
                 x.Transitions.Select(t => new WorkflowTransitionView(t.Id, t.Key, t.FromRoleId, t.FromStatus.ToString(), t.ToRoleId,
                     t.ToStatus.ToString(), t.RequireCommit, t.RequirePassingTests, t.RequireApproval, t.RequiredArtifact, t.IsEnabled)).ToArray())).ToArray());
-    }
-    private static WorkflowApprovalView Approval(WorkflowApproval a) => new(a.Id, a.WorkflowDefinitionId, a.WorkflowVersion,
+    }    private static WorkflowApprovalView Approval(WorkflowApproval a) => new(a.Id, a.WorkflowDefinitionId, a.WorkflowVersion,
         a.WorkItemId, a.WorkItemVersion, a.TransitionId, a.ReviewerAgentId, a.ReviewerChatId, a.Approved, a.Reason, a.CreatedAtUtc);
     private static async Task<Project> Project(IWorkItemSession s, Guid id, CancellationToken ct)
         => await s.GetProjectAsync(id, ct) ?? throw new KeyNotFoundException("Project not found.");

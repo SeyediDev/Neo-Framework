@@ -35,6 +35,11 @@ public sealed class AgentRun : BaseEntity<Guid>
     public string? Instructions { get; private set; }
     public string? SkillPath { get; private set; }
     public string? Branch { get; private set; }
+    public Guid? RepositoryBindingId { get; private set; }
+    public string? RepositoryKey { get; private set; }
+    public string? RepositoryUrl { get; private set; }
+    public string? RepositoryDefaultBranch { get; private set; }
+    public string? RepositoryDevelopmentBranch { get; private set; }
     public SimulationOutcome SimulationOutcome { get; private set; }
     public AgentRunStatus Status { get; private set; }
     public RunDecision Decision { get; private set; }
@@ -53,7 +58,7 @@ public sealed class AgentRun : BaseEntity<Guid>
 
     public static AgentRun Create(WorkspaceScope scope, Guid id, WorkItem item, WorkflowDefinition workflow,
         RoleProfile role, AgentProfile profile, WorkActor requestor, string? branch, SimulationOutcome outcome,
-        DateTimeOffset now, AgentRun? previous = null, bool allowExternalExecution = false)
+        DateTimeOffset now, AgentRun? previous = null, bool allowExternalExecution = false, ProjectRepositoryBinding? repositoryBinding = null)
     {
         item.RequireScope(scope); workflow.RequireScope(scope); role.RequireScope(scope); profile.RequireScope(scope);
         if (id == Guid.Empty || !Enum.IsDefined(outcome)) throw new ArgumentException("Invalid run identifier or outcome.");
@@ -68,7 +73,9 @@ public sealed class AgentRun : BaseEntity<Guid>
             PreviousRunId = previous?.Id, Hop = (previous?.Hop ?? 0) + 1,
             RequestedByAgentId = requestor.AgentId, RequestedByChatId = requestor.ChatId,
             Provider = profile.Provider, Model = profile.Model, Instructions = profile.Instructions, SkillPath = profile.SkillPath,
-            Branch = WorkRules.Optional(branch, 250), SimulationOutcome = outcome, Status = AgentRunStatus.Queued,
+            Branch = WorkRules.Optional(branch, 250), RepositoryBindingId = repositoryBinding?.Id, RepositoryKey = repositoryBinding?.RepositoryKey,
+            RepositoryUrl = repositoryBinding?.RepositoryUrl, RepositoryDefaultBranch = repositoryBinding?.DefaultBranch,
+            RepositoryDevelopmentBranch = repositoryBinding?.DevelopmentBranch, SimulationOutcome = outcome, Status = AgentRunStatus.Queued,
             AllowExternalExecution = previous?.AllowExternalExecution ?? allowExternalExecution,
             CreatedAtUtc = now, UpdatedAtUtc = now };
     }

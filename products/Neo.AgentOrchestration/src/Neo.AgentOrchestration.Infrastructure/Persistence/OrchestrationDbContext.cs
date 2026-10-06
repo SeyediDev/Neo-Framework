@@ -19,6 +19,7 @@ public sealed class OrchestrationDbContext(DbContextOptions<OrchestrationDbConte
     public DbSet<Organization> Organizations => Set<Organization>();
     public DbSet<Workspace> Workspaces => Set<Workspace>();
     public DbSet<Project> Projects => Set<Project>();
+    public DbSet<ProjectRepositoryBinding> ProjectRepositoryBindings => Set<ProjectRepositoryBinding>();
     public DbSet<RoleProfile> Roles => Set<RoleProfile>();
     public DbSet<AgentProfile> Agents => Set<AgentProfile>();
     public DbSet<WorkItem> WorkItems => Set<WorkItem>();

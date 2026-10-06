@@ -16,6 +16,8 @@ public sealed class WorkspaceConfigurationController(ISender sender) : Workspace
     public Task<WorkspaceCatalog> CreateProject(CreateProjectRequest body, CancellationToken ct) => Change(new NewProject(body), ct);
     [HttpPut("projects/{id:guid}"), Authorize(Policy = WorkspaceSecurity.Configure)]
     public Task<WorkspaceCatalog> Rename(Guid id, RenameProjectRequest body, CancellationToken ct) => Change(new RenameProject(id, body.Name), ct);
+    [HttpPut("projects/{id:guid}/repository"), Authorize(Policy = WorkspaceSecurity.Configure)]
+    public Task<WorkspaceCatalog> Repository(Guid id, UpsertProjectRepositoryBindingRequest body, CancellationToken ct) => Change(new UpsertRepositoryBinding(id, body), ct);
     [HttpPost("projects/{id:guid}/disable"), Authorize(Policy = WorkspaceSecurity.Configure)]
     public Task<WorkspaceCatalog> Disable(Guid id, CancellationToken ct) => Change(new DisableProject(id), ct);
 

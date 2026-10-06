@@ -69,4 +69,18 @@ public sealed class ProjectTests
         Assert.Throws<ArgumentException>(() => project.Rename(workspace.Scope, new string('x', 201)));
         Assert.Equal("Original", project.Name);
     }
+
+    [Fact]
+    public void Repository_binding_is_scoped_and_updates_without_storing_secret_values()
+    {
+        var workspace = Workspace.Create(Organization.Create("org", "Organization"), "work", "Work");
+        var project = Project.Create(workspace, "app", "App");
+        var binding = ProjectRepositoryBinding.Create(workspace.Scope, project, "github", "https://github.com/org/app", "org/app", "main", "develop", "pipeline:app", "secret://app", DateTimeOffset.UtcNow);
+        Assert.Equal(project.Id, binding.ProjectId);
+        Assert.Equal("github", binding.Provider);
+        binding.Update(workspace.Scope, "gitlab", "https://gitlab.example/org/app", "org/app", "master", "develop", null, "secret://app-v2", false, DateTimeOffset.UtcNow);
+        Assert.Equal("gitlab", binding.Provider);
+        Assert.False(binding.IsEnabled);
+        Assert.Throws<InvalidOperationException>(() => binding.RequireScope(new WorkspaceScope(Guid.NewGuid(), workspace.Id)));
+    }
 }

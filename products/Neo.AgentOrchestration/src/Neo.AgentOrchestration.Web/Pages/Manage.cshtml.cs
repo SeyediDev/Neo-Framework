@@ -16,6 +16,14 @@ public sealed class ManageModel(OrchestrationClient client) : WorkPageModel(clie
     [BindProperty] public string? Instructions { get; set; }
     [BindProperty] public string? SkillPath { get; set; }
     [BindProperty] public bool Enabled { get; set; }
+    [BindProperty] public string RepositoryProvider { get; set; } = "";
+    [BindProperty] public string RepositoryUrl { get; set; } = "";
+    [BindProperty] public string RepositoryKey { get; set; } = "";
+    [BindProperty] public string RepositoryDefaultBranch { get; set; } = "main";
+    [BindProperty] public string? RepositoryDevelopmentBranch { get; set; }
+    [BindProperty] public string? RepositoryCiCdReference { get; set; }
+    [BindProperty] public string? RepositorySecretReference { get; set; }
+    [BindProperty] public bool RepositoryEnabled { get; set; } = true;
     [BindProperty] public Guid FromRoleId { get; set; }
     [BindProperty] public Guid? ToRoleId { get; set; }
     [BindProperty] public string FromStatus { get; set; }="Review";
@@ -33,6 +41,7 @@ public sealed class ManageModel(OrchestrationClient client) : WorkPageModel(clie
     public Task<IActionResult> OnPostProjectAsync(CancellationToken ct)=>Id==Guid.Empty
         ?Change("projects",new CreateProjectRequest(Key,Name),ct):Change($"projects/{Id}",new RenameProjectRequest(Name),ct,true);
     public Task<IActionResult> OnPostDisableProjectAsync(CancellationToken ct)=>Change($"projects/{Id}/disable",null,ct);
+    public Task<IActionResult> OnPostRepositoryAsync(CancellationToken ct)=>Change($"projects/{Id}/repository", new UpsertProjectRepositoryBindingRequest(RepositoryProvider, RepositoryUrl, RepositoryKey, RepositoryDefaultBranch, RepositoryDevelopmentBranch, RepositoryCiCdReference, RepositorySecretReference, RepositoryEnabled), ct, true);
     public Task<IActionResult> OnPostRoleAsync(CancellationToken ct)=>Id==Guid.Empty
         ?Change("roles",new CreateRoleProfileRequest(Key,Name,ScopeDescription,MaxConcurrentWorkItems),ct):Change($"roles/{Id}",new UpdateRoleProfileRequest(Name,ScopeDescription,MaxConcurrentWorkItems),ct,true);
     public Task<IActionResult> OnPostRoleEnabledAsync(CancellationToken ct)=>Change($"roles/{Id}/enabled",new SetProfileEnabledRequest(Enabled),ct,true);
