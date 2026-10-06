@@ -20,6 +20,8 @@ dotnet run --project products/Fanasa.AccessManagement/tests/Organization.Tests
 تعرفه `organization.change` و اعتبار کافی باید قبلاً آماده باشند.
 
 مسیر `Fabric__DataDirectory` باید روی volume محلی پایدار با backup باشد.
+ابزار backup/verify/restore دو پایگاه با مقصد تازه و کنترل integrity در
+[راهنمای بازیابی](docs/RECOVERY.md) آمده است.
 انتقال JSON قدیمی فقط با `Fabric__ImportLegacyOnStartup=true` و هویت tenant
 موجود انجام می‌شود. زرین‌پال برای شارژ و تسویه با verify سروری اضافه شده است؛
 تنظیمات و محدودیت‌ها در [راهنمای زرین‌پال](docs/ZARINPAL.md) آمده است.

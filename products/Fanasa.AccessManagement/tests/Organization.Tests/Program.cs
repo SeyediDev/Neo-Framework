@@ -8,6 +8,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 if (args.Contains("--preview")) { await TestPreview.Run(); return; }
+if (args is ["--recovery-fixture", var recoveryFixture])
+{
+    Directory.CreateDirectory(recoveryFixture);
+    RecoveryTests.Run(recoveryFixture, (passed, label) => { if (!passed) throw new Exception(label); Console.WriteLine("PASS " + label); });
+    return;
+}
 
 var directory = Path.Combine(Path.GetTempPath(), "fanasa-org-tests-" + Guid.NewGuid());
 var access = new InMemoryAccessManagement();
@@ -88,6 +94,7 @@ try
     TransactionalFabricTests.Run(directory, Check);
     ZarinpalTests.Run(directory, Check);
     FabricStartupTests.Run(directory, Check);
+    RecoveryTests.Run(directory, Check);
     Console.WriteLine($"{count} checks passed.");
 }
 finally { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }
