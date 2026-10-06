@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Fanasa.UnifiedPortal.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient("platform-control-token");
+builder.Services.AddHttpClient("platform-control-catalog");
+builder.Services.AddScoped<IPlatformCatalogClient, PlatformCatalogClient>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
