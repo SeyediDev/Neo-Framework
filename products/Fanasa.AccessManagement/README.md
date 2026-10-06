@@ -30,6 +30,10 @@ dispatcher بیرونی outbox، آزمون SSO واقعی و استقرار چ�
 
 ## مرز معماری
 
+صفحه `/Audit` اکنون سوابق واقعی هر سازمان را با فیلتر نوع رویداد و صفحه‌بندی
+نمایش می‌دهد. هر دسته به مجوز مشاهده همان بخش وابسته است؛ جزئیات در
+[راهنمای رویدادها](AUDIT.md) آمده است.
+
 - Keycloak در realm `fanasa`: ورود، MFA، session و شناسهٔ پایدار `sub`؛
 - این محصول: tenant، membership، product role، grant و audit؛
 - API هر محصول: بررسی issuer، audience، scope و grant نهایی.

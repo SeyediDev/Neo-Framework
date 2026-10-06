@@ -89,5 +89,18 @@ public sealed class FabricDatabase : IDisposable
         while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), DateTimeOffset.Parse(reader.GetString(4), System.Globalization.CultureInfo.InvariantCulture)));
         return result.ToArray();
     });
+    public FabricOutbox[] Audit(Guid tenant, string[] kinds, long before = long.MaxValue, int take = 30) => WithConnection((connection, transaction) =>
+    {
+        if (tenant == Guid.Empty || before <= 0 || take is < 1 or > 100 || kinds.Length > 20) throw new ArgumentException("Invalid audit query.");
+        if (kinds.Length == 0) return [];
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        var parameters = kinds.Select((_, i) => "$kind" + i).ToArray();
+        command.CommandText = "SELECT id,key,kind,payload,recorded FROM fabric_outbox WHERE id<$before AND kind IN (" + string.Join(",", parameters) + ") AND COALESCE(json_extract(payload,'$.TenantId'),json_extract(payload,'$.Result.TenantId'),CASE WHEN kind='TenantCreated' THEN json_extract(payload,'$.Result.Id') END)=$tenant ORDER BY id DESC LIMIT $take";
+        command.Parameters.AddWithValue("$tenant", tenant.ToString()); command.Parameters.AddWithValue("$before", before); command.Parameters.AddWithValue("$take", take);
+        for (var i = 0; i < kinds.Length; i++) command.Parameters.AddWithValue(parameters[i], kinds[i]);
+        using var reader = command.ExecuteReader(); var result = new List<FabricOutbox>();
+        while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), DateTimeOffset.Parse(reader.GetString(4), System.Globalization.CultureInfo.InvariantCulture)));
+        return result.ToArray();
+    });
     public void Dispose() => context.Dispose();
 }

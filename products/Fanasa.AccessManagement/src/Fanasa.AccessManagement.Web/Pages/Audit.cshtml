@@ -1,3 +1,16 @@
 @page
+@model Fanasa.AccessManagement.Web.Pages.AuditModel
 @{ ViewData["Title"] = "گزارش رویدادها"; }
-<div class="page-actions"><p class="muted">رویدادهای تغییر دسترسی، tenant و نقش برای ممیزی سازمانی.</p><button class="button secondary" disabled>خروجی گزارش</button></div><section class="panel empty-state"><div class="empty-icon">◷</div><h2>رویداد قابل نمایش نیست</h2><p>پس از اتصال audit store، تمام تغییرات با subject کاربر و tenant مربوط ثبت خواهند شد.</p><span class="pill slate">فقط رویدادهای بدون اطلاعات محرمانه</span></section>
+<link rel="stylesheet" href="~/css/organization.css" asp-append-version="true" />
+<section class="org-hero"><div><span class="eyebrow">IDENTITY FABRIC · AUDIT</span><h2>ردپای تغییرات سازمان</h2><p>سوابق چارت، عضویت، اشتراک و حساب، بر اساس دسترسی شما.</p></div><span class="pill teal">جدیدترین رویدادها</span></section>
+@if (!Model.SelectedTenant.HasValue) {
+<section class="panel empty-state"><h2>سازمان مجاز برای نمایش وجود ندارد</h2><p>مجوز مشاهده ساختار سازمانی، مدیریت سازمان یا اکانتینگ لازم است.</p></section>
+} else {
+<form method="get" class="org-toolbar"><label>سازمان <select name="tenant">@foreach(var tenant in Model.Tenants){<option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option>}</select></label><label>نوع رویداد <select name="kind"><option value="">همه موارد مجاز</option>@foreach(var filter in Model.Filters){<option value="@filter.Kind" selected="@(filter.Kind == Model.SelectedKind)">@filter.Title</option>}</select></label><button class="button primary" type="submit">نمایش</button><a class="button secondary" asp-page="/Audit" asp-route-tenant="@Model.SelectedTenant">تازه‌سازی</a></form>
+<section class="panel" aria-label="سوابق رویدادها">
+@if(Model.Rows.Length == 0){<div class="empty-state"><h2>رویدادی در این فیلتر ثبت نشده است</h2></div>}
+@foreach(var row in Model.Rows){<article class="audit-entry"><span class="pill blue">#@row.Id</span><div><h3>@row.Title</h3><p>ثبت‌کننده: <bdi>@row.Actor</bdi></p></div><time datetime="@row.RecordedAt.ToString("O")" dir="ltr">@row.RecordedAt.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss") UTC</time></article>}
+</section>
+@if(Model.Next.HasValue){<div class="page-actions"><a class="button secondary" asp-page="/Audit" asp-route-tenant="@Model.SelectedTenant" asp-route-kind="@Model.SelectedKind" asp-route-before="@Model.Next">رویدادهای قدیمی‌تر</a></div>}
+<p class="muted">مبالغ، مراجع پرداخت و محتوای محرمانه در این نمای خلاصه نمایش داده نمی‌شوند. زمان‌ها به UTC هستند.</p>
+}
