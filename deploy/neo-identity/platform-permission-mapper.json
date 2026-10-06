@@ -1,0 +1,15 @@
+{
+  "name": "fanasa-platform-permissions",
+  "protocol": "openid-connect",
+  "protocolMapper": "oidc-usermodel-attribute-mapper",
+  "consentRequired": false,
+  "config": {
+    "user.attribute": "fanasa_permissions",
+    "claim.name": "permission",
+    "jsonType.label": "String",
+    "multivalued": "true",
+    "id.token.claim": "true",
+    "access.token.claim": "true",
+    "userinfo.token.claim": "true"
+  }
+}

@@ -122,6 +122,28 @@ contract administrator/viewer permissions and shared login to the portal.
 
 ## Current local HTTPS endpoints
 
+## Explicit administrator enrollment
+
+For a user-authorized platform administrator, create an enabled Keycloak account
+and assign `platform-admin`. Generate its temporary password on the server and
+require `UPDATE_PASSWORD`; never store the password in Git. The Access client
+uses `platform-permission-mapper.json` to emit the administrator-only user
+attribute `fanasa_permissions` as `permission`; set `platform.admin` only on
+explicitly authorized administrator accounts. Ordinary users must not have
+write access to this attribute.
+
+After authenticating `kcadm` inside the container, run the versioned maintenance
+script to enroll that verified identity in existing active tenants:
+
+```sh
+python3 deploy/neo-identity/enroll-platform-admin.py --subject <verified-keycloak-subject> --username <verified-username>
+```
+
+The script backs up the databases, respects seat limits, writes durable tenant
+memberships/grants and emits audit events. It does not create new tenants,
+reactivate offboarded members, or assign administrator privileges inside
+third-party products. Those products must map their own roles explicitly.
+
 - `https://sso.fanasa.net.local`: Keycloak and the Fanasa OIDC issuer
   `https://sso.fanasa.net.local/realms/fanasa`.
 - `https://access.fanasa.net.local`: user and access management application.
