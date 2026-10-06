@@ -166,6 +166,12 @@ request/response DTOs, JWT requirement, required chat header and per-operation
 `x-workspace-permissions`. There is no second hand-maintained JSON specification.
 Public `/api/orchestration/v1/system` and `/health/live` expose no task data.
 
+Authenticated `GET /api/orchestration/v1/access/workspaces` returns only enabled
+organizations and workspaces for which the caller has an issuer-signed
+`nao_grant` read claim. It is a discovery endpoint for the Web session chooser;
+it does not grant access. Scoped workspace routes remain the authorization
+boundary and re-check the same grant on every request.
+
 Tests use ASP.NET TestServer and real JWT signature/issuer/audience/lifetime
 validation with ephemeral keys only in test code. HTTP contract/lifecycle tests
 cover grants, filtering, child/history/time/evidence, stale versions and OpenAPI.

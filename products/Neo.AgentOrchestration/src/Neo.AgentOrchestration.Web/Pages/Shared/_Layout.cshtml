@@ -3,15 +3,15 @@
 <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#1F4B9A" />
 <link rel="manifest" href="~/manifest.webmanifest" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<title>@ViewData["Title"] · مدیریت کار نئو</title><link rel="stylesheet" href="~/site.css" asp-append-version="true" /><link rel="stylesheet" href="~/fanasa.css" asp-append-version="true" /></head>
+<title>@ViewData["Title"] · مدیریت کار</title><link rel="stylesheet" href="~/site.css" asp-append-version="true" /><link rel="stylesheet" href="~/fanasa.css" asp-append-version="true" /></head>
 <body><a class="skip" href="#content">رفتن به محتوای اصلی</a>
-<header class="topbar"><a class="brand" asp-page="/Index" aria-label="فن‌آسا · مدیریت کار نئو"><img class="brand-logo" src="~/brand/fanasa-horizontal-fa.svg" asp-append-version="true" alt="فن‌آسا" width="115" height="40" /><span class="brand-product">مدیریت کار نئو<small dir="ltr">NEO · Agent Orchestration</small></span></a><nav aria-label="ناوبری اصلی">
+<header class="topbar"><a class="brand" asp-page="/Index" aria-label="فن‌آسا · مدیریت کار"><img class="brand-logo" src="~/brand/fanasa-horizontal-fa.svg" asp-append-version="true" alt="فن‌آسا" width="115" height="40" /><span class="brand-product">مدیریت کار<small dir="ltr">FANASA · AGENTIC WORK</small></span></a><nav aria-label="ناوبری اصلی">
 <a asp-page="/Product">معرفی محصول</a><a asp-page="/Workspace">فضای کاری</a>
 @if (User.Identity?.IsAuthenticated == true) { <form method="post" asp-page="/Logout"><button class="quiet" type="submit">خروج از پنل</button></form> }
 else { <a asp-page="/Login">ورود</a> }
 </nav></header>
 <div id="spa-feedback" class="spa-feedback" hidden><span id="spa-message" role="status" aria-live="polite"></span><button id="spa-refresh" type="button" hidden>دریافت آخرین وضعیت</button><a id="spa-login" href="/Login" hidden>ورود مجدد</a><button id="spa-dismiss" type="button" aria-label="بستن پیام">×</button></div>
-<main id="content" tabindex="-1">@RenderBody()</main><footer>مدیریت کار و هماهنگی ایجنت‌ها · Neo <span aria-hidden="true">／</span> با هویت بصری فن‌آسا</footer>
+<main id="content" tabindex="-1">@RenderBody()</main><footer>مدیریت کار و هماهنگی ایجنت‌ها <span aria-hidden="true">／</span> با هویت بصری فن‌آسا</footer>
 <script src="~/workbench.js" asp-append-version="true" defer></script>
 <script src="~/kanban.js" asp-append-version="true" defer></script>
 <script>if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {}));</script>

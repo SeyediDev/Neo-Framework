@@ -11,6 +11,24 @@ public sealed class OrchestrationClient(HttpClient http, IHttpContextAccessor? a
     public Task<ProductInfo?> GetInfoAsync(CancellationToken ct)
         => http.GetFromJsonAsync<ProductInfo>("api/orchestration/v1/system", ct);
 
+    public async Task<AccessibleWorkspaceCatalog> GetAccessibleWorkspacesAsync(CancellationToken ct)
+    {
+        var context = accessor?.HttpContext ?? throw new WebApiException(401);
+        var authentication = await context.AuthenticateAsync();
+        var token = authentication.Properties?.GetTokenValue("access_token");
+        if (authentication is null || !authentication.Succeeded || string.IsNullOrWhiteSpace(token)) throw new WebApiException(401);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "api/orchestration/v1/access/workspaces");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        try
+        {
+            using var response = await http.SendAsync(request, ct);
+            if (!response.IsSuccessStatusCode) throw new WebApiException((int)response.StatusCode);
+            return await response.Content.ReadFromJsonAsync<AccessibleWorkspaceCatalog>(ct) ?? throw new WebApiException(502);
+        }
+        catch (Exception error) when (error is HttpRequestException or JsonException || error is OperationCanceledException && !ct.IsCancellationRequested)
+        { throw new WebApiException(503); }
+    }
+
     public async Task<T> SendAsync<T>(Guid organization, Guid workspace, string resource, CancellationToken ct,
         HttpMethod? method = null, object? body = null)
     {

@@ -27,7 +27,10 @@ bootstrap/installer is a separate milestone. Web startup does not create them.
 Configure Web separately (environment variable names shown):
 
 The Web panel starts OIDC directly from `/Login`; it does not use a separate
-SSO landing page. In local development the default client is
+SSO landing page. After sign-in, `/Workspace` reads the authenticated user's
+`nao_grant` claims through the API and presents only the organizations and workspaces
+the identity may read. It never asks the user to type opaque GUIDs in the normal
+flow. In local development the default client is
 `fanasa-work-management-web` in realm `fanasa`. Register its exact callback
 `http://127.0.0.1:5181/signin-oidc` (and the corresponding logout URL) in
 Keycloak. Production must replace the development issuer/client settings with

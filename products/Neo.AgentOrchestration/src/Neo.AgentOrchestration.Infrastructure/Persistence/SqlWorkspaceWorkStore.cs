@@ -14,6 +14,7 @@ using Neo.AgentOrchestration.Domain.Runs;
 using Neo.AgentOrchestration.Application.Runs;
 using Neo.AgentOrchestration.Contracts;
 using Neo.AgentOrchestration.Application.Templates;
+using Neo.AgentOrchestration.Application.Workspace;
 using Neo.AgentOrchestration.Domain.Templates;
 using Neo.Infrastructure.Data.Repository.Ef;
 
@@ -160,6 +161,7 @@ public static class PersistenceRegistration
     {
         services.AddDbContextFactory<OrchestrationDbContext>((provider, options) => options.UseSqlServer(connectionString(provider)));
         services.AddScoped<IWorkspaceWorkStore, SqlWorkspaceWorkStore>();
+        services.AddScoped<IAccessibleWorkspaceCatalog, SqlAccessibleWorkspaceCatalog>();
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IDurableWorkStore, SqlDurableWorkStore>();
         services.AddScoped<SqlWorkDeliveryExecutor>();
