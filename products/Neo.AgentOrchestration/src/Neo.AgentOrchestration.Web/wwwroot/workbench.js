@@ -66,7 +66,8 @@
             x.open = saved.details.find(entry => entry.key === key)?.open ?? false;
         });
         [...main.querySelectorAll('.kanban,.table-scroll')].forEach((x, i) => x.scrollLeft = saved.horizontal[i] ?? 0);
-        dirty = dirtyForms.size > 0;
+        // Read-only filter drafts do not warrant an unsaved-write warning.
+        dirty = forms().some((form, i) => form.method.toLowerCase() === 'post' && dirtyForms.has(formKey(form, i)));
     }
     function tell(text, error = false, session = false) {
         feedback.hidden = !text;
@@ -92,7 +93,10 @@
         pollTimer = 0;
         if (!main.querySelector?.('.kanban')) return;
         pollTimer = setTimeout(async () => {
-            if (!busy && document.visibilityState === 'visible') await show(active, { preserve: true, silent: true, poll: true });
+            // A poll must not reset a GET filter or interrupt an edited form.
+            const editing = document.activeElement?.closest?.('form');
+            if (!busy && !dirtyForms.size && !editing && document.visibilityState === 'visible')
+                await show(active, { preserve: true, silent: true, poll: true });
             scheduleBoardPoll();
         }, 6000);
     }
@@ -198,9 +202,9 @@
     });
     function trackDraft(event) {
         const form = event.target.closest('form');
-        if (form?.method.toLowerCase() === 'post') {
+        if (form && main.contains(form)) {
             dirtyForms.add(formKey(form, forms().indexOf(form)));
-            dirty = true;
+            if (form.method.toLowerCase() === 'post') dirty = true;
         }
     }
     main.addEventListener('input', trackDraft);
