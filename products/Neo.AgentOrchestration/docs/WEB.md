@@ -90,8 +90,10 @@ they do not replace live issuer/proxy deployment acceptance.
 
 ## Available workflow
 
-The board supports [confirmed Kanban transitions](KANBAN.md) with pointer handles
-and a keyboard/touch-accessible move menu, using the same SPA and API boundaries.
+The board supports [direct Kanban transitions](KANBAN.md) by dragging its card
+headers and a compact keyboard/touch-accessible ⋯ menu. Ordinary valid drops
+submit once; claims and consequential transitions retain their detail/confirmation
+form, using the same SPA and API boundaries.
 
 The scoped /templates page manages [versioned project templates](PROJECT-TEMPLATES.md):
 immutable publication, parameterized preview, explicit atomic instantiation and

@@ -1,15 +1,20 @@
 # Kanban transitions
 
 The board offers a native per-card transition form (also works without scripts).
-With `kanban.js`, its handle supports mouse/pen/touch Pointer Events. Drag across
+With `kanban.js`, the card header supports mouse/pen/touch Pointer Events; there
+is no separate move button. A floating title preview follows the pointer. Drag across
 columns to select a destination; allowed columns are outlined, others dimmed.
 The board scrolls horizontally near the pointer edges. Escape or pointer cancel
-abandons the gesture. Clicking/keyboard-activating the handle or opening the
-native details menu provides the same operation without dragging.
+abandons the gesture. The compact ⋯ native details menu provides the alternative
+for keyboard/touch without duplicating a full-size move control. Background board
+polling pauses during the drag so it cannot replace the pointer-captured card.
 
-A drop opens the card's confirmation form; it does **not** mutate a task. Explicit
-confirmation submits the ordinary antiforgery-protected BFF handler through the
-SPA layer. The card/counts change only after the API accepts and the filtered
+A valid ordinary drop submits the existing antiforgery/version-protected form
+once through the SPA, without a second confirmation. Claim (InProgress), terminal
+Done/Cancelled and return-to-Ready that releases ownership still open the details
+form for explicit review/input. An existing unsent note or a different edited
+destination also opens details instead of silently sending a draft.
+The card/counts change only after the API accepts and the filtered
 board is refetched. A card can disappear from the current filter/page after a move.
 No optimistic DOM relocation, automatic retry, within-column ordering or role
 reassignment is performed. Native details/select/button controls support keyboard

@@ -127,17 +127,27 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .signature-lead { display: block; font-size: 11px; font-weight: 400; letter-spacing: 2px; }
 .signature-finish { display: block; font-size: clamp(20px, 2vw, 26px); font-weight: 700; letter-spacing: -.5px; color: var(--fanasa-lapis); }
 @media (forced-colors: active) { .workspace-signature::before, .workspace-signature::after { background: CanvasText; } }
-.move-handle { touch-action: none; cursor: grab; margin-top: .6rem; }
+.move-enabled { position: relative; }
+.move-handle { touch-action: none; cursor: grab; padding-inline-end: 40px; min-height: 36px; align-items: center; user-select: none; }
+.move-handle::before { content: '⠿'; font-size: 20px; color: var(--fanasa-lapis); }
 .move-handle:active { cursor: grabbing; }
-.move-handle[hidden], .claim-fields[hidden] { display: none; }
+.claim-fields[hidden], .move-context[hidden] { display: none; }
 .move-menu { margin-top: .6rem; }
 .move-menu summary { cursor: pointer; color: #1f4b9a; }
+.move-enabled .move-menu { margin-top: 0; }
+.move-enabled .move-menu summary { position: absolute; inset-inline-end: 8px; top: 8px; display: grid; place-items: center; width: 36px; height: 36px; font-size: 24px; list-style: none; border-radius: 8px; }
+.move-enabled .move-menu summary::-webkit-details-marker { display: none; }
+.move-enabled .move-menu summary:hover, .move-enabled .move-menu summary:focus-visible { background: #1f4b9a12; outline: 2px solid var(--fanasa-lapis); }
+.move-enabled .move-fallback { display: none; }
+.move-context { padding: .65rem; background: #1f4b9a0d; border-radius: 8px; }
 .move-form { display: grid; gap: .65rem; padding-top: .7rem; }
 .move-form label { display: grid; gap: .3rem; }
 .move-form textarea { min-height: 4rem; }
 .move-form .claim-fields { display: grid; gap: .6rem; }
 .move-form .claim-fields[hidden] { display: none; }
-.moving-card { outline: 3px solid #1f4b9a; }
+.moving-card { outline: 3px solid #1f4b9a; opacity: .45; }
+.kanban-dragging { user-select: none; cursor: grabbing; }
+.kanban-drag-preview { position: fixed; top: 0; left: 0; z-index: 10000; width: min(260px, 65vw); padding: 14px 18px; border: 2px solid var(--fanasa-lapis); border-radius: 12px; background: white; color: var(--fanasa-ink); box-shadow: 0 12px 36px #10234233; pointer-events: none; font-weight: 700; }
 .column.drop-allowed { outline: 2px dashed #149a8e; outline-offset: -3px; }
 .column.drop-denied { opacity: .45; }
 .column.drop-target { outline: 4px solid #149a8e; background: #e6f5f2; }

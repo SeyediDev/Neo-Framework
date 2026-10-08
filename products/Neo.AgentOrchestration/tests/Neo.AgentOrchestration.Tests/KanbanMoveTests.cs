@@ -31,7 +31,9 @@ public sealed class KanbanMoveTests
         var id = Guid.Parse(created.Headers.Location!.ToString().Split('/').Last());
         var board = web.Root + $"?ProjectId={f.Project.Id}&Domain=web";
         var html = await web.Html(board);
-        Assert.Contains("move-handle", html);
+        Assert.Contains("move-menu", html);
+        Assert.Contains("گزینه‌های انتقال", System.Net.WebUtility.HtmlDecode(html));
+        Assert.DoesNotContain("class=\"move-handle quiet\"", html);
         Assert.Contains("data-draft-key=\"move-" + id, html);
         async Task<WorkItemDetails> Read() => await web.ApiRead<WorkItemDetails>($"items/{id}");
         async Task<HttpResponseMessage> Move(string destination, Guid? version = null, Guid? role = null) =>
@@ -47,6 +49,12 @@ public sealed class KanbanMoveTests
         Assert.Equal(HttpStatusCode.Conflict, (await Move("Blocked", old)).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await Move("InProgress")).StatusCode);
         Assert.Equal("Ready", (await Read()).Item.Status);
+        // A hidden/unselected claim role is irrelevant to an ordinary status move.
+        Assert.Equal(HttpStatusCode.Redirect, (await web.Submit(board, "Move", new() {
+            ["MoveItemId"] = id.ToString(), ["MoveVersion"] = (await Read()).Item.Version.ToString(),
+            ["Destination"] = "Blocked", ["ClaimRoleId"] = "" })).StatusCode);
+        Assert.Equal("Blocked", (await Read()).Item.Status);
+        Assert.Equal(HttpStatusCode.Redirect, (await Move("Ready")).StatusCode);
         Assert.Equal(HttpStatusCode.Redirect, (await Move("InProgress", role:f.Role.Id)).StatusCode);
         var claimed = await Read();
         Assert.Equal("InProgress", claimed.Item.Status);

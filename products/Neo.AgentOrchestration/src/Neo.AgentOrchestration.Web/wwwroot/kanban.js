@@ -1,4 +1,5 @@
-/* Pointer and keyboard enhancement; the ordinary form remains authoritative. */
+/* Drop submits ordinary transitions once; consequential moves keep their form.
+   The API and the existing antiforgery/versioned form remain authoritative. */
 (() => {
     'use strict';
     let drag = null, suppressClickUntil = 0;
@@ -7,11 +8,23 @@
     const destinations = card => [...card.querySelectorAll('[name="Destination"] option')].map(x => x.value).filter(Boolean);
     function updateClaim(form) {
         const claim = form.querySelector('.claim-fields');
-        if (!claim) return;
         const needed = form.elements.Destination.value === 'InProgress';
-        claim.hidden = !needed;
-        form.elements.ClaimRoleId.required = needed;
+        if (claim) {
+            claim.hidden = !needed;
+            form.elements.ClaimRoleId.required = needed;
+        }
+        const context = form.querySelector('.move-context');
+        if (context) {
+            const state = form.elements.Destination.value;
+            context.textContent = state === 'InProgress' ? 'برای شروع کار، رول و برنچ را مشخص کنید.' :
+                state === 'Done' ? 'تکمیل کار پس از بررسی شواهد و پیش‌نیازها ثبت می‌شود.' :
+                state === 'Cancelled' ? 'این کار لغو می‌شود؛ از این منو قابل بازگشت نیست.' :
+                state === 'Ready' && form.closest('.card')?.dataset.state !== 'Backlog' ? 'بازگشت به آماده، مالکیت فعلی کار را آزاد می‌کند.' : '';
+            context.hidden = !context.textContent;
+        }
     }
+    const needsDetails = (card, state) => ['InProgress', 'Done', 'Cancelled'].includes(state) ||
+        (state === 'Ready' && card.dataset.state !== 'Backlog');
     function openMove(card, state) {
         if (window.NeoWorkbench?.busy || !card?.isConnected) return;
         const menu = card.querySelector('.move-menu'), form = card.querySelector('.move-form');
@@ -25,7 +38,21 @@
         updateClaim(form);
         card.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         form.elements.Destination.focus({ preventScroll: true });
-        announce('مقصد را بررسی کنید و «تأیید انتقال» را بزنید. کارت هنوز جابه‌جا نشده است.');
+        announce('جزئیات این انتقال را بررسی و تأیید کنید.');
+    }
+    function dropMove(card, state) {
+        if (window.NeoWorkbench?.busy || !card?.isConnected || !destinations(card).includes(state)) return;
+        const form = card.querySelector('.move-form');
+        if (!form) return;
+        // Do not silently send an existing note or overwrite an edited destination.
+        if (needsDetails(card, state) || form.elements.MoveNote.value.trim() ||
+            (form.elements.Destination.value && form.elements.Destination.value !== state)) {
+            openMove(card, state); return;
+        }
+        form.elements.Destination.value = state;
+        updateClaim(form);
+        announce('در حال انتقال کارت…');
+        form.requestSubmit(); // SPA intercepts it, or the ordinary POST works without SPA.
     }
     function cleanup() {
         const previous = drag;
@@ -34,8 +61,10 @@
             cancelAnimationFrame(previous.frame);
             if (previous.handle.hasPointerCapture(previous.id)) previous.handle.releasePointerCapture(previous.id);
             previous.card.classList.remove('moving-card');
+            previous.preview?.remove();
         }
         document.querySelectorAll('.drop-allowed,.drop-denied,.drop-target').forEach(x => x.classList.remove('drop-allowed','drop-denied','drop-target'));
+        document.documentElement.classList.remove('kanban-dragging');
     }
     function highlight(x, y) {
         document.querySelectorAll('.drop-target').forEach(node => node.classList.remove('drop-target'));
@@ -70,12 +99,19 @@
         if (!drag.moved) {
             drag.moved = true;
             drag.card.classList.add('moving-card');
+            document.documentElement.classList.add('kanban-dragging');
+            drag.preview = document.createElement('div');
+            drag.preview.className = 'kanban-drag-preview';
+            drag.preview.setAttribute('aria-hidden', 'true');
+            drag.preview.textContent = drag.card.querySelector('h3')?.textContent || 'انتقال کارت';
+            document.body.append(drag.preview);
             const allowed = destinations(drag.card);
             board()?.querySelectorAll('.column').forEach(x => x.classList.add(allowed.includes(x.dataset.state) ? 'drop-allowed' : 'drop-denied'));
             announce('فقط ستون‌های مشخص‌شده مقصد مجاز هستند؛ Escape برای انصراف.');
             drag.frame = requestAnimationFrame(scrollDrag);
         }
         event.preventDefault();
+        drag.preview.style.transform = `translate(${drag.x + 14}px, ${drag.y + 14}px)`;
         highlight(drag.x, drag.y);
     }, { passive: false });
     document.addEventListener('pointerup', event => {
@@ -84,7 +120,7 @@
         cleanup();
         if (current.moved) {
             suppressClickUntil = Date.now() + 400;
-            if (target && destinations(current.card).includes(target.dataset.state)) openMove(current.card, target.dataset.state);
+            if (target && destinations(current.card).includes(target.dataset.state)) dropMove(current.card, target.dataset.state);
             else announce('انتقال انجام نشد؛ یک ستون مجاز را انتخاب کنید.');
         }
     });
@@ -93,7 +129,7 @@
     document.addEventListener('keydown', event => { if (event.key === 'Escape' && drag) { cleanup(); announce('جابه‌جایی لغو شد.'); } });
     document.addEventListener('click', event => {
         const handle = event.target.closest?.('.move-handle');
-        if (handle && Date.now() >= suppressClickUntil) openMove(handle.closest('.card'));
+        if (handle && Date.now() < suppressClickUntil) { event.preventDefault(); event.stopPropagation(); }
     });
     document.addEventListener('change', event => { if (event.target.matches?.('.move-form [name="Destination"]')) updateClaim(event.target.form); });
     document.addEventListener('neo:board-updated', event => {
@@ -112,7 +148,13 @@
     });
     function enhance() {
         cleanup();
-        document.querySelectorAll('.move-handle').forEach(x => x.hidden = false);
+        document.querySelectorAll('.move-form').forEach(form => {
+            const card = form.closest('.card');
+            card?.classList.add('move-enabled');
+            const header = card?.querySelector('.card-meta');
+            header?.classList.add('move-handle');
+            header?.setAttribute('title', 'برای انتقال، سربرگ کارت را بکشید');
+        });
         document.querySelectorAll('.move-form').forEach(updateClaim);
     }
     document.addEventListener('neo:navigated', enhance);

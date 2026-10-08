@@ -14,7 +14,7 @@ public sealed class BoardModel(OrchestrationClient client) : WorkPageModel(clien
     [BindProperty] public Guid MoveItemId { get; set; }
     [BindProperty] public Guid MoveVersion { get; set; }
     [BindProperty] public string Destination { get; set; } = "";
-    [BindProperty] public Guid ClaimRoleId { get; set; }
+    [BindProperty] public Guid? ClaimRoleId { get; set; }
     [BindProperty] public string? Branch { get; set; }
     [BindProperty] public string? MoveNote { get; set; }
 
@@ -32,12 +32,12 @@ public sealed class BoardModel(OrchestrationClient client) : WorkPageModel(clien
     {
         if (MoveItemId == Guid.Empty || MoveVersion == Guid.Empty || !Statuses.Contains(Destination))
             ModelState.AddModelError(nameof(Destination), "انتقال معتبر نیست.");
-        if (Destination == "InProgress" && ClaimRoleId == Guid.Empty)
+        if (Destination == "InProgress" && (!ClaimRoleId.HasValue || ClaimRoleId == Guid.Empty))
             ModelState.AddModelError(nameof(ClaimRoleId), "رول را برای برداشتن کار انتخاب کنید.");
         if (await Attempt(async () =>
         {
             if (Destination == "InProgress")
-                await Send<WorkItemDetails>($"items/{MoveItemId}/claim", new ClaimWorkItemRequest(MoveVersion, ClaimRoleId, Branch), ct);
+                await Send<WorkItemDetails>($"items/{MoveItemId}/claim", new ClaimWorkItemRequest(MoveVersion, ClaimRoleId!.Value, Branch), ct);
             else
                 await Send<WorkItemDetails>($"items/{MoveItemId}/status", new ChangeStatusRequest(MoveVersion, Destination, MoveNote), ct);
         })) return RedirectToPage(new { OrganizationId, WorkspaceId, ProjectId, RoleId, Domain, State, ItemType, IncludeArchived, Skip });

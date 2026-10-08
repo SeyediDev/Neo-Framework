@@ -16,7 +16,7 @@
 <div class="metrics"><section><span>کارهای مطابق فیلتر</span><strong>@board.Total</strong></section><section><span>زمان سپری‌شده</span><strong>@Time(board.Metrics.ElapsedSeconds)</strong></section><section><span>برآورد کل</span><strong>@Time(board.Metrics.EstimatedSeconds)</strong></section><section><span>زمان‌سنج فعال</span><strong>@board.Metrics.TrackingCount</strong></section></div>
 <p class="muted">آمار برای همه نتایج فیلتر است؛ کارت‌ها صفحه‌ای نمایش داده می‌شوند. مصرف برآورد زمانی، درصد تکمیل کار نیست.</p>
 @if (board.Items.Count == 0) { <section class="panel empty"><h2>کاری برای این فیلتر پیدا نشد</h2><p>فیلترها را تغییر دهید یا یک کار جدید بسازید.</p></section> }
-else { <p class="small board-hint" id="board-hint">برد را افقی پیمایش کنید. دستگیرهٔ کارت را به ستون مقصد بکشید، یا منوی انتقال را با لمس/کیبورد باز کنید. انتقال تنها پس از تأیید شما و پذیرش API انجام می‌شود.</p><p id="kanban-announcement" class="small" role="status" aria-live="polite"></p><div class="kanban" role="region" tabindex="0" aria-label="کانبان" aria-describedby="board-hint">
+else { <p class="small board-hint" id="board-hint">کارت را از سربرگش بکشید و در ستون روشن‌شده رها کنید. برای انتقال با کیبورد یا لمس، منوی ⋯ کارت را باز کنید.</p><p id="kanban-announcement" class="small" role="status" aria-live="polite"></p><div class="kanban" role="region" tabindex="0" aria-label="کانبان" aria-describedby="board-hint">
 @foreach(var state in Statuses.Where(s=>Model.State is null or "" || s==Model.State)) {
 <section class="column flow-column" data-state="@state"><h2>@Status(state) <span class="count">@(board.Metrics.StatusCounts.GetValueOrDefault(state))</span></h2>
 @foreach(var item in board.Items.Where(x=>x.Status==state)) {
@@ -29,14 +29,14 @@ else { <p class="small board-hint" id="board-hint">برد را افقی پیما
 else {<span class="small muted">برآورد زمانی ثبت نشده</span>}
 @{ var destinations = Neo.AgentOrchestration.Web.Pages.BoardModel.MoveDestinations(item.Status, item.IsArchived); }
 @if(destinations.Length > 0 && !(item.OwnerAgentId?.StartsWith("neo-run:", StringComparison.Ordinal) ?? false)) {
-<button type="button" class="move-handle quiet" aria-label="جابه‌جایی @item.Key" aria-describedby="board-hint" hidden>⠿ جابه‌جایی</button>
-<details class="move-menu"><summary>انتقال @item.Key</summary>
+<details class="move-menu"><summary aria-label="گزینه‌های انتقال @item.Key" title="انتقال با لمس یا کیبورد"><span aria-hidden="true">⋯</span><span class="move-fallback"> انتقال @item.Key</span></summary>
 <form method="post" asp-page-handler="Move" class="move-form" data-draft-key="move-@item.Id">
 <input type="hidden" name="MoveItemId" value="@item.Id" /><input type="hidden" name="MoveVersion" value="@item.Version" />
 <input type="hidden" name="ProjectId" value="@Model.ProjectId" /><input type="hidden" name="RoleId" value="@Model.RoleId" />
 <input type="hidden" name="Domain" value="@Model.Domain" /><input type="hidden" name="State" value="@Model.State" />
 <input type="hidden" name="ItemType" value="@Model.ItemType" /><input type="hidden" name="IncludeArchived" value="@Model.IncludeArchived.ToString().ToLowerInvariant()" /><input type="hidden" name="Skip" value="@Model.Skip" />
 <label>مقصد<select name="Destination" required><option value="">انتخاب مرحله</option>@foreach(var target in destinations){<option value="@target">@Status(target)</option>}</select></label>
+<p class="move-context small" role="status" hidden></p>
 @if(destinations.Contains("InProgress")){
 <div class="claim-fields"><label>رول برای برداشتن کار<select name="ClaimRoleId"><option value="">انتخاب رول</option>@foreach(var role in Model.Catalog!.Roles.Where(x=>x.IsEnabled)){<option value="@role.Id">@role.Name</option>}</select></label><label>برنچ<input name="Branch" maxlength="250" /></label><p class="small">ورود به «در حال انجام» کار را به هویت فعلی واگذار و زمان‌سنج را شروع می‌کند. رول باید آزاد باشد.</p></div>
 }
