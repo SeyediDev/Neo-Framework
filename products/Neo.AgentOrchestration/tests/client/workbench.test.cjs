@@ -64,6 +64,33 @@ test('keyboard-opened move menu keeps its focus and inputs until closed', async 
     options.openMenu=false;await h.poll();assert.equal(calls,1);
 });
 
+test('in-flight poll never locks interaction or overwrites a newer navigation response', async () => {
+    let resolvePoll, calls=0;
+    const h=harness(async()=>{
+        calls++;
+        if(calls===1) return new Promise(resolve=>resolvePoll=resolve);
+        return h.response();
+    },409,{board:true,fakeClock:true});
+    const pending=h.poll();
+    await new Promise(setImmediate);
+    assert.notEqual(h.main.inert,true);assert.equal(h.window.NeoWorkbench.busy,false);
+    await h.window.NeoWorkbench.navigate(current);
+    const previousMessage=h.messages['spa-message'].textContent;
+    resolvePoll({...h.response(),status:401});await pending;
+    assert.equal(calls,2);assert.equal(h.messages['spa-message'].textContent,previousMessage);
+    assert.equal(h.messages['spa-login'].hidden,true,'obsolete 401 cannot interrupt newer user navigation');
+});
+
+test('a draft started while poll is in flight prevents its response from replacing inputs', async () => {
+    let resolvePoll;
+    const h=harness(()=>new Promise(resolve=>resolvePoll=resolve),409,{board:true,fakeClock:true});
+    const pending=h.poll();await new Promise(setImmediate);
+    h.mainListeners.input({target:h.field});
+    resolvePoll({...h.response(),ok:true,status:200});await pending;
+    assert.equal(h.field.value,'retained draft');
+    assert.equal(h.messages['spa-feedback'].hidden,undefined,'discarded poll produces no error or success message');
+});
+
 test('GET filter selections survive a poll without an unsaved-write warning', async () => {
     let calls = 0;
     const h = harness(async () => { calls++; return h.response(); }, 409, { board: true, fakeClock: true });

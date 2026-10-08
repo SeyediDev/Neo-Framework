@@ -11,6 +11,7 @@
     const drafts = new Map();
     let dirtyForms = new Set();
     let busy = false, writing = false, dirty = false, active = location.href;
+    let polling = false, navigationRevision = 0;
     let pollTimer = 0;
     let loginWindow = null;
     let index = Number(history.state?.neoIndex ?? 0);
@@ -104,24 +105,34 @@
     }
     async function show(url, options = {}) {
         if (busy) { tell('درخواست قبلی هنوز در حال انجام است.'); return false; }
+        if (options.poll && polling) return false;
         if (!route(url)) return false;
+        const revision = options.poll ? navigationRevision : ++navigationRevision;
         remember();
         const from = active, saved = drafts.get(from), beforeBoard = boardSnapshot();
+        const obsoletePoll = () => options.poll && (busy || revision !== navigationRevision || from !== active ||
+            dirtyForms.size || document.activeElement?.closest?.('form') ||
+            main.querySelector('.moving-card') || main.querySelector('.move-menu[open]'));
         const method = options.body ? 'POST' : 'GET';
         const oldFocus = document.activeElement;
         const focusName = oldFocus?.getAttribute('name');
         const focusedForm = oldFocus?.closest('form');
         const focusFormIndex = focusedForm ? forms().indexOf(focusedForm) : -1;
-        setBusy(true, method === 'POST');
+        // Silent polling never makes the board inert. If the user starts editing,
+        // dragging or navigating while it is in flight, discard its stale result.
+        if (options.poll) polling = true;
+        else setBusy(true, method === 'POST');
         if (!options.silent) tell(method === 'POST' ? 'در حال ثبت…' : 'در حال دریافت…');
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 45000);
         try {
             const response = await fetch(url, { method, body: options.body, credentials: 'same-origin',
                 signal: controller.signal, mode: 'same-origin', cache: 'no-store', headers: { 'X-Neo-Navigation': '1', 'Accept': 'text/html' } });
+            if (obsoletePoll()) return false;
             if (response.status === 401) { tell('نشست معتبر نیست؛ نوشته‌های شما در این صفحه حفظ شده‌اند. دوباره وارد شوید.', true, true); return false; }
             if (!route(response.url)) { tell('این پاسخ نیاز به ورود یا بررسی دسترسی دارد.', true, true); return false; }
             const html = response.headers.get('content-type')?.includes('text/html') ? await response.text() : '';
+            if (obsoletePoll()) return false;
             const page = new DOMParser().parseFromString(html, 'text/html');
             const next = page.getElementById('content');
             if (!response.ok || !next) {
@@ -175,13 +186,17 @@
             document.dispatchEvent(new CustomEvent('neo:navigated', { detail: { url: active } }));
             return true;
         } catch {
+            if (obsoletePoll()) return false;
             tell(method === 'POST' ? 'پاسخ دریافت نشد؛ ممکن است عملیات ثبت شده باشد. پیش از ارسال مجدد، آخرین وضعیت را بررسی کنید. ورودی‌ها حفظ شدند.' :
                 'ارتباط برقرار نشد. صفحه و ورودی‌ها حفظ شدند؛ دوباره آخرین وضعیت را دریافت کنید.', true);
             return false;
         } finally {
             clearTimeout(timeout);
-            setBusy(false);
-            if (oldFocus?.isConnected && main.contains(oldFocus)) oldFocus.focus({ preventScroll: true });
+            if (options.poll) polling = false;
+            else {
+                setBusy(false);
+                if (oldFocus?.isConnected && main.contains(oldFocus)) oldFocus.focus({ preventScroll: true });
+            }
         }
     }
     document.addEventListener('click', event => {

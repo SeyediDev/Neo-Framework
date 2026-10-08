@@ -9,6 +9,8 @@ abandons the gesture. The compact ⋯ native details menu provides the alternati
 for keyboard/touch without duplicating a full-size move control. Background board
 polling pauses during the drag or while a move menu is open so it cannot replace
 the pointer-captured card or interrupt keyboard navigation.
+An already-running silent poll does not disable the board; its response is
+discarded if the user begins editing/dragging or starts a newer navigation.
 
 A valid ordinary drop submits the existing antiforgery/version-protected form
 once through the SPA, without a second confirmation. Claim (InProgress), terminal
