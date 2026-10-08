@@ -12,6 +12,7 @@
     let dirtyForms = new Set();
     let busy = false, writing = false, dirty = false, active = location.href;
     let pollTimer = 0;
+    let loginWindow = null;
     let index = Number(history.state?.neoIndex ?? 0);
     const initialDocument = crypto.randomUUID();
     document.documentElement.dataset.spaDocument = initialDocument;
@@ -128,12 +129,19 @@
                     response.status === 403 ? 'اجازهٔ این عملیات را ندارید.' : 'درخواست انجام نشد؛ ورودی و ارتباط را بررسی کنید.';
                 tell(detail || reason, true); return false;
             }
+            const previousActor = main.getAttribute?.('data-session-actor') || '';
+            const nextActor = next.getAttribute('data-session-actor') || '';
+            if (previousActor && nextActor !== previousActor) {
+                tell('حساب واردشده تغییر کرده است؛ برای حفظ محرمانگی نوشته‌ها، با حساب قبلی وارد شوید یا این صفحه را خودتان ببندید.', true, true);
+                return false;
+            }
             // Server markup is encoded by Razor. Never execute a script from a fetched document.
             next.querySelectorAll('script,base,iframe,object,embed').forEach(node => node.remove());
             next.querySelectorAll('*').forEach(node => [...node.attributes].forEach(attribute => {
                 if (/^on/i.test(attribute.name)) node.removeAttribute(attribute.name);
             }));
             main.replaceChildren(...[...next.childNodes].map(node => document.importNode(node, true)));
+            main.setAttribute('data-session-actor', nextActor);
             document.dispatchEvent(new CustomEvent('neo:board-updated', { detail: { before: beforeBoard, poll: !!options.poll } }));
             main.inert = false;
             document.title = page.title;
@@ -221,6 +229,26 @@
         });
     });
     refresh.addEventListener('click', () => { void show(active, { preserve: true }); });
+    login.addEventListener('click', event => {
+        // Reauthenticate separately so in-memory drafts never need persistent
+        // storage and an expired POST is never automatically replayed.
+        const popup = window.open('/Login?returnUrl=%2FSessionRestored', 'fanasa-work-reauth');
+        if (popup) {
+            event.preventDefault(); loginWindow = popup;
+            tell('ورود را در پنجره بازشده تکمیل کنید؛ نوشته‌های این صفحه حفظ می‌شوند.', true, true);
+        } else {
+            event.preventDefault();
+            tell('مرورگر پنجره ورود را مسدود کرد. اجازه بازشدن آن را بدهید و دوباره ورود مجدد را بزنید؛ نوشته‌ها حفظ شده‌اند.', true, true);
+        }
+    });
+    window.addEventListener('message', event => {
+        if (event.origin !== location.origin || !loginWindow || event.source !== loginWindow ||
+            event.data?.type !== 'fanasa:session-restored') return;
+        loginWindow = null;
+        // GET only, preserving current route/filter/drafts; the user decides
+        // whether to resubmit a command after inspecting the current record.
+        void show(active, { preserve: true });
+    });
     document.getElementById('spa-dismiss').addEventListener('click', () => { feedback.hidden = true; });
     document.addEventListener('neo:navigated', scheduleBoardPoll);
     document.addEventListener('visibilitychange', scheduleBoardPoll);

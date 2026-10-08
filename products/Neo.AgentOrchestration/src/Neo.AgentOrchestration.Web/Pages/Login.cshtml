@@ -3,4 +3,6 @@
 @{ ViewData["Title"] = "ورود"; }
 <section class="panel narrow"><h1>ورود به مدیریت کار</h1>
 <p role="alert">@(Model.Failed ? "ورود تأیید نشد. دوباره تلاش کنید یا با مدیر سامانه تماس بگیرید." : "برای ورود، به صفحه‌ی احراز هویت مرکزی فن‌آسا هدایت می‌شوید.")</p>
-<p>رمز عبور در این سامانه دریافت یا نگهداری نمی‌شود.</p><a asp-page="/Index">بازگشت</a></section>
+<p>رمز عبور در این سامانه دریافت یا نگهداری نمی‌شود.</p>
+@if (Model.Failed) { <a class="button" asp-page="/Login" asp-route-returnUrl="@Model.ReturnUrl">تلاش دوباره برای ورود</a> }
+<a asp-page="/Index">بازگشت</a></section>

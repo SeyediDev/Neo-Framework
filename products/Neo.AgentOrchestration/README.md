@@ -93,6 +93,10 @@ policies. See [API configuration](docs/API.md) for claims, SQL and OpenAPI acces
 The Web exposes service status, OIDC login, board, tasks/history/time, configuration
 and simulation/HTTP run monitoring. See [Web setup and limits](docs/WEB.md) for issuer
 configuration, workspace selection and single-instance server-side sessions.
+Server-side refresh now retains the absolute session deadline, serializes token
+rotation per ticket and fails closed on invalid/revoked refresh. SPA
+reauthentication preserves the original window's drafts without replaying writes;
+see Web setup for the required exact API audience and popup behavior.
 HTTP tests do not establish a real external issuer login.
 OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 

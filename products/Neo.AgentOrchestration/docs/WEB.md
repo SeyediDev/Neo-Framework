@@ -42,6 +42,7 @@ the approved HTTPS values through environment or secret management.
 | `WebAuthentication__Authority` | Trusted HTTPS OpenID Connect issuer |
 | `WebAuthentication__ClientId` | Registered Web client using authorization code with PKCE |
 | `WebAuthentication__ClientSecret` | Server-side client credential where required; inject privately, never commit |
+| `WebAuthentication__ApiAudience` | Exact delegated API audience for refreshed JWT validation; falls back to `Authentication__Audience` when hosts share the intended environment file. Required for refresh. |
 | `WebAuthentication__Scopes__0`, `__1`, ... | Issuer-specific delegated API scopes; `openid` and `profile` are included |
 | `OrchestrationApi__DefaultOrganizationId` | Optional workspace chooser default, not an access grant |
 | `OrchestrationApi__DefaultWorkspaceId` | Optional chooser default, not an access grant |
@@ -149,10 +150,30 @@ are server-owned configuration, not credentials to enter in agent instructions.
 
 ## Session limits
 
-The browser receives an HttpOnly protected opaque session key. Access and ID
-tokens stay in a server-side memory ticket store. Sessions expire after 30 minutes
-without sliding expiration; an expired API token requires sign-out/sign-in too.
-Token refresh is not implemented. Logout removes only the local ticket/cookie;
+The browser receives an HttpOnly protected opaque session key. Access, refresh and
+ID tokens stay in a server-side memory ticket store. Sessions expire after 30
+minutes without sliding expiration. Within that unchanged deadline, a saved
+access token is refreshed when less than 45 seconds remain. A per-ticket gate
+serializes retrieval/refresh, atomically retains rotated refresh tokens, and
+prevents a late renewal or concurrent logout from resurrecting a session.
+Discovery issuer and token endpoint must match the configured authority (HTTPS;
+explicit loopback development is the only HTTP exception). Refreshed access JWTs
+are checked for signature, issuer, exact API audience, expiry and the original
+subject. An optional new ID token is checked against the Web client and subject.
+The API still validates every delegated request and remains the grant authority.
+No offline_access scope, token lifetime extension, application password store,
+provider error-body logging or automatic API-command replay is introduced.
+
+Revoked/missing refresh tokens, invalid tokens, timeouts, oversized responses or
+ambiguous refresh failures invalidate the local ticket; they do not retry a
+possibly consumed refresh token. The SPA login action opens a separate login
+window and uses a same-origin, expected-window completion signal to GET the
+current page with its in-memory drafts/filter/position retained. It never stores
+drafts or tokens persistently and never replays a POST. If popups are blocked it
+keeps the original page and asks the user to allow the login window. Native
+no-script reauthentication does not preserve in-memory drafts.
+
+Logout removes only the local ticket/cookie;
 it does not log the user out of their identity provider.
 
 This store is **single-instance**: restart signs users out; replicas require a

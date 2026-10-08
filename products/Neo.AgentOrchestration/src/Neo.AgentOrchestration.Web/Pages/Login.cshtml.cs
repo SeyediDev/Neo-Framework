@@ -9,10 +9,12 @@ namespace Neo.AgentOrchestration.Web.Pages;
 public sealed class LoginModel(IConfiguration configuration) : PageModel
 {
     public bool Failed { get; private set; }
+    public string ReturnUrl { get; private set; } = "/Workspace";
     public IActionResult OnGet(string? returnUrl, bool failed = false)
     {
         Failed = failed;
+        ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl! : "/Workspace";
         if (failed || !WebIdentity.Configured(configuration)) { Response.StatusCode = failed ? 401 : 503; return Page(); }
-        return Challenge(new AuthenticationProperties { RedirectUri = Url.IsLocalUrl(returnUrl) ? returnUrl : "/Workspace" }, OpenIdConnectDefaults.AuthenticationScheme);
+        return Challenge(new AuthenticationProperties { RedirectUri = ReturnUrl }, OpenIdConnectDefaults.AuthenticationScheme);
     }
 }

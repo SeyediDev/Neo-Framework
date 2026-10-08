@@ -14,15 +14,15 @@ function harness(fetcher, status = 409, options = {}) {
     const form = { action: current + '?handler=Log', method: 'post', elements: [field],
         getAttribute: name => name === 'action' ? form.action : null,
         hasAttribute: () => false, reportValidity: () => true };
-    const main = { setAttribute() {}, contains: x => x === form || x === field,
+    const main = { setAttribute() {}, getAttribute: () => options.actor ?? '', contains: x => x === form || x === field,
         querySelector: selector => selector === '.kanban' && options.board ? {} : null,
         querySelectorAll: selector => selector === 'form' ? [form] : [],
         addEventListener: (name, fn) => mainListeners[name] = fn,
         replaceChildren() { throw new Error('An error response must not replace main'); } };
-    const document = { getElementById: id => id === 'content' ? main : (messages[id] ??= { dataset: {}, addEventListener() {} }),
+    const document = { getElementById: id => id === 'content' ? main : (messages[id] ??= { dataset: {}, addEventListener(name, fn) { listeners[id + ':' + name] = fn; } }),
         documentElement: { dataset: {}, classList: { toggle() {} } }, activeElement: null, visibilityState: 'visible',
         addEventListener: (name, fn) => listeners[name] = fn };
-    const window = { fetch: fetcher, DOMParser: class {}, addEventListener: (name, fn) => listeners[name] = fn };
+    const window = { fetch: fetcher, DOMParser: class {}, open: () => options.popup ?? null, addEventListener: (name, fn) => listeners[name] = fn };
     const context = { window, document, fetch: fetcher, location: new URL(current),
         history: { state: null, replaceState() {}, pushState() {} },
         crypto: { randomUUID: () => 'document-one' }, URL, URLSearchParams,
@@ -30,7 +30,7 @@ function harness(fetcher, status = 409, options = {}) {
         clearTimeout: options.fakeClock ? id => timers.delete(id) : clearTimeout,
         AbortController, scrollX: 0, scrollY: 0,
         FormData: class { entries() { return [[field.name, field.value]]; } },
-        DOMParser: class { parseFromString() { return { getElementById: () => null }; } } };
+        DOMParser: class { parseFromString() { return { getElementById: () => options.next ?? null }; } } };
     vm.runInNewContext(source, context);
     const response = () => ({ status, ok: false, url: current, headers: { get: () => 'text/html' }, text: async () => '' });
     const poll = async () => {
@@ -119,6 +119,41 @@ test('401 shows native login without following an identity navigation', async ()
     assert.equal(h.messages['spa-login'].hidden, false);
     assert.equal(h.messages['spa-refresh'].hidden, true);
     assert.equal(h.field.value, 'retained draft');
+});
+
+test('reauthentication preserves original window and only reloads GET for the expected same-origin popup', async () => {
+    const popup = {}, calls = [];
+    const h = harness(async (url, options) => { calls.push({ url, options }); return h.response(); }, 401, { popup });
+    let prevented = false;
+    h.listeners['spa-login:click']({ preventDefault() { prevented = true; } });
+    assert.equal(prevented, true);
+    h.listeners.message({ origin: 'https://evil.test', source: popup, data: { type: 'fanasa:session-restored' } });
+    h.listeners.message({ origin, source: {}, data: { type: 'fanasa:session-restored' } });
+    assert.equal(calls.length, 0);
+    h.listeners.message({ origin, source: popup, data: { type: 'fanasa:session-restored' } });
+    await new Promise(setImmediate);
+    assert.equal(calls.length, 1); assert.equal(calls[0].url, current);
+    assert.equal(calls[0].options.method, 'GET'); assert.equal(calls[0].options.body, undefined);
+    assert.equal(h.field.value, 'retained draft');
+    h.listeners.message({ origin, source: popup, data: { type: 'fanasa:session-restored' } });
+    assert.equal(calls.length, 1, 'completion messages cannot replay writes or repeatedly reload');
+});
+
+test('blocked reauthentication popup does not discard in-memory draft', () => {
+    const h = harness(() => { throw new Error('must not fetch'); });
+    let prevented = false;
+    h.listeners['spa-login:click']({ preventDefault() { prevented = true; } });
+    assert.equal(prevented, true); assert.equal(h.field.value, 'retained draft');
+    assert.match(h.messages['spa-message'].textContent, /مسدود/);
+});
+
+test('a different signed-in account cannot inherit the original account drafts', async () => {
+    let calls = 0;
+    const next = { getAttribute: () => 'different-actor' };
+    const h = harness(async () => { calls++; return { ...h.response(), ok: true }; }, 200, { actor: 'original-actor', next });
+    assert.equal(await h.window.NeoWorkbench.navigate(current), false);
+    assert.equal(calls, 1); assert.equal(h.field.value, 'retained draft');
+    assert.match(h.messages['spa-message'].textContent, /حساب واردشده تغییر کرده/);
 });
 test('lost POST response warns about uncertain commit and never retries', async () => {
     let count = 0;

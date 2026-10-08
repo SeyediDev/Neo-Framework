@@ -1,3 +1,8 @@
+@using Microsoft.AspNetCore.Authentication
+@{
+    var sessionProperties = (await Context.AuthenticateAsync()).Properties;
+    var sessionActor = sessionProperties is not null && sessionProperties.Items.TryGetValue(Neo.AgentOrchestration.Web.WebIdentity.ChatKey, out var actor) ? actor : "";
+}
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +16,7 @@
 else { <a asp-page="/Login">ورود</a> }
 </nav></header>
 <div id="spa-feedback" class="spa-feedback" hidden><span id="spa-message" role="status" aria-live="polite"></span><button id="spa-refresh" type="button" hidden>دریافت آخرین وضعیت</button><a id="spa-login" href="/Login" hidden>ورود مجدد</a><button id="spa-dismiss" type="button" aria-label="بستن پیام">×</button></div>
-<main id="content" tabindex="-1">@RenderBody()</main><footer>مدیریت کار و هماهنگی ایجنت‌ها</footer>
+<main id="content" tabindex="-1" data-session-actor="@sessionActor">@RenderBody()</main><footer>مدیریت کار و هماهنگی ایجنت‌ها</footer>
 <script src="~/workbench.js" asp-append-version="true" defer></script>
 <script src="~/kanban.js" asp-append-version="true" defer></script>
 <script>if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {}));</script>

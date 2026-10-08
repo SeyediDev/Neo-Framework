@@ -28,14 +28,14 @@ public sealed class HostTests
     }
 
     [Theory]
-    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "d1b79f17-a937-484a-981f-b30105b827ce", true)]
-    [InlineData(null, null, false)]
-    [InlineData("invalid", "d1b79f17-a937-484a-981f-b30105b827ce", false)]
-    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "invalid", false)]
-    [InlineData("00000000-0000-0000-0000-000000000000", "d1b79f17-a937-484a-981f-b30105b827ce", false)]
-    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "00000000-0000-0000-0000-000000000000", false)]
+    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "d1b79f17-a937-484a-981f-b30105b827ce")]
+    [InlineData(null, null)]
+    [InlineData("invalid", "d1b79f17-a937-484a-981f-b30105b827ce")]
+    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "invalid")]
+    [InlineData("00000000-0000-0000-0000-000000000000", "d1b79f17-a937-484a-981f-b30105b827ce")]
+    [InlineData("8e64a895-d089-4bbe-850d-a19be7be98e8", "00000000-0000-0000-0000-000000000000")]
     public async Task Root_routes_valid_defaults_or_workspace_selection_without_calling_api(
-        string? organization, string? workspace, bool valid)
+        string? organization, string? workspace)
     {
         await using var web = new WebApplicationFactory<WebHost>().WithWebHostBuilder(b =>
         {

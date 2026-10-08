@@ -35,6 +35,13 @@ public static class WebIdentity
     public static void AddWebIdentity(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         services.AddMemoryCache();
+        services.AddSingleton(TimeProvider.System);
+        services.AddHttpClient("WebSessionRefresh", client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+            client.MaxResponseContentBufferSize = 65536;
+        }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+        services.AddSingleton<WebTokenRefresher>();
         services.AddSingleton<ITicketStore, WebTicketStore>();
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o =>
         {
@@ -79,7 +86,13 @@ public static class WebIdentity
                     context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30);
                     return Task.CompletedTask;
                 };
-                o.Events.OnRemoteFailure = context => { context.HandleResponse(); context.Response.Redirect("/Login?failed=true"); return Task.CompletedTask; };
+                o.Events.OnRemoteFailure = context =>
+                {
+                    context.HandleResponse();
+                    context.Response.Redirect("/Login?failed=true&returnUrl=" +
+                        Uri.EscapeDataString(context.Properties?.RedirectUri ?? "/Workspace"));
+                    return Task.CompletedTask;
+                };
             });
     }
 }
@@ -87,16 +100,49 @@ public static class WebIdentity
 // Only a protected opaque session key reaches the browser. Access/ID tokens
 // stay server-side. This initial deployment is single-instance; restart signs
 // users out. A shared ticket store is needed before scaling replicas.
-public sealed class WebTicketStore(IMemoryCache cache) : ITicketStore
+public sealed class WebTicketStore(IMemoryCache cache, WebTokenRefresher? refresher = null) : ITicketStore
 {
+    private sealed class Entry(AuthenticationTicket ticket)
+    {
+        public AuthenticationTicket Ticket = ticket;
+        public readonly SemaphoreSlim Gate = new(1, 1);
+    }
+    private static AuthenticationTicket Copy(AuthenticationTicket ticket) =>
+        TicketSerializer.Default.Deserialize(TicketSerializer.Default.Serialize(ticket))!;
     public Task<string> StoreAsync(AuthenticationTicket ticket)
     {
         var key = "neo-ticket:" + Guid.NewGuid().ToString("N");
-        cache.Set(key, ticket, ticket.Properties.ExpiresUtc ?? DateTimeOffset.UtcNow.AddMinutes(30));
+        cache.Set(key, new Entry(Copy(ticket)), ticket.Properties.ExpiresUtc ?? DateTimeOffset.UtcNow.AddMinutes(30));
         return Task.FromResult(key);
     }
-    public Task RenewAsync(string key, AuthenticationTicket ticket)
-    { cache.Set(key, ticket, ticket.Properties.ExpiresUtc ?? DateTimeOffset.UtcNow.AddMinutes(30)); return Task.CompletedTask; }
-    public Task<AuthenticationTicket?> RetrieveAsync(string key) => Task.FromResult(cache.Get<AuthenticationTicket>(key));
+    public async Task RenewAsync(string key, AuthenticationTicket ticket)
+    {
+        if (cache.Get<Entry>(key) is not { } entry) return;
+        await entry.Gate.WaitAsync();
+        try
+        {
+            if (!ReferenceEquals(cache.Get<Entry>(key), entry)) return;
+            var next = Copy(ticket);
+            // A late cookie renewal must not overwrite rotated tokens or extend
+            // the absolute deadline. Logout must never resurrect an entry.
+            next.Properties.StoreTokens(entry.Ticket.Properties.GetTokens());
+            next.Properties.ExpiresUtc = entry.Ticket.Properties.ExpiresUtc;
+            entry.Ticket = next;
+        }
+        finally { entry.Gate.Release(); }
+    }
+    public async Task<AuthenticationTicket?> RetrieveAsync(string key)
+    {
+        if (cache.Get<Entry>(key) is not { } entry) return null;
+        await entry.Gate.WaitAsync();
+        try
+        {
+            if (!ReferenceEquals(cache.Get<Entry>(key), entry)) return null;
+            if (refresher is not null && !await refresher.RefreshIfNeededAsync(entry.Ticket))
+            { cache.Remove(key); return null; }
+            return ReferenceEquals(cache.Get<Entry>(key), entry) ? Copy(entry.Ticket) : null;
+        }
+        finally { entry.Gate.Release(); }
+    }
     public Task RemoveAsync(string key) { cache.Remove(key); return Task.CompletedTask; }
 }
