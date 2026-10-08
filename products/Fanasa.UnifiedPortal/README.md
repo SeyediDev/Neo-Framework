@@ -17,8 +17,26 @@
 - `Authentication__Authority`
 - `Authentication__ClientId`
 - `Authentication__ClientSecret` (فقط برای confidential client)
-- `Products__WorkManagementUrl`
-- `Products__ContractManagementUrl`
+- `PlatformControlCenter__BaseUrl`
+- `PlatformControlCenter__Authority` (در صورت خالی بودن، Authority ورود استفاده می‌شود)
+- `PlatformControlCenter__ClientId`
+- `PlatformControlCenter__ClientSecret` (فقط در secret store)
+- `PlatformControlCenter__Scope` (پیش‌فرض: `platform.registry`)
 
-در production مقدار Authority باید HTTPS عمومی باشد. URL هر محصول از تنظیمات
-خوانده می‌شود و در source hard-code نشده است.
+در production مقدار Authority باید HTTPS باشد. سازمان‌ها از
+`GET /api/platform/memberships?subject=...` و محصولات از
+`GET /api/platform/products?subject=...` دریافت می‌شوند. subject فقط از نشست
+احراز هویت‌شده استخراج می‌شود؛ انتخاب سازمان به‌تنهایی مجوز ایجاد نمی‌کند.
+
+سازمان تک‌عضوی خودکار انتخاب می‌شود. تغییر سازمان و تازه‌سازی فهرست بدون بارگذاری
+مجدد صفحه انجام می‌شود. نبود عضویت، تنظیمات ناقص، خطای مجوز و قطعی سرویس وضعیت‌های
+جداگانه دارند. محصولات فقط برای سازمان مجاز و انتخاب‌شده نمایش داده می‌شوند.
+
+آزمون‌های متمرکز:
+
+```powershell
+dotnet run --project products/Fanasa.UnifiedPortal/tests/Portal.Tests -c Release
+```
+
+قرارداد استقرار و نیاز هماهنگی مرکز راهبری در
+[CATALOG-INTEGRATION.md](docs/CATALOG-INTEGRATION.md) ثبت شده است.

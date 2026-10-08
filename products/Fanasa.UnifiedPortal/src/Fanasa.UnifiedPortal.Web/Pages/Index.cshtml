@@ -22,9 +22,97 @@
         new { Number = "14", Icon = "⚖", Name = "ترازو", Pillar = "کنترل", Description = "صفحه اقتصاد فن‌آسا", Url = "https://fanasa.net/fa/centers/tarazu", Logo = "/brand/center-tarazu-mark-color.svg", Color = "control" }
     };
 }
-<header class="portal-hero"><div class="hero-copy"><span class="eyebrow">فن‌آسا · فرصت‌های تازه برای کسب‌وکار شما</span><h1>ایده‌تان را<br /><em>هوشمندتر و سریع‌تر</em> رشد دهید.</h1><p>از یک پنجره به محصولات، سرویس‌ها و زیرساخت‌های هوشمند فن‌آسا دسترسی پیدا کنید؛ ساده شروع کنید، مطمئن توسعه دهید و با خیال راحت مقیاس بگیرید.</p><div class="hero-actions">@if (!authenticated){<a class="button" href="/login">شروع با SSO فن‌آسا <span aria-hidden="true">↗</span></a>}else{<a class="button" href="#products">ورود به سامانه‌های من <span aria-hidden="true">↗</span></a><div class="identity-chip"><span class="status-dot"></span><span>@(User.FindFirstValue("preferred_username") ?? User.FindFirstValue("email") ?? "کاربر سازمانی")</span><a href="/logout">خروج امن</a></div>}<a class="text-link" href="#centers">کشف قابلیت‌ها <span aria-hidden="true">↓</span></a></div><div class="hero-proof"><span>✓ دسترسی یکپارچه</span><span>✓ زیرساخت قابل اتکا</span><span>✓ رشد بدون پیچیدگی</span></div></div><div class="hero-orbit" aria-hidden="true"><span class="orbit-ring ring-one"></span><span class="orbit-ring ring-two"></span><span class="orbit-core">F</span><i class="orbit-node node-one">✦</i><i class="orbit-node node-two">◈</i><i class="orbit-node node-three">⌁</i></div></header>
-<section class="portal-summary" aria-label="نمای کلی پنجره واحد"><div><strong>۱۴</strong><span>مرکز تخصصی</span></div><div><strong>۵</strong><span>حوزه توانمندی</span></div><div><strong>@Model.Products.Count</strong><span>سامانه در دسترس شما</span></div></section>
-<section class="product-catalog" id="products" aria-label="سامانه‌های مجاز"><div class="catalog-heading"><div><span class="eyebrow">سرویس‌های شما، در یک نگاه</span><h2>از اینجا شروع کنید</h2></div><p>@Model.Products.Count سامانه</p></div>@if (Model.Products.Count == 0){<div class="catalog-empty"><strong>سامانه مناسب خود را از مرکز راهبری پلتفرم دریافت کنید.</strong><span>پس از ورود، سرویس‌هایی که برای شما فعال شده‌اند همین‌جا نمایش داده می‌شوند.</span></div>}else{<div class="product-grid">@foreach (var product in Model.Products){<a class="product-card" href="@(product.Url ?? "#")" target="_blank" rel="noreferrer"><span class="product-mark @product.Center">◈</span><span><strong>@product.DisplayName</strong><small>@product.Center · @product.Audience</small></span><span class="arrow">↗</span></a>}</div>}</section>
-<section class="catalog" id="centers"><div class="catalog-heading"><div><span class="eyebrow">هویت رسمی مراکز قابلیت فن‌آسا</span><h2>۱۴ مرکز، ۵ پهنه</h2></div><p><span id="visible-count">۱۴</span> مرکز قابلیت</p></div><div class="catalog-tools"><label class="search-box"><span aria-hidden="true">⌕</span><input id="center-search" type="search" placeholder="جست‌وجو در مراکز قابلیت" aria-label="جست‌وجو در مراکز قابلیت" /></label><div class="filter-pills" role="group" aria-label="فیلتر مراکز"><button class="filter-pill is-active" type="button" data-filter="all">همه</button><button class="filter-pill" type="button" data-filter="کسب‌وکار و بازار">کسب‌وکار</button><button class="filter-pill" type="button" data-filter="هوش و عامل‌ها">هوش و عامل‌ها</button><button class="filter-pill" type="button" data-filter="زیرساخت: مرکز و لبه">زیرساخت</button><button class="filter-pill" type="button" data-filter="ساخت">ساخت</button><button class="filter-pill" type="button" data-filter="کنترل">کنترل</button></div></div><div class="center-grid" id="center-grid">@foreach (var center in centers){<article class="center-card @center.Color" data-state="@center.Pillar" data-search="@center.Name @center.Description @center.Pillar"><div class="center-top"><span class="center-number">@center.Number</span><span class="center-icon @center.Color"><img src="@center.Logo" alt="نشان @center.Name" loading="lazy" /></span></div><span class="center-pillar">@center.Pillar</span><h3>@center.Name</h3><p>@center.Description</p><div class="center-bottom"><span class="center-product">نشان رسمی مرکز</span><a class="center-link" href="@center.Url" target="_blank" rel="noreferrer" aria-label="معرفی @center.Name">↗</a></div></article>}</div><p class="no-results" id="no-results" hidden>مرکزی با این جست‌وجو پیدا نشد.</p></section>
-<section class="portal-note"><span class="note-mark">✦</span><div><strong>یک پنجره، چند مسیر، یک هویت</strong><p>ورود، نقش‌ها و دسترسی‌ها در SSO مرکزی فن‌آسا مدیریت می‌شوند و هر محصول دامنه مستقل خودش را حفظ می‌کند.</p></div></section>
-<script>(()=>{const cards=[...document.querySelectorAll('.center-card')],search=document.getElementById('center-search'),count=document.getElementById('visible-count'),empty=document.getElementById('no-results');let filter='all';const render=()=>{const query=(search.value||'').trim().toLocaleLowerCase();let shown=0;cards.forEach(card=>{const matches=(filter==='all'||card.dataset.state===filter)&&(!query||card.dataset.search.toLocaleLowerCase().includes(query));card.hidden=!matches;if(matches)shown++});count.textContent=shown;empty.hidden=shown!==0};search.addEventListener('input',render);document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(item=>item.classList.toggle('is-active',item===button));render()}));})();</script>
+<header class="portal-hero">
+    <div class="hero-copy">
+        <span class="eyebrow">پنجره واحد فن آسا</span>
+        <h1>همه ابزارهای کارتان،<br /><em>در یک پنجره.</em></h1>
+        <p>به سامانه‌های سازمان خود دسترسی پیدا کنید و خدمات موردنیازتان را در میان قابلیت‌های فن آسا بیابید. یک حساب، یک مسیر روشن برای شروع کار.</p>
+        <div class="hero-actions">
+            @if (!authenticated) { <a class="button" href="/login">ورود به فضای کار <span aria-hidden="true">←</span></a> }
+            else { <a class="button" href="#workspace">مشاهده سامانه‌های من <span aria-hidden="true">←</span></a> }
+            <a class="text-link" href="#centers">آشنایی با خدمات <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-proof"><span>یک حساب برای همه خدمات</span><span>دسترسی متناسب با سازمان شما</span></div>
+    </div>
+    <aside class="hero-guide" aria-label="راهنمای شروع">
+        <span class="guide-label">مسیر شما در فن آسا</span>
+        <div class="guide-step"><span class="step-number">۱</span><div><strong>وارد شوید</strong><p>با حساب یکپارچه فن آسا</p></div></div>
+        <div class="guide-step"><span class="step-number">۲</span><div><strong>سازمان خود را انتخاب کنید</strong><p>فضای کاری متناسب با دسترسی شما</p></div></div>
+        <div class="guide-step"><span class="step-number">۳</span><div><strong>کار را شروع کنید</strong><p>با سامانه‌ها و خدمات سازمانتان</p></div></div>
+        <a class="guide-link" href="#workspace">رفتن به فضای کار <span aria-hidden="true">↙</span></a>
+    </aside>
+</header>
+
+<section class="workspace-panel" id="workspace" aria-labelledby="workspace-title" data-status="@Model.Status">
+    <div class="catalog-heading">
+        <div><span class="eyebrow">فضای کار شما</span><h2 id="workspace-title">سامانه‌های سازمان</h2></div>
+        <span class="section-badge" id="product-count">@Model.Products.Count سامانه</span>
+    </div>
+    @if (authenticated)
+    {
+        <form class="organization-form" method="get" action="/#workspace" id="organization-form">
+            <div class="organization-field">
+                <label for="organization-select">سازمان فعال</label>
+                <select name="tenantId" id="organization-select" disabled="@(Model.Organizations.Count == 0)" aria-describedby="workspace-status">
+                    <option value="">@(Model.Organizations.Count == 0 ? "سازمانی در دسترس نیست" : "سازمان موردنظر را انتخاب کنید")</option>
+                    @foreach (var organization in Model.Organizations)
+                    {
+                        <option value="@organization.Id" selected="@(organization.Id == Model.ActiveOrganizationId)">@organization.Name</option>
+                    }
+                </select>
+            </div>
+            <button class="button button-secondary" type="submit" id="organization-submit" disabled="@(Model.Organizations.Count == 0)">نمایش سامانه‌ها <span aria-hidden="true">←</span></button>
+            <button class="refresh-button" type="button" id="workspace-refresh">تازه‌سازی فهرست <span aria-hidden="true">↻</span></button>
+        </form>
+    }
+    <p id="workspace-status" class="workspace-status @(Model.Status is CatalogStatus.Forbidden or CatalogStatus.Unavailable or CatalogStatus.NotConfigured ? "is-error" : "")" role="status" aria-live="polite">@Model.Message</p>
+    <div class="catalog-empty" id="workspace-empty" hidden="@(Model.Products.Count > 0)">
+        <span class="empty-symbol" aria-hidden="true">◇</span>
+        <strong id="empty-title">@(authenticated ? "فضای کار شما از اینجا آغاز می‌شود" : "سامانه‌های شما پس از ورود نمایش داده می‌شوند")</strong>
+        <p id="empty-description">@(authenticated ? Model.Message : "وارد حساب خود شوید تا سازمان‌ها و سامانه‌های مجازتان را ببینید.")</p>
+        @if (!authenticated || Model.Status == CatalogStatus.SignInRequired) { <a class="button button-secondary" href="/login">ورود به حساب فن آسا</a> }
+    </div>
+    <div class="product-grid" id="product-grid" hidden="@(Model.Products.Count == 0)">
+        @foreach (var product in Model.Products)
+        {
+            var url = Fanasa.UnifiedPortal.Web.Pages.IndexModel.SafeProductUrl(product.Url);
+            <article class="product-card">
+                <span class="product-mark" aria-hidden="true">◈</span>
+                <div class="product-details"><h3>@product.DisplayName</h3><p>@Model.ActiveOrganizationName</p></div>
+                @if (url is not null) { <a class="product-open" href="@url" target="_blank" rel="noopener noreferrer" aria-label="ورود به @product.DisplayName">ورود به سامانه <span aria-hidden="true">↗</span></a> }
+                else { <span class="unavailable-link">نشانی سامانه هنوز آماده نیست</span> }
+            </article>
+        }
+    </div>
+</section>
+
+<section class="catalog" id="centers" aria-labelledby="centers-title">
+    <div class="catalog-heading">
+        <div><span class="eyebrow">خدمات و توانمندی‌ها</span><h2 id="centers-title">برای قدم بعدی، کشف کنید</h2><p class="section-description">۱۴ مرکز تخصصی؛ از ساخت محصول و هوش مصنوعی تا زیرساخت و مدیریت کسب‌وکار.</p></div>
+        <span class="section-badge" aria-live="polite"><span id="visible-count">۱۴</span> مرکز</span>
+    </div>
+    <div class="catalog-tools">
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="center-search" type="search" placeholder="جست‌وجوی نام مرکز یا خدمت…" aria-label="جست‌وجو در مراکز قابلیت" /></label>
+        <div class="filter-pills" role="group" aria-label="فیلتر مراکز">
+            <button class="filter-pill is-active" aria-pressed="true" type="button" data-filter="all">همه</button>
+            <button class="filter-pill" aria-pressed="false" type="button" data-filter="کسب‌وکار و بازار">کسب‌وکار</button>
+            <button class="filter-pill" aria-pressed="false" type="button" data-filter="هوش و عامل‌ها">هوش و عامل‌ها</button>
+            <button class="filter-pill" aria-pressed="false" type="button" data-filter="زیرساخت: مرکز و لبه">زیرساخت</button>
+            <button class="filter-pill" aria-pressed="false" type="button" data-filter="ساخت">ساخت</button>
+            <button class="filter-pill" aria-pressed="false" type="button" data-filter="کنترل">کنترل</button>
+        </div>
+    </div>
+    <div class="center-grid" id="center-grid">
+        @foreach (var center in centers)
+        {
+            <article class="center-card @center.Color" data-state="@center.Pillar" data-search="@center.Name @center.Description @center.Pillar">
+                <div class="center-top"><span class="center-icon"><img src="@center.Logo" alt="نشان @center.Name" loading="lazy" width="40" height="40" /></span><span class="center-pillar">@center.Pillar</span></div>
+                <h3>@center.Name</h3><p>@center.Description</p>
+                <a class="center-link" href="@center.Url" target="_blank" rel="noopener noreferrer" aria-label="آشنایی با خدمات @center.Name">آشنایی با خدمات <span aria-hidden="true">↗</span></a>
+            </article>
+        }
+    </div>
+    <p class="no-results" id="no-results" hidden>مرکزی پیدا نشد. نام یا عبارت دیگری را جست‌وجو کنید.</p>
+</section>
+<footer class="portal-note"><img src="/brand/fanasa-horizontal-fa.svg" alt="فن آسا" width="120" height="42" /><p>یک هویت، دسترسی به دنیایی از قابلیت‌ها.</p><a href="#top">بازگشت به بالا ↑</a></footer>
+<script src="~/portal.js" asp-append-version="true" defer></script>

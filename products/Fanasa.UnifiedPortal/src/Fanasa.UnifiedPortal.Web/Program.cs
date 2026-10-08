@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient("platform-control-token");
-builder.Services.AddHttpClient("platform-control-catalog");
+builder.Services.AddHttpClient("platform-control-token", client => client.Timeout = TimeSpan.FromSeconds(15));
+builder.Services.AddHttpClient("platform-control-catalog", client => client.Timeout = TimeSpan.FromSeconds(15));
 builder.Services.AddScoped<IPlatformCatalogClient, PlatformCatalogClient>();
 builder.Services.AddAuthentication(options =>
 {
@@ -32,6 +32,7 @@ builder.Services.AddAuthentication(options =>
         ?? throw new InvalidOperationException("Authentication:ClientId is required.");
     options.ClientSecret = builder.Configuration["Authentication:ClientSecret"];
     options.ResponseType = "code";
+    options.MapInboundClaims = false;
     options.UsePkce = true;
     options.RequireHttpsMetadata = !isDevelopment;
     options.SaveTokens = false;
