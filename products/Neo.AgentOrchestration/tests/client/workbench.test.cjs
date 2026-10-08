@@ -15,7 +15,7 @@ function harness(fetcher, status = 409, options = {}) {
         getAttribute: name => name === 'action' ? form.action : null,
         hasAttribute: () => false, reportValidity: () => true };
     const main = { setAttribute() {}, getAttribute: () => options.actor ?? '', contains: x => x === form || x === field,
-        querySelector: selector => (selector === '.kanban' && options.board) || (selector === '.moving-card' && options.dragging) ? {} : null,
+        querySelector: selector => (selector === '.kanban' && options.board) || (selector === '.moving-card' && options.dragging) || (selector === '.move-menu[open]' && options.openMenu) ? {} : null,
         querySelectorAll: selector => selector === 'form' ? [form] : [],
         addEventListener: (name, fn) => mainListeners[name] = fn,
         replaceChildren() { throw new Error('An error response must not replace main'); } };
@@ -54,6 +54,14 @@ test('background polling cannot replace cards while a drag is active', async () 
     const h = harness(async () => { calls++; return h.response(); }, 409, options);
     await h.poll();assert.equal(calls,0);
     options.dragging=false;await h.poll();assert.equal(calls,1);
+});
+
+test('keyboard-opened move menu keeps its focus and inputs until closed', async () => {
+    let calls = 0;
+    const options = { board: true, fakeClock: true, openMenu: true };
+    const h = harness(async () => { calls++; return h.response(); }, 409, options);
+    await h.poll();assert.equal(calls,0);
+    options.openMenu=false;await h.poll();assert.equal(calls,1);
 });
 
 test('GET filter selections survive a poll without an unsaved-write warning', async () => {

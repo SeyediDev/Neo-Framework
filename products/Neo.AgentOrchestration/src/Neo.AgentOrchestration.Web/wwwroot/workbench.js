@@ -96,7 +96,8 @@
         pollTimer = setTimeout(async () => {
             // A poll must not reset a GET filter or interrupt an edited form.
             const editing = document.activeElement?.closest?.('form');
-            if (!busy && !dirtyForms.size && !editing && !main.querySelector('.moving-card') && document.visibilityState === 'visible')
+            if (!busy && !dirtyForms.size && !editing && !main.querySelector('.moving-card') &&
+                !main.querySelector('.move-menu[open]') && document.visibilityState === 'visible')
                 await show(active, { preserve: true, silent: true, poll: true });
             scheduleBoardPoll();
         }, 6000);

@@ -7,7 +7,8 @@ columns to select a destination; allowed columns are outlined, others dimmed.
 The board scrolls horizontally near the pointer edges. Escape or pointer cancel
 abandons the gesture. The compact ⋯ native details menu provides the alternative
 for keyboard/touch without duplicating a full-size move control. Background board
-polling pauses during the drag so it cannot replace the pointer-captured card.
+polling pauses during the drag or while a move menu is open so it cannot replace
+the pointer-captured card or interrupt keyboard navigation.
 
 A valid ordinary drop submits the existing antiforgery/version-protected form
 once through the SPA, without a second confirmation. Claim (InProgress), terminal

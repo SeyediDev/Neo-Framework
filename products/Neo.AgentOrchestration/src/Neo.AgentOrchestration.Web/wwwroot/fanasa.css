@@ -130,6 +130,8 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .move-enabled { position: relative; }
 .move-handle { touch-action: none; cursor: grab; padding-inline-end: 40px; min-height: 36px; align-items: center; user-select: none; }
 .move-handle::before { content: '⠿'; font-size: 20px; color: var(--fanasa-lapis); }
+.move-handle > span[dir="ltr"] { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.move-handle > span:last-child { flex-shrink: 0; white-space: nowrap; }
 .move-handle:active { cursor: grabbing; }
 .claim-fields[hidden], .move-context[hidden] { display: none; }
 .move-menu { margin-top: .6rem; }
