@@ -104,9 +104,12 @@ OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 
 ## Optional work-provider direction
 
-The [VPS agent execution plan](docs/VPS-AGENT-PLAN.md) proposes a provider-neutral
-OpenCode gateway pilot on the existing durable run path, with isolated workspaces,
-resource limits and reported usage. It is a design proposal, not an installed runner.
+The [VPS agent execution plan](docs/VPS-AGENT-PLAN.md) records the user-approved
+Hermes + OpenCode direction on the existing durable run path. Scoped
+[native protocol clients](docs/NATIVE-AGENTS.md) cover both engines behind a common
+application contract; they are not registered by API/Worker startup. Durable gateway,
+isolated workspaces, account setup and real-agent acceptance remain required;
+no installed runner or live model execution is claimed.
 
 Native Neo work management will remain independently usable. GitHub, GitLab and
 Azure DevOps are planned optional adapters, not replacements; Neo and an external

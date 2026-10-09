@@ -1,19 +1,27 @@
 # اجرای ایجنت روی VPS از پنل فن آسا
 
 این سند طرح اجرایی است، نه ادعای نصب یا یک بک‌لاگ موازی. وضعیت، مالکیت و
-پذیرش کارها باید در دیتابیس عملیاتی مدیریت کار ثبت شود. تا زمان دسترسی مجدد
-به نشست معتبر، بسته‌های پیشنهادی زیر رکورد تسک محسوب نمی‌شوند.
+پذیرش کارها باید در دیتابیس عملیاتی مدیریت کار ثبت شود. وضعیت جاری از API
+خوانده شود؛ جدول بسته‌های پیشنهادی پایین سند به‌خودی‌خود رکورد تسک محسوب نمی‌شود.
 
-## تصمیم پیشنهادی — ۲۰۲۶-۱۰-۰۹
+## تصمیم تأییدشده — ۲۰۲۶-۱۰-۰۹
 
-هارنس محصول وابسته به برند یک مدل نباشد. برای پایلوت **OpenCode Server**
-پیشنهاد می‌شود؛ Codex CLI گزینهٔ دوم از طریق adapter مستقل است و Aider برای
-کارهای محدود batch مناسب‌تر است. این انتخاب استنباط مهندسی است، نه نتیجهٔ
-بنچمارک روی کد نئو. پذیرش نهایی پس از اجرای یک کار واقعی انجام می‌شود.
+کاربر استفاده از **Hermes و OpenCode با هم** را تأیید کرد. هارنس وابسته به برند
+یک مدل نباشد: OpenCode مسیر پیش‌فرض پیشنهادی coding و Hermes مسیر automation
+و کار عمومی است؛ انتخاب از پروفایل مجاز و نوع کار، نه تحلیل آزاد متن تسک توسط
+مدل. هر دو پشت gateway مشترک و گردش‌کار موجود قرار می‌گیرند. این تقسیم کار
+تصمیم معماری است، نه ادعای برتری حاصل از بنچمارک. پذیرش پس از اجرای واقعی.
+
+Hermes جایگزین ارکستریتور فن آسا نیست؛ kanban و cron داخلی آن مرجع دومِ
+تسک/زمان‌بندی نمی‌شوند. زنجیره اجباری Hermes→OpenCode برای همه کارها نداریم؛
+handoff تنها در فلو مجاز، با run جدید، مالکیت، context محدود و بودجه مشخص.
+حافظه/skills/profile بین تننت‌ها مشترک نشود؛ session key به‌تنهایی sandbox
+امن ایجاد نمی‌کند. Codex و Aider همچنان گزینه‌های آینده‌اند، نه نصب فعال.
 
 | گزینه | شاهد رسمی | تناسب با نیاز پنل |
 | --- | --- | --- |
-| OpenCode | HTTP/OpenAPI، نشست، SSE، abort و درخواست مجوز؛ providerهای متعدد، Ollama و OpenRouter | انتخاب اول برای کنترل غیرتعاملی و نمایش رویدادهای اجرای تسک |
+| OpenCode | HTTP/OpenAPI، نشست، SSE، abort و درخواست مجوز؛ providerهای متعدد، Ollama و OpenRouter | مسیر coding؛ مزیت ابزارهای مخزن و زبان، نیازمند اجرای واقعی و ارزیابی |
+| Hermes | API اجرای async، idempotency، وضعیت/رویداد/توقف، skills و حافظه | مسیر automation/general؛ قابلیت‌ها در پروفایل و محیط مستقل محدود شوند |
 | Codex CLI | اجرای غیرتعاملی و JSON؛ ورود رسمی headless یا API key | adapter اختیاری برای حساب مجاز کاربر؛ نه الزام محصول |
 | Aider | اجرای اسکریپتی CLI و اتصال به providerهای مختلف | گزینهٔ سبک برای اصلاح محدود؛ نه جایگزین گردش‌کار و کنترل اجرای محصول |
 
@@ -22,6 +30,7 @@
 - [OpenCode Server](https://opencode.ai/docs/server/)
 - [OpenCode Providers](https://opencode.ai/docs/providers/)
 - [OpenCode Permissions](https://opencode.ai/docs/permissions/)
+- [Hermes API Server](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server/)
 - [Codex non-interactive](https://developers.openai.com/codex/noninteractive)
 - [Codex authentication](https://learn.chatgpt.com/docs/auth)
 - [Aider scripting](https://aider.chat/docs/scripting.html)
@@ -51,10 +60,17 @@ Ollama روی همین VPS فعلاً فقط برای آزمون سبک؛ اجر
 در حال حاضر پروتکل HTTP و callback در [HARNESS.md](HARNESS.md)، اجرای durable
 در [RUNS.md](RUNS.md) و زیربنای ACP در [ACP.md](ACP.md) وجود دارد؛ این‌ها به
 معنی نصب و اتصال زندهٔ یک ایجنت نیستند. API محصول dispatcher نیست. gateway
-باید پروتکل محصول را به API ایجنت تبدیل کند؛ OpenCode مستقیماً آن را نمی‌فهمد.
+باید پروتکل محصول را به API ایجنت تبدیل کند؛ هیچ‌کدام مستقیماً آن را نمی‌فهمند.
+قرارداد و کلاینت‌های native در [NATIVE-AGENTS.md](NATIVE-AGENTS.md) تعریف شده‌اند؛
+کلاینت با gateway durable، sandbox یا اتصال زنده یکی نیست. نسخه پروتکل موجود
+و callback تغییر نکرده و هیچ پروفایل یا worker به‌طور ضمنی فعال نمی‌شود.
 
 - از شناسهٔ run برای نگاشت پایدار session، repo، commit و worktree استفاده شود.
   پذیرش 202 فقط پس از ذخیرهٔ durable؛ retry همان اجرا را پیدا کند، نه اجرای جدید.
+  Hermes کلید native را ۲۴ ساعت پس از آخرین وضعیت نگه می‌دارد؛ نگاشت فن آسا
+  باید طولانی‌تر حفظ شود و پس از انقضا اجرای نامطمئن را دوباره شروع نکند.
+  OpenCode prepare/session باید پیش از prompt ذخیره شود؛ messageID ثابت
+  تضمین exactly-once نیست. از دست رفتن پاسخ write نیازمند reconciliation است.
 - هر اجرا محیط مجزا، کاربر non-root و branch/worktree خودش را داشته باشد؛
   مرز سازمان/پروژه در workspace، secrets، artifacts و دسترسی مخزن حفظ شود.
 - متن تسک ورودی غیرقابل‌اعتماد است. فقط repo و base commit مجاز و دستورهای
@@ -93,7 +109,7 @@ Ollama روی همین VPS فعلاً فقط برای آزمون سبک؛ اجر
 | ترتیب | دامنه / نقش پیشنهادی | خروجی قابل پذیرش |
 | --- | --- | --- |
 | ۱ | operations / امنیت و زیرساخت | حساب non-root، runtime pin‌شده، health، آزمون محدودیت منابع و عدم دسترسی به سرویس‌ها و اسرار میزبان |
-| ۲ | harness / backend | gateway adapter OpenCode با ذخیرهٔ نگاشت، پذیرش durable و آزمون duplicate/changed-payload/restart |
+| ۲ | harness / backend | دو native adapter و سپس gateway واحد با ذخیرهٔ نگاشت، پذیرش durable و آزمون duplicate/changed-payload/restart |
 | ۳ | repositories / زیرساخت مخزن | repo allowlist، revision ثابت، محیط مجزا و artifact diff؛ بدون push خودکار |
 | ۴ | metering / backend | ingestion معتبر، delta idempotent، تخصیص به run، سقف مصرف/timeout و reconciliation |
 | ۵ | web / پنل | انتخاب agent/model، صف و وضعیت زنده، log محدود، درخواست مجوز، توقف و نمایش مصرف |

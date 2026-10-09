@@ -7,6 +7,11 @@ create a model account, authorize repository changes or start a Codex session.
 Native Neo work tracking, the fake simulation provider and optional future
 GitHub/GitLab/Azure work adapters remain separate choices.
 
+The [Hermes/OpenCode native adapters](NATIVE-AGENTS.md) provide scoped protocol
+clients for a compatible gateway. They are not the gateway itself and are not
+enabled by API/Worker startup. Preserve the durable reservation, isolated sandbox,
+approval and usage-ingestion boundaries before connecting either runtime.
+
 ## Configure API and worker
 
 Apply the additive `HttpHarnessDispatch` migration explicitly using DATABASE.md.
