@@ -22,23 +22,26 @@ var settings = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<s
     ["PlatformControlCenter:ClientId"] = "portal", ["PlatformControlCenter:ClientSecret"] = "test-only"
 }).Build();
 var requests = new List<(string Url, string? Authorization, string Body)>();
+var saasProduct = Product(Guid.NewGuid()); // Producer need not be a membership of the consumer.
 var handler = new StubHandler(async request =>
 {
     requests.Add((request.RequestUri!.ToString(), request.Headers.Authorization?.ToString(), request.Content is null ? "" : await request.Content.ReadAsStringAsync()));
     return request.RequestUri.AbsolutePath switch
     {
         "/realms/fanasa/protocol/openid-connect/token" => Json(new { access_token = "test-token" }),
-        "/api/platform/memberships" => Json(new[] { first, second }),
-        "/api/platform/products" => Json(new[] { Product(first.Id), Product(second.Id), Product(Guid.NewGuid()) }),
+        "/api/platform/application-tenants" => Json(new[] { first, second }),
+        "/api/platform/products" => Json(new[] { saasProduct }),
         _ => new(HttpStatusCode.NotFound)
     };
 });
 var client = new PlatformCatalogClient(new StubClients(handler), settings, NullLogger<PlatformCatalogClient>.Instance);
-var workspace = await client.GetWorkspaceAsync("subject&other=value", default);
+var workspace = await client.GetWorkspaceAsync("subject&other=value", default, first.Id);
 Check(workspace.Status == CatalogStatus.Ready && workspace.Organizations.Count == 2, "membership API supplies organization options");
-Check(workspace.Products.Count == 2, "products outside authorized memberships are removed");
+Check(workspace.Products.Single().TenantId == saasProduct.TenantId && workspace.ProductOrganizationId == first.Id,
+    "authorized SaaS catalog is scoped to consumer, not producer membership");
 Check(requests[0].Url.StartsWith("https://identity.test/realms/fanasa/"), "blank service authority falls back to login authority");
-Check(requests[0].Body.Contains("scope=platform.registry"), "service requests registry scope");
+Check(requests[0].Body.Contains("scope=platform.catalog") && !requests[0].Body.Contains("platform.registry"), "portal requests dedicated read-only catalog scope");
+Check(requests.Single(x => x.Url.Contains("/products?")).Url.Contains("&tenant=" + first.Id), "catalog request supplies verified consumer tenant explicitly");
 Check(requests.Skip(1).All(x => x.Authorization == "Bearer test-token"), "access_token wire field mapped for both authorized requests");
 Check(requests.Skip(1).All(x => x.Url.Contains("subject%26other%3Dvalue")), "subject query is escaped");
 Check(IndexModel.SelectOrganization([first], null) == first.Id, "single organization selected automatically");
@@ -49,7 +52,7 @@ Check(IndexModel.SafeProductUrl("https://example.com/app") is not null, "canonic
 var model = new IndexModel(new WorkspaceStub(workspace)) { PageContext = new() { HttpContext = new DefaultHttpContext() } };
 model.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "existing-cookie-subject")], "Cookies"));
 await model.OnGetAsync(first.Id, default);
-Check(model.Products.Count == 1 && model.Products.All(p => p.TenantId == first.Id), "existing mapped cookie subject works and products remain tenant scoped");
+Check(model.Products.Count == 1 && model.Products.Single().Id == saasProduct.Id, "mapped cookie subject works and authorized cross-owner SaaS is displayed");
 Check(model.Response.Headers.CacheControl == "no-store", "personal workspace is not cached");
 await model.OnGetAsync(Guid.NewGuid(), default);
 Check(model.ActiveOrganizationId is null && model.Products.Count == 0, "tampered organization hides all links");
@@ -90,7 +93,7 @@ PlatformCatalogClient Fixture(Func<HttpResponseMessage> memberships, Func<HttpRe
     new(new StubClients(new StubHandler(request => Task.FromResult(request.RequestUri!.AbsolutePath switch
     {
         "/realms/fanasa/protocol/openid-connect/token" => Json(new { access_token = "test-token" }),
-        "/api/platform/memberships" => memberships(),
+        "/api/platform/application-tenants" => memberships(),
         "/api/platform/products" => products(),
         _ => new(HttpStatusCode.NotFound)
     }))), settings, NullLogger<PlatformCatalogClient>.Instance);
@@ -121,6 +124,18 @@ Check(cancellationPropagated, "caller cancellation is not converted into a servi
 var wrongUrlSettings = new ConfigurationBuilder().AddConfiguration(settings).AddInMemoryCollection(new Dictionary<string, string?> { ["PlatformControlCenter:BaseUrl"] = "registry-without-scheme" }).Build();
 var wrongUrl = new PlatformCatalogClient(new StubClients(new StubHandler(_ => throw new Exception("Unexpected network request"))), wrongUrlSettings, NullLogger<PlatformCatalogClient>.Instance);
 Check((await wrongUrl.GetWorkspaceAsync("subject", default)).Status == CatalogStatus.NotConfigured, "invalid service URL produces configuration state before any network request");
+foreach (var selection in new Guid?[] { null, Guid.NewGuid() })
+{
+    var productRequests = 0;
+    var unresolved = await Fixture(() => Json(new[] { first, second }), () => { productRequests++; return Json(new[] { saasProduct }); }).GetWorkspaceAsync("subject", default, selection);
+    Check(unresolved.Status == CatalogStatus.Ready && unresolved.Products.Count == 0 && unresolved.ProductOrganizationId is null && productRequests == 0,
+        selection.HasValue ? "tampered tenant does not trigger a product request" : "multiple organizations without selection never request aggregate catalog");
+}
+var singleTenant = await Fixture(() => Json(new[] { first }), () => Json(new[] { saasProduct })).GetWorkspaceAsync("subject", default);
+Check(singleTenant.ProductOrganizationId == first.Id && singleTenant.Products.Count == 1, "single organization auto-selection fetches its authorized SaaS catalog");
+await model.OnGetAsync(second.Id, default);
+Check(model.Products.Count == 0 && model.Status == CatalogStatus.Unavailable,
+    "page rejects mismatched consumer envelope as a failure, not a successful empty catalog");
 Console.WriteLine($"{checks} checks passed.");
 
 // Explicit local-only preview of authorized UI states. Never part of the web product.
@@ -159,5 +174,5 @@ sealed class StubClients(HttpMessageHandler handler) : IHttpClientFactory
 }
 sealed class WorkspaceStub(PlatformWorkspace workspace) : IPlatformCatalogClient
 {
-    public Task<PlatformWorkspace> GetWorkspaceAsync(string subject, CancellationToken cancellationToken) => Task.FromResult(workspace);
+    public Task<PlatformWorkspace> GetWorkspaceAsync(string subject, CancellationToken cancellationToken, Guid? organizationId = null) => Task.FromResult(workspace);
 }

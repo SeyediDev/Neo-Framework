@@ -8,18 +8,24 @@ namespace Fanasa.UnifiedPortal.Web;
 public sealed record PlatformProductView(Guid Id, string Key, string DisplayName, string Audience, string Center, string? Url, string? Repository, Guid? TenantId, string Owner, Dictionary<string, string>? Attributes);
 public sealed record PlatformOrganizationView(Guid Id, string Name, string Namespace);
 public enum CatalogStatus { Ready, SignInRequired, NotConfigured, Forbidden, Unavailable }
-public sealed record PlatformWorkspace(CatalogStatus Status, IReadOnlyCollection<PlatformOrganizationView> Organizations, IReadOnlyCollection<PlatformProductView> Products);
+public sealed record PlatformWorkspace(CatalogStatus Status, IReadOnlyCollection<PlatformOrganizationView> Organizations,
+    IReadOnlyCollection<PlatformProductView> Products, Guid? ProductOrganizationId = null)
+{
+    public static Guid? SelectOrganization(IReadOnlyCollection<PlatformOrganizationView> organizations, Guid? requested)
+        => requested.HasValue ? organizations.Any(x => x.Id == requested) ? requested : null
+            : organizations.Count == 1 ? organizations.First().Id : null;
+}
 
 public interface IPlatformCatalogClient
 {
-    Task<PlatformWorkspace> GetWorkspaceAsync(string subject, CancellationToken cancellationToken);
+    Task<PlatformWorkspace> GetWorkspaceAsync(string subject, CancellationToken cancellationToken, Guid? organizationId = null);
 }
 
 public sealed class PlatformCatalogClient(IHttpClientFactory clients, IConfiguration configuration, ILogger<PlatformCatalogClient> logger) : IPlatformCatalogClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    public async Task<PlatformWorkspace> GetWorkspaceAsync(string subject, CancellationToken cancellationToken)
+    public async Task<PlatformWorkspace> GetWorkspaceAsync(string subject, CancellationToken cancellationToken, Guid? organizationId = null)
     {
         if (string.IsNullOrWhiteSpace(subject)) return new(CatalogStatus.SignInRequired, [], []);
         var baseUrl = configuration["PlatformControlCenter:BaseUrl"];
@@ -38,7 +44,7 @@ public sealed class PlatformCatalogClient(IHttpClientFactory clients, IConfigura
                 new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     ["grant_type"] = "client_credentials", ["client_id"] = clientId, ["client_secret"] = clientSecret,
-                    ["scope"] = configuration["PlatformControlCenter:Scope"] ?? "platform.registry"
+                    ["scope"] = configuration["PlatformControlCenter:Scope"] ?? "platform.catalog"
                 }), cancellationToken);
             if (tokenResponse.StatusCode == HttpStatusCode.BadRequest)
             {
@@ -52,23 +58,25 @@ public sealed class PlatformCatalogClient(IHttpClientFactory clients, IConfigura
             using var client = clients.CreateClient("platform-control-catalog");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
             var query = "?subject=" + Uri.EscapeDataString(subject);
-            using var membershipsResponse = await client.GetAsync(baseUrl!.TrimEnd('/') + "/api/platform/memberships" + query, cancellationToken);
+            using var membershipsResponse = await client.GetAsync(baseUrl!.TrimEnd('/') + "/api/platform/application-tenants" + query, cancellationToken);
             if (!membershipsResponse.IsSuccessStatusCode) return Failure(membershipsResponse.StatusCode);
             var memberships = await membershipsResponse.Content.ReadFromJsonAsync<PlatformOrganizationView[]>(JsonOptions, cancellationToken)
                 ?? throw new JsonException("Expected a membership array.");
             if (memberships.Any(x => x is null || x.Id == Guid.Empty || string.IsNullOrWhiteSpace(x.Name)))
                 throw new JsonException("Invalid membership record.");
             organizations = memberships.OrderBy(x => x.Name).ToArray();
-            // A successful empty membership is authoritative; no product call can add access.
-            if (organizations.Count == 0) return new(CatalogStatus.Ready, organizations, []);
-            using var productsResponse = await client.GetAsync(baseUrl.TrimEnd('/') + "/api/platform/products" + query, cancellationToken);
+            var selected = PlatformWorkspace.SelectOrganization(organizations, organizationId);
+            // Never request the cross-tenant union or query products for an unverified tenant.
+            if (!selected.HasValue) return new(CatalogStatus.Ready, organizations, []);
+            using var productsResponse = await client.GetAsync(baseUrl.TrimEnd('/') + "/api/platform/products" + query + "&tenant=" + selected.Value, cancellationToken);
             if (!productsResponse.IsSuccessStatusCode) return new(Failure(productsResponse.StatusCode).Status, organizations, []);
             var products = await productsResponse.Content.ReadFromJsonAsync<PlatformProductView[]>(JsonOptions, cancellationToken)
                 ?? throw new JsonException("Expected a product array.");
             if (products.Any(x => x is null || x.Id == Guid.Empty || string.IsNullOrWhiteSpace(x.Key) || string.IsNullOrWhiteSpace(x.DisplayName)))
                 throw new JsonException("Invalid product record.");
-            return new(CatalogStatus.Ready, organizations,
-                products.Where(x => x.TenantId.HasValue && organizations.Any(o => o.Id == x.TenantId.Value)).ToArray());
+            // Product.TenantId identifies the producer, not the consumer. The central API
+            // enforces offers/grants for the selected consumer tenant supplied above.
+            return new(CatalogStatus.Ready, organizations, products, selected);
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException || ex is OperationCanceledException && !cancellationToken.IsCancellationRequested)
         {

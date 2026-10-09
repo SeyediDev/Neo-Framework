@@ -39,12 +39,14 @@ public sealed class IndexModel(IPlatformCatalogClient catalog) : PageModel
             Message = "نشست شما نیاز به تازه‌سازی دارد. دوباره وارد شوید.";
             return;
         }
-        var workspace = await catalog.GetWorkspaceAsync(subject, cancellationToken);
+        var workspace = await catalog.GetWorkspaceAsync(subject, cancellationToken, tenantId);
         Organizations = workspace.Organizations;
         Status = workspace.Status;
         ActiveOrganizationId = SelectOrganization(Organizations, tenantId);
-        Products = Status == CatalogStatus.Ready
-            ? workspace.Products.Where(x => ActiveOrganizationId.HasValue && x.TenantId == ActiveOrganizationId).ToArray() : [];
+        if (Status == CatalogStatus.Ready && ActiveOrganizationId.HasValue && workspace.ProductOrganizationId != ActiveOrganizationId)
+            Status = CatalogStatus.Unavailable;
+        Products = Status == CatalogStatus.Ready && ActiveOrganizationId.HasValue && workspace.ProductOrganizationId == ActiveOrganizationId
+            ? workspace.Products : [];
         Message = Status switch
         {
             CatalogStatus.SignInRequired => "نشست شما نیاز به تازه‌سازی دارد. دوباره وارد شوید.",
@@ -60,8 +62,7 @@ public sealed class IndexModel(IPlatformCatalogClient catalog) : PageModel
     }
 
     public static Guid? SelectOrganization(IReadOnlyCollection<PlatformOrganizationView> organizations, Guid? requested)
-        => requested.HasValue ? organizations.Any(x => x.Id == requested) ? requested : null
-            : organizations.Count == 1 ? organizations.First().Id : null;
+        => PlatformWorkspace.SelectOrganization(organizations, requested);
 
     public static string? SafeProductUrl(string? url) => Uri.TryCreate(url, UriKind.Absolute, out var uri)
         && uri.Scheme is "https" or "http" && string.IsNullOrEmpty(uri.UserInfo) ? uri.AbsoluteUri : null;
