@@ -1,5 +1,15 @@
 # Migration decisions and retained-data policy
 
+## Subsequent explicit project cleanup (2026-10-09)
+
+The user explicitly requested permanent removal of the HYPER project and all
+dependent Work Management records on the VPS, and explicitly declined a backup.
+This authorizes that project-data cleanup only, not Hyper source/accounting data
+or removal of the retained legacy WorkManagement database. The historical catalog
+description below refers to the earlier migration checkpoint, not the current
+project list. Normal future cleanup uses the explicit
+[scoped cascade deletion](PROJECT-DELETION.md), never import/startup cleanup.
+
 ## Current operational state (verified 2026-09-30)
 
 The user subsequently requested migration with all values preserved, approved

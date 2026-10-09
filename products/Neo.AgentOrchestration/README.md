@@ -8,6 +8,11 @@ A compatible external gateway and its account/setup remain operator-supplied.
 [Lean agent context](docs/CONTEXT.md) provides bounded task briefs, versioned
 history pages and compact MCP mutation receipts; full records remain available.
 
+[Permanent project cascade deletion](docs/PROJECT-DELETION.md) is available through
+authenticated API/Web with exact-key and current-graph confirmation, transactional
+rollback and active-execution gates. It is separate from disable/archive and
+never runs automatically or deletes code repositories/other product databases.
+
 The domain now includes Organization, Workspace and Project factories, normalized
 project keys, disabled-parent checks and a WorkspaceScope that rejects a project
 operation from a different organization/workspace. These are domain invariants;

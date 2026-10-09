@@ -168,6 +168,7 @@ public static class PersistenceRegistration
     {
         services.AddDbContextFactory<OrchestrationDbContext>((provider, options) => options.UseSqlServer(connectionString(provider)));
         services.AddScoped<IWorkspaceWorkStore, SqlWorkspaceWorkStore>();
+        services.AddScoped<IProjectDeletionStore, SqlProjectDeletionStore>();
         services.AddScoped<IAccessibleWorkspaceCatalog, SqlAccessibleWorkspaceCatalog>();
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IDurableWorkStore, SqlDurableWorkStore>();

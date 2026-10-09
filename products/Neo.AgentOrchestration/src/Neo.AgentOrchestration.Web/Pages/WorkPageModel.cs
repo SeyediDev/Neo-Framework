@@ -13,6 +13,8 @@ public abstract class WorkPageModel(OrchestrationClient client) : PageModel
     protected Task<T> Get<T>(string resource, CancellationToken ct) => client.SendAsync<T>(OrganizationId, WorkspaceId, resource, ct);
     protected Task<T> Send<T>(string resource, object? body, CancellationToken ct, bool put = false)
         => client.SendAsync<T>(OrganizationId, WorkspaceId, resource, ct, put ? HttpMethod.Put : HttpMethod.Post, body);
+    protected Task<T> Delete<T>(string resource, object body, CancellationToken ct)
+        => client.SendAsync<T>(OrganizationId, WorkspaceId, resource, ct, HttpMethod.Delete, body);
     protected async Task<bool> Attempt(Func<Task> action)
     {
         if (!ModelState.IsValid || OrganizationId == Guid.Empty || WorkspaceId == Guid.Empty)

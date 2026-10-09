@@ -1,0 +1,33 @@
+@page "/work/{organizationId:guid}/{workspaceId:guid}/projects/{projectId:guid}/delete"
+@model Neo.AgentOrchestration.Web.Pages.DeleteProjectModel
+@{ ViewData["Title"] = "حذف پروژه"; }
+<partial name="_ScopeNav" model="Model" />
+<h1>حذف پروژه</h1>
+@if (Model.Preview is {} p)
+{
+    <section class="panel">
+        <h2>@p.Name <span class="tag" dir="ltr">@p.Key</span></h2>
+        <div class="alert" role="alert">حذف دائمی است و سطل بازیافت ندارد. تمام کارها، استوری‌ها، زیرتسک‌ها، بایگانی‌ها و سوابق وابستهٔ این پروژه حذف می‌شوند.</div>
+        <p class="muted">فقط داده‌های مدیریت کار حذف می‌شوند. سورس کد، فایل‌های ریپازیتوری، دیتابیس محصول، پروژه‌های دیگر، رول‌ها، پروفایل ایجنت‌ها و الگوهای مشترک حذف نمی‌شوند.</p>
+        <div class="metrics">
+            @foreach (var type in p.WorkItemTypes) { <section><span>@Neo.AgentOrchestration.Web.Pages.WorkPageModel.ItemTypeLabel(type.Key)</span><strong>@type.Value</strong></section> }
+            <section><span>زیرتسک‌ها (بخشی از کارهای بالا)</span><strong>@p.Subtasks</strong></section>
+        </div>
+        <details><summary>جزئیات رکوردهای وابسته</summary><dl>
+            @foreach (var row in p.Records.Where(x => x.Value > 0)) { <dt>@Neo.AgentOrchestration.Web.Pages.DeleteProjectModel.RecordLabel(row.Key)</dt><dd>@row.Value</dd> }
+        </dl></details>
+        @if (!p.CanDelete) { <div class="alert" role="alert">حذف فعلاً ممکن نیست: @p.ActiveRuns اجرای فعال یا نامطمئن و @p.PendingDeliveries پیام یا lease حل‌نشده وجود دارد. ابتدا اجرای ایجنت و صف را تعیین تکلیف کنید.</div> }
+        <form method="post">
+            <input type="hidden" name="ExpectedSnapshot" value="@p.Snapshot" />
+            <label>برای تأیید، کلید پروژه را دقیق بنویسید: <b dir="ltr">@p.Key</b>
+                <input name="ConfirmProjectKey" dir="ltr" autocomplete="off" required maxlength="80" />
+            </label>
+            @if (p.ActiveManualAssignments > 0) {
+                <label class="check"><input type="checkbox" name="IncludeActiveManualAssignments" value="true" required />حذف @p.ActiveManualAssignments کار در حال انجام و زمان‌سنج‌های آن‌ها را نیز تأیید می‌کنم.</label>
+            }
+            <p class="small">اگر داده‌ها بعد از این پیش‌نمایش تغییر کنند، حذف رد می‌شود تا آخرین وضعیت را بررسی کنید.</p>
+            <button type="submit" disabled="@(!p.CanDelete)">حذف دائمی پروژه و تمام کارهای وابسته</button>
+            <a class="button quiet" asp-page="/Manage" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">انصراف</a>
+        </form>
+    </section>
+}

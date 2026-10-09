@@ -39,7 +39,9 @@ internal sealed class WorkFixture : IDisposable
             c.RegisterServicesFromAssemblyContaining<WorkItemHandlers>();
             // This deliberately non-transactional memory fixture does not host durable runs.
             c.TypeEvaluator = type => type != typeof(Neo.AgentOrchestration.Application.Runs.RunHandlers) &&
-                type != typeof(Neo.AgentOrchestration.Application.Runs.HarnessResultHandler);
+                type != typeof(Neo.AgentOrchestration.Application.Runs.HarnessResultHandler) &&
+                // Permanent graph deletion is SQL-only, never a memory fallback.
+                type != typeof(Neo.AgentOrchestration.Application.Workspace.ProjectDeletionHandlers);
         });
         services = collection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
     }

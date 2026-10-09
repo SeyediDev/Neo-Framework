@@ -1,5 +1,11 @@
 # Independent management Web
 
+Project management exposes a dedicated [permanent cascade deletion confirmation](PROJECT-DELETION.md)
+at `/work/{organizationId}/{workspaceId}/projects/{projectId}/delete`.
+It uses the normal protected HTTP client, antiforgery and SPA submission path,
+with an exact-key confirmation, counts and unresolved-run/queue blockers. Web
+never performs SQL deletion or silently substitutes disable/archive for delete.
+
 [Time and token metering](METERING.md) is displayed in item details, compact
 Kanban cards, role cards and full-filter board metrics. Time estimates accept
 human units. Usage is provider-reported, never inferred from conversation length;

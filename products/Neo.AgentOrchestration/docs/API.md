@@ -32,7 +32,9 @@ are persisted atomically in the workspace-serialized transaction; receipt is a
 reserved `ChatIntake` log containing ID and payload hash, never credentials.
 Replay also covers archived/closed work and never reopens or reassigns it. Reads
 scan workspace intake history; this initial implementation favors correctness
-over large-scale indexed intake throughput. There is no hard-delete endpoint.
+over large-scale indexed intake throughput. There is no per-item hard-delete
+endpoint; explicit [project cascade deletion](PROJECT-DELETION.md) removes the
+project's intake records too and ends their replay history.
 
 Work item views include optional `lastOwnerHistory` for display of imported
 ownership. It never replaces `ownerRoleId` or grants ownership. Board `roleId`
@@ -116,6 +118,8 @@ All routes below are relative to:
 | POST `items/{id}/evidence` | ExpectedVersion, Kind, Reference, Outcome, optional Details/CommitSha |
 | POST `projects`; PUT `projects/{id}` | Create project; rename (Key is immutable) |
 | POST `projects/{id}/disable` | Disable without deleting history |
+| GET `projects/{id}/deletion-preview` | Configure/read permission; scoped graph snapshot/counts and active execution blockers |
+| DELETE `projects/{id}` | Configure/write/read permission; exact key, expected snapshot and optional explicit active-manual-work confirmation; permanent transactional cascade |
 | PUT `projects/{id}/repository` | Configure or update one provider-neutral repository binding; stores URL/key/branches and secret reference, never secret values |
 | POST `roles`; PUT `roles/{id}` | Create or update role configuration |
 | PUT `roles/{id}/enabled` | IsEnabled |
