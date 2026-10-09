@@ -92,8 +92,10 @@ public sealed class SqlPersistenceTests
         Assert.Equal(1, await db.WorkItems.CountAsync(x => x.WorkspaceId == f.Scope.WorkspaceId && x.Status == WorkItemStatus.InProgress, Ct));
         Assert.Equal(1, await db.Set<WorkItemTimeEntry>().CountAsync(x => (x.WorkItemId == first.Id || x.WorkItemId == second.Id) && x.EndedAtUtc == null, Ct));
         var remaining = await db.WorkItems.SingleAsync(x => x.WorkspaceId == f.Scope.WorkspaceId && x.Status == WorkItemStatus.Ready, Ct);
-        remaining.Claim(f.Scope, f.Role, new("bypass-agent", "bypass-chat"), null, f.Clock.GetUtcNow());
-        await Assert.ThrowsAsync<DbUpdateException>(() => db.SaveChangesAsync(Ct)); // SQL index also enforces exclusivity.
+        // Configurable role capacity is enforced by the serialized SQL store,
+        // not a unique role index (which would prohibit capacities above one).
+        await Assert.ThrowsAsync<WorkItemConflictException>(() => f.Handlers.Handle(
+            new ClaimWorkItem(f.Scope, remaining.Id, f.Role.Id, new("other-agent", "other-chat"), remaining.Version), Ct));
     }
 
     [Fact]

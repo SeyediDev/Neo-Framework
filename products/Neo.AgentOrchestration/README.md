@@ -38,7 +38,7 @@ Application tests use a scoped memory fixture, not a runtime storage fallback.
 See [time and token metering](docs/METERING.md) for nullable budgets, reported
 consumption, coverage, manual/run idempotency and live display semantics.
 The SQL store uses Neo EF repositories, workspace transaction locks, scoped
-foreign keys, capacity-aware role assignment/timer indexes and optimistic
+foreign keys, role-assignment/timer indexes, atomic capacity checks and optimistic
 concurrency. Each role has a validated active-work capacity from 1 to 16.
 Explicit
 versioned provisioning targets an independent database; see [database setup and

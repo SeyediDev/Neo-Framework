@@ -119,8 +119,9 @@ public sealed class WebManagementTests
         Assert.Contains($"data-item-id=\"{id}\"",board);Assert.DoesNotContain("زیرتسک نمایان",WebUtility.HtmlDecode(board));
         Assert.DoesNotContain($"data-item-id=\"{id}\"",await web.Html(root+"?Domain=missing"));
         Assert.DoesNotContain($"data-item-id=\"{id}\"",await web.Html(root+"?State=Done"));
-        var roleBoard=WebUtility.HtmlDecode(await web.Html(root+$"/roles?ProjectId={f.Project.Id}&RoleId={f.Role.Id}&State=Ready"));
+        var roleBoard=WebUtility.HtmlDecode(await web.Html(root+$"/roles?ProjectId={f.Project.Id}&RoleId={f.Role.Id}&State=InProgress"));
         Assert.Contains("1 از 1 کار فعال",roleBoard);Assert.Contains($"data-item-id=\"{id}\"",roleBoard);
+        Assert.DoesNotContain($"data-item-id=\"{id}\"",await web.Html(root+$"/roles?ProjectId={f.Project.Id}&RoleId={f.Role.Id}&State=Ready"));
         Assert.DoesNotContain($"data-item-id=\"{id}\"",WebUtility.HtmlDecode(await web.Html(root+$"/roles?ProjectId={f.Project.Id}&RoleId={f.Role.Id}&State=Done")));
         var stale=details.Item.Version;
         await web.Submit(itemUrl,"Log",new(){["Message"]="new version"});

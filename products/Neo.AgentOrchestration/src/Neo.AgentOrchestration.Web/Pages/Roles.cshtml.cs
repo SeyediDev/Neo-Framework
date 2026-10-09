@@ -22,7 +22,7 @@ public sealed class RolesModel(OrchestrationClient client) : WorkPageModel(clien
         if (!string.IsNullOrWhiteSpace(Domain)) query += "&domain=" + Uri.EscapeDataString(Domain);
         if (!string.IsNullOrWhiteSpace(ItemType)) query += "&type=" + Uri.EscapeDataString(ItemType);
         if (!string.IsNullOrWhiteSpace(State) && Statuses.Contains(State, StringComparer.OrdinalIgnoreCase))
-            query += "&state=" + Uri.EscapeDataString(State);
+            query += "&status=" + Uri.EscapeDataString(State);
         for (var skip = 0; ;)
         {
             var page = await Get<WorkBoard>(query + "&skip=" + skip, ct);
