@@ -153,3 +153,11 @@ reconciliation, never replay. This changes no MCP tool or permission authority.
 A timed-out callback receipt does not acknowledge delivery. Only the existing
 durable delivery path may retry the exact frozen result; don't create a second
 retry loop or rewrite evidence from an unconfirmed response.
+
+`neo-agent gateway-sandbox-health <private-manifest.json> --allow-docker-inspection`
+is a separate operator-only offline-executor diagnostic, not MCP/ownership/run
+authority. See `docs/SANDBOX-INSPECTION.md` before use. It runs only local rootless
+Docker info/inspect with strict scope/identity/resource/mount expectations and
+sanitized bounded output. Policy compliance and observed exit are not task success,
+artifact provenance or permission to release a reservation. No `IGatewaySandbox`
+collector, daemon/container lifecycle change, new grant or model call is provided.

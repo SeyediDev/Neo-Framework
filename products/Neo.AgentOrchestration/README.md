@@ -124,6 +124,10 @@ trusted metering ingestion, installation and live pilot remain unimplemented gat
 Native and result-callback HTTP requests bound both headers and streamed body to one 30-second
 deadline (shorter client/caller budgets win); partial responses do not fabricate
 usage or success, and uncertain writes are not replayed.
+An explicit [read-only offline sandbox inspection](docs/SANDBOX-INSPECTION.md)
+diagnostic checks Docker metadata against a scoped non-root/rootless/resource/
+mount policy. It is not registered as a sandbox executor or evidence collector;
+the execution default remains disabled and live runtime acceptance remains open.
 The [model-connection record and disabled operator templates](docs/MODEL-CONNECTIONS.md)
 separate a verified synthetic proxy Responses call from actual installed agents,
 free-route availability, tenant credentials and live task acceptance.

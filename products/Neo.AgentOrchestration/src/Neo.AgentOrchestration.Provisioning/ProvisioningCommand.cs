@@ -23,6 +23,7 @@ public static class ProvisioningCommand
         neo-agent health <NeoAgentOrchestration[_installation]>
         neo-agent gateway-migrate <FanasaAgentGateway[_installation]>
         neo-agent gateway-health <FanasaAgentGateway[_installation]>
+        neo-agent gateway-sandbox-health <private-manifest.json> --allow-docker-inspection
         Set NEO_ORCHESTRATION_SQL privately for migrate/seed/health. Edit the init template before seed.
         Set FANASA_AGENT_GATEWAY_SQL privately for gateway-migrate/gateway-health; never put connections in arguments.
         init writes only a new credential-free manifest. No command imports legacy data or dispatches agents.
@@ -31,6 +32,8 @@ public static class ProvisioningCommand
 
     public static async Task<int> RunAsync(string[] args, TextWriter output, TextWriter error, CancellationToken ct)
     {
+        if (args.FirstOrDefault() == "gateway-sandbox-health")
+            return await SandboxProbeCommand.Run(args, output, error, ct);
         if (args is ["--help"] or ["help"])
         {
             await output.WriteLineAsync(Usage); return 0;

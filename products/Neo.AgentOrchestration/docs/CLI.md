@@ -61,6 +61,14 @@ hosts. Readiness never migrates on startup or activates imported runs. See
 
 ## Product semantics
 
+The explicit read-only `gateway-sandbox-health <private-manifest.json>
+--allow-docker-inspection` diagnostic checks a configured offline rootless executor
+using only Docker info/inspect. See [sandbox inspection](SANDBOX-INSPECTION.md) for
+strict configuration, bounds, exit codes and limitations. It does not implement
+`IGatewaySandbox`, release capacity, create/start/stop containers or accept a task.
+Its JSON distinguishes policy compliance from observed executor exit; neither
+proves live agent, revision/artifact or build/test acceptance.
+
 - `migrate` is the existing additive EF provisioner. It may create the named
   database if permitted, refuses legacy/mismatched destinations and unrelated
   tables, and never seeds or imports data. Take deployment backups before upgrades.

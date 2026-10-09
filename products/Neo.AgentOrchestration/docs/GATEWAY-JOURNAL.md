@@ -164,6 +164,12 @@ automatically dispatch imported or pre-activation journal rows.
 
 ## Remaining before operational enablement
 
+A separate operator [read-only offline executor probe](SANDBOX-INSPECTION.md)
+checks actual Docker info/inspect against a scoped expectation. Its narrow policy
+and synthetic/CLI validation are not a lifecycle/evidence collector. It is not
+registered as `IGatewaySandbox`; the default still refuses execution. A diagnostic
+never releases journal capacity, acknowledges a task or starts/stops an executor.
+
 Full SSE collection, authorized human approval replies/reconciliation,
 production sandbox lifecycle/evidence collection, usage ingestion, VPS installation
 and live pilot also remain gates. Local schema CLI probes do not establish an
