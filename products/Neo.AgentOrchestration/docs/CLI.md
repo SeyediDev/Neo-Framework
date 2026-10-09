@@ -28,7 +28,38 @@ A published executable supports the same arguments (`neo-agent init ...`);
 packaging/installation on a clean machine is a separate milestone. Do not put a
 connection string on the command line. No command reads Hyper configuration.
 
-## Semantics
+## Independent gateway provisioning
+
+The private agent gateway has its own catalog, not the task or Hangfire catalog.
+Privately set `FANASA_AGENT_GATEWAY_SQL` with the exact explicit destination;
+these commands never fall back to `NEO_ORCHESTRATION_SQL`:
+
+```powershell
+neo-agent gateway-migrate FanasaAgentGateway
+neo-agent gateway-health FanasaAgentGateway
+```
+
+An isolated `FanasaAgentGateway_<installation>` suffix is supported. Connection
+arguments, attached database files and legacy/product destinations are refused.
+Migration is an explicit operator action after backup and permission setup. It
+may create the named catalog; it never imports reservations or dispatches agents.
+Unknown migration history or unrelated tables require operator reconciliation;
+the CLI does not erase them or silently repair missing tables.
+
+`gateway-health` is read-only, including for an absent catalog. JSON contains
+`ready`, `reason`, `appliedMigrations` and `expectedMigrations`, never connection
+details. Exit 0 means `schema-current`, 1 means unavailable connection or another
+operational failure, 3 means a migration/schema mismatch and 2 means invalid
+configuration. Inventory/history/model readiness is not a column/index audit,
+native-runtime, sandbox, API or model acceptance test.
+
+Ingress and the opt-in gateway Worker use this same readiness check before
+starting. Set `AgentGateway:DatabaseName` for a suffixed installation alongside
+`ConnectionStrings:AgentGateway`; the CLI environment variable does not configure
+hosts. Readiness never migrates on startup or activates imported runs. See
+[gateway boundaries](GATEWAY-JOURNAL.md).
+
+## Product semantics
 
 - `migrate` is the existing additive EF provisioner. It may create the named
   database if permitted, refuses legacy/mismatched destinations and unrelated

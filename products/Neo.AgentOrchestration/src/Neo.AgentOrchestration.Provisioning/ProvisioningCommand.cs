@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Neo.AgentOrchestration.Infrastructure.Persistence;
+using Neo.AgentOrchestration.Infrastructure.ExternalExecution;
 
 namespace Neo.AgentOrchestration.Provisioning;
 
@@ -20,7 +21,10 @@ public static class ProvisioningCommand
         neo-agent migrate <NeoAgentOrchestration[_installation]>
         neo-agent seed <NeoAgentOrchestration[_installation]> <manifest.json>
         neo-agent health <NeoAgentOrchestration[_installation]>
+        neo-agent gateway-migrate <FanasaAgentGateway[_installation]>
+        neo-agent gateway-health <FanasaAgentGateway[_installation]>
         Set NEO_ORCHESTRATION_SQL privately for migrate/seed/health. Edit the init template before seed.
+        Set FANASA_AGENT_GATEWAY_SQL privately for gateway-migrate/gateway-health; never put connections in arguments.
         init writes only a new credential-free manifest. No command imports legacy data or dispatches agents.
         Exit: 0 success, 1 operational failure, 2 invalid input, 3 schema not ready, 4 seed conflict, 130 cancelled.
         """;
@@ -31,13 +35,32 @@ public static class ProvisioningCommand
         {
             await output.WriteLineAsync(Usage); return 0;
         }
-        if (!(args is ["init", _, _] or ["migrate", _] or ["seed", _, _] or ["health", _]))
+        if (!(args is ["init", _, _] or ["migrate", _] or ["seed", _, _] or ["health", _] or
+            ["gateway-migrate", _] or ["gateway-health", _]))
         {
             await error.WriteLineAsync(Usage); return 2;
         }
         try
         {
             ct.ThrowIfCancellationRequested();
+            if (args[0] is "gateway-migrate" or "gateway-health")
+            {
+                var gatewayConnection = Environment.GetEnvironmentVariable("FANASA_AGENT_GATEWAY_SQL");
+                if (string.IsNullOrWhiteSpace(gatewayConnection))
+                {
+                    await error.WriteLineAsync("Missing FANASA_AGENT_GATEWAY_SQL. No changes made."); return 2;
+                }
+                GatewayProvisioner.ValidateDestination(gatewayConnection, args[1]);
+                if (args[0] == "gateway-migrate")
+                {
+                    await GatewayProvisioner.MigrateAsync(gatewayConnection, args[1], ct);
+                    await output.WriteLineAsync("Gateway migration applied. No reservations imported or agents dispatched; verify with gateway-health.");
+                    return 0;
+                }
+                var gatewayHealth = await GatewayProvisioner.HealthAsync(gatewayConnection, args[1], ct);
+                await output.WriteLineAsync(JsonSerializer.Serialize(gatewayHealth, Json));
+                return gatewayHealth.Ready ? 0 : gatewayHealth.Reason == "connection-unavailable" ? 1 : 3;
+            }
             if (args[0] == "init")
             {
                 // Validate the public name without reading any secret or opening SQL.

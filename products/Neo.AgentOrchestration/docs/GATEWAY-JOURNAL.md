@@ -28,6 +28,13 @@ The generated `InitialGatewayJournal` migration belongs to this context, not
 `OrchestrationDbContext`. Apply it explicitly to a separately authorized catalog
 after backup/database-user configuration; **it has not been applied to the VPS**.
 No auto-create, auto-migrate, import or cleanup on application startup.
+The explicit [CLI](CLI.md) provides `gateway-migrate` and read-only
+`gateway-health` using only private `FANASA_AGENT_GATEWAY_SQL`. Health requires
+exact known migration history, modeled table inventory and no pending model
+changes; it does not audit all columns/indexes. Unknown history or extra/missing
+tables fail closed without erasing or repairing them. Ingress and gateway Worker
+share the same check before startup. Suffixed catalogs require explicit
+`AgentGateway:DatabaseName`; host connections remain separately configured.
 
 ## Durable behavior
 
@@ -124,7 +131,7 @@ The **existing Worker**, not ingress/API, opts in using
 `AgentGateway:WorkerEnabled=true`, `AgentGateway:Enabled=true` and the same
 independent gateway connection/bindings. Keep the existing product Harness opt-in,
 Outbox queue and distinct product/jobs catalogs. Startup refuses pending gateway
-migrations before starting jobs. Worker composition replaces only the implementation
+migrations, unknown history and table/model mismatches before starting jobs. Worker composition replaces only the implementation
 of the existing `IProcessOutboxRecurringJob` with a two-store coordinator; the same
 scheduled invocation calls Neo's `ProcessOutboxRecurringJob` for each store. The
 product `IOutboxStore` remains unchanged. There is no second cron/hosted scheduler.
@@ -152,8 +159,9 @@ automatically dispatch imported or pre-activation journal rows.
 ## Remaining before operational enablement
 
 SSE/paging, authorized human approval replies/reconciliation,
-production sandbox lifecycle/evidence collection, usage ingestion, installed
-health/schema probes and live pilot also remain gates. A successful journal test
+production sandbox lifecycle/evidence collection, usage ingestion, VPS installation
+and live pilot also remain gates. Local schema CLI probes do not establish an
+installed runtime's health. A successful journal test
 must not mark `ORCH-DUAL-AGENT-GATEWAY`, installation or pilot fully accepted.
 
 ## Verification
@@ -167,11 +175,16 @@ native/sandbox/delivery test doubles and a dedicated
 
 ```powershell
 $env:FANASA_GATEWAY_TEST_SQL = 'Server=(localdb)\MSSQLLocalDB;Database=FanasaAgentGateway_Verification;Integrated Security=true;TrustServerCertificate=true'
+dotnet build products/Neo.AgentOrchestration/src/Neo.AgentOrchestration.Provisioning
 dotnet test products/Neo.AgentOrchestration/tests/Neo.AgentOrchestration.Tests --filter 'GatewayRunTests|GatewayBindingTests|SqlGatewayJournalTests'
 ```
 
 The SQL fixture explicitly migrates and clears ONLY its own disposable gateway
-tables before each case; collection parallelization is disabled. It refuses a
+tables before each case; collection parallelization is disabled. CLI tests launch
+the built provisioning executable with a restricted environment; build it using
+the same Debug/Release configuration as the tests. They verify migration replay,
+no product-connection fallback, read-only missing-catalog health and preserved
+unknown history/schema mismatches. It refuses a
 different catalog and skips when the connection is absent. Tests do not execute
 a real agent/model/repository command or establish live callback→Review acceptance.
 

@@ -124,3 +124,13 @@ loopback HTTP needs an explicit operator setting. Requests are at most 256 KiB,
 responses 4 MiB. Reduce paging if needed, but do not label a partial history
 complete. Installation, token acquisition/refresh and live model execution are
 separate concerns; the skill does not perform them implicitly.
+
+## Separate operator provisioning (not MCP tools)
+
+The installation CLI also provides `neo-agent gateway-migrate <catalog>` and
+`neo-agent gateway-health <catalog>` for an independent `FanasaAgentGateway` or
+isolated suffix, using only private `FANASA_AGENT_GATEWAY_SQL`. Health is read-only;
+migration is an explicit authorized operation, never a task/ownership write or
+agent dispatch. No product SQL fallback or secrets in arguments/context. Unknown
+history/schema inventory mismatches require reconciliation, not automatic cleanup.
+See `docs/CLI.md`; local schema readiness does not prove VPS/runtime/pilot acceptance.

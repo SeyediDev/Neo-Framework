@@ -50,9 +50,9 @@ await using (var scope = host.Services.CreateAsyncScope())
         throw new InvalidOperationException("Provision the product database before starting the worker.");
     if (builder.Configuration.GetValue<bool>("AgentGateway:WorkerEnabled"))
     {
-        var gateway = scope.ServiceProvider.GetRequiredService<GatewayDbContext>();
-        if (!await gateway.Database.CanConnectAsync() || (await gateway.Database.GetPendingMigrationsAsync()).Any())
-            throw new InvalidOperationException("Provision the gateway database before starting the worker.");
+        if (!(await GatewayProvisioner.HealthAsync(builder.Configuration.GetConnectionString("AgentGateway")!,
+            builder.Configuration["AgentGateway:DatabaseName"] ?? "FanasaAgentGateway", CancellationToken.None)).Ready)
+            throw new InvalidOperationException("Provision and verify the gateway database before starting the worker.");
     }
 }
 await host.RunAsync();

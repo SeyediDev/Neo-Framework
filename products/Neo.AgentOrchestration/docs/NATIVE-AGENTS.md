@@ -11,14 +11,18 @@ in the existing product. Do not enable Hermes cron/kanban as a parallel board.
 `Application/ExternalAgents` defines provider-neutral preparation, submission,
 observation and stop requests. `Infrastructure/ExternalAgents` translates native
 HTTP for both engines. Existing `http.<connection>` dispatch, v1/v2 snapshots,
-callback and durable Outbox/Hangfire remain unchanged. The adapters are **not**
-registered by API or Worker startup and are **not** a durable execution gateway.
+callback and durable Outbox/Hangfire remain unchanged. The public API never
+registers adapters. Private ingress and explicitly opted-in gateway Worker compose
+them through `AddGatewayJournal`; default Worker startup does not. The adapters
+alone are **not** a durable execution gateway.
 No installed agent, model/account, live inference or task execution is implied.
 
 The [durable execution journal/core](GATEWAY-JOURNAL.md) is now implemented as a
-separate internal layer. Its production sandbox, dispatch host, durable worker
-activation, approval responses and trusted usage ingestion are not enabled or
-completed; native adapters alone still do not constitute an operational gateway.
+separate internal layer with private dispatch host and durable Worker activation.
+These are disabled by default; production sandbox, approval responses and trusted
+usage ingestion remain incomplete. Native adapters alone still do not constitute
+an operational gateway. Independent CLI schema readiness is described in
+[CLI.md](CLI.md), not proof of an installed runtime or live model execution.
 
 Only an authorized gateway may explicitly call `AddNativeAgentAdapters` and
 `NativeAgentAdapterFactory.Create(key, scope)`. These are internal service APIs,

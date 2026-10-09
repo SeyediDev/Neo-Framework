@@ -10,7 +10,8 @@ namespace Neo.AgentOrchestration.Infrastructure.ExternalExecution;
 
 public static class GatewayRegistration
 {
-    // Internal composition only. Neither API/Worker nor migration calls this.
+    // Internal composition only. Private ingress and explicitly opted-in Worker
+    // use this; public API and migration do not.
     // It does not start a host, dispatcher, scheduler or native runtime.
     public static IServiceCollection AddGatewayJournal(this IServiceCollection services,
         IConfiguration configuration, string connection)
