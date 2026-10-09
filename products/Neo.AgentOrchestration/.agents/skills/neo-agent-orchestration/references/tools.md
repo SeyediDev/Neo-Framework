@@ -134,3 +134,10 @@ migration is an explicit authorized operation, never a task/ownership write or
 agent dispatch. No product SQL fallback or secrets in arguments/context. Unknown
 history/schema inventory mismatches require reconciliation, not automatic cleanup.
 See `docs/CLI.md`; local schema readiness does not prove VPS/runtime/pilot acceptance.
+
+OpenCode cursor traversal is an operator binding option, not an MCP paging tool.
+Enable `NativeAgents:Connections:<key>:OpenCodeCursorPagination` only after checking
+the deployed pinned header/query contract in `docs/NATIVE-AGENTS.md`. A complete
+bounded transcript is required before usage reports; partial/budget-limited reads
+are not terminal success or known-zero consumption. Changing opt-in fences old
+handles/reservations. Never follow native Link URLs or derive a route from task text.

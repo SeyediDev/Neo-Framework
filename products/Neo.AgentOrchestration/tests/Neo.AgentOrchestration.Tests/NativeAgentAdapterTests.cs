@@ -17,7 +17,7 @@ using Xunit;
 
 namespace Neo.AgentOrchestration.Tests;
 
-public sealed class NativeAgentAdapterTests
+public sealed partial class NativeAgentAdapterTests
 {
     [Fact]
     public async Task Hermes_uses_native_run_id_stable_payload_key_and_per_run_memory_without_double_count()
@@ -217,7 +217,7 @@ public sealed class NativeAgentAdapterTests
     private static readonly Guid Org = Guid.NewGuid(), Workspace = Guid.NewGuid(), Project = Guid.NewGuid();
     private static ExternalAgentScope Scope() => new(Org, Workspace, Project, Guid.NewGuid());
     private static ServiceProvider Services(NativeServer server, string engine, bool enabled = true, bool disjoint = true,
-        string environment = "Testing", string? endpoint = null)
+        string environment = "Testing", string? endpoint = null, bool cursorPagination = false)
     {
         var values = new Dictionary<string, string?> { ["NativeAgents:Enabled"] = enabled.ToString(), ["NativeAgents:AllowLoopbackHttp"] = "true" };
         const string root = "NativeAgents:Connections:pilot:";
@@ -226,7 +226,7 @@ public sealed class NativeAgentAdapterTests
             ["Enabled"] = "true", ["Engine"] = engine, ["OrganizationId"] = Org.ToString(), ["WorkspaceId"] = Workspace.ToString(),
             ["ProjectId"] = Project.ToString(), ["Endpoint"] = endpoint ?? server.Address, ["SecretRef"] = "env:TEST_NATIVE_SECRET",
             ["ModelProvider"] = "model-provider", ["ModelId"] = "model-id", ["OpenCodeDisjointTokenAccounting"] = disjoint.ToString(),
-            ["OpenCodeOmittedStatusIsIdle"] = "true"
+            ["OpenCodeOmittedStatusIsIdle"] = "true", ["OpenCodeCursorPagination"] = cursorPagination.ToString()
         }) values[root + key] = value;
         var services = new ServiceCollection(); services.AddLogging();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().AddInMemoryCollection(values).Build());

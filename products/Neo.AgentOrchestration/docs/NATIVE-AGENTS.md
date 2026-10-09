@@ -38,7 +38,7 @@ store, not client-supplied fields. Preserve these sequence boundaries:
    authenticated callback. Native completion alone is not successful acceptance.
 
 These clients deliberately do not implement durable reservation, sandbox setup,
-callback delivery, a full SSE consumer, paging, approval replies or UI controls.
+callback delivery, a full SSE consumer, approval replies or UI controls.
 Those must be implemented and tested before enabling external execution.
 
 ## Configuration (gateway only; disabled by default)
@@ -55,6 +55,7 @@ Those must be implemented and tested before enabling external execution.
 | `Connections:<key>:Username` | OpenCode Basic username; default `opencode` |
 | `Connections:<key>:OpenCodeDisjointTokenAccounting` | Explicit source-reviewed normalization opt-in; absent means no converted OpenCode usage |
 | `Connections:<key>:OpenCodeOmittedStatusIsIdle` | Source-reviewed status-map opt-in; absent entry may mean idle only after this is explicitly enabled |
+| `Connections:<key>:OpenCodeCursorPagination` | Source-reviewed `X-Next-Cursor`/`before` opt-in; absent means legacy single-page safety |
 | `AllowLoopbackHttp` | Test/development loopback only, never production HTTP |
 
 Connection keys match `[a-z0-9][a-z0-9_-]{0,39}`. Directional gateway dispatch,
@@ -93,8 +94,21 @@ or memory key alone does not provide safe multi-tenant execution.
   Hermes usage is a terminal run report, including failed/cancelled/interrupted runs
   when the provider exposes counters/runtime. OpenCode usage is one immutable report per
   completed correlated assistant message, not both message and step-finish totals.
-  A saturated 100-message page yields Unknown and no incomplete report set; full
-  paging/reconciliation must precede acceptance of longer runs.
+  Without cursor opt-in, a saturated 100-message page or any cursor header yields Unknown and no
+  incomplete report set. Reviewed cursor mode reads complete history before
+  emitting any reports: 100 messages/page, at most 10 pages/1,000 messages and
+  4 MiB cumulative JSON, with a 20-second traversal deadline and 1 MiB/page.
+  Budget exhaustion yields Unknown with no partial reports; transport/deadline
+  errors require reconciliation through the existing gateway. Neither is success.
+  Status is sampled after transcript collection. No provider inference is started
+  by reading pages, and native status still cannot prove executor exit.
+- Cursor mode reads only `X-Next-Cursor`, URI-encodes it into the same configured
+  session route and never follows `Link` URLs. Empty/oversized cursors, empty
+  continuing pages, repeated cursors, duplicate message IDs and foreign sessions
+  are rejected. Only the reviewed opt-in treats absence of a cursor as final,
+  including exactly 100 rows. Older/unknown versions retain the conservative
+  single-page limit. Opt-out fingerprints remain unchanged; enabling the cursor
+  contract changes the fingerprint and fences old reservations/handles.
 - OpenCode's reviewed source uses disjoint input/cache-read/cache-write and
   output/reasoning. Normalize inclusive input = input + read + write and inclusive
   output = output + reasoning **once**, leaving cache-read/reasoning as subsets.
@@ -114,6 +128,13 @@ or memory key alone does not provide safe multi-tenant execution.
   [Status-map semantics](https://github.com/anomalyco/opencode/blob/388406238bd5ca15564a762840a2362c3a45bd9c/packages/opencode/src/session/status.ts)
   were checked at the same revision.
   Check the deployed `/doc` and capability/schema before enabling a pinned release.
+- Cursor request/response contract and terminal-header semantics were read from
+  [pinned route declarations](https://github.com/anomalyco/opencode/blob/388406238bd5ca15564a762840a2362c3a45bd9c/packages/opencode/src/server/routes/instance/httpapi/groups/session.ts),
+  [pinned handler](https://github.com/anomalyco/opencode/blob/388406238bd5ca15564a762840a2362c3a45bd9c/packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts)
+  and [upstream pagination tests](https://github.com/anomalyco/opencode/blob/388406238bd5ca15564a762840a2362c3a45bd9c/packages/opencode/test/server/session-messages.test.ts).
+  This source check is not an installed-version compatibility claim. Public docs
+  currently mention `limit` but not the full cursor contract; verify the pinned
+  deployed runtime before opt-in.
 
 `NativeAgentAdapterTests` run actual isolated loopback Kestrel HTTP, not real agents
 or a model. They verify request/auth/scope/correlation/recovery/error/usage behavior.

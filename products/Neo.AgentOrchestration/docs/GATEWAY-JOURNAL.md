@@ -158,11 +158,14 @@ automatically dispatch imported or pre-activation journal rows.
 
 ## Remaining before operational enablement
 
-SSE/paging, authorized human approval replies/reconciliation,
+Full SSE collection, authorized human approval replies/reconciliation,
 production sandbox lifecycle/evidence collection, usage ingestion, VPS installation
 and live pilot also remain gates. Local schema CLI probes do not establish an
 installed runtime's health. A successful journal test
 must not mark `ORCH-DUAL-AGENT-GATEWAY`, installation or pilot fully accepted.
+The [native adapter](NATIVE-AGENTS.md) now has separately opted-in bounded OpenCode
+cursor traversal; exceeding its traversal budget still requires reconciliation,
+not fabricated terminal status or incomplete consumption totals.
 
 ## Verification
 

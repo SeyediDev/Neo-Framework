@@ -17,13 +17,16 @@ namespace Neo.AgentOrchestration.Infrastructure.ExternalAgents;
 // endpoint, credential, arbitrary agent, model route or host directory.
 public sealed record NativeAgentBinding(string Key, ExternalAgentEngine Engine, Guid OrganizationId,
     Guid WorkspaceId, Guid ProjectId, Uri Endpoint, string SecretRef, string ModelProvider,
-    string ModelId, string? Username, bool OpenCodeDisjointTokenAccounting, bool OpenCodeOmittedStatusIsIdle)
+    string ModelId, string? Username, bool OpenCodeDisjointTokenAccounting, bool OpenCodeOmittedStatusIsIdle,
+    bool OpenCodeCursorPagination = false)
 {
+    // Keep existing opt-out fingerprints stable. A reviewed cursor contract
+    // changes interpretation and must invalidate old opt-in reservations.
     public string Fingerprint => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
     {
         Key, Engine, OrganizationId, WorkspaceId, ProjectId, Endpoint, SecretRef,
         ModelProvider, ModelId, Username, OpenCodeDisjointTokenAccounting, OpenCodeOmittedStatusIsIdle
-    }))));
+    }) + (OpenCodeCursorPagination ? "|opencode-cursor-v1" : ""))));
 }
 
 public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHostEnvironment environment,
@@ -56,7 +59,8 @@ public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHos
             var binding = new NativeAgentBinding(key, engine, section.GetValue<Guid>("OrganizationId"),
                 section.GetValue<Guid>("WorkspaceId"), section.GetValue<Guid>("ProjectId"), endpoint,
                 section["SecretRef"] ?? "", Value(section["ModelProvider"]), Value(section["ModelId"]), username,
-                section.GetValue<bool>("OpenCodeDisjointTokenAccounting"), section.GetValue<bool>("OpenCodeOmittedStatusIsIdle"));
+                section.GetValue<bool>("OpenCodeDisjointTokenAccounting"), section.GetValue<bool>("OpenCodeOmittedStatusIsIdle"),
+                section.GetValue<bool>("OpenCodeCursorPagination"));
             RequireScope(binding, scope);
             if (!Regex.IsMatch(binding.SecretRef, @"\Aenv:[A-Z][A-Z0-9_]{0,100}\z", RegexOptions.CultureInvariant))
                 throw new ExternalAgentException("native-agent-configuration");
@@ -82,7 +86,7 @@ public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHos
 
 public static class NativeAgentRegistration
 {
-    // Explicit gateway-only composition. API and Worker do not call this.
+    // Explicit gateway composition; private ingress/opted-in Worker only.
     public static IServiceCollection AddNativeAgentAdapters(this IServiceCollection services)
     {
         services.AddSingleton<NativeAgentAdapterFactory>();
@@ -165,6 +169,10 @@ internal sealed class NativeAgentAdapter(NativeAgentBinding binding, string tran
             return new(state, [new("hermes:" + handle.NativeId, provider, model, input, output, cached, reasoning)]);
         }
 
+        var messages = await ReadOpenCodeMessagesAsync(handle, ct);
+        if (messages is null) return new(ExternalAgentState.Unknown, []);
+        // Sample native status after the complete bounded transcript, not before
+        // potentially multiple pages. Idle still isn't executor-exit evidence.
         using var statuses = await SendAsync(HttpMethod.Get, "session/status", null, ct);
         if (statuses.RootElement.ValueKind != JsonValueKind.Object) throw new ExternalAgentException("native-agent-protocol");
         var status = Text(Property(statuses.RootElement, handle.NativeId!), "type");
@@ -172,13 +180,9 @@ internal sealed class NativeAgentAdapter(NativeAgentBinding binding, string tran
         // that interpretation with explicit installed-version opt-in, and still
         // require a correlated completed final message below.
         if (binding.OpenCodeOmittedStatusIsIdle && !statuses.RootElement.TryGetProperty(handle.NativeId!, out _)) status = "idle";
-        using var messages = await SendAsync(HttpMethod.Get, $"session/{handle.NativeId}/message?limit=100", null, ct);
-        if (messages.RootElement.ValueKind != JsonValueKind.Array) throw new ExternalAgentException("native-agent-protocol");
-        // Saturated page is not a complete transcript; gateway must page/reconcile.
-        if (messages.RootElement.GetArrayLength() >= 100) return new(ExternalAgentState.Unknown, []);
         var reports = new List<ExternalAgentUsage>(); var failed = false; var aborted = false; var finished = false; var pending = false;
         var messageIds = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var row in messages.RootElement.EnumerateArray())
+        foreach (var row in messages)
         {
             var info = Property(row, "info");
             if (Text(info, "parentID") != handle.PromptId || Text(info, "role") != "assistant") continue;
@@ -217,8 +221,60 @@ internal sealed class NativeAgentAdapter(NativeAgentBinding binding, string tran
         // Never manufacture a terminal state from acknowledgement. Reconcile next.
     }
 
+    private async Task<IReadOnlyList<JsonElement>?> ReadOpenCodeMessagesAsync(ExternalAgentHandle handle, CancellationToken ct)
+    {
+        const int pageSize = 100, maxPages = 10, maxTotalBytes = 4 * MaxBytes;
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        deadline.CancelAfter(TimeSpan.FromSeconds(20));
+        var rows = new List<JsonElement>(); var bytes = 0L; string? cursor = null;
+        var cursors = new HashSet<string>(StringComparer.Ordinal);
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        for (var page = 0; page < maxPages; page++)
+        {
+            string? next = null; var hasCursor = false;
+            var path = $"session/{handle.NativeId}/message?limit={pageSize}";
+            if (cursor is not null) path += "&before=" + Uri.EscapeDataString(cursor);
+            using var document = await SendAsync(HttpMethod.Get, path, null, deadline.Token,
+                inspect: (headers, length) =>
+                {
+                    bytes += length;
+                    hasCursor = headers.Contains("X-Next-Cursor");
+                    if (!binding.OpenCodeCursorPagination || !headers.TryGetValues("X-Next-Cursor", out var values)) return;
+                    var tokens = values.ToArray();
+                    if (tokens.Length != 1 || string.IsNullOrWhiteSpace(tokens[0]) || tokens[0].Length > 4096 ||
+                        tokens[0].Any(char.IsWhiteSpace) || tokens[0].Any(char.IsControl) ||
+                        tokens[0].Contains(transportSecret, StringComparison.Ordinal))
+                        throw new ExternalAgentException("native-agent-cursor-invalid");
+                    next = tokens[0];
+                });
+            if (document.RootElement.ValueKind != JsonValueKind.Array)
+                throw new ExternalAgentException("native-agent-protocol");
+            var count = document.RootElement.GetArrayLength();
+            if (!binding.OpenCodeCursorPagination)
+                return count >= pageSize || hasCursor ? null : document.RootElement.EnumerateArray().Select(x => x.Clone()).ToArray();
+            if (count > pageSize || next is not null && count == 0)
+                throw new ExternalAgentException("native-agent-cursor-invalid");
+            if (bytes > maxTotalBytes) return null;
+            foreach (var row in document.RootElement.EnumerateArray())
+            {
+                var info = Property(row, "info");
+                if (Text(info, "sessionID") != handle.NativeId)
+                    throw new ExternalAgentException("native-agent-response-scope");
+                if (!ids.Add(Identifier(Text(info, "id"))))
+                    throw new ExternalAgentException("native-agent-duplicate-message");
+                rows.Add(row.Clone());
+            }
+            if (next is null) return rows;
+            if (!cursors.Add(next)) throw new ExternalAgentException("native-agent-cursor-cycle");
+            cursor = next; // Never follow native Link URLs or change configured authority.
+        }
+        // No partial usage or fabricated terminal state at a traversal budget.
+        return null;
+    }
+
     private async Task<JsonDocument> SendAsync(HttpMethod method, string path, object? body, CancellationToken ct,
-        bool expectEmpty = false, string? idempotencyKey = null, string? memoryScope = null)
+        bool expectEmpty = false, string? idempotencyKey = null, string? memoryScope = null,
+        Action<HttpResponseHeaders, long>? inspect = null)
     {
         var write = method != HttpMethod.Get;
         using var request = new HttpRequestMessage(method, new Uri(binding.Endpoint, path));
@@ -244,6 +300,7 @@ internal sealed class NativeAgentAdapter(NativeAgentBinding binding, string tran
                 if (buffer.Length + read > MaxBytes) throw new ExternalAgentException("native-agent-response-limit", write);
                 buffer.Write(chunk, 0, read);
             }
+            inspect?.Invoke(response.Headers, buffer.Length);
             return JsonDocument.Parse(buffer.ToArray());
         }
         catch (ExternalAgentException) { throw; }
