@@ -38,6 +38,7 @@
     const emptyTitle = document.getElementById('empty-title');
     const emptyDescription = document.getElementById('empty-description');
     const productCount = document.getElementById('product-count');
+    const login = document.getElementById('workspace-login');
     let requestId = 0;
     let controller;
     const textElement = (tag, className, text) => {
@@ -53,7 +54,7 @@
         } catch { return null; }
     };
     const render = data => {
-        select.replaceChildren(new Option(data.organizations.length ? 'سازمان موردنظر را انتخاب کنید' : 'سازمانی در دسترس نیست', ''));
+        select.replaceChildren(new Option(data.presentation.organizationPlaceholder, ''));
         data.organizations.forEach(organization => select.add(new Option(organization.name, organization.id, false, organization.id === data.activeOrganizationId)));
         grid.replaceChildren();
         data.products.forEach(product => {
@@ -80,14 +81,10 @@
         status.classList.toggle('is-error', ['NotConfigured', 'Forbidden', 'Unavailable'].includes(data.status));
         empty.hidden = data.products.length > 0;
         grid.hidden = data.products.length === 0;
-        emptyTitle.textContent = data.status === 'Ready' ? 'فضای کار شما از اینجا آغاز می‌شود' : 'اطلاعات فضای کار در دسترس نیست';
+        emptyTitle.textContent = data.presentation.emptyTitle;
         emptyDescription.textContent = data.message;
-        if (data.status === 'SignInRequired' && !empty.querySelector('a')) {
-            const login = textElement('a', 'button button-secondary', 'ورود دوباره');
-            login.href = '/login';
-            empty.append(login);
-        }
-        productCount.textContent = data.products.length.toLocaleString('fa-IR') + ' سامانه';
+        login.hidden = !data.presentation.needsSignIn;
+        productCount.textContent = data.presentation.countLabel;
         const url = new URL(location.href);
         if (data.activeOrganizationId) url.searchParams.set('tenantId', data.activeOrganizationId);
         else url.searchParams.delete('tenantId');
@@ -118,11 +115,13 @@
         } catch (error) {
             if (error.name === 'AbortError' || id !== requestId) return;
             status.textContent = 'ارتباط برقرار نشد. دوباره تلاش کنید.';
+            panel.dataset.status = 'Unavailable';
             status.classList.add('is-error');
             empty.hidden = false;
             emptyTitle.textContent = 'اطلاعات فضای کار دریافت نشد';
             emptyDescription.textContent = 'با تازه‌سازی فهرست دوباره تلاش کنید.';
-            productCount.textContent = '— سامانه';
+            login.hidden = true;
+            productCount.textContent = 'دریافت ناموفق';
         } finally {
             if (id === requestId) {
                 panel.removeAttribute('aria-busy');

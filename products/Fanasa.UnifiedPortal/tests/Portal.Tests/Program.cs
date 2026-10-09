@@ -64,6 +64,27 @@ var offline = new PlatformCatalogClient(new StubClients(new StubHandler(_ => thr
 Check((await offline.GetWorkspaceAsync("subject", default)).Status == CatalogStatus.Unavailable, "network outage becomes retryable state");
 var missing = new PlatformCatalogClient(new StubClients(handler), new ConfigurationBuilder().Build(), NullLogger<PlatformCatalogClient>.Instance);
 Check((await missing.GetWorkspaceAsync("subject", default)).Status == CatalogStatus.NotConfigured, "missing configuration is not reported as no membership");
+Check(anonymous.Presentation.CountLabel == "ورود لازم است" && anonymous.Presentation.NeedsSignIn, "anonymous workspace does not claim zero products");
+Check(model.Presentation.CountLabel == "انتخاب سازمان", "invalid organization asks for selection rather than claiming zero products");
+foreach (var failure in new[] { CatalogStatus.NotConfigured, CatalogStatus.Forbidden, CatalogStatus.Unavailable })
+{
+    var failedModel = new IndexModel(new WorkspaceStub(new(failure, [], []))) { PageContext = new() { HttpContext = new DefaultHttpContext() } };
+    failedModel.HttpContext.User = model.User;
+    await failedModel.OnGetAsync(null, default);
+    Check(!failedModel.Presentation.CountLabel.Contains("سامانه") && failedModel.Presentation.OrganizationPlaceholder == "فهرست سازمان‌ها دریافت نشده است",
+        failure + " has unknown count and unavailable list, not empty membership");
+}
+Check(WorkspacePresentation.Create(CatalogStatus.Ready, 0, false, 0).CountLabel == "بدون سازمان", "successful empty membership is distinct from connection failure");
+Check(WorkspacePresentation.Create(CatalogStatus.Ready, 1, true, 0).CountLabel == "۰ سامانه", "zero products is shown only for a successfully loaded selected organization");
+Check(WorkspacePresentation.Create(CatalogStatus.Ready, 2, false, 0).EmptyTitle == "سازمان خود را انتخاب کنید", "multi-organization empty state guides selection");
+var partialFailure = new IndexModel(new WorkspaceStub(new(CatalogStatus.Unavailable, [first], [Product(first.Id)]))) { PageContext = new() { HttpContext = new DefaultHttpContext() } };
+partialFailure.HttpContext.User = model.User;
+var workspaceResult = (Microsoft.AspNetCore.Mvc.JsonResult)await partialFailure.OnGetWorkspaceAsync(first.Id, default);
+Check(partialFailure.Products.Count == 0 && partialFailure.Presentation.CountLabel == "دریافت ناموفق", "failed workspace never exposes stale product links even with retained organizations");
+var workspaceJson = JsonSerializer.Serialize(workspaceResult.Value, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+using var workspaceDocument = JsonDocument.Parse(workspaceJson);
+Check(workspaceDocument.RootElement.GetProperty("presentation").GetProperty("countLabel").GetString() == partialFailure.Presentation.CountLabel,
+    "AJAX and initial HTML share the same state presentation");
 Console.WriteLine($"{checks} checks passed.");
 
 // Explicit local-only preview of authorized UI states. Never part of the web product.
@@ -86,7 +107,8 @@ if (args.Contains("--preview"))
         await next();
     });
     app.MapRazorPages();
-    await app.RunAsync("http://127.0.0.1:5183");
+    var previewPort = int.TryParse(Environment.GetEnvironmentVariable("PORTAL_PREVIEW_PORT"), out var port) && port is > 1024 and <= 65535 ? port : 5183;
+    await app.RunAsync($"http://127.0.0.1:{previewPort}");
 }
 
 static HttpResponseMessage Json(object value) => new(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(value, new JsonSerializerOptions(JsonSerializerDefaults.Web)), System.Text.Encoding.UTF8, "application/json") };

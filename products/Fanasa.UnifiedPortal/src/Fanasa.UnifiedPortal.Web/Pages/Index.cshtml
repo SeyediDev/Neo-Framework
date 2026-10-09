@@ -46,7 +46,7 @@
 <section class="workspace-panel" id="workspace" aria-labelledby="workspace-title" data-status="@Model.Status">
     <div class="catalog-heading">
         <div><span class="eyebrow">فضای کار شما</span><h2 id="workspace-title">سامانه‌های سازمان</h2></div>
-        <span class="section-badge" id="product-count">@Model.Products.Count سامانه</span>
+        <span class="section-badge" id="product-count" aria-live="polite">@Model.Presentation.CountLabel</span>
     </div>
     @if (authenticated)
     {
@@ -54,7 +54,7 @@
             <div class="organization-field">
                 <label for="organization-select">سازمان فعال</label>
                 <select name="tenantId" id="organization-select" disabled="@(Model.Organizations.Count == 0)" aria-describedby="workspace-status">
-                    <option value="">@(Model.Organizations.Count == 0 ? "سازمانی در دسترس نیست" : "سازمان موردنظر را انتخاب کنید")</option>
+                    <option value="">@Model.Presentation.OrganizationPlaceholder</option>
                     @foreach (var organization in Model.Organizations)
                     {
                         <option value="@organization.Id" selected="@(organization.Id == Model.ActiveOrganizationId)">@organization.Name</option>
@@ -68,9 +68,9 @@
     <p id="workspace-status" class="workspace-status @(Model.Status is CatalogStatus.Forbidden or CatalogStatus.Unavailable or CatalogStatus.NotConfigured ? "is-error" : "")" role="status" aria-live="polite">@Model.Message</p>
     <div class="catalog-empty" id="workspace-empty" hidden="@(Model.Products.Count > 0)">
         <span class="empty-symbol" aria-hidden="true">◇</span>
-        <strong id="empty-title">@(authenticated ? "فضای کار شما از اینجا آغاز می‌شود" : "سامانه‌های شما پس از ورود نمایش داده می‌شوند")</strong>
-        <p id="empty-description">@(authenticated ? Model.Message : "وارد حساب خود شوید تا سازمان‌ها و سامانه‌های مجازتان را ببینید.")</p>
-        @if (!authenticated || Model.Status == CatalogStatus.SignInRequired) { <a class="button button-secondary" href="/login">ورود به حساب فن آسا</a> }
+        <strong id="empty-title">@Model.Presentation.EmptyTitle</strong>
+        <p id="empty-description">@Model.Message</p>
+        <a class="button button-secondary" id="workspace-login" href="/login" hidden="@(!Model.Presentation.NeedsSignIn)">ورود به حساب فن آسا</a>
     </div>
     <div class="product-grid" id="product-grid" hidden="@(Model.Products.Count == 0)">
         @foreach (var product in Model.Products)
