@@ -33,13 +33,15 @@ never add agentId/owner/chat properties to a request.
 
 | Tool | Fields inside request |
 | --- | --- |
-| `neo_work_create` | projectId, key, title, domain; optional description, priority="Normal", parentWorkItemId, estimatedSeconds, type="Task", acceptanceCriteria (max 8000 characters), requestId (stable nonempty GUID for identical retry) |
+| `neo_work_create` | projectId, key, title, domain; optional description, priority="Normal", parentWorkItemId, estimatedSeconds, estimatedTokens, type="Task", acceptanceCriteria (max 8000 characters), requestId (stable nonempty GUID for identical retry) |
 | `neo_work_planning` | expectedVersion, type, acceptanceCriteria (null clears); preserves description and records criteria history; owner-only when assigned; rejects closed/archived items |
 | `neo_work_claim` | expectedVersion, roleId; optional branch |
 | `neo_work_log` | expectedVersion, message |
 | `neo_work_status` | expectedVersion, status; optional note |
 | `neo_work_evidence` | expectedVersion, kind, reference, outcome; optional details, commitSha |
 | `neo_work_estimate` | expectedVersion, seconds (positive or null) |
+| `neo_work_token_estimate` | expectedVersion, tokens (positive or null) |
+| `neo_work_token_usage` | expectedVersion, requestId (stable nonempty GUID), provider, reference; optional model and nullable inputTokens/outputTokens/cachedInputTokens/reasoningTokens |
 | `neo_work_dependency` | expectedVersion, dependsOnWorkItemId |
 
 `neo_work_time` takes top-level itemId, expectedVersion and start (true/false).
@@ -98,6 +100,13 @@ run completion and elapsed-time budget. Use `null` when a provider did not expos
 a counter; do not replace it with zero. The API derives the provider from the run
 when omitted, rejects a mismatched provider, scopes idempotency to the workspace,
 and returns the run details including all recorded usage rows.
+
+Use manual task usage only for work without a run; never copy a run report onto
+its task. Cache/reasoning are included subsets; unknown stays null. Identical
+request/source retries acknowledge without a write even at a stale original
+version; changed content/source conflicts. New delivery requires current version
+and owner. Meters exclude `estimated` rows and label partial known subtotals.
+Never invent this chat's usage without a provider counter. See docs/METERING.md.
 
 There are no configuration, approval, callback, arbitrary HTTP, SQL or shell
 tools in this MCP. Use authorized Web/API operations for configuration/independent

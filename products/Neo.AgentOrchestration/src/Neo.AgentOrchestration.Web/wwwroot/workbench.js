@@ -27,7 +27,8 @@
     };
     const forms = () => [...main.querySelectorAll('form')];
     const formKey = (form, number) => `${form.getAttribute('data-draft-key') || number}:${new URL(form.getAttribute('action') || active, active).pathname}:${new URL(form.getAttribute('action') || active, active).search}`;
-    const editable = field => field.name && !['hidden', 'password', 'file', 'submit', 'button'].includes(field.type);
+    const editable = field => field.name && (!['hidden', 'password', 'file', 'submit', 'button'].includes(field.type) ||
+        field.type === 'hidden' && field.name === 'UsageRequestId');
     function snapshot() {
         const values = new Map();
         forms().forEach((form, i) => {
@@ -54,7 +55,8 @@
             const fields = saved.values.get(key);
             if (!fields) return;
             dirtyForms.add(key);
-            // Do not restore hidden versions, antiforgery tokens or request IDs.
+            // Never restore versions or antiforgery. The usage delivery ID alone
+            // survives recovery, preventing a lost response from duplicating consumption.
             [...form.elements].filter(editable).forEach(field => {
                 const prior = fields.find(x => x.name === field.name && x.type === field.type &&
                     (!['checkbox', 'radio'].includes(field.type) || x.value === field.value));

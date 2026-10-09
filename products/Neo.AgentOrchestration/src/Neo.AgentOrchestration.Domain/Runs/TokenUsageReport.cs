@@ -32,6 +32,9 @@ public sealed class TokenUsageReport : BaseEntity<Guid>
         if (id == Guid.Empty || runId == Guid.Empty || workItemId == Guid.Empty)
             throw new ArgumentException("Usage identifiers are required.");
         ValidateCount(inputTokens); ValidateCount(outputTokens); ValidateCount(cachedInputTokens); ValidateCount(reasoningTokens);
+        if (cachedInputTokens.HasValue && inputTokens.HasValue && cachedInputTokens > inputTokens ||
+            reasoningTokens.HasValue && outputTokens.HasValue && reasoningTokens > outputTokens)
+            throw new ArgumentException("Cached input and reasoning must not exceed their parent counters.");
         return new TokenUsageReport { Id = id, OrganizationId = scope.OrganizationId, WorkspaceId = scope.WorkspaceId,
             AgentRunId = runId, WorkItemId = workItemId, Provider = Required(provider, 80), Model = Optional(model, 200),
             InputTokens = inputTokens, OutputTokens = outputTokens, CachedInputTokens = cachedInputTokens,

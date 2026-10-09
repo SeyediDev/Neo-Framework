@@ -18,17 +18,17 @@ function harness(fetcher, status = 409, options = {}) {
         querySelector: selector => (selector === '.kanban' && options.board) || (selector === '.moving-card' && options.dragging) || (selector === '.move-menu[open]' && options.openMenu) ? {} : null,
         querySelectorAll: selector => selector === 'form' ? [form] : [],
         addEventListener: (name, fn) => mainListeners[name] = fn,
-        replaceChildren() { throw new Error('An error response must not replace main'); } };
+        replaceChildren() { if(options.replace) options.replace(form); else throw new Error('An error response must not replace main'); }, focus() {} };
     const document = { getElementById: id => id === 'content' ? main : (messages[id] ??= { dataset: {}, addEventListener(name, fn) { listeners[id + ':' + name] = fn; } }),
         documentElement: { dataset: {}, classList: { toggle() {} } }, activeElement: null, visibilityState: 'visible',
-        addEventListener: (name, fn) => listeners[name] = fn };
+        addEventListener: (name, fn) => listeners[name] = fn, importNode: node => node, dispatchEvent() {} };
     const window = { fetch: fetcher, DOMParser: class {}, open: () => options.popup ?? null, addEventListener: (name, fn) => listeners[name] = fn };
     const context = { window, document, fetch: fetcher, location: new URL(current),
         history: { state: null, replaceState() {}, pushState() {} },
         crypto: { randomUUID: () => 'document-one' }, URL, URLSearchParams,
         setTimeout: options.fakeClock ? (fn, ms) => { const id = ++timerId; timers.set(id, { fn, ms }); return id; } : setTimeout,
         clearTimeout: options.fakeClock ? id => timers.delete(id) : clearTimeout,
-        AbortController, scrollX: 0, scrollY: 0,
+        AbortController, scrollX: 0, scrollY: 0, scrollTo() {}, CustomEvent: class {},
         FormData: class { entries() { return [[field.name, field.value]]; } },
         DOMParser: class { parseFromString() { return { getElementById: () => options.next ?? null }; } } };
     vm.runInNewContext(source, context);
@@ -209,4 +209,22 @@ test('lost POST response warns about uncertain commit and never retries', async 
 test('external destinations are never fetched', async () => {
     const h = harness(() => { throw new Error('must not fetch'); });
     assert.equal(await h.window.NeoWorkbench.navigate('https://other.example.test/work/x'), false);
+});
+
+test('recovery preserves usage delivery ID but refreshes version and antiforgery', async () => {
+    const next={getAttribute:()=>'',querySelectorAll:()=>[],childNodes:[]};
+    const fresh=()=>[
+        {name:'UsageRequestId',type:'hidden',value:'new-delivery'},
+        {name:'ExpectedVersion',type:'hidden',value:'new-version'},
+        {name:'__RequestVerificationToken',type:'hidden',value:'new-antiforgery'}];
+    const h=harness(async()=>({...h.response(),ok:true,status:200}),200,{next,replace:form=>form.elements=fresh()});
+    h.form.elements=[h.field,...fresh().map(x=>({...x,value:'original-'+x.name}))];
+    h.mainListeners.input({target:h.field});
+    assert.equal(await h.window.NeoWorkbench.navigate(current,{preserve:true}),true);
+    assert.equal(h.form.elements.find(x=>x.name==='UsageRequestId').value,'original-UsageRequestId');
+    assert.equal(h.form.elements.find(x=>x.name==='ExpectedVersion').value,'new-version');
+    assert.equal(h.form.elements.find(x=>x.name==='__RequestVerificationToken').value,'new-antiforgery');
+    h.listeners.submit({target:h.form,preventDefault(){}});
+    await new Promise(setImmediate);
+    assert.equal(h.form.elements.find(x=>x.name==='UsageRequestId').value,'new-delivery','successful report starts a new delivery');
 });

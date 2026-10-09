@@ -30,6 +30,8 @@ cycle rejection, owner/chat checks, status transitions, logs, commit/test/artifa
 evidence, pause/resume time tracking, forecasts, archive/restore and stale-version
 rejection. Time-budget usage is labeled separately from completion percentage.
 Application tests use a scoped memory fixture, not a runtime storage fallback.
+See [time and token metering](docs/METERING.md) for nullable budgets, reported
+consumption, coverage, manual/run idempotency and live display semantics.
 The SQL store uses Neo EF repositories, workspace transaction locks, scoped
 foreign keys, capacity-aware role assignment/timer indexes and optimistic
 concurrency. Each role has a validated active-work capacity from 1 to 16.
@@ -101,6 +103,10 @@ HTTP tests do not establish a real external issuer login.
 OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 
 ## Optional work-provider direction
+
+The [VPS agent execution plan](docs/VPS-AGENT-PLAN.md) proposes a provider-neutral
+OpenCode gateway pilot on the existing durable run path, with isolated workspaces,
+resource limits and reported usage. It is a design proposal, not an installed runner.
 
 Native Neo work management will remain independently usable. GitHub, GitLab and
 Azure DevOps are planned optional adapters, not replacements; Neo and an external

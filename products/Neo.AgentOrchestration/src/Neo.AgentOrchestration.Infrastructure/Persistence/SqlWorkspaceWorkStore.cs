@@ -117,7 +117,10 @@ public sealed class SqlWorkspaceWorkStore(IDbContextFactory<OrchestrationDbConte
         private IQueryable<WorkItem> Items => queries.Query().Where(x =>
             x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId)
             .Include(x => x.Logs).Include(x => x.Evidence).Include(x => x.TimeEntries).Include(x => x.Dependencies)
-            .Include(x => x.OwnerHistory).AsSplitQuery();
+            .Include(x => x.OwnerHistory).Include(x => x.TokenUsage).AsSplitQuery();
+        public async Task<IReadOnlyList<TokenUsageReport>> GetItemRunUsageAsync(IReadOnlyCollection<Guid> itemIds, CancellationToken ct)
+            => itemIds.Count == 0 ? [] : await db.TokenUsageReports.AsNoTracking().Where(x =>
+                x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId && itemIds.Contains(x.WorkItemId)).ToArrayAsync(ct);
         public Task<Project?> GetProjectAsync(Guid id, CancellationToken ct) => db.Projects.SingleOrDefaultAsync(x =>
             x.Id == id && x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId, ct);
         public Task<RoleProfile?> GetRoleAsync(Guid id, CancellationToken ct) => db.Roles.SingleOrDefaultAsync(x =>

@@ -13,7 +13,7 @@
 <label class="check"><input type="checkbox" name="IncludeArchived" value="true" checked="@Model.IncludeArchived" /> نمایش بایگانی</label><button>اعمال فیلتر</button><a asp-page="/Board" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پاک‌کردن</a></form>
 }
 @if (Model.Board is { } board) {
-<div class="metrics"><section><span>کارهای مطابق فیلتر</span><strong>@board.Total</strong></section><section><span>زمان سپری‌شده</span><strong>@Time(board.Metrics.ElapsedSeconds)</strong></section><section><span>برآورد کل</span><strong>@Time(board.Metrics.EstimatedSeconds)</strong></section><section><span>زمان‌سنج فعال</span><strong>@board.Metrics.TrackingCount</strong></section></div>
+<partial name="_BoardMeter" model="board" />
 <p class="muted">آمار برای همه نتایج فیلتر است؛ کارت‌ها صفحه‌ای نمایش داده می‌شوند. مصرف برآورد زمانی، درصد تکمیل کار نیست.</p>
 @if (board.Items.Count == 0) { <section class="panel empty"><h2>کاری برای این فیلتر پیدا نشد</h2><p>فیلترها را تغییر دهید یا یک کار جدید بسازید.</p></section> }
 else { <p class="small board-hint" id="board-hint">کارت را از سربرگش بکشید و در ستون روشن‌شده رها کنید. برای انتقال با کیبورد یا لمس، منوی ⋯ کارت را باز کنید.</p><p id="kanban-announcement" class="small" role="status" aria-live="polite"></p><div class="kanban" role="region" tabindex="0" aria-label="کانبان" aria-describedby="board-hint">
@@ -24,9 +24,7 @@ else { <p class="small board-hint" id="board-hint">کارت را از سربرگ
 <h3><a asp-page="/Item" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@item.Id">@item.Title</a></h3>
 @if(item.ParentWorkItemId.HasValue){<span class="tag">زیرتسک</span>} @if(item.IsArchived){<span class="tag">بایگانی</span>}
 <p class="description">@item.Description</p><div class="tags"><span>@ItemTypeLabel(item.Type)</span><span>@item.Domain</span><span>@Model.Project(item.ProjectId)</span><span>@Model.Role(item.OwnerRoleId)</span></div>
-<p class="small">@Time(item.ElapsedSeconds) @(item.IsTracking ? "· زمان‌سنج فعال" : "")</p>
-@if(item.BudgetUsedPercent is { } budget){<progress max="100" value="@Math.Min(100m,budget).ToString(System.Globalization.CultureInfo.InvariantCulture)" aria-label="مصرف برآورد زمانی"></progress><span class="small">@budget٪ از برآورد زمانی</span>}
-else {<span class="small muted">برآورد زمانی ثبت نشده</span>}
+<partial name="_ItemMeter" model="item" />
 @{ var destinations = Neo.AgentOrchestration.Web.Pages.BoardModel.MoveDestinations(item.Status, item.IsArchived); }
 @if(destinations.Length > 0 && !(item.OwnerAgentId?.StartsWith("neo-run:", StringComparison.Ordinal) ?? false)) {
 <details class="move-menu"><summary aria-label="گزینه‌های انتقال @item.Key" title="انتقال با لمس یا کیبورد"><span aria-hidden="true">⋯</span><span class="move-fallback"> انتقال @item.Key</span></summary>

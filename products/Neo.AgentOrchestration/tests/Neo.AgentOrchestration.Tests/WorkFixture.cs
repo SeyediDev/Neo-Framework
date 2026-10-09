@@ -83,6 +83,7 @@ internal sealed class MemoryWorkStore(Workspace workspace, List<Project> project
     public List<ProjectRepositoryBinding> RepositoryBindings { get; } = [];
     public List<RoleProfile> Roles { get; } = roles;
     public List<WorkItem> Items { get; } = [];
+    public List<Neo.AgentOrchestration.Domain.Runs.TokenUsageReport> Usage { get; } = [];
 
     public Task<T> ExecuteAsync<T>(WorkspaceScope scope, Func<IWorkItemSession, CancellationToken, Task<T>> operation, CancellationToken ct)
     {
@@ -92,6 +93,9 @@ internal sealed class MemoryWorkStore(Workspace workspace, List<Project> project
 
     private sealed class Session(MemoryWorkStore store, WorkspaceScope scope) : IWorkItemSession
     {
+        public Task<IReadOnlyList<Neo.AgentOrchestration.Domain.Runs.TokenUsageReport>> GetItemRunUsageAsync(IReadOnlyCollection<Guid> ids, CancellationToken ct)
+            => Task.FromResult<IReadOnlyList<Neo.AgentOrchestration.Domain.Runs.TokenUsageReport>>(store.Usage.Where(x =>
+                Matches(x.OrganizationId, x.WorkspaceId) && ids.Contains(x.WorkItemId)).ToArray());
         public Task<Workspace> GetWorkspaceAsync(CancellationToken ct) => Task.FromResult(store.Workspace);
         public Task<IReadOnlyList<Project>> GetProjectsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<Project>>(
             store.Projects.Where(x => Matches(x.OrganizationId, x.WorkspaceId)).ToArray());

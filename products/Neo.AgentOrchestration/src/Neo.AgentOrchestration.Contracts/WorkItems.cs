@@ -5,7 +5,8 @@ public sealed record WorkItemView(Guid Id, Guid ProjectId, Guid? ParentWorkItemI
     Guid? OwnerRoleId, string? OwnerAgentId, string? OwnerChatId, string? Branch,
     bool IsArchived, long ElapsedSeconds, long? EstimatedSeconds, decimal? BudgetUsedPercent,
     bool IsTracking, Guid Version, DateTimeOffset UpdatedAtUtc, string Type = "Task", string? AcceptanceCriteria = null,
-    WorkItemOwnerHistoryView? LastOwnerHistory = null);
+    WorkItemOwnerHistoryView? LastOwnerHistory = null, long? EstimatedTokens = null, TokenMeterView? TokenMeter = null,
+    DateTimeOffset? MeasuredAtUtc = null);
 public sealed record WorkLogView(Guid Id, string AgentId, string ChatId, string Kind, string Message, DateTimeOffset CreatedAtUtc);
 public sealed record WorkEvidenceView(Guid Id, string Kind, string Reference, string Outcome,
     string? Details, DateTimeOffset CreatedAtUtc, int Sequence, string? CommitSha);
@@ -15,4 +16,4 @@ public sealed record WorkItemOwnerHistoryView(Guid Id, long SourceWorkItemId, in
 public sealed record WorkItemDetails(WorkItemView Item, IReadOnlyList<WorkItemView> Children,
     IReadOnlyList<Guid> Dependencies, IReadOnlyList<WorkLogView> Logs,
     IReadOnlyList<WorkEvidenceView> Evidence, IReadOnlyList<WorkTimeView> TimeEntries,
-    IReadOnlyList<WorkItemOwnerHistoryView> OwnerHistory);
+    IReadOnlyList<WorkItemOwnerHistoryView> OwnerHistory, IReadOnlyList<WorkTokenUsageView>? TokenUsage = null);

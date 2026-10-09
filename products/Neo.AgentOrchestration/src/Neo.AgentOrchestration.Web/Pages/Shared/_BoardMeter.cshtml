@@ -1,0 +1,9 @@
+@model Neo.AgentOrchestration.Contracts.WorkBoard
+@using static Neo.AgentOrchestration.Web.Pages.WorkPageModel
+<div class="metrics">
+<section><span>کارهای مطابق فیلتر</span><strong>@Model.Total</strong></section>
+<section><span>زمان مصرف‌شده</span><strong>@Time(Model.Metrics.ElapsedSeconds)</strong><small>@Model.Metrics.TrackingCount زمان‌سنج فعال</small></section>
+<section><span>برآورد زمان</span><strong>@(Model.Metrics.TimeEstimatedCount > 0 ? Time(Model.Metrics.EstimatedSeconds) : "ثبت نشده")</strong><small>برآورد برای @Model.Metrics.TimeEstimatedCount از @Model.Total کار</small></section>
+<section><span>توکن گزارش‌شده</span><strong>@Tokens(Model.Metrics.TokenMeter)</strong><small>@Model.Metrics.TokenReportedItemCount از @Model.Total کار دارای گزارش</small></section>
+<section><span>برآورد توکن</span><strong>@(Model.Metrics.EstimatedTokens?.ToString("N0") ?? "ثبت نشده")</strong><small>برآورد برای @Model.Metrics.TokenEstimatedCount از @Model.Total کار</small></section>
+</div>

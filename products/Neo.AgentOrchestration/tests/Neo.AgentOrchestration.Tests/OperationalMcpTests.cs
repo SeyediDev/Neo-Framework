@@ -23,6 +23,36 @@ public sealed class OperationalMcpTests
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     [Fact]
+    public async Task Stdio_metering_tools_execute_real_http_with_scoped_test_storage()
+    {
+        using var f = new WorkFixture();
+        await using var api = new ApiFixture(f.Store, f.Clock);
+        api.Factory.UseKestrel(0);
+        using var identity = api.Client(f.Scope);
+        await using var mcp = await McpProcess.Start(api, identity, f.Scope);
+        var tools = (await mcp.Request("tools/list",new {})).GetProperty("tools").EnumerateArray().ToArray();
+        Assert.Equal(24,tools.Length);
+        Assert.Contains("expectedVersion",tools.Single(x=>x.GetProperty("name").GetString()=="neo_work_token_estimate").GetProperty("inputSchema").GetRawText());
+        Assert.Contains("reference",tools.Single(x=>x.GetProperty("name").GetString()=="neo_work_token_usage").GetProperty("inputSchema").GetRawText());
+        var item=await mcp.Call<WorkItemDetails>("neo_work_create",new {request=new CreateWorkItemRequest(f.Project.Id,"meter-mcp","Meter","metering",EstimatedTokens:1000)});
+        item=await mcp.Call<WorkItemDetails>("neo_work_token_estimate",new {itemId=item.Item.Id,request=new SetTokenEstimateRequest(item.Item.Version,2000)});
+        Assert.Equal(2000,item.Item.EstimatedTokens);
+        item=await mcp.Call<WorkItemDetails>("neo_work_status",new {itemId=item.Item.Id,request=new ChangeStatusRequest(item.Item.Version,"Ready")});
+        item=await mcp.Call<WorkItemDetails>("neo_work_claim",new {itemId=item.Item.Id,request=new ClaimWorkItemRequest(item.Item.Version,f.Role.Id)});
+        var request=new RecordWorkTokenUsageRequest(item.Item.Version,Guid.NewGuid(),"fixture-provider","fixture-receipt",InputTokens:50,OutputTokens:10,CachedInputTokens:20,ReasoningTokens:5);
+        item=await mcp.Call<WorkItemDetails>("neo_work_token_usage",new {itemId=item.Item.Id,request});
+        Assert.Equal(60,item.Item.TokenMeter!.TotalTokens);
+        var retry=await mcp.Call<WorkItemDetails>("neo_work_token_usage",new {itemId=item.Item.Id,request});
+        Assert.Equal(item.Item.Version,retry.Item.Version);
+        await mcp.Error("neo_work_token_usage",new {itemId=item.Item.Id,request=request with {OutputTokens=11}},"api-409");
+        await using var compact=await McpProcess.Start(api,identity,f.Scope,compact:true);
+        var receipt=await compact.Call<WorkMutationReceipt>("neo_work_token_estimate",new {itemId=item.Item.Id,request=new SetTokenEstimateRequest(item.Item.Version,3000)});
+        Assert.Equal(3000,receipt.Item.EstimatedTokens); Assert.Equal(60,receipt.Item.TokenMeter!.TotalTokens);
+        var board=await mcp.Call<WorkBoard>("neo_work_board",new {projectId=f.Project.Id});
+        Assert.Equal(60,board.Metrics.TokenMeter!.TotalTokens);
+    }
+
+    [Fact]
     public async Task Stdio_tools_execute_scoped_task_lifecycle_against_real_http_jwt_and_sql()
     {
         var f = await Fixture.Create();
@@ -33,7 +63,7 @@ public sealed class OperationalMcpTests
         var catalog = await mcp.Call<WorkspaceCatalog>("neo_work_catalog");
         Assert.Contains(catalog.Roles, x => x.Id == f.Role.Id);
         var tools = (await mcp.Request("tools/list", new { })).GetProperty("tools").EnumerateArray().ToArray();
-        Assert.Equal(22, tools.Length);
+        Assert.Equal(24, tools.Length);
         Assert.Contains(tools, x => x.GetProperty("name").GetString() == "neo_work_planning");
         Assert.True(tools.Single(x => x.GetProperty("name").GetString() == "neo_work_get").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());
         Assert.False(tools.Single(x => x.GetProperty("name").GetString() == "neo_run_start").GetProperty("annotations").GetProperty("readOnlyHint").GetBoolean());

@@ -1,0 +1,11 @@
+@model Neo.AgentOrchestration.Contracts.WorkItemView
+@using static Neo.AgentOrchestration.Web.Pages.WorkPageModel
+<div class="item-meter" data-time-meter data-elapsed="@Model.ElapsedSeconds" data-tracking="@Model.IsTracking.ToString().ToLowerInvariant()" data-estimate="@Model.EstimatedSeconds">
+    <div class="meter-line"><span>زمان مصرف‌شده</span><strong data-elapsed-label>@Time(Model.ElapsedSeconds)</strong></div>
+    <div class="meter-line small"><span>برآورد زمان</span><span>@(Model.EstimatedSeconds is {} seconds ? Time(seconds) : "ثبت نشده")</span></div>
+    @if(Model.EstimatedSeconds.HasValue){<progress max="100" value="@Math.Min(100m,Model.BudgetUsedPercent??0).ToString(System.Globalization.CultureInfo.InvariantCulture)" data-time-progress aria-label="مصرف بودجه زمان"></progress><span class="small" data-time-budget>@Model.BudgetUsedPercent٪ از بودجه زمان</span>}
+    @if(Model.IsTracking){<span class="tracking-indicator small">● زمان‌سنج فعال</span>}
+    <div class="meter-line"><span>توکن گزارش‌شده</span><strong>@Tokens(Model.TokenMeter)</strong></div>
+    <div class="meter-line small"><span>برآورد توکن</span><span>@(Model.EstimatedTokens?.ToString("N0") ?? "ثبت نشده")</span></div>
+    @if(Model.EstimatedTokens is > 0 && Model.TokenMeter?.KnownTotalTokens is {} known){var percent=decimal.Round(100m*known/Model.EstimatedTokens.Value,1);<progress max="100" value="@Math.Min(100m,percent).ToString(System.Globalization.CultureInfo.InvariantCulture)" aria-label="مصرف بودجه توکن"></progress><span class="small">@percent٪ @(Model.TokenMeter.TotalTokens.HasValue ? "از بودجه توکن" : "حداقل مصرف بودجه توکن؛ گزارش ناقص")</span>}
+</div>

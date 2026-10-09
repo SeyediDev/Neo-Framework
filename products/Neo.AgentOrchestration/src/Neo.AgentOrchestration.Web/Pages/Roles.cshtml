@@ -33,8 +33,7 @@ else if(item.LastOwnerHistory is {} historical){<span class="tag">رول تار�
 else{<span class="tag">بدون تخصیص</span>}
 @if(item.ParentWorkItemId.HasValue){<span class="tag">زیرتسک</span>}
 <p class="description">@item.Description</p><div class="tags"><span>@ItemTypeLabel(item.Type)</span><span>@Model.Project(item.ProjectId)</span><span>@item.Domain</span></div>
-<p class="small">@Time(item.ElapsedSeconds) @(item.IsTracking ? "· زمان‌سنج فعال" : "")</p>
-@if(item.BudgetUsedPercent is {} budget){<progress max="100" value="@Math.Min(100m,budget).ToString(System.Globalization.CultureInfo.InvariantCulture)" aria-label="مصرف برآورد زمانی"></progress><span class="small">@budget٪ از برآورد زمانی</span>}
+<partial name="_ItemMeter" model="item" />
 </article>}
 </section>}
 </div>}}

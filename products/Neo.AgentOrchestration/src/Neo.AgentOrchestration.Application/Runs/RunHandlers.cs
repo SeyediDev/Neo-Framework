@@ -105,11 +105,6 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
         {
             var s = Session(session); var run = await Run(s, r.RunId, token);
             var existing = await s.FindTokenUsageAsync(key, token);
-            if (existing is not null)
-            {
-                if (existing.AgentRunId != run.Id) throw new WorkItemConflictException("Usage idempotency key belongs to another run.");
-                return true;
-            }
             var provider = string.IsNullOrWhiteSpace(r.Body.Provider) ? run.Provider : r.Body.Provider.Trim();
             if (!string.Equals(provider, run.Provider, StringComparison.OrdinalIgnoreCase))
                 throw new UnauthorizedAccessException("Usage provider does not belong to this run.");
@@ -118,6 +113,15 @@ public sealed class RunHandlers(IWorkspaceWorkStore store, IDurableWorkStore dur
             var usage = TokenUsageReport.Create(r.Scope, r.Body.RequestId, run.Id, run.WorkItemId, provider, r.Body.Model ?? run.Model,
                 r.Body.InputTokens, r.Body.OutputTokens, r.Body.CachedInputTokens, r.Body.ReasoningTokens, source, key,
                 r.Body.RecordedAtUtc ?? clock.GetUtcNow());
+            if (existing is not null)
+            {
+                if (existing.AgentRunId != run.Id || existing.Id != usage.Id || existing.Provider != usage.Provider ||
+                    existing.Model != usage.Model || existing.Source != usage.Source || existing.InputTokens != usage.InputTokens ||
+                    existing.OutputTokens != usage.OutputTokens || existing.CachedInputTokens != usage.CachedInputTokens ||
+                    existing.ReasoningTokens != usage.ReasoningTokens || r.Body.RecordedAtUtc.HasValue && existing.RecordedAtUtc != usage.RecordedAtUtc)
+                    throw new WorkItemConflictException("Usage idempotency key was already used with different content.");
+                return true;
+            }
             s.Add(usage);
             return true;
         }, ct);

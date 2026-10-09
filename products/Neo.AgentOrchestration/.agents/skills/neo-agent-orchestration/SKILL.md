@@ -55,6 +55,10 @@ another role or workspace alone does not. Preserve unrelated edits.
   questions and next action. Keep raw tool output only where diagnosis needs it.
 - Claim starts time; don't start it again on resume. Pause/resume only owned work;
   record downtime uncertainty rather than invent durations. Budget use isn't progress.
+- Set time/token estimates separately from consumption. Record provider counters
+  only when exposed, with a stable delivery ID/reference; unknown stays null.
+  Use run usage for runs, manual task usage otherwise, never both for one report.
+  Read compact meter/coverage; do not poll or log each second.
 - Attach actual commits and executed test/artifact evidence, bound to the relevant
   SHA. Before Review/Blocked/Done record outcome and remaining constraints once.
   Recheck ownership/file overlap before committing. Done needs completed acceptance,

@@ -91,10 +91,16 @@ public sealed class WorkspaceHandlers(IWorkspaceWorkStore store, TimeProvider cl
                 (r.Domain is null || string.Equals(x.Domain, r.Domain.Trim(), StringComparison.OrdinalIgnoreCase)) &&
                 (!r.RoleId.HasValue || x.OwnerRoleId == r.RoleId) && (!r.Status.HasValue || x.Status == r.Status) &&
                 (!r.Type.HasValue || x.Type == r.Type))
-                .OrderByDescending(x => x.UpdatedAtUtc).ThenBy(x => x.Id).Select(x => WorkItemProjection.View(x, now)).ToArray();
-            return new WorkBoard(filtered.Skip(r.Skip).Take(r.Take).ToArray(), filtered.Length, r.Skip, r.Take,
-                new WorkBoardMetrics(filtered.Sum(x => x.ElapsedSeconds), filtered.Sum(x => x.EstimatedSeconds ?? 0),
-                    filtered.Count(x => x.IsTracking), filtered.GroupBy(x => x.Status).ToDictionary(x => x.Key, x => x.Count())));
+                .OrderByDescending(x => x.UpdatedAtUtc).ThenBy(x => x.Id).ToArray();
+            var usage = await s.GetItemRunUsageAsync(filtered.Select(x => x.Id).ToArray(), token);
+            var byItem = usage.ToLookup(x => x.WorkItemId);
+            var views = filtered.Select(x => WorkItemProjection.View(x, now, byItem[x.Id])).ToArray();
+            return new WorkBoard(views.Skip(r.Skip).Take(r.Take).ToArray(), views.Length, r.Skip, r.Take,
+                new WorkBoardMetrics(views.Sum(x => x.ElapsedSeconds), views.Sum(x => x.EstimatedSeconds ?? 0),
+                    views.Count(x => x.IsTracking), views.GroupBy(x => x.Status).ToDictionary(x => x.Key, x => x.Count()),
+                    views.Count(x => x.EstimatedSeconds.HasValue), views.Any(x => x.EstimatedTokens.HasValue) ? views.Sum(x => x.EstimatedTokens ?? 0) : null,
+                    views.Count(x => x.EstimatedTokens.HasValue), views.Count(x => x.TokenMeter?.ReportCount > 0),
+                    TokenMetering.Summarize(filtered.SelectMany(x => TokenMetering.Reports(x, byItem[x.Id])))));
         }, ct);
     }
 

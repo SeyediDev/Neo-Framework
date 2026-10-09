@@ -16,7 +16,7 @@ public sealed class WorkTools(McpApiClient api)
     public Task<string> Catalog(CancellationToken ct) => api.Send<WorkspaceCatalog>("catalog", ct);
 
     [McpServerTool(Name = "neo_work_board", ReadOnly = true, Destructive = false, OpenWorld = true)]
-    [Description("Read the filtered paged board and full-filter time metrics. Inspect role ownership across ALL projects before a claim; a project-filtered board alone cannot prove a workspace role is free.")]
+    [Description("Read the filtered paged board and full-filter time/token metrics with estimate/report coverage. Inspect role ownership across ALL projects before a claim; a project-filtered board alone cannot prove a workspace role is free.")]
     public Task<string> Board(CancellationToken ct, Guid? projectId = null, string? domain = null, Guid? roleId = null,
         string? status = null, bool includeArchived = false, int skip = 0, int take = 50, string? type = null)
     {
@@ -82,6 +82,16 @@ public sealed class WorkTools(McpApiClient api)
     [Description("Set a positive estimated-seconds budget or clear it with null; use current expectedVersion. Budget usage is not completion percentage.")]
     public Task<string> Estimate(Guid itemId, SetEstimateRequest request, CancellationToken ct)
         => api.Send<WorkItemDetails>($"items/{itemId:D}/estimate", ct, request, HttpMethod.Put);
+
+    [McpServerTool(Name = "neo_work_token_estimate", ReadOnly = false, Destructive = false, OpenWorld = true)]
+    [Description("Set a positive task token budget or clear with null, using current expectedVersion and owner. This is an estimate, not consumption or completion.")]
+    public Task<string> TokenEstimate(Guid itemId, SetTokenEstimateRequest request, CancellationToken ct)
+        => api.Send<WorkItemDetails>($"items/{itemId:D}/token-estimate", ct, request, HttpMethod.Put);
+
+    [McpServerTool(Name = "neo_work_token_usage", ReadOnly = false, Destructive = false, OpenWorld = true)]
+    [Description("Append a manual provider report to an owned task, with current expectedVersion, stable requestId and source reference. Only for work without a run; run usage goes to neo_run_usage. Unknown counters remain null. Cache/reasoning are subsets. Identical retries are acknowledged; changed content conflicts. Never invent billed counters or copy the same report to both task and run.")]
+    public Task<string> WorkTokenUsage(Guid itemId, RecordWorkTokenUsageRequest request, CancellationToken ct)
+        => api.Send<WorkItemDetails>($"items/{itemId:D}/token-usage", ct, request);
 
     [McpServerTool(Name = "neo_work_archive", ReadOnly = false, Destructive = false, OpenWorld = true)]
     [Description("Archive eligible Blocked/Done work or restore it using current expectedVersion. Reversible; does not delete history.")]

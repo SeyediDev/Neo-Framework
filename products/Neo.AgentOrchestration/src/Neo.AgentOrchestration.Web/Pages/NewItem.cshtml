@@ -8,7 +8,8 @@
 <label>پروژه<select asp-for="ProjectId" required>@foreach(var p in catalog.Projects.Where(x=>x.IsEnabled)){<option value="@p.Id">@p.Name</option>}</select></label>
 <label>کلید<input asp-for="Key" required maxlength="80" dir="ltr" /></label><label>عنوان<input asp-for="Title" required maxlength="200" /></label><label>دامین<input asp-for="Domain" required maxlength="80" /></label>
 <label>اولویت<select asp-for="Priority"><option>Low</option><option>Normal</option><option>High</option><option>Critical</option></select></label>
-<label>برآورد (ثانیه)<input asp-for="EstimatedSeconds" type="number" min="1" /></label>
+<label>برآورد زمان<input asp-for="EstimateValue" type="number" min="0.01" step="0.01" /></label><label>واحد برآورد<select asp-for="EstimateUnit"><option value="minutes">دقیقه</option><option value="hours">ساعت</option><option value="seconds">ثانیه</option></select></label>
+<label>برآورد توکن<input asp-for="EstimatedTokens" type="number" min="1" step="1" /></label>
 <label class="wide">شناسه کار والد (اختیاری)<input asp-for="ParentWorkItemId" dir="ltr" /></label>
 <label>نوع کار<select asp-for="ItemType">@foreach(var type in ItemTypes){<option value="@type">@ItemTypeLabel(type)</option>}</select></label>
 <label class="wide">شرح درخواست<textarea asp-for="Description" rows="7" maxlength="32000"></textarea></label>

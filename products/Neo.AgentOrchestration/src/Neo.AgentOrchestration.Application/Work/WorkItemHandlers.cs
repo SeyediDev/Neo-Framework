@@ -21,11 +21,16 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
             if (request.RequestId is { } requestId)
             {
                 if (requestId == Guid.Empty) throw new ArgumentException("RequestId must be nonempty when supplied.");
-                fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
+                var legacyPayload = new
                 {
                     request.ProjectId, request.Key, request.Title, request.Domain, request.Description,
                     request.Priority, request.ParentWorkItemId, request.EstimatedSeconds, request.Type, request.AcceptanceCriteria
-                }))));
+                };
+                // Keep pre-upgrade intake retries valid when the new optional budget is absent.
+                var payload = request.EstimatedTokens.HasValue
+                    ? JsonSerializer.Serialize(new { Legacy = legacyPayload, request.EstimatedTokens })
+                    : JsonSerializer.Serialize(legacyPayload);
+                fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(payload)));
                 var prefix = $"{requestId:D}:";
                 // Include all projects and archived records in this workspace.
                 // The store's transaction lock serializes concurrent identical intake.
@@ -38,7 +43,7 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
                         if (receipt is null) continue;
                         if (receipt.Message != prefix + fingerprint || receipt.AgentId != request.Actor.AgentId || receipt.ChatId != request.Actor.ChatId)
                             throw new WorkItemConflictException("RequestId was already used with different content or source identity.");
-                        return WorkItemProjection.Details(candidate, candidates, clock.GetUtcNow());
+                        return await WorkItemProjection.ReadDetails(session, candidate, candidates, clock.GetUtcNow(), token);
                     }
                 }
             }
@@ -51,12 +56,13 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
             var item = WorkItem.Create(request.Scope, project, request.Key, request.Title, request.Domain,
                 request.Actor, now, request.Description, request.Priority, parent, request.EstimatedSeconds,
                 request.Type, request.AcceptanceCriteria);
+            if (request.EstimatedTokens.HasValue) item.SetTokenEstimate(request.Scope, request.Actor, request.EstimatedTokens, now);
             var items = await ProjectItems(session, request.Scope, project.Id, token);
             if (items.Any(x => string.Equals(x.Key, item.Key, StringComparison.OrdinalIgnoreCase)))
                 throw new WorkItemConflictException("Work item key already exists in this project.");
             if (request.RequestId is { } intakeId) item.RecordIntake(request.Scope, request.Actor, intakeId, fingerprint!, now);
             session.Add(item);
-            return WorkItemProjection.Details(item, items, now);
+            return await WorkItemProjection.ReadDetails(session, item, items, now, token);
         }, ct);
 
     public Task<WorkItemDetails> Handle(ClaimWorkItem request, CancellationToken ct)
@@ -76,7 +82,7 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
             item.RequireCompletedDependencies(items);
             var now = clock.GetUtcNow();
             item.Claim(request.Scope, role, request.Actor, request.Branch, now);
-            return WorkItemProjection.Details(item, items, now);
+            return await WorkItemProjection.ReadDetails(session, item, items, now, token);
         }, ct);
 
     public Task<WorkItemDetails> Handle(GetWorkItem request, CancellationToken ct)
@@ -84,7 +90,7 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
         {
             var item = await Item(session, request.Scope, request.WorkItemId, token);
             var items = await ProjectItems(session, request.Scope, item.ProjectId, token);
-            return WorkItemProjection.Details(item, items, clock.GetUtcNow());
+            return await WorkItemProjection.ReadDetails(session, item, items, clock.GetUtcNow(), token);
         }, ct);
 
     public Task<WorkHistoryPage> Handle(GetWorkHistory request, CancellationToken ct)
@@ -95,13 +101,24 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
         => store.ExecuteAsync(request.Scope, async (session, token) =>
         {
             var item = await Item(session, request.Scope, request.WorkItemId, token);
+            if (request.Change is TokenUsageChange retry)
+            {
+                var body = retry.Value;
+                try
+                {
+                    if (item.IsTokenUsageRetry(request.Scope, request.Actor, body.RequestId, body.Provider, body.Model,
+                        body.Reference, body.InputTokens, body.OutputTokens, body.CachedInputTokens, body.ReasoningTokens, clock.GetUtcNow()))
+                        return await WorkItemProjection.ReadDetails(session, item, await ProjectItems(session, request.Scope, item.ProjectId, token), clock.GetUtcNow(), token);
+                }
+                catch (InvalidOperationException ex) { throw new WorkItemConflictException(ex.Message); }
+            }
             RequireVersion(item, request.ExpectedVersion);
             var items = await ProjectItems(session, request.Scope, item.ProjectId, token);
             if (await session.GetProjectAsync(item.ProjectId, token) is not { IsEnabled: true })
                 throw new InvalidOperationException("Project is disabled.");
             var now = clock.GetUtcNow();
             Apply(request, item, items, now);
-            return WorkItemProjection.Details(item, items, now);
+            return await WorkItemProjection.ReadDetails(session, item, items, now, token);
         }, ct);
 
     private static void Apply(UpdateWorkItem request, WorkItem item, IReadOnlyList<WorkItem> items, DateTimeOffset now)
@@ -121,6 +138,11 @@ public sealed class WorkItemHandlers(IWorkspaceWorkStore store, TimeProvider clo
                 item.ChangeStatus(request.Scope, request.Actor, change.Status, now, change.Note); break;
             case LogChange change: item.AddLog(request.Scope, request.Actor, change.Message, now); break;
             case EstimateChange change: item.SetEstimate(request.Scope, request.Actor, change.Seconds, now); break;
+            case TokenEstimateChange change: item.SetTokenEstimate(request.Scope, request.Actor, change.Tokens, now); break;
+            case TokenUsageChange change:
+                var body = change.Value;
+                item.RecordTokenUsage(request.Scope, request.Actor, body.RequestId, body.Provider, body.Model, body.Reference,
+                    body.InputTokens, body.OutputTokens, body.CachedInputTokens, body.ReasoningTokens, now); break;
             case TrackingChange change:
                 if (change.Start) item.StartTimer(request.Scope, request.Actor, now);
                 else item.StopTimer(request.Scope, request.Actor, now);

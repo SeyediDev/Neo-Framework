@@ -177,3 +177,9 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .kanban-card-compact.agent-move-arrival { animation: agent-card-arrival 1s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 0 4px #149a8e55, 0 12px 28px #1f4b9a2b; }
 @keyframes agent-card-arrival { 0% { transform: translateY(-18px) scale(.96); opacity: .25; } 55% { transform: translateY(4px) scale(1.02); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .kanban-card-compact, .kanban-card-compact.agent-move-arrival { animation: none; transition: none; } }
+.item-meter { border-top: 1px solid var(--border); padding-top: .7rem; margin-top: .75rem; font-size: 12px; font-variant-numeric: tabular-nums; }
+.meter-line { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .25rem .7rem; }
+.meter-line strong { font-size: 12px; overflow-wrap: anywhere; }
+.tracking-indicator { color: var(--accent); }
+.kanban-card-compact .item-meter progress { display: block; margin: .4rem 0; }
+#metering .item-meter { max-width: 760px; }

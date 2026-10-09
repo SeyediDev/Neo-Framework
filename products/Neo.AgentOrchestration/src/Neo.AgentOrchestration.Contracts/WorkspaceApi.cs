@@ -12,7 +12,7 @@ public sealed record CreateProjectRequest(string Key, string Name);
 public sealed record RenameProjectRequest(string Name);
 public sealed record CreateWorkItemRequest(Guid ProjectId, string Key, string Title, string Domain,
     string? Description = null, string Priority = "Normal", Guid? ParentWorkItemId = null, long? EstimatedSeconds = null,
-    string Type = "Task", string? AcceptanceCriteria = null, Guid? RequestId = null);
+    string Type = "Task", string? AcceptanceCriteria = null, Guid? RequestId = null, long? EstimatedTokens = null);
 public sealed record SetWorkItemPlanningRequest(Guid ExpectedVersion, string Type, string? AcceptanceCriteria = null);
 public sealed record ClaimWorkItemRequest(Guid ExpectedVersion, Guid RoleId, string? Branch = null);
 public sealed record ChangeStatusRequest(Guid ExpectedVersion, string Status, string? Note = null);
@@ -24,7 +24,8 @@ public sealed record AddEvidenceRequest(Guid ExpectedVersion, string Kind, strin
     string? Details = null, string? CommitSha = null);
 public sealed record WorkBoard(IReadOnlyList<WorkItemView> Items, int Total, int Skip, int Take, WorkBoardMetrics Metrics);
 public sealed record WorkBoardMetrics(long ElapsedSeconds, long EstimatedSeconds, int TrackingCount,
-    IReadOnlyDictionary<string, int> StatusCounts);
+    IReadOnlyDictionary<string, int> StatusCounts, int TimeEstimatedCount = 0, long? EstimatedTokens = null,
+    int TokenEstimatedCount = 0, int TokenReportedItemCount = 0, TokenMeterView? TokenMeter = null);
 public sealed record CreateWorkflowRequest(Guid ProjectId, string Key, string Name);
 public sealed record UpdateWorkflowRequest(Guid ExpectedVersion, string Name, bool IsEnabled);
 public sealed record ConfigureTransitionRequest(Guid ExpectedVersion, Guid FromRoleId, string FromStatus,

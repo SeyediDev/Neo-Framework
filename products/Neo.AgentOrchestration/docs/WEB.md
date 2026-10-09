@@ -1,5 +1,10 @@
 # Independent management Web
 
+[Time and token metering](METERING.md) is displayed in item details, compact
+Kanban cards, role cards and full-filter board metrics. Time estimates accept
+human units. Usage is provider-reported, never inferred from conversation length;
+partial/unknown coverage and budget-vs-completion remain explicit.
+
 `/product` is the public, static Fanasa-branded introduction, linked from the
 shared header. It makes no API requests and exposes no tenant/task data. Its
 illustrative workflow is labeled as a demo; SaaS, token metering and mobile

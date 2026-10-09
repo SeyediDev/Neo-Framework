@@ -12,6 +12,17 @@ public sealed class ItemModel(OrchestrationClient client) : WorkPageModel(client
     [BindProperty] public string NextStatus { get; set; } = "Ready";
     [BindProperty] public string? Message { get; set; }
     [BindProperty] public long? Seconds { get; set; }
+    [BindProperty] public decimal? EstimateValue { get; set; }
+    [BindProperty] public string EstimateUnit { get; set; } = "minutes";
+    [BindProperty] public long? EstimatedTokens { get; set; }
+    [BindProperty] public Guid UsageRequestId { get; set; } = Guid.NewGuid();
+    [BindProperty] public string UsageProvider { get; set; } = "";
+    [BindProperty] public string? UsageModel { get; set; }
+    [BindProperty] public string UsageReference { get; set; } = "";
+    [BindProperty] public long? InputTokens { get; set; }
+    [BindProperty] public long? OutputTokens { get; set; }
+    [BindProperty] public long? CachedInputTokens { get; set; }
+    [BindProperty] public long? ReasoningTokens { get; set; }
     [BindProperty] public Guid DependencyId { get; set; }
     [BindProperty] public string Kind { get; set; } = "Commit";
     [BindProperty] public string Reference { get; set; } = "";
@@ -48,7 +59,16 @@ public sealed class ItemModel(OrchestrationClient client) : WorkPageModel(client
     public Task<IActionResult> OnPostPlanningAsync(CancellationToken ct)=>Change("planning",new SetWorkItemPlanningRequest(Version,ItemType,AcceptanceCriteria),ct,true);
     public Task<IActionResult> OnPostStatusAsync(CancellationToken ct)=>Change("status",new ChangeStatusRequest(Version,NextStatus,Message),ct);
     public Task<IActionResult> OnPostLogAsync(CancellationToken ct)=>Change("logs",new AppendLogRequest(Version,Message??""),ct);
-    public Task<IActionResult> OnPostEstimateAsync(CancellationToken ct)=>Change("estimate",new SetEstimateRequest(Version,Seconds),ct,true);
+    public async Task<IActionResult> OnPostEstimateAsync(CancellationToken ct)
+    {
+        long? seconds;
+        try { seconds = EstimateSeconds(EstimateValue, EstimateUnit); }
+        catch (ArgumentException) { ModelState.AddModelError(nameof(EstimateValue), "برآورد زمان معتبر نیست."); await Attempt(()=>Load(ct)); return Page(); }
+        return await Change("estimate",new SetEstimateRequest(Version,seconds),ct,true);
+    }
+    public Task<IActionResult> OnPostTokenEstimateAsync(CancellationToken ct)=>Change("token-estimate",new SetTokenEstimateRequest(Version,EstimatedTokens),ct,true);
+    public Task<IActionResult> OnPostTokenUsageAsync(CancellationToken ct)=>Change("token-usage",new RecordWorkTokenUsageRequest(
+        Version,UsageRequestId,UsageProvider,UsageReference,UsageModel,InputTokens,OutputTokens,CachedInputTokens,ReasoningTokens),ct);
     public Task<IActionResult> OnPostStartTimeAsync(CancellationToken ct)=>Change("time/start",new VersionRequest(Version),ct);
     public Task<IActionResult> OnPostStopTimeAsync(CancellationToken ct)=>Change("time/stop",new VersionRequest(Version),ct);
     public Task<IActionResult> OnPostArchiveAsync(CancellationToken ct)=>Change("archive",new VersionRequest(Version),ct);

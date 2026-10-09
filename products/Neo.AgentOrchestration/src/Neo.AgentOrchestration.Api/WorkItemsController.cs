@@ -38,7 +38,7 @@ public sealed class WorkItemsController(ISender sender) : WorkspaceControllerBas
     {
         var value = await Sender.Send(new CreateWorkItem(Scope, body.ProjectId, body.Key, body.Title, body.Domain, Actor(),
             body.Description, Value<WorkItemPriority>(body.Priority), body.ParentWorkItemId, body.EstimatedSeconds,
-            Value<WorkItemType>(body.Type), body.AcceptanceCriteria, body.RequestId), ct);
+            Value<WorkItemType>(body.Type), body.AcceptanceCriteria, body.RequestId, body.EstimatedTokens), ct);
         return CreatedAtAction(nameof(Details), new { organizationId = Scope.OrganizationId, workspaceId = Scope.WorkspaceId, id = value.Item.Id }, value);
     }
 
@@ -59,6 +59,12 @@ public sealed class WorkItemsController(ISender sender) : WorkspaceControllerBas
     [HttpPut("items/{id:guid}/estimate"), Authorize(Policy = WorkspaceSecurity.Write)]
     public Task<WorkItemDetails> Estimate(Guid id, SetEstimateRequest body, CancellationToken ct)
         => Change(id, body.ExpectedVersion, new EstimateChange(body.Seconds), ct);
+    [HttpPut("items/{id:guid}/token-estimate"), Authorize(Policy = WorkspaceSecurity.Write)]
+    public Task<WorkItemDetails> TokenEstimate(Guid id, SetTokenEstimateRequest body, CancellationToken ct)
+        => Change(id, body.ExpectedVersion, new TokenEstimateChange(body.Tokens), ct);
+    [HttpPost("items/{id:guid}/token-usage"), Authorize(Policy = WorkspaceSecurity.Write)]
+    public Task<WorkItemDetails> TokenUsage(Guid id, RecordWorkTokenUsageRequest body, CancellationToken ct)
+        => Change(id, body.ExpectedVersion, new TokenUsageChange(body), ct);
     [HttpPost("items/{id:guid}/time/start"), Authorize(Policy = WorkspaceSecurity.Write)]
     public Task<WorkItemDetails> Start(Guid id, VersionRequest body, CancellationToken ct)
         => Change(id, body.ExpectedVersion, new TrackingChange(true), ct);

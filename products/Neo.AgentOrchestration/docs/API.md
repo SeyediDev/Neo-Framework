@@ -1,5 +1,9 @@
 # Scoped API v1
 
+[Time/token metering](METERING.md) documents initial token estimates,
+`PUT items/{id}/token-estimate`, `POST items/{id}/token-usage`, nullable counters,
+full-filter coverage and conflicting-retry semantics. Estimates are not actuals.
+
 Bounded agent reads: `GET items/{id}/context?knownVersion={guid}` and
 `GET items/{id}/history?skip=0&take=10&snapshotVersion={guid}` use the same
 workspace/read authorization as item details. History take is 1-20; a changed

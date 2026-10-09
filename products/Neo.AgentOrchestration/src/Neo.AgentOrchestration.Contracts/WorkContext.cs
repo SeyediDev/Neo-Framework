@@ -44,6 +44,7 @@ public static class WorkContextProjection
         if (details.Dependencies.Count > dependencies.Length) omitted.Add("additionalDependencies");
         if (details.TimeEntries.Count > 0) omitted.Add("timeEntries");
         if (details.OwnerHistory.Count > 0) omitted.Add("ownerHistory");
+        if (details.TokenUsage?.Count > 0) omitted.Add("tokenUsageReports");
         if (unchanged) omitted.Add("unchangedItemTextAndHistory");
         return new(item, children, dependencies, logs, evidence, details.Logs.Count, details.Evidence.Count,
             details.Children.Count, details.Dependencies.Count, unchanged, omitted);

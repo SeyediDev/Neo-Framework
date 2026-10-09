@@ -84,6 +84,7 @@ internal static class OrchestrationModel
             t.HasCheckConstraint("CK_WorkItems_Status", "[Status] BETWEEN 1 AND 7 AND [Priority] BETWEEN 1 AND 4");
             t.HasCheckConstraint("CK_WorkItems_Type", "[Type] BETWEEN 1 AND 4");
             t.HasCheckConstraint("CK_WorkItems_Estimate", "[EstimatedSeconds] IS NULL OR [EstimatedSeconds] > 0");
+            t.HasCheckConstraint("CK_WorkItems_TokenEstimate", "[EstimatedTokens] IS NULL OR [EstimatedTokens] > 0");
             t.HasCheckConstraint("CK_WorkItems_Owner", "([OwnerRoleId] IS NULL AND [OwnerAgentId] IS NULL AND [OwnerChatId] IS NULL AND [Status] <> 3) OR ([OwnerRoleId] IS NOT NULL AND [OwnerAgentId] IS NOT NULL AND [OwnerChatId] IS NOT NULL)");
             t.HasCheckConstraint("CK_WorkItems_Parent", "[ParentWorkItemId] IS NULL OR [ParentWorkItemId] <> [Id]");
         });
@@ -105,6 +106,15 @@ internal static class OrchestrationModel
             "[DurationSeconds] >= 0 AND ([EndedAtUtc] IS NULL OR [EndedAtUtc] >= [StartedAtUtc])"));
         work.HasMany(x => x.TimeEntries).WithOne().HasForeignKey(x => x.WorkItemId).OnDelete(DeleteBehavior.Restrict);
         work.Navigation(x => x.TimeEntries).HasField("_timeEntries").UsePropertyAccessMode(PropertyAccessMode.Field);
+        var usage = Entity<WorkTokenUsage>(b, "WorkTokenUsage");
+        usage.Property(x => x.AgentId).HasMaxLength(200); usage.Property(x => x.ChatId).HasMaxLength(200);
+        usage.Property(x => x.Provider).HasMaxLength(80); usage.Property(x => x.Model).HasMaxLength(200);
+        usage.Property(x => x.Reference).HasMaxLength(500);
+        usage.HasIndex(x => new { x.WorkItemId, x.RecordedAtUtc });
+        usage.ToTable("WorkTokenUsage", "nao", t => t.HasCheckConstraint("CK_WorkTokenUsage_Counts",
+            "([InputTokens] IS NULL OR [InputTokens] >= 0) AND ([OutputTokens] IS NULL OR [OutputTokens] >= 0) AND ([CachedInputTokens] IS NULL OR [CachedInputTokens] >= 0) AND ([ReasoningTokens] IS NULL OR [ReasoningTokens] >= 0) AND ([InputTokens] IS NULL OR [CachedInputTokens] IS NULL OR [CachedInputTokens] <= [InputTokens]) AND ([OutputTokens] IS NULL OR [ReasoningTokens] IS NULL OR [ReasoningTokens] <= [OutputTokens]) AND ([InputTokens] IS NOT NULL OR [OutputTokens] IS NOT NULL OR [CachedInputTokens] IS NOT NULL OR [ReasoningTokens] IS NOT NULL)"));
+        work.HasMany(x => x.TokenUsage).WithOne().HasForeignKey(x => x.WorkItemId).OnDelete(DeleteBehavior.Restrict);
+        work.Navigation(x => x.TokenUsage).HasField("_tokenUsage").UsePropertyAccessMode(PropertyAccessMode.Field);
         var dependency = Entity<WorkItemDependency>(b, "WorkItemDependencies");
         dependency.HasIndex(x => new { x.WorkItemId, x.DependsOnWorkItemId }).IsUnique();
         dependency.ToTable("WorkItemDependencies", "nao", t => t.HasCheckConstraint("CK_Dependency_Self", "[WorkItemId] <> [DependsOnWorkItemId]"));

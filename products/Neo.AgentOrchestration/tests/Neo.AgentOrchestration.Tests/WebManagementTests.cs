@@ -179,14 +179,19 @@ internal sealed class WebFixture : IAsyncDisposable
     public required HttpClient ApiClient {get;init;}
     public required WebApplicationFactory<WebHost> Host {get;init;}
     public required HttpClient Client {get;init;}
-    public required Fixture Sql {get;init;}
+    public required Neo.AgentOrchestration.Domain.Projects.WorkspaceScope Scope {get;init;}
     public required string Token {get;init;}
-    public string Root=>$"/work/{Sql.Scope.OrganizationId}/{Sql.Scope.WorkspaceId}";
+    public string Root=>$"/work/{Scope.OrganizationId}/{Scope.WorkspaceId}";
     private static CancellationToken Ct=>TestContext.Current.CancellationToken;
     public static Task<WebFixture> Create(Fixture f,string[]? grants=null)
+        => Create(new ApiFixture(clock:f.Clock,sql:f.Connection,simulation:true),f.Scope,grants);
+    public static Task<WebFixture> Create(WorkFixture f,string[]? grants=null)
+        => Create(new ApiFixture(f.Store,f.Clock,configure:services=>services.AddSingleton<
+            MediatR.IRequestHandler<Neo.AgentOrchestration.Application.Runs.GetAgentRuns,IReadOnlyList<AgentRunDetails>>,
+            EmptyFixtureRunReader>()),f.Scope,grants);
+    private static Task<WebFixture> Create(ApiFixture api,Neo.AgentOrchestration.Domain.Projects.WorkspaceScope scope,string[]? grants)
     {
-        var api=new ApiFixture(clock:f.Clock,sql:f.Connection,simulation:true);
-        var apiClient=api.Client(f.Scope,grants??["read","write","configure","approve","execute"]);
+        var apiClient=api.Client(scope,grants??["read","write","configure","approve","execute"]);
         var token=apiClient.DefaultRequestHeaders.Authorization!.Parameter!;
         var host=new WebApplicationFactory<WebHost>().WithWebHostBuilder(b=>
         {
@@ -200,9 +205,9 @@ internal sealed class WebFixture : IAsyncDisposable
             });
         });
         var client=host.CreateClient(new(){AllowAutoRedirect=false,BaseAddress=new("https://localhost")});
-        return Task.FromResult(new WebFixture{Api=api,ApiClient=apiClient,Host=host,Client=client,Sql=f,Token=token});
+        return Task.FromResult(new WebFixture{Api=api,ApiClient=apiClient,Host=host,Client=client,Scope=scope,Token=token});
     }
-    public async Task<T> ApiRead<T>(string resource)=>(await ApiClient.GetFromJsonAsync<T>(ApiFixture.Root(Sql.Scope)+"/"+resource,Ct))!;
+    public async Task<T> ApiRead<T>(string resource)=>(await ApiClient.GetFromJsonAsync<T>(ApiFixture.Root(Scope)+"/"+resource,Ct))!;
     public async Task<string> Html(string path)
     {
         var response=await Client.GetAsync(path,Ct);Assert.Equal(HttpStatusCode.OK,response.StatusCode);
@@ -237,6 +242,13 @@ internal sealed class WebFixture : IAsyncDisposable
         var css=await Client.GetStringAsync("/site.css",Ct);await File.WriteAllTextAsync(Path.Combine(folder,"site.css"),css,Ct);
     }
     public async ValueTask DisposeAsync(){Client.Dispose();ApiClient.Dispose();await Host.DisposeAsync();await Api.DisposeAsync();}
+}
+// Memory-only Web tests have no durable run store. They test metering forms,
+// not run execution; SQL Web tests keep the real run handler.
+internal sealed class EmptyFixtureRunReader : MediatR.IRequestHandler<Neo.AgentOrchestration.Application.Runs.GetAgentRuns,IReadOnlyList<AgentRunDetails>>
+{
+    public Task<IReadOnlyList<AgentRunDetails>> Handle(Neo.AgentOrchestration.Application.Runs.GetAgentRuns request,CancellationToken ct)
+        => Task.FromResult<IReadOnlyList<AgentRunDetails>>([]);
 }
 internal sealed record WebTestSession(string Token);
 // Test assembly only. No header, test sign-in endpoint or bypass exists in Web.

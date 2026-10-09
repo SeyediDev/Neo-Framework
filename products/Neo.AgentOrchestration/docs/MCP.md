@@ -68,10 +68,13 @@ sanitized message. The server takes no SQL connection or arbitrary HTTP route.
 | `neo_work_time` | itemId, expectedVersion, start | Start/stop timer; write |
 | `neo_work_evidence` | itemId, request: AddEvidenceRequest | Actual commit/test/artifact; write |
 | `neo_work_estimate` | itemId, request: SetEstimateRequest | Budget seconds/null; write |
+| `neo_work_token_estimate` | itemId, request: SetTokenEstimateRequest | Budget tokens/null; write |
+| `neo_work_token_usage` | itemId, request: RecordWorkTokenUsageRequest | Owner manual report with stable ID/reference; write |
 | `neo_work_archive` | itemId, expectedVersion, archived | Archive/restore; write |
 | `neo_work_dependency` | itemId, request: AddDependencyRequest | Same-project prerequisite; write |
 | `neo_run_list` | itemId | Task runs/delivery state |
 | `neo_run_get` | runId | One run/deliveries |
+| `neo_run_usage` | runId, request: RecordTokenUsageRequest | Run provider report with idempotency; execute |
 | `neo_run_start` | itemId, request: StartAgentRunRequest | Queued execution request; execute |
 | `neo_run_handoff` | runId, request: EvaluateAgentRunRequest | Versioned gate reevaluation; execute |
 | `neo_run_return` | runId, request: ReturnRunAssignmentRequest | Return stopped assignment to initiator; execute |
