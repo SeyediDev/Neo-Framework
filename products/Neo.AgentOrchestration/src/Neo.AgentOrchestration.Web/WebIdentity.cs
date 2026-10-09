@@ -23,6 +23,15 @@ public static class WebIdentity
     }
     public static bool Configured(IConfiguration config) => !string.IsNullOrWhiteSpace(config["WebAuthentication:Authority"]) &&
         !string.IsNullOrWhiteSpace(config["WebAuthentication:ClientId"]);
+    public static TimeSpan SessionLifetime(IConfiguration config)
+    {
+        var raw = config["WebAuthentication:SessionLifetimeMinutes"];
+        if (raw is null) return TimeSpan.FromMinutes(30);
+        if (!int.TryParse(raw, System.Globalization.NumberStyles.None,
+                System.Globalization.CultureInfo.InvariantCulture, out var minutes) || minutes is < 15 or > 1440)
+            throw new InvalidOperationException("WebAuthentication:SessionLifetimeMinutes must be between 15 and 1440.");
+        return TimeSpan.FromMinutes(minutes);
+    }
     public static Uri ApiAddress(IConfiguration configuration)
     {
         var configured = configuration["OrchestrationApi:BaseUrl"] ?? "http://127.0.0.1:5180/";
@@ -64,7 +73,8 @@ public static class WebIdentity
             };
         });
         services.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-            .Configure<ITicketStore>((options, tickets) => options.SessionStore = tickets);
+            .Configure<ITicketStore>((options, tickets) => options.SessionStore = tickets)
+            .Configure<IConfiguration>((options, config) => options.ExpireTimeSpan = SessionLifetime(config));
         // Resolve final host configuration lazily; startup removes this scheme
         // if unconfigured, before any remote handler can initialize.
         services.AddAuthentication().AddOpenIdConnect();
@@ -83,7 +93,7 @@ public static class WebIdentity
                 {
                     context.Properties ??= new AuthenticationProperties();
                     context.Properties.Items[ChatKey] = ChatId(o.Authority!, context.Principal!);
-                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30);
+                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.Add(SessionLifetime(config));
                     return Task.CompletedTask;
                 };
                 o.Events.OnRemoteFailure = context =>

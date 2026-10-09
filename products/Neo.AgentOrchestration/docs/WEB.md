@@ -49,6 +49,7 @@ the approved HTTPS values through environment or secret management.
 | `WebAuthentication__ClientSecret` | Server-side client credential where required; inject privately, never commit |
 | `WebAuthentication__ApiAudience` | Exact delegated API audience for refreshed JWT validation; falls back to `Authentication__Audience` when hosts share the intended environment file. Required for refresh. |
 | `WebAuthentication__Scopes__0`, `__1`, ... | Issuer-specific delegated API scopes; `openid` and `profile` are included |
+| `WebAuthentication__SessionLifetimeMinutes` | Absolute Web session limit: 15–1440 minutes, default 30. VPS uses 720 (12 hours); this is not the access-token lifespan. No sliding extension beyond this deadline. |
 | `OrchestrationApi__DefaultOrganizationId` | Optional workspace chooser default, not an access grant |
 | `OrchestrationApi__DefaultWorkspaceId` | Optional chooser default, not an access grant |
 | `AllowedHosts` | Your deployment hostname(s); defaults allow loopback only |
@@ -64,6 +65,15 @@ OIDC discovery and the issuer must use HTTPS. Serve Web over HTTPS in deployment
 if hosted behind a proxy, configure trusted forwarding and the public callback
 at the deployment layer, not arbitrary forwarded headers. Configuration changes
 require a host restart.
+
+The server-side ticket refreshes short-lived access tokens without exposing them
+to the browser. Both the cookie and OIDC ticket use the configured absolute
+session deadline; refresh cannot extend it. Keycloak can end the session sooner
+on revocation or its own idle/max timeout. The VPS policy uses two hours SSO idle,
+twelve hours maximum, and fifteen-minute access tokens for the Work Management
+client only. A Web restart still clears the in-memory ticket store and requires
+sign-in again. Longer tokens do not solve restart-related logout; a shared durable
+ticket store is a separate deployment change.
 
 Start API and Web in separate terminals:
 

@@ -122,6 +122,24 @@ contract administrator/viewer permissions and shared login to the portal.
 
 ## Current local HTTPS endpoints
 
+## Work Management session policy
+
+`work-session-policy.json` defines the installed Work Management policy: two-hour
+realm SSO idle, twelve-hour realm maximum, fifteen-minute access tokens for the
+Work Management client (other clients' token lifetimes are unchanged), and a
+twelve-hour absolute Web ticket. `apply-work-session-policy.py` previews by default;
+use `--apply` after authenticating kcadm for client/Web settings only. By default
+the client idle/max is bounded by the existing realm settings. Changing shared
+realm timeouts requires explicit authorization and the additional `--include-realm`
+flag; do not use it without approval covering all connected clients.
+It backs up settings, merges client
+attributes and writes the Web environment setting without exporting secrets.
+Realm SSO settings affect all clients unless a client has a shorter override.
+Deploy a Web version supporting `WebAuthentication__SessionLifetimeMinutes`
+and restart only the Web to activate it. Existing tickets retain their earlier
+deadline until reauthentication. The in-memory ticket store still logs users out
+on Web restart; this policy does not introduce offline or never-expiring tokens.
+
 ## Explicit administrator enrollment
 
 For a user-authorized platform administrator, create an enabled Keycloak account

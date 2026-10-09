@@ -1,0 +1,8 @@
+{
+  "realm": "fanasa",
+  "clientId": "fanasa-work-management-web",
+  "ssoSessionIdleTimeout": 7200,
+  "ssoSessionMaxLifespan": 43200,
+  "accessTokenLifespan": 900,
+  "webSessionLifetimeMinutes": 720
+}
