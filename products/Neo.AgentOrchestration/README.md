@@ -111,6 +111,12 @@ application contract; they are not registered by API/Worker startup. Durable gat
 isolated workspaces, account setup and real-agent acceptance remain required;
 no installed runner or live model execution is claimed.
 
+The [dual-agent execution journal](docs/GATEWAY-JOURNAL.md) adds independent
+SQL reservations, native-write recovery holds, fenced leases, approval latches,
+executor-exit evidence gating and immutable result/usage retries. Its default
+sandbox rejects execution. Production dispatch/worker activation, actual sandbox,
+trusted metering ingestion, installation and live pilot remain unimplemented gates.
+
 Native Neo work management will remain independently usable. GitHub, GitLab and
 Azure DevOps are planned optional adapters, not replacements; Neo and an external
 provider may be enabled simultaneously. Work tracking, repository/PR management

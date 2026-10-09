@@ -20,6 +20,7 @@ public sealed record ExternalAgentObservation(ExternalAgentState State,
 public interface IExternalAgentAdapter
 {
     ExternalAgentEngine Engine { get; }
+    string BindingFingerprint { get; }
     Task<ExternalAgentHandle> PrepareAsync(ExternalAgentInput input, CancellationToken cancellationToken);
     Task<ExternalAgentHandle> SubmitAsync(ExternalAgentInput input, ExternalAgentHandle prepared, CancellationToken cancellationToken);
     Task<ExternalAgentObservation> ObserveAsync(ExternalAgentHandle handle, CancellationToken cancellationToken);

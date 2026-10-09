@@ -12,6 +12,11 @@ clients for a compatible gateway. They are not the gateway itself and are not
 enabled by API/Worker startup. Preserve the durable reservation, isolated sandbox,
 approval and usage-ingestion boundaries before connecting either runtime.
 
+The [gateway execution journal/core](GATEWAY-JOURNAL.md) now supplies independent
+SQL reservation/recovery/evidence/result gates. It is internal and disabled by
+default, not the required operational dispatch host or installed isolated runner.
+The existing HTTP protocol and Outbox/Hangfire startup behavior remain unchanged.
+
 ## Configure API and worker
 
 Apply the additive `HttpHarnessDispatch` migration explicitly using DATABASE.md.

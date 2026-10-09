@@ -15,6 +15,11 @@ callback and durable Outbox/Hangfire remain unchanged. The adapters are **not**
 registered by API or Worker startup and are **not** a durable execution gateway.
 No installed agent, model/account, live inference or task execution is implied.
 
+The [durable execution journal/core](GATEWAY-JOURNAL.md) is now implemented as a
+separate internal layer. Its production sandbox, dispatch host, durable worker
+activation, approval responses and trusted usage ingestion are not enabled or
+completed; native adapters alone still do not constitute an operational gateway.
+
 Only an authorized gateway may explicitly call `AddNativeAgentAdapters` and
 `NativeAgentAdapterFactory.Create(key, scope)`. These are internal service APIs,
 not new workspace API/MCP tools. Handles must come from the gateway's trusted

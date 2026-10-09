@@ -96,6 +96,7 @@ public static class NativeAgentRegistration
 internal sealed class NativeAgentAdapter(NativeAgentBinding binding, string transportSecret, HttpClient http) : IExternalAgentAdapter
 {
     public ExternalAgentEngine Engine => binding.Engine;
+    public string BindingFingerprint => binding.Fingerprint;
     private const int MaxBytes = 1024 * 1024;
 
     public async Task<ExternalAgentHandle> PrepareAsync(ExternalAgentInput input, CancellationToken ct)
