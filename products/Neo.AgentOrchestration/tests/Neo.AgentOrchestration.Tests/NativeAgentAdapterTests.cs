@@ -217,7 +217,8 @@ public sealed partial class NativeAgentAdapterTests
     private static readonly Guid Org = Guid.NewGuid(), Workspace = Guid.NewGuid(), Project = Guid.NewGuid();
     private static ExternalAgentScope Scope() => new(Org, Workspace, Project, Guid.NewGuid());
     private static ServiceProvider Services(NativeServer server, string engine, bool enabled = true, bool disjoint = true,
-        string environment = "Testing", string? endpoint = null, bool cursorPagination = false, bool permissionSnapshot = false)
+        string environment = "Testing", string? endpoint = null, bool cursorPagination = false, bool permissionSnapshot = false,
+        TimeSpan? httpTimeout = null)
     {
         var values = new Dictionary<string, string?> { ["NativeAgents:Enabled"] = enabled.ToString(), ["NativeAgents:AllowLoopbackHttp"] = "true" };
         const string root = "NativeAgents:Connections:pilot:";
@@ -232,7 +233,9 @@ public sealed partial class NativeAgentAdapterTests
         var services = new ServiceCollection(); services.AddLogging();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().AddInMemoryCollection(values).Build());
         services.AddSingleton<IHostEnvironment>(new TestEnvironment { EnvironmentName = environment });
-        services.AddSingleton<IHarnessSecrets>(new TestSecrets()); services.AddNativeAgentAdapters(); return services.BuildServiceProvider();
+        services.AddSingleton<IHarnessSecrets>(new TestSecrets()); services.AddNativeAgentAdapters();
+        if (httpTimeout.HasValue) services.AddHttpClient("fanasa-native-agent", c => c.Timeout = httpTimeout.Value);
+        return services.BuildServiceProvider();
     }
     private sealed class TestSecrets : IHarnessSecrets { public string Resolve(string reference) => new('T', 40); }
     private sealed class TestEnvironment : IHostEnvironment

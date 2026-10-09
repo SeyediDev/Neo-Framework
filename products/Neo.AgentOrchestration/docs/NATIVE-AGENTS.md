@@ -69,9 +69,18 @@ or memory key alone does not provide safe multi-tenant execution.
 
 ## Recovery, permissions and accounting
 
-- Both use a bounded 30-second HTTP client, no redirects, no outbound loggers,
+- Both use a 30-second end-to-end HTTP request deadline (or a shorter configured
+  HttpClient timeout), including streamed response-body reads after headers,
+  no redirects, no outbound loggers,
   64-KiB prompt/16-KiB instruction limits and 1-MiB response limit. Upstream output,
   command strings, reasoning and raw errors are not returned as task evidence.
+  `ResponseHeadersRead` alone does not cover body timeouts; a linked cancellation
+  deadline covers send, stream acquisition and every body read. The deadline is
+  not reset for each chunk; slow trickle responses cannot extend the budget.
+  Infinite/longer client timeouts cannot disable the 30-second ceiling. Caller
+  cancellation and the tighter 20-second cursor traversal deadline still apply.
+  Timeout after a write remains uncertain and is never automatically replayed;
+  timed-out observations provide no partial usage or terminal success.
 - Writes are not retried automatically. An uncertain response exposes a stable
   code and `RequiresReconciliation=true`, without secret-bearing exception chains.
 - Hermes sends run GUID as `Idempotency-Key` and a per-org/workspace/project/run
@@ -134,6 +143,9 @@ or memory key alone does not provide safe multi-tenant execution.
 
 ## Reviewed upstream contracts — 2026-10-09
 
+- [.NET streamed-response timeout semantics](https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpcompletionoption?view=net-9.0)
+  explain why the native transport needs a separate body deadline when using
+  `ResponseHeadersRead`; the response size cap is enforced independently.
 - [Hermes API](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server/)
   and [capability/approval source](https://github.com/NousResearch/hermes-agent/blob/5f045f842a60184748dda30acb9fecbd961cc18b/gateway/platforms/api_server.py).
   Source pin is a review anchor, not an installed runtime claim.

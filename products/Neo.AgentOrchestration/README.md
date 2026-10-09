@@ -121,6 +121,9 @@ source-reviewed, opt-in bounded cursor traversal without partial consumption
 reports or following upstream Link URLs, plus a separately opted-in read-only
 pending-permission snapshot feeding the existing approval latch. Actual sandbox, streaming/approval replies,
 trusted metering ingestion, installation and live pilot remain unimplemented gates.
+Native and result-callback HTTP requests bound both headers and streamed body to one 30-second
+deadline (shorter client/caller budgets win); partial responses do not fabricate
+usage or success, and uncertain writes are not replayed.
 The [model-connection record and disabled operator templates](docs/MODEL-CONNECTIONS.md)
 separate a verified synthetic proxy Responses call from actual installed agents,
 free-route availability, tenant credentials and live task acceptance.

@@ -298,18 +298,20 @@ internal sealed class NativeAgentAdapter(NativeAgentBinding binding, string tran
         if (idempotencyKey is not null) request.Headers.Add("Idempotency-Key", idempotencyKey);
         if (memoryScope is not null) request.Headers.Add("X-Hermes-Session-Key", memoryScope);
         if (body is not null) request.Content = JsonContent.Create(body);
+        using var deadline = HttpRequestDeadline.Start(http, ct);
+        var token = deadline.Token;
         try
         {
-            using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
+            using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
             if (!response.IsSuccessStatusCode) throw new ExternalAgentException("native-agent-http-" + (int)response.StatusCode, write);
             if (Engine == ExternalAgentEngine.Hermes && path == "v1/runs" && response.StatusCode != HttpStatusCode.Accepted ||
                 expectEmpty && response.StatusCode != HttpStatusCode.NoContent)
                 throw new ExternalAgentException("native-agent-protocol", write);
             if (expectEmpty) return JsonDocument.Parse("{}");
             if (response.Content.Headers.ContentLength is > MaxBytes) throw new ExternalAgentException("native-agent-response-limit", write);
-            await using var stream = await response.Content.ReadAsStreamAsync(ct);
+            await using var stream = await response.Content.ReadAsStreamAsync(token);
             using var buffer = new MemoryStream(); var chunk = new byte[8192];
-            for (int read; (read = await stream.ReadAsync(chunk, ct)) != 0;)
+            for (int read; (read = await stream.ReadAsync(chunk, token)) != 0;)
             {
                 if (buffer.Length + read > MaxBytes) throw new ExternalAgentException("native-agent-response-limit", write);
                 buffer.Write(chunk, 0, read);

@@ -94,7 +94,13 @@ fingerprint; rotating values behind unchanged references does not.
 
 Test-only loopback HTTP requires `AgentGateway:AllowLoopbackHttp=true` in
 Development/Testing; Production never permits it. HTTP result clients have a
-30-second timeout, no redirects/outbound loggers, and an 8-KiB receipt bound.
+single 30-second deadline across send and streamed receipt reads, no
+redirects/outbound loggers, and an 8-KiB receipt bound. Shorter finite client and
+caller budgets win; longer/infinite client timeouts cannot remove the ceiling.
+Native and callback transports share the same deadline helper, without resetting
+it for each chunk. A stalled/incomplete receipt is unacknowledged, with a sanitized
+reconciliation error; it never changes the frozen result or fabricates a receipt.
+Only the existing durable delivery path retries the exact stored result.
 Stable error codes contain no raw upstream response or exception chain.
 
 `DisabledGatewaySandbox` is the default and rejects execution before capacity or
@@ -173,7 +179,10 @@ snapshot or replacing full SSE/reconciliation and installed-runtime acceptance.
 ## Verification
 
 `GatewayRunTests` exercise the pure state machine. `GatewayBindingTests` exercise
-operator configuration/authentication/fingerprints without an upstream call.
+operator configuration/authentication/fingerprints without an upstream call,
+plus a stalled callback-body test through an in-process HTTP handler/stream.
+The latter checks deadline cancellation, immutable payload, no adapter retry and
+no fabricated acknowledgement; it is not a real API/network callback acceptance.
 `SqlGatewayJournalTests` use fresh SQL contexts, real private ingress/configured
 binding HTTP, queue-job restart/duplicate/rollback/hold/bounded-observation tests,
 native/sandbox/delivery test doubles and a dedicated

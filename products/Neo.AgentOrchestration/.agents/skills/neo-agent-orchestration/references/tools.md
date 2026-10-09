@@ -146,3 +146,10 @@ reads pending requests only for the reserved native session and feeds the durabl
 approval hold. No MCP/native permission reply or grant is added. An empty later
 snapshot cannot resolve a persisted hold; multiple IDs never imply a guessed
 approval target. Check installed schema and `docs/NATIVE-AGENTS.md` before enablement.
+Native and result-callback transports share a single 30-second request deadline covering headers and
+streamed body, shortened by client/caller budgets and cursor traversal limits.
+A timeout is not success or known-zero usage; uncertain native writes require
+reconciliation, never replay. This changes no MCP tool or permission authority.
+A timed-out callback receipt does not acknowledge delivery. Only the existing
+durable delivery path may retry the exact frozen result; don't create a second
+retry loop or rewrite evidence from an unconfirmed response.

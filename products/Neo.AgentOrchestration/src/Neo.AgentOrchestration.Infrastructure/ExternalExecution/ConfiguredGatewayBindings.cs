@@ -98,11 +98,13 @@ public sealed class HttpGatewayResultDelivery(HttpClient http, ConfiguredGateway
             using var request = new HttpRequestMessage(HttpMethod.Post, binding.CallbackUrl);
             request.Headers.Add("X-Neo-Harness-Key", secret);
             request.Content = new StringContent(frozenResult, Encoding.UTF8, "application/json");
-            using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
+            using var deadline = HttpRequestDeadline.Start(http, ct);
+            var token = deadline.Token;
+            using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
             if (response.StatusCode != HttpStatusCode.OK) throw new ExternalAgentException("gateway-callback-unacknowledged", true);
-            await using var stream = await response.Content.ReadAsStreamAsync(ct);
+            await using var stream = await response.Content.ReadAsStreamAsync(token);
             using var buffer = new MemoryStream(); var chunk = new byte[2048];
-            for (int read; (read = await stream.ReadAsync(chunk, ct)) != 0;)
+            for (int read; (read = await stream.ReadAsync(chunk, token)) != 0;)
             { if (buffer.Length + read > 8192) throw new ExternalAgentException("gateway-callback-invalid", true); buffer.Write(chunk, 0, read); }
             var receipt = JsonSerializer.Deserialize<HarnessReceipt>(buffer.ToArray(), new JsonSerializerOptions(JsonSerializerDefaults.Web));
             return receipt is { ReceiptId: var id } && id != Guid.Empty ? id : throw new ExternalAgentException("gateway-callback-invalid", true);

@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Neo.AgentOrchestration.Tests;
 
-public sealed class GatewayBindingTests
+public sealed partial class GatewayBindingTests
 {
     private static readonly ExternalAgentScope Scope = new(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
     private static readonly Guid Profile = Guid.NewGuid();
