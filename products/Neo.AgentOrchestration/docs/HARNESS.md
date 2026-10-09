@@ -141,6 +141,12 @@ the network. Workflow decisions remain distinct from execution outcomes.
 
 ## Delivery uncertainty and verification
 
+The optional [dual-agent gateway](GATEWAY-JOURNAL.md) implements a separate
+authenticated `POST /bindings/{key}/runs` endpoint for this unchanged protocol.
+Its 202 confirms transactional reservation plus Outbox activation, not native
+execution or task completion. The existing worker opts into this journal explicitly;
+actual sandbox installation and live-agent acceptance remain required.
+
 Network errors, timeout, 408, 429 and 5xx use Neo's bounded three attempts and
 30-second retry delay, always reusing the frozen payload/key. Other responses
 (including redirects) retain `AwaitingResult` with a reconciliation reason.

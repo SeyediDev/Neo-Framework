@@ -13,9 +13,14 @@ public sealed class GatewayExecution(IGatewayJournal journal, IGatewayBindings b
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
-    public async Task<GatewayRun> ReserveAsync(string bindingKey, string body, CancellationToken ct)
+    public Task<GatewayRun> ReserveAsync(string bindingKey, string body, CancellationToken ct)
+        => ReserveAsync(bindingKey, body, null, ct);
+
+    public async Task<GatewayRun> ReserveAsync(string bindingKey, string body, Guid? idempotencyRunId, CancellationToken ct)
     {
         var request = Parse(body);
+        if (idempotencyRunId.HasValue && idempotencyRunId != request.Input.Scope.RunId)
+            throw new ExternalAgentException("gateway-idempotency-invalid");
         var binding = bindings.Resolve(bindingKey, request.Input.Scope, request.ProfileId, request.CallbackUrl);
         var candidate = GatewayRun.Reserve(request.Input.Scope.RunId, request.Input.Scope.OrganizationId,
             request.Input.Scope.WorkspaceId, request.Input.Scope.ProjectId, binding.Key,

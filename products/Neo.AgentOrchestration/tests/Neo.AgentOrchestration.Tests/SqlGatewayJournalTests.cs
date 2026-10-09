@@ -7,11 +7,13 @@ using Neo.AgentOrchestration.Contracts;
 using Neo.AgentOrchestration.Domain.ExternalExecution;
 using Neo.AgentOrchestration.Infrastructure.ExternalExecution;
 using Xunit;
+using Neo.Domain.Entities.Common;
+using Neo.Infrastructure.Features.Outbox;
 
 namespace Neo.AgentOrchestration.Tests;
 
 [Collection("Gateway SQL")]
-public sealed class SqlGatewayJournalTests
+public sealed partial class SqlGatewayJournalTests
 {
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
@@ -23,6 +25,12 @@ public sealed class SqlGatewayJournalTests
         var saved = await Task.WhenAll(Enumerable.Range(0, 4).Select(_ => f.Execution().ReserveAsync("coding", body, Ct)));
         Assert.All(saved, r => Assert.Equal(saved[0].Version, r.Version));
         Assert.Equal(GatewayPhase.Reserved, (await f.Journal.ReadAsync(f.Scope, Ct)).Phase);
+        await using (var db = f.Factory.CreateDbContext())
+        {
+            Assert.Equal(1, await db.Activations.CountAsync(Ct));
+            Assert.Equal(1, await db.OutboxMessages.CountAsync(Ct));
+            Assert.Equal(0, (await db.Activations.SingleAsync(Ct)).Sequence);
+        }
         await Assert.ThrowsAsync<GatewayConflictException>(() => f.Execution().ReserveAsync("coding", body + " ", Ct));
         await Assert.ThrowsAsync<GatewayConflictException>(() => f.Journal.ReadAsync(f.Scope with { ProjectId = Guid.NewGuid() }, Ct));
     }
@@ -161,6 +169,100 @@ public sealed class SqlGatewayJournalTests
         await using var db = f.Factory.CreateDbContext(); Assert.Empty(await db.Runs.ToArrayAsync(Ct));
     }
 
+    [Fact]
+    public async Task Reservation_rolls_back_if_durable_activation_cannot_be_saved()
+    {
+        var f = await Fixture.Create();
+        await using var db = f.Factory.CreateDbContext();
+        await db.Database.ExecuteSqlRawAsync("ALTER TABLE gateway.Activations ADD CONSTRAINT CK_TestRejectActivation CHECK (Sequence < 0)", Ct);
+        try
+        {
+            await Assert.ThrowsAsync<DbUpdateException>(() => f.Execution().ReserveAsync("coding", f.Body(), Ct));
+            Assert.Empty(await db.Runs.ToArrayAsync(Ct)); Assert.Empty(await db.OutboxMessages.ToArrayAsync(Ct));
+        }
+        finally { await db.Database.ExecuteSqlRawAsync("ALTER TABLE gateway.Activations DROP CONSTRAINT CK_TestRejectActivation", CancellationToken.None); }
+    }
+
+    [Fact]
+    public async Task Pre_activation_reservation_is_not_silently_dispatched_on_retry()
+    {
+        var f = await Fixture.Create(); var body = f.Body();
+        await using var db = f.Factory.CreateDbContext();
+        db.Runs.Add(GatewayRun.Reserve(f.Scope.RunId, f.Scope.OrganizationId, f.Scope.WorkspaceId, f.Scope.ProjectId,
+            "coding", f.Bindings.Fingerprint, "test-sandbox", body, f.Clock.GetUtcNow()));
+        await db.SaveChangesAsync(Ct);
+        var error = await Assert.ThrowsAsync<GatewayConflictException>(() => f.Execution().ReserveAsync("coding", body, Ct));
+        Assert.Equal("gateway-reservation-requires-reconciliation", error.Code);
+        Assert.Empty(await db.Activations.ToArrayAsync(Ct)); Assert.Empty(await db.OutboxMessages.ToArrayAsync(Ct));
+        Assert.Equal(0, f.Adapter.Prepared);
+    }
+
+    [Fact]
+    public async Task Queue_job_survives_restart_deduplicates_and_atomically_stages_observation()
+    {
+        var f = await Fixture.Create(); await f.Execution().ReserveAsync("coding", f.Body(), Ct);
+        var first = await f.Queue(0);
+        await f.Job().Execute(first, Ct); await f.Job().Execute(first, Ct);
+        Assert.Equal(1, f.Adapter.Prepared); Assert.Equal(1, f.Adapter.Submitted);
+        await using (var db = f.Factory.CreateDbContext())
+        {
+            Assert.Equal(2, await db.Activations.CountAsync(Ct));
+            Assert.Equal(OutboxState.Processed, (await db.OutboxMessages.SingleAsync(x => x.Id == first, Ct)).OutboxState);
+        }
+        f.Adapter.State = ExternalAgentState.Completed; f.Sandbox.Exited = true;
+        await f.Job().Execute(await f.Queue(1), Ct);
+        Assert.Equal(GatewayPhase.CallbackReady, (await f.Journal.ReadAsync(f.Scope, Ct)).Phase);
+        await f.Job().Execute(await f.Queue(2), Ct);
+        Assert.Equal(GatewayPhase.Delivered, (await f.Journal.ReadAsync(f.Scope, Ct)).Phase);
+        await using var final = f.Factory.CreateDbContext();
+        Assert.Equal(3, await final.Activations.CountAsync(Ct)); Assert.Single(f.Delivery.Bodies);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Approval_or_uncertain_write_stops_queue_chain_without_freeing_capacity(bool lostWrite)
+    {
+        var f = await Fixture.Create(); await f.Execution().ReserveAsync("coding", f.Body(), Ct);
+        f.Adapter.LoseSubmit = lostWrite;
+        await f.Job().Execute(await f.Queue(0), Ct);
+        if (!lostWrite)
+        {
+            f.Adapter.State = ExternalAgentState.AwaitingApproval;
+            await f.Job().Execute(await f.Queue(1), Ct);
+        }
+        await using var db = f.Factory.CreateDbContext(); Assert.Equal(lostWrite ? 1 : 2, await db.Activations.CountAsync(Ct));
+        var run = await f.Journal.ReadAsync(f.Scope, Ct);
+        Assert.Equal(!lostWrite, run.ApprovalPending); Assert.True(run.CapacityHeld); Assert.Empty(f.Delivery.Bodies);
+        Assert.Equal(lostWrite ? GatewayPhase.ReconciliationRequired : GatewayPhase.AwaitingApproval, run.Phase);
+    }
+
+    [Fact]
+    public async Task Final_observation_fails_bounded_delivery_not_run_and_preserves_executor_reservation()
+    {
+        var f = await Fixture.Create(); await f.Execution().ReserveAsync("coding", f.Body(), Ct);
+        await using (var db = f.Factory.CreateDbContext())
+        {
+            var activation = await db.Activations.SingleAsync(Ct); activation.Sequence = GatewayOutboxJob.MaxObservations - 1;
+            await db.SaveChangesAsync(Ct);
+        }
+        var id = await f.Queue(GatewayOutboxJob.MaxObservations - 1);
+        var error = await Assert.ThrowsAsync<GatewayJobException>(() => f.Job().Execute(id, Ct));
+        Assert.Equal("gateway-observation-budget-exhausted", error.Message);
+        Assert.True((await f.Journal.ReadAsync(f.Scope, Ct)).CapacityHeld);
+        Assert.Equal(GatewayPhase.Running, (await f.Journal.ReadAsync(f.Scope, Ct)).Phase);
+        await using var final = f.Factory.CreateDbContext(); Assert.Single(await final.Activations.ToArrayAsync(Ct));
+        Assert.Equal(OutboxState.ExecutionRetrying, (await final.OutboxMessages.SingleAsync(Ct)).OutboxState);
+        Assert.Null((await final.OutboxMessages.SingleAsync(Ct)).DeliveryLeaseId);
+        for (var attempt = 0; attempt < 2; attempt++)
+        {
+            await final.OutboxMessages.Where(x => x.Id == id).ExecuteUpdateAsync(s => s.SetProperty(x => x.NextAttemptAtUtc, (DateTime?)null), Ct);
+            await Assert.ThrowsAsync<GatewayJobException>(() => f.Job().Execute(id, Ct));
+        }
+        Assert.Equal(OutboxState.Failed, (await final.OutboxMessages.AsNoTracking().SingleAsync(Ct)).OutboxState);
+        Assert.Equal(1, f.Adapter.Submitted); Assert.True((await f.Journal.ReadAsync(f.Scope, Ct)).CapacityHeld);
+    }
+
     private sealed class Fixture
     {
         public required Factory Factory { get; init; }
@@ -172,6 +274,19 @@ public sealed class SqlGatewayJournalTests
         public TestDelivery Delivery { get; } = new();
         public TestBindings Bindings { get; private set; } = null!;
         public GatewayExecution Execution() => new(Journal, Bindings, Sandbox, Delivery, Clock);
+        public GatewayOutboxJob Job() => new(Factory, Execution(), Clock);
+        public async Task<long> Queue(int sequence)
+        {
+            await using var db = Factory.CreateDbContext();
+            var activation = await db.Activations.SingleAsync(x => x.RunId == Scope.RunId && x.Sequence == sequence, Ct);
+            var outbox = new EfOutboxStore<GatewayDbContext>(db); var lease = Guid.NewGuid();
+            // Neo uses SQL server time for due claims; fixture clock is synthetic.
+            await db.OutboxMessages.Where(x => x.Id == activation.OutboxId)
+                .ExecuteUpdateAsync(s => s.SetProperty(x => x.NextAttemptAtUtc, (DateTime?)null), Ct);
+            Assert.NotNull(await outbox.ClaimDispatchAsync(activation.OutboxId, lease, TimeSpan.FromMinutes(5), Ct));
+            await outbox.CompleteDispatchAsync(activation.OutboxId, lease, "fixture-job", null, Ct);
+            return activation.OutboxId;
+        }
         public static async Task<Fixture> Create()
         {
             var connection = Environment.GetEnvironmentVariable("FANASA_GATEWAY_TEST_SQL");
@@ -183,6 +298,7 @@ public sealed class SqlGatewayJournalTests
             await using var db = factory.CreateDbContext();
             // The catalog is an explicit disposable integration fixture, not
             // production/board data. Clear only its own journal tables per case.
+            await db.Activations.ExecuteDeleteAsync(Ct); await db.OutboxMessages.ExecuteDeleteAsync(Ct);
             await db.Usage.ExecuteDeleteAsync(Ct); await db.Runs.ExecuteDeleteAsync(Ct);
             var f = new Fixture { Factory = factory, Journal = new(factory) }; f.Bindings = new(f.Adapter); return f;
         }

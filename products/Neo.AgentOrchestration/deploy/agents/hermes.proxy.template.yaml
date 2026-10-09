@@ -1,0 +1,13 @@
+# Operator-only template. No actual endpoint, key or private account identity.
+# Not installed or automatically activated; pin/verify runtime capabilities first.
+model:
+  provider: fanasa-proxy
+  default: __MODEL_ID__
+providers:
+  fanasa-proxy:
+    enabled: false
+    api: __PROXY_BASE_URL__
+    key_env: FANASA_AGENT_MODEL_KEY
+    transport: codex_responses
+    default_model: __MODEL_ID__
+    discover_models: false

@@ -11,8 +11,18 @@ public sealed class SqlGatewayJournal(IDbContextFactory<GatewayDbContext> factor
     public Task<GatewayRun> ReserveAsync(GatewayRun candidate, CancellationToken ct) => Execute(async db =>
     {
         var saved = await db.Runs.SingleOrDefaultAsync(x => x.RunId == candidate.RunId, ct);
-        if (saved is not null) { saved.RequireDuplicate(candidate); return saved; }
-        db.Runs.Add(candidate); return candidate;
+        if (saved is not null)
+        {
+            saved.RequireDuplicate(candidate);
+            // Older/imported reservations must not be silently activated by a
+            // retry, nor receive 202 as though durable activation existed.
+            if (!await db.Activations.AnyAsync(x => x.RunId == saved.RunId && x.Sequence == 0, ct))
+                throw new GatewayConflictException("gateway-reservation-requires-reconciliation");
+            return saved;
+        }
+        db.Runs.Add(candidate);
+        GatewayActivation.Stage(db, candidate, 0, candidate.CreatedAtUtc);
+        return candidate;
     }, ct);
 
     public async Task<GatewayRun> ReadAsync(ExternalAgentScope scope, CancellationToken ct)
@@ -74,15 +84,16 @@ public sealed class SqlGatewayJournal(IDbContextFactory<GatewayDbContext> factor
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         // Every journal mutation, including capacity/duplicate decisions, is
         // serialized across gateway processes. No network call under this lock.
-        await db.Database.ExecuteSqlRawAsync("""
+        await LockAsync(db, ct);
+        var result = await action(db);
+        await db.SaveChangesAsync(ct); await tx.CommitAsync(ct); return result;
+    }
+    internal static Task LockAsync(GatewayDbContext db, CancellationToken ct) => db.Database.ExecuteSqlRawAsync("""
             DECLARE @result int;
             EXEC @result = sys.sp_getapplock @Resource='fanasa-agentic:gateway-journal',
                 @LockMode='Exclusive', @LockOwner='Transaction', @LockTimeout=15000;
             IF @result < 0 THROW 51002, 'Gateway journal lock unavailable.', 1;
             """, ct);
-        var result = await action(db);
-        await db.SaveChangesAsync(ct); await tx.CommitAsync(ct); return result;
-    }
     private static void Validate(ExternalAgentUsage r)
     {
         static bool Invalid(string s, int max) => string.IsNullOrWhiteSpace(s) || s.Length > max || s.Any(char.IsControl);

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Neo.AgentOrchestration.Infrastructure.Persistence;
 using Neo.AgentOrchestration.Infrastructure.Runs;
 using Neo.Infrastructure.Features.Queue.Hangfire;
+using Neo.AgentOrchestration.Infrastructure.ExternalExecution;
 
 // A generic host: no HTTP listener, public callback, dashboard or implicit seed.
 var builder = Host.CreateApplicationBuilder(args);
@@ -29,11 +30,29 @@ builder.Services.AddOrchestrationSql(product);
 builder.Services.AddNeoHangfire(builder.Configuration);
 builder.Services.AddSimulationRunWorker();
 builder.Services.AddHttpHarness();
+if (builder.Configuration.GetValue<bool>("AgentGateway:WorkerEnabled"))
+{
+    if (!builder.Configuration.GetValue<bool>("AgentGateway:Enabled"))
+        throw new InvalidOperationException("Enable the gateway explicitly before its worker.");
+    var gatewayConnection = builder.Configuration.GetConnectionString("AgentGateway")
+        ?? throw new InvalidOperationException("Independent gateway connection is required.");
+    var gatewayCatalog = new SqlConnectionStringBuilder(gatewayConnection).InitialCatalog;
+    if (string.Equals(gatewayCatalog, jobs.InitialCatalog, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(gatewayCatalog, database, StringComparison.OrdinalIgnoreCase))
+        throw new InvalidOperationException("Gateway, product and jobs catalogs must be distinct.");
+    builder.Services.AddGatewayJournal(builder.Configuration, gatewayConnection).AddGatewayWorker();
+}
 using var host = builder.Build();
 await using (var scope = host.Services.CreateAsyncScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<OrchestrationDbContext>();
     if (!await db.Database.CanConnectAsync() || (await db.Database.GetPendingMigrationsAsync()).Any())
         throw new InvalidOperationException("Provision the product database before starting the worker.");
+    if (builder.Configuration.GetValue<bool>("AgentGateway:WorkerEnabled"))
+    {
+        var gateway = scope.ServiceProvider.GetRequiredService<GatewayDbContext>();
+        if (!await gateway.Database.CanConnectAsync() || (await gateway.Database.GetPendingMigrationsAsync()).Any())
+            throw new InvalidOperationException("Provision the gateway database before starting the worker.");
+    }
 }
 await host.RunAsync();

@@ -111,11 +111,16 @@ application contract; they are not registered by API/Worker startup. Durable gat
 isolated workspaces, account setup and real-agent acceptance remain required;
 no installed runner or live model execution is claimed.
 
-The [dual-agent execution journal](docs/GATEWAY-JOURNAL.md) adds independent
+The [dual-agent execution journal and private ingress](docs/GATEWAY-JOURNAL.md) add independent
 SQL reservations, native-write recovery holds, fenced leases, approval latches,
-executor-exit evidence gating and immutable result/usage retries. Its default
-sandbox rejects execution. Production dispatch/worker activation, actual sandbox,
+executor-exit evidence gating, immutable result/usage retries and transactional
+Outbox activation. `Fanasa.AgentGateway` accepts authenticated v1/v2 dispatch;
+the opt-in Worker uses the existing Hangfire recurring invocation for both stores.
+Its default sandbox rejects execution. Actual sandbox, streaming/approval replies,
 trusted metering ingestion, installation and live pilot remain unimplemented gates.
+The [model-connection record and disabled operator templates](docs/MODEL-CONNECTIONS.md)
+separate a verified synthetic proxy Responses call from actual installed agents,
+free-route availability, tenant credentials and live task acceptance.
 
 Native Neo work management will remain independently usable. GitHub, GitLab and
 Azure DevOps are planned optional adapters, not replacements; Neo and an external

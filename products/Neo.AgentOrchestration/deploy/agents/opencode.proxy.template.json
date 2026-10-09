@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "enabled_providers": ["fanasa-proxy"],
+  "disabled_providers": ["fanasa-proxy"],
+  "model": "fanasa-proxy/__MODEL_ID__",
+  "permission": { "*": "ask" },
+  "provider": {
+    "fanasa-proxy": {
+      "npm": "@ai-sdk/openai",
+      "name": "Fanasa approved model connection",
+      "options": {
+        "baseURL": "__PROXY_BASE_URL__",
+        "apiKey": "{env:FANASA_AGENT_MODEL_KEY}"
+      },
+      "models": {
+        "__MODEL_ID__": { "name": "Approved project model" }
+      }
+    }
+  }
+}

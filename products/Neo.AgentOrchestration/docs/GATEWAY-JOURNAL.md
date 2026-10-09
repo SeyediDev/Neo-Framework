@@ -1,8 +1,10 @@
 # Dual-agent durable execution journal
 
-This is the implemented **internal journal/core** for Hermes and OpenCode, not
-an installed runner or enabled HTTP gateway. The API, Web and Worker do not call
-`AddGatewayJournal`; startup and schema provisioning never dispatch a model.
+This is the implemented **journal/core, private HTTP ingress and opt-in queue
+composition** for Hermes and OpenCode, not an installed runner or enabled
+production gateway. API/Web do not call `AddGatewayJournal`; Worker calls it only
+with explicit `AgentGateway:WorkerEnabled=true`. Startup never creates schema;
+provisioning never dispatches a model. The default sandbox refuses execution.
 OpenCode is the proposed coding lane, Hermes the automation/general lane.
 Fanasa keeps the only board, workflow, task ownership, approvals and scheduler.
 
@@ -15,7 +17,8 @@ Infrastructure implements native binding validation, SQL journal and authenticat
 HTTP result transport. It does not write task ownership or identity tables.
 
 `GatewayDbContext` reuses Neo EF infrastructure with its own explicit SQL catalog
-(default name `FanasaAgentGateway`) and `gateway.Runs`/`gateway.Usage` schema.
+(default name `FanasaAgentGateway`) and `gateway.Runs`/`gateway.Usage` plus scoped
+`gateway.Activations` and Neo `gateway.OutboxMessages` tables.
 It contains no WorkItems, SQL/SSO/model credential values or second task catalog.
 Scope is an authenticated control-plane assertion, not a cloned tenant registry.
 Usage has a composite run/org/workspace/project FK to the immutable reservation.
@@ -29,8 +32,11 @@ No auto-create, auto-migrate, import or cleanup on application startup.
 ## Durable behavior
 
 - Exact run ID/scope/body hash/binding/sandbox deduplication; changed duplicates
-  conflict, including different bytes/whitespace. A future dispatch host returns
-  202 only after `ReserveAsync` commits AND durable worker activation is staged.
+  conflict, including different bytes/whitespace. Dispatch returns 202 only after
+  `ReserveAsync` commits the run AND initial Outbox activation in one transaction.
+  A duplicate returns the existing reservation without another activation. Migrated
+  pre-activation records return a reconciliation conflict on retry; they are not
+  automatically backfilled, dispatched or falsely acknowledged with 202.
 - A transaction-scoped SQL application lock protects journal mutations across
   processes; optimistic versions and two-minute processing leases fence workers.
   No SQL transaction spans native HTTP, sandbox verification or result delivery.
@@ -89,12 +95,63 @@ native intent. A binding is metadata, **not** isolation proof. An actual trusted
 collector must verify pinned non-root sandbox/runtime, exact run/revision and
 executor exit; arbitrary text from an agent cannot supply evidence authority.
 
+## Private dispatch and existing queue composition
+
+`src/Fanasa.AgentGateway` is a separate disabled-by-default HTTP host. It checks
+existing reviewed migrations before listening (no migration on startup). Configure
+`ConnectionStrings:AgentGateway` and the operator binding above. Its default
+listener is private loopback `http://127.0.0.1:18112`; production requires a trusted
+HTTPS reverse proxy. Only the framework's known loopback proxies may supply
+forwarded protocol; do not expose the listener or trust arbitrary forwarded headers.
+
+```text
+POST /bindings/{key}/runs
+Authorization: Bearer <dispatch-secret>
+Idempotency-Key: <run GUID, 32 hex digits without hyphens>
+Content-Type: application/json; charset=utf-8
+```
+
+Body is the unchanged `neo-harness/v1` or `neo-harness/v2` snapshot; model/branch/
+directory prose do not grant execution authority. Limits: 256 KiB including
+chunked bodies, strict UTF-8, no compressed request body, 30-second acceptance
+deadline. Duplicate idempotency headers, wrong run/key/scope/profile/callback and
+unsafe configuration are refused. Unknown reservation outcome returns sanitized
+503: retry exact bytes/key, never assume it did not commit. Responses expose only
+run ID/phase or sanitized code, not prompts, credentials or native responses.
+Ingress performs no native write, queue-client call or task lifecycle mutation.
+
+The **existing Worker**, not ingress/API, opts in using
+`AgentGateway:WorkerEnabled=true`, `AgentGateway:Enabled=true` and the same
+independent gateway connection/bindings. Keep the existing product Harness opt-in,
+Outbox queue and distinct product/jobs catalogs. Startup refuses pending gateway
+migrations before starting jobs. Worker composition replaces only the implementation
+of the existing `IProcessOutboxRecurringJob` with a two-store coordinator; the same
+scheduled invocation calls Neo's `ProcessOutboxRecurringJob` for each store. The
+product `IOutboxStore` remains unchanged. There is no second cron/hosted scheduler.
+
+Neo conditional dispatch/execution leases fence each activation. A gateway job
+performs one bounded advance (90-second deadline, no network inside the final SQL
+transaction), then acknowledges its delivery and stages a successor in one
+transaction. Successors are due after 30 seconds; actual pickup also depends on
+the existing minute dispatcher and Hangfire queue latency. Native writes still use
+the journal's before-write intents. Lost acknowledgements/restarts do not create a
+new native run. Approval/reconciliation/Delivered stop automatic chaining; holds
+never free capacity. Waiting for the one global capacity slot stages a delayed
+successor rather than pretending execution failed.
+
+Initial maximum is **120 activations per run**, including capacity waits. Exhaustion
+uses Neo's bounded delivery retries/dead-letter `Failed` state with a sanitized
+reason, not a failed model result, completed task or released sandbox. Operator
+inspection/recovery remains required. This is a safety bound, not multi-tenant
+fairness, an execution deadline, a token/spending limit or progress percentage.
+
+The generated `GatewayDurableActivation` migration is explicit and additive.
+Only disposable LocalDB verification is migrated here, **not the VPS**. Never
+automatically dispatch imported or pre-activation journal rows.
+
 ## Remaining before operational enablement
 
-The authenticated dispatch HTTP host with bounded request parsing, atomic durable
-worker activation and the connection to the existing Outbox/Hangfire executor are
-not yet implemented. Neither a second recurring scheduler nor API dispatch loop
-is introduced. SSE/paging, authorized human approval replies/reconciliation,
+SSE/paging, authorized human approval replies/reconciliation,
 production sandbox lifecycle/evidence collection, usage ingestion, installed
 health/schema probes and live pilot also remain gates. A successful journal test
 must not mark `ORCH-DUAL-AGENT-GATEWAY`, installation or pilot fully accepted.
@@ -103,8 +160,10 @@ must not mark `ORCH-DUAL-AGENT-GATEWAY`, installation or pilot fully accepted.
 
 `GatewayRunTests` exercise the pure state machine. `GatewayBindingTests` exercise
 operator configuration/authentication/fingerprints without an upstream call.
-`SqlGatewayJournalTests` use fresh SQL contexts, native/sandbox/delivery test
-doubles and a dedicated `FanasaAgentGateway_Verification` catalog:
+`SqlGatewayJournalTests` use fresh SQL contexts, real private ingress/configured
+binding HTTP, queue-job restart/duplicate/rollback/hold/bounded-observation tests,
+native/sandbox/delivery test doubles and a dedicated
+`FanasaAgentGateway_Verification` catalog:
 
 ```powershell
 $env:FANASA_GATEWAY_TEST_SQL = 'Server=(localdb)\MSSQLLocalDB;Database=FanasaAgentGateway_Verification;Integrated Security=true;TrustServerCertificate=true'
@@ -115,3 +174,11 @@ The SQL fixture explicitly migrates and clears ONLY its own disposable gateway
 tables before each case; collection parallelization is disabled. It refuses a
 different catalog and skips when the connection is absent. Tests do not execute
 a real agent/model/repository command or establish live callback→Review acceptance.
+
+The queue integration case additionally sets `NEO_ORCHESTRATION_TEST_SQL` to
+`NeoAgentOrchestration_Verification`; it uses the isolated product worker catalog
+`NeoAgentOrchestration_WorkerVerification` and creates/retains only
+`FanasaAgentGateway_JobsVerification` for actual SQL Hangfire. It proves the
+existing worker/coordinator picks the three durable gateway activations with job
+IDs, preserves the product store and adds no hosted scheduler. Sandbox, native
+executor and callback delivery are still test stand-ins, not a live model pilot.

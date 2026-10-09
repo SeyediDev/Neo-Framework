@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Neo.AgentOrchestration.Domain.ExternalExecution;
 using Neo.Infrastructure.Data.Repository.Ef;
+using Neo.Domain.Entities.Common;
 
 namespace Neo.AgentOrchestration.Infrastructure.ExternalExecution;
 
@@ -13,6 +14,8 @@ public sealed class GatewayDbContext(DbContextOptions<GatewayDbContext> options)
     protected override Assembly ContextAssembly => typeof(GatewayDbContext).Assembly;
     public DbSet<GatewayRun> Runs => Set<GatewayRun>();
     public DbSet<GatewayUsageEntry> Usage => Set<GatewayUsageEntry>();
+    public DbSet<GatewayActivation> Activations => Set<GatewayActivation>();
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
     protected override void OnModelCreating(ModelBuilder b)
     {
         base.OnModelCreating(b);
@@ -36,6 +39,20 @@ public sealed class GatewayDbContext(DbContextOptions<GatewayDbContext> options)
         usage.Property(x => x.BodyHash).HasMaxLength(64).IsUnicode(false);
         usage.HasOne<GatewayRun>().WithMany().HasForeignKey(x => new { x.RunId, x.OrganizationId, x.WorkspaceId, x.ProjectId })
             .HasPrincipalKey(x => new { x.RunId, x.OrganizationId, x.WorkspaceId, x.ProjectId }).OnDelete(DeleteBehavior.Restrict);
+        var outbox = b.Entity<OutboxMessage>();
+        outbox.ToTable("OutboxMessages", "gateway");
+        outbox.Ignore(x => x.CreatedById).Ignore(x => x.LastModifiedById);
+        outbox.HasIndex(x => new { x.OutboxState, x.NextAttemptAtUtc, x.DeliveryLeaseUntilUtc });
+        outbox.HasIndex(x => new { x.TenantKey, x.IdempotencyKey }).IsUnique()
+            .HasFilter("[TenantKey] IS NOT NULL AND [IdempotencyKey] IS NOT NULL");
+        var activation = b.Entity<GatewayActivation>();
+        activation.ToTable("Activations", "gateway"); activation.HasKey(x => x.Id);
+        activation.Ignore(x => x.Scope);
+        activation.Property(x => x.Id).ValueGeneratedNever();
+        activation.HasIndex(x => new { x.RunId, x.Sequence }).IsUnique();
+        activation.HasOne<GatewayRun>().WithMany().HasForeignKey(x => new { x.RunId, x.OrganizationId, x.WorkspaceId, x.ProjectId })
+            .HasPrincipalKey(x => new { x.RunId, x.OrganizationId, x.WorkspaceId, x.ProjectId }).OnDelete(DeleteBehavior.Restrict);
+        activation.HasOne(x => x.Outbox).WithOne().HasForeignKey<GatewayActivation>(x => x.OutboxId).OnDelete(DeleteBehavior.Restrict);
     }
 }
 
