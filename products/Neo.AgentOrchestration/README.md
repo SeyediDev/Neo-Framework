@@ -118,7 +118,8 @@ Outbox activation. `Fanasa.AgentGateway` accepts authenticated v1/v2 dispatch;
 the opt-in Worker uses the existing Hangfire recurring invocation for both stores.
 Its default sandbox rejects execution. The OpenCode native adapter supports
 source-reviewed, opt-in bounded cursor traversal without partial consumption
-reports or following upstream Link URLs. Actual sandbox, streaming/approval replies,
+reports or following upstream Link URLs, plus a separately opted-in read-only
+pending-permission snapshot feeding the existing approval latch. Actual sandbox, streaming/approval replies,
 trusted metering ingestion, installation and live pilot remain unimplemented gates.
 The [model-connection record and disabled operator templates](docs/MODEL-CONNECTIONS.md)
 separate a verified synthetic proxy Responses call from actual installed agents,

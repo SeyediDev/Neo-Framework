@@ -217,7 +217,7 @@ public sealed partial class NativeAgentAdapterTests
     private static readonly Guid Org = Guid.NewGuid(), Workspace = Guid.NewGuid(), Project = Guid.NewGuid();
     private static ExternalAgentScope Scope() => new(Org, Workspace, Project, Guid.NewGuid());
     private static ServiceProvider Services(NativeServer server, string engine, bool enabled = true, bool disjoint = true,
-        string environment = "Testing", string? endpoint = null, bool cursorPagination = false)
+        string environment = "Testing", string? endpoint = null, bool cursorPagination = false, bool permissionSnapshot = false)
     {
         var values = new Dictionary<string, string?> { ["NativeAgents:Enabled"] = enabled.ToString(), ["NativeAgents:AllowLoopbackHttp"] = "true" };
         const string root = "NativeAgents:Connections:pilot:";
@@ -226,7 +226,8 @@ public sealed partial class NativeAgentAdapterTests
             ["Enabled"] = "true", ["Engine"] = engine, ["OrganizationId"] = Org.ToString(), ["WorkspaceId"] = Workspace.ToString(),
             ["ProjectId"] = Project.ToString(), ["Endpoint"] = endpoint ?? server.Address, ["SecretRef"] = "env:TEST_NATIVE_SECRET",
             ["ModelProvider"] = "model-provider", ["ModelId"] = "model-id", ["OpenCodeDisjointTokenAccounting"] = disjoint.ToString(),
-            ["OpenCodeOmittedStatusIsIdle"] = "true", ["OpenCodeCursorPagination"] = cursorPagination.ToString()
+            ["OpenCodeOmittedStatusIsIdle"] = "true", ["OpenCodeCursorPagination"] = cursorPagination.ToString(),
+            ["OpenCodePermissionSnapshot"] = permissionSnapshot.ToString()
         }) values[root + key] = value;
         var services = new ServiceCollection(); services.AddLogging();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().AddInMemoryCollection(values).Build());

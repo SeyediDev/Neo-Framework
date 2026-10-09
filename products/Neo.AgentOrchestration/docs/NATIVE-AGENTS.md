@@ -56,6 +56,7 @@ Those must be implemented and tested before enabling external execution.
 | `Connections:<key>:OpenCodeDisjointTokenAccounting` | Explicit source-reviewed normalization opt-in; absent means no converted OpenCode usage |
 | `Connections:<key>:OpenCodeOmittedStatusIsIdle` | Source-reviewed status-map opt-in; absent entry may mean idle only after this is explicitly enabled |
 | `Connections:<key>:OpenCodeCursorPagination` | Source-reviewed `X-Next-Cursor`/`before` opt-in; absent means legacy single-page safety |
+| `Connections:<key>:OpenCodePermissionSnapshot` | Source-reviewed read-only `GET /permission` opt-in for pending requests; no automatic reply |
 | `AllowLoopbackHttp` | Test/development loopback only, never production HTTP |
 
 Connection keys match `[a-z0-9][a-z0-9_-]{0,39}`. Directional gateway dispatch,
@@ -90,6 +91,19 @@ or memory key alone does not provide safe multi-tenant execution.
   auto-approve, grant persistent permission, or reinterpret it as independent review.
   Hermes capability/event schema must be verified against the installed version;
   unsupported event shapes do not become grants. Reply methods are not implemented.
+- With `OpenCodePermissionSnapshot` explicitly enabled for the reviewed runtime,
+  authenticated `GET /permission` is sampled before the transcript. Only the
+  exact reserved session's request IDs are projected into AwaitingApproval; raw
+  patterns, commands, metadata and tool arguments are never exposed by this
+  observation. Foreign-session requests are ignored. Missing session metadata,
+  malformed/duplicate scoped IDs, non-array data or more than 1,000 requests
+  fail closed. The common 1 MiB response/30-second request limits apply.
+  Multiple scoped requests hold approval without choosing a guessed request ID.
+  A single ID is a correlation hint, not authority to approve or an independent
+  workflow review. No POST/reply is implemented. Snapshot disappearance never
+  clears the existing durable gateway latch; authorized reconciliation remains
+  required. This supplements transient events but is not full durable SSE replay.
+  Default is off, and enabling it changes the binding fingerprint.
 - Usage identities are actual served provider/model, not requested route defaults.
   Hermes usage is a terminal run report, including failed/cancelled/interrupted runs
   when the provider exposes counters/runtime. OpenCode usage is one immutable report per
@@ -135,6 +149,12 @@ or memory key alone does not provide safe multi-tenant execution.
   This source check is not an installed-version compatibility claim. Public docs
   currently mention `limit` but not the full cursor contract; verify the pinned
   deployed runtime before opt-in.
+- Pending-permission snapshot was reviewed in the same pin's
+  [route](https://github.com/anomalyco/opencode/blob/388406238bd5ca15564a762840a2362c3a45bd9c/packages/opencode/src/server/routes/instance/httpapi/groups/permission.ts),
+  [handler](https://github.com/anomalyco/opencode/blob/388406238bd5ca15564a762840a2362c3a45bd9c/packages/opencode/src/server/routes/instance/httpapi/handlers/permission.ts)
+  and [request schema](https://github.com/anomalyco/opencode/blob/388406238bd5ca15564a762840a2362c3a45bd9c/packages/schema/src/v1/permission.ts).
+  This experimental route must be confirmed on the actual installed release;
+  a public-source review is not live runtime compatibility acceptance.
 
 `NativeAgentAdapterTests` run actual isolated loopback Kestrel HTTP, not real agents
 or a model. They verify request/auth/scope/correlation/recovery/error/usage behavior.

@@ -18,7 +18,7 @@ namespace Neo.AgentOrchestration.Infrastructure.ExternalAgents;
 public sealed record NativeAgentBinding(string Key, ExternalAgentEngine Engine, Guid OrganizationId,
     Guid WorkspaceId, Guid ProjectId, Uri Endpoint, string SecretRef, string ModelProvider,
     string ModelId, string? Username, bool OpenCodeDisjointTokenAccounting, bool OpenCodeOmittedStatusIsIdle,
-    bool OpenCodeCursorPagination = false)
+    bool OpenCodeCursorPagination = false, bool OpenCodePermissionSnapshot = false)
 {
     // Keep existing opt-out fingerprints stable. A reviewed cursor contract
     // changes interpretation and must invalidate old opt-in reservations.
@@ -26,7 +26,8 @@ public sealed record NativeAgentBinding(string Key, ExternalAgentEngine Engine, 
     {
         Key, Engine, OrganizationId, WorkspaceId, ProjectId, Endpoint, SecretRef,
         ModelProvider, ModelId, Username, OpenCodeDisjointTokenAccounting, OpenCodeOmittedStatusIsIdle
-    }) + (OpenCodeCursorPagination ? "|opencode-cursor-v1" : ""))));
+    }) + (OpenCodeCursorPagination ? "|opencode-cursor-v1" : "") +
+        (OpenCodePermissionSnapshot ? "|opencode-pending-permission-v1" : ""))));
 }
 
 public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHostEnvironment environment,
@@ -60,7 +61,7 @@ public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHos
                 section.GetValue<Guid>("WorkspaceId"), section.GetValue<Guid>("ProjectId"), endpoint,
                 section["SecretRef"] ?? "", Value(section["ModelProvider"]), Value(section["ModelId"]), username,
                 section.GetValue<bool>("OpenCodeDisjointTokenAccounting"), section.GetValue<bool>("OpenCodeOmittedStatusIsIdle"),
-                section.GetValue<bool>("OpenCodeCursorPagination"));
+                section.GetValue<bool>("OpenCodeCursorPagination"), section.GetValue<bool>("OpenCodePermissionSnapshot"));
             RequireScope(binding, scope);
             if (!Regex.IsMatch(binding.SecretRef, @"\Aenv:[A-Z][A-Z0-9_]{0,100}\z", RegexOptions.CultureInvariant))
                 throw new ExternalAgentException("native-agent-configuration");
@@ -169,6 +170,19 @@ internal sealed class NativeAgentAdapter(NativeAgentBinding binding, string tran
             return new(state, [new("hermes:" + handle.NativeId, provider, model, input, output, cached, reasoning)]);
         }
 
+        if (binding.OpenCodePermissionSnapshot)
+        {
+            // Authenticated read of pending requests, not a permission reply.
+            // The existing durable gateway latches this observation; an empty
+            // later snapshot NEVER clears a previously held approval.
+            using var permissions = await SendAsync(HttpMethod.Get, "permission", null, ct);
+            var pendingApproval = NativeAgentPermissionSignals.ReadPendingOpenCode(handle, permissions.RootElement);
+            if (pendingApproval is not null)
+            {
+                if (pendingApproval.NativeApprovalId is not null) Identifier(pendingApproval.NativeApprovalId);
+                return pendingApproval;
+            }
+        }
         var messages = await ReadOpenCodeMessagesAsync(handle, ct);
         if (messages is null) return new(ExternalAgentState.Unknown, []);
         // Sample native status after the complete bounded transcript, not before

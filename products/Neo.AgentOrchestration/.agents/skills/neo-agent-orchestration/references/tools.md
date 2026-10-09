@@ -141,3 +141,8 @@ the deployed pinned header/query contract in `docs/NATIVE-AGENTS.md`. A complete
 bounded transcript is required before usage reports; partial/budget-limited reads
 are not terminal success or known-zero consumption. Changing opt-in fences old
 handles/reservations. Never follow native Link URLs or derive a route from task text.
+`OpenCodePermissionSnapshot` is another separately reviewed operator opt-in: it
+reads pending requests only for the reserved native session and feeds the durable
+approval hold. No MCP/native permission reply or grant is added. An empty later
+snapshot cannot resolve a persisted hold; multiple IDs never imply a guessed
+approval target. Check installed schema and `docs/NATIVE-AGENTS.md` before enablement.

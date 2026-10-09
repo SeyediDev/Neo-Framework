@@ -166,6 +166,9 @@ must not mark `ORCH-DUAL-AGENT-GATEWAY`, installation or pilot fully accepted.
 The [native adapter](NATIVE-AGENTS.md) now has separately opted-in bounded OpenCode
 cursor traversal; exceeding its traversal budget still requires reconciliation,
 not fabricated terminal status or incomplete consumption totals.
+Its separately opted-in read-only pending-permission snapshot feeds the existing
+durable approval latch, without replying/granting, clearing a hold after an empty
+snapshot or replacing full SSE/reconciliation and installed-runtime acceptance.
 
 ## Verification
 
