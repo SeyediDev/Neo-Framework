@@ -85,6 +85,42 @@ var workspaceJson = JsonSerializer.Serialize(workspaceResult.Value, new JsonSeri
 using var workspaceDocument = JsonDocument.Parse(workspaceJson);
 Check(workspaceDocument.RootElement.GetProperty("presentation").GetProperty("countLabel").GetString() == partialFailure.Presentation.CountLabel,
     "AJAX and initial HTML share the same state presentation");
+
+PlatformCatalogClient Fixture(Func<HttpResponseMessage> memberships, Func<HttpResponseMessage> products) =>
+    new(new StubClients(new StubHandler(request => Task.FromResult(request.RequestUri!.AbsolutePath switch
+    {
+        "/realms/fanasa/protocol/openid-connect/token" => Json(new { access_token = "test-token" }),
+        "/api/platform/memberships" => memberships(),
+        "/api/platform/products" => products(),
+        _ => new(HttpStatusCode.NotFound)
+    }))), settings, NullLogger<PlatformCatalogClient>.Instance);
+var productsCalled = false;
+var noMemberships = await Fixture(() => Json(Array.Empty<PlatformOrganizationView>()), () => { productsCalled = true; throw new Exception("Unexpected product request"); }).GetWorkspaceAsync("subject", default);
+Check(noMemberships.Status == CatalogStatus.Ready && noMemberships.Products.Count == 0 && !productsCalled, "valid empty membership avoids unnecessary product request");
+foreach (var badMemberships in new[] { "null", "[null]", "[{}]", "{}", "not-json" })
+{
+    var result = await Fixture(() => RawJson(badMemberships), () => throw new Exception("Unexpected product request")).GetWorkspaceAsync("subject", default);
+    Check(result.Status == CatalogStatus.Unavailable && result.Organizations.Count == 0, "invalid membership response fails safely: " + badMemberships);
+}
+foreach (var badProducts in new[] { "null", "[null]", "[{}]", "{}", "not-json" })
+{
+    var result = await Fixture(() => Json(new[] { first }), () => RawJson(badProducts)).GetWorkspaceAsync("subject", default);
+    Check(result.Status == CatalogStatus.Unavailable && result.Organizations.Single().Id == first.Id && result.Products.Count == 0,
+        "invalid products preserve only verified memberships: " + badProducts);
+}
+var partialDenied = await Fixture(() => Json(new[] { first }), () => new(HttpStatusCode.Forbidden)).GetWorkspaceAsync("subject", default);
+Check(partialDenied.Status == CatalogStatus.Forbidden && partialDenied.Organizations.Count == 1 && partialDenied.Products.Count == 0, "product access denial preserves membership but exposes no links");
+var timedOut = await Fixture(() => Json(new[] { first }), () => throw new TaskCanceledException("timeout")).GetWorkspaceAsync("subject", default);
+Check(timedOut.Status == CatalogStatus.Unavailable && timedOut.Organizations.Count == 1, "product timeout preserves verified membership for retry");
+using var canceled = new CancellationTokenSource();
+canceled.Cancel();
+var cancellationPropagated = false;
+try { await Fixture(() => Json(new[] { first }), () => throw new OperationCanceledException(canceled.Token)).GetWorkspaceAsync("subject", canceled.Token); }
+catch (OperationCanceledException) { cancellationPropagated = true; }
+Check(cancellationPropagated, "caller cancellation is not converted into a service outage");
+var wrongUrlSettings = new ConfigurationBuilder().AddConfiguration(settings).AddInMemoryCollection(new Dictionary<string, string?> { ["PlatformControlCenter:BaseUrl"] = "registry-without-scheme" }).Build();
+var wrongUrl = new PlatformCatalogClient(new StubClients(new StubHandler(_ => throw new Exception("Unexpected network request"))), wrongUrlSettings, NullLogger<PlatformCatalogClient>.Instance);
+Check((await wrongUrl.GetWorkspaceAsync("subject", default)).Status == CatalogStatus.NotConfigured, "invalid service URL produces configuration state before any network request");
 Console.WriteLine($"{checks} checks passed.");
 
 // Explicit local-only preview of authorized UI states. Never part of the web product.
@@ -112,6 +148,7 @@ if (args.Contains("--preview"))
 }
 
 static HttpResponseMessage Json(object value) => new(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(value, new JsonSerializerOptions(JsonSerializerDefaults.Web)), System.Text.Encoding.UTF8, "application/json") };
+static HttpResponseMessage RawJson(string value) => new(HttpStatusCode.OK) { Content = new StringContent(value, System.Text.Encoding.UTF8, "application/json") };
 sealed class StubHandler(Func<HttpRequestMessage, Task<HttpResponseMessage>> respond) : HttpMessageHandler
 {
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) => respond(request);

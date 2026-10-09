@@ -27,13 +27,14 @@ public sealed class PlatformCatalogClient(IHttpClientFactory clients, IConfigura
         if (string.IsNullOrWhiteSpace(authority)) authority = configuration["Authentication:Authority"];
         var clientId = configuration["PlatformControlCenter:ClientId"];
         var clientSecret = configuration["PlatformControlCenter:ClientSecret"];
-        if (string.IsNullOrWhiteSpace(baseUrl) || string.IsNullOrWhiteSpace(authority) || string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
+        if (!IsServiceUrl(baseUrl) || !IsServiceUrl(authority) || string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
             return new(CatalogStatus.NotConfigured, [], []);
 
+        IReadOnlyCollection<PlatformOrganizationView> organizations = [];
         try
         {
             using var tokenClient = clients.CreateClient("platform-control-token");
-            using var tokenResponse = await tokenClient.PostAsync(authority.TrimEnd('/') + "/protocol/openid-connect/token",
+            using var tokenResponse = await tokenClient.PostAsync(authority!.TrimEnd('/') + "/protocol/openid-connect/token",
                 new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     ["grant_type"] = "client_credentials", ["client_id"] = clientId, ["client_secret"] = clientSecret,
@@ -51,22 +52,35 @@ public sealed class PlatformCatalogClient(IHttpClientFactory clients, IConfigura
             using var client = clients.CreateClient("platform-control-catalog");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
             var query = "?subject=" + Uri.EscapeDataString(subject);
-            using var membershipsResponse = await client.GetAsync(baseUrl.TrimEnd('/') + "/api/platform/memberships" + query, cancellationToken);
+            using var membershipsResponse = await client.GetAsync(baseUrl!.TrimEnd('/') + "/api/platform/memberships" + query, cancellationToken);
             if (!membershipsResponse.IsSuccessStatusCode) return Failure(membershipsResponse.StatusCode);
-            var organizations = await membershipsResponse.Content.ReadFromJsonAsync<PlatformOrganizationView[]>(JsonOptions, cancellationToken) ?? [];
+            var memberships = await membershipsResponse.Content.ReadFromJsonAsync<PlatformOrganizationView[]>(JsonOptions, cancellationToken)
+                ?? throw new JsonException("Expected a membership array.");
+            if (memberships.Any(x => x is null || x.Id == Guid.Empty || string.IsNullOrWhiteSpace(x.Name)))
+                throw new JsonException("Invalid membership record.");
+            organizations = memberships.OrderBy(x => x.Name).ToArray();
+            // A successful empty membership is authoritative; no product call can add access.
+            if (organizations.Count == 0) return new(CatalogStatus.Ready, organizations, []);
             using var productsResponse = await client.GetAsync(baseUrl.TrimEnd('/') + "/api/platform/products" + query, cancellationToken);
             if (!productsResponse.IsSuccessStatusCode) return new(Failure(productsResponse.StatusCode).Status, organizations, []);
-            var products = await productsResponse.Content.ReadFromJsonAsync<PlatformProductView[]>(JsonOptions, cancellationToken) ?? [];
-            return new(CatalogStatus.Ready, organizations.OrderBy(x => x.Name).ToArray(),
+            var products = await productsResponse.Content.ReadFromJsonAsync<PlatformProductView[]>(JsonOptions, cancellationToken)
+                ?? throw new JsonException("Expected a product array.");
+            if (products.Any(x => x is null || x.Id == Guid.Empty || string.IsNullOrWhiteSpace(x.Key) || string.IsNullOrWhiteSpace(x.DisplayName)))
+                throw new JsonException("Invalid product record.");
+            return new(CatalogStatus.Ready, organizations,
                 products.Where(x => x.TenantId.HasValue && organizations.Any(o => o.Id == x.TenantId.Value)).ToArray());
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException || ex is OperationCanceledException && !cancellationToken.IsCancellationRequested)
         {
             // Never log tokens, response bodies, credentials or user subjects.
             logger.LogWarning("Platform catalog unavailable ({FailureType}).", ex.GetType().Name);
-            return new(CatalogStatus.Unavailable, [], []);
+            return new(CatalogStatus.Unavailable, organizations, []);
         }
     }
+
+    private static bool IsServiceUrl(string? value) => Uri.TryCreate(value, UriKind.Absolute, out var uri)
+        && uri.Scheme is "https" or "http" && string.IsNullOrEmpty(uri.UserInfo)
+        && string.IsNullOrEmpty(uri.Query) && string.IsNullOrEmpty(uri.Fragment);
 
     private PlatformWorkspace Failure(HttpStatusCode status)
     {
