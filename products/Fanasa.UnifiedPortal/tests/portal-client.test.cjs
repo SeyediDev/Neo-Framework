@@ -22,6 +22,7 @@ class Element {
         const classes = new Set();
         this.classList = {
             add: name => classes.add(name), remove: name => classes.delete(name),
+            contains: name => classes.has(name),
             toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name)
         };
     }
@@ -39,7 +40,7 @@ class Option extends Element {
         super('option'); this.textContent = text; this.value = value; this.selected = selected;
     }
 }
-function setup() {
+function setup(options = {}) {
     const ids = ['center-search', 'visible-count', 'no-results', 'workspace', 'organization-form',
         'organization-select', 'organization-submit', 'workspace-refresh', 'workspace-status',
         'product-grid', 'workspace-empty', 'empty-title', 'empty-description', 'product-count', 'workspace-login'];
@@ -49,11 +50,22 @@ function setup() {
     const requests = [];
     const timers = new Map();
     let timerId = 0;
-    const location = new URL('https://portal.test/?tenantId=tenant-a#workspace');
+    const cards = (options.centers || []).map(center => {
+        const card = new Element('article');
+        card.dataset = { search: center.search, state: center.state };
+        return card;
+    });
+    const buttons = ['all', 'active', 'upcoming'].map(filter => {
+        const button = new Element('button');
+        button.dataset.filter = filter;
+        return button;
+    });
+    const location = new URL(options.location || 'https://portal.test/?tenantId=tenant-a#workspace');
     const history = [];
     vm.runInNewContext(source, {
         document: {
-            getElementById: id => elements[id], querySelectorAll: () => [],
+            getElementById: id => elements[id], querySelectorAll: selector =>
+                selector === '.center-card' ? cards : selector === '[data-filter]' ? buttons : [],
             createElement: tag => new Element(tag)
         }, Option, URL, AbortController, location,
         history: { replaceState: (_, __, url) => history.push(String(url)) },
@@ -65,7 +77,7 @@ function setup() {
             options.signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })), { once: true });
         })
     });
-    return { elements, requests, timers, history,
+    return { elements, requests, timers, history, cards, buttons,
         start: () => elements['workspace-refresh'].dispatch('click'),
         expire: () => { const [id, timer] = timers.entries().next().value; timers.delete(id); timer.callback(); }
     };
@@ -200,4 +212,81 @@ test('an expired session retains the server sign-in state without showing old li
     assert.equal(app.elements['organization-select'].disabled, true);
     assert.equal(app.elements['product-grid'].children.length, 0);
     assert.equal(app.elements['workspace-refresh'].disabled, false);
+});
+
+test('center search normalizes Arabic letters, half-spaces and Latin casing', () => {
+    const app = setup({ centers: [
+        { search: 'هوش كد AI', state: 'active' },
+        { search: 'مدیریت کار', state: 'upcoming' },
+        { search: 'فن‌آسا', state: 'active' }
+    ] });
+    for (const [query, expected] of [[' هوش کد ai ', 0], ['مديريت كار', 1], ['فن آسا', 2]]) {
+        app.elements['center-search'].value = query;
+        app.elements['center-search'].dispatch('input');
+        assert.deepEqual(app.cards.map(card => card.hidden), app.cards.map((_, index) => index !== expected));
+        assert.equal(app.elements['visible-count'].textContent, (1).toLocaleString('fa-IR'));
+        assert.equal(app.elements['no-results'].hidden, true);
+    }
+});
+
+test('center state filters combine with search and update pressed/empty states', () => {
+    const app = setup({ centers: [
+        { search: 'مرکز هوش', state: 'active' },
+        { search: 'مرکز زیرساخت', state: 'upcoming' }
+    ] });
+    app.elements['center-search'].value = 'هوش';
+    app.elements['center-search'].dispatch('input');
+    app.buttons[2].dispatch('click');
+    assert.deepEqual(app.cards.map(card => card.hidden), [true, true]);
+    assert.equal(app.elements['no-results'].hidden, false);
+    assert.equal(app.elements['visible-count'].textContent, (0).toLocaleString('fa-IR'));
+    assert.deepEqual(app.buttons.map(button => button.attributes['aria-pressed']), ['false', 'false', 'true']);
+    assert.equal(app.buttons[2].classList.contains('is-active'), true);
+    app.elements['center-search'].value = '';
+    app.elements['center-search'].dispatch('input');
+    assert.deepEqual(app.cards.map(card => card.hidden), [true, false]);
+    app.buttons[0].dispatch('click');
+    assert.deepEqual(app.cards.map(card => card.hidden), [false, false]);
+    assert.equal(app.elements['no-results'].hidden, true);
+    assert.deepEqual(app.buttons.map(button => button.attributes['aria-pressed']), ['true', 'false', 'false']);
+});
+
+test('workspace refresh on the home alias retains center search, filter and unrelated URL state', async () => {
+    const app = setup({ location: 'https://portal.test/Index?tenantId=tenant-a&view=compact#centers', centers: [
+        { search: 'هوش', state: 'active' }, { search: 'هوش', state: 'upcoming' }
+    ] });
+    app.elements['center-search'].value = 'هوش';
+    app.elements['center-search'].dispatch('input');
+    app.buttons[1].dispatch('click');
+    const pending = app.start();
+    const requestUrl = new URL(app.requests[0].url);
+    assert.equal(requestUrl.pathname, '/Index');
+    assert.equal(requestUrl.searchParams.get('handler'), 'Workspace');
+    app.requests[0].resolve(response(payload()));
+    await pending;
+    assert.equal(app.elements['center-search'].value, 'هوش');
+    assert.deepEqual(app.cards.map(card => card.hidden), [false, true]);
+    assert.equal(app.buttons[1].attributes['aria-pressed'], 'true');
+    const retainedUrl = new URL(app.history[0]);
+    assert.equal(retainedUrl.pathname, '/Index');
+    assert.equal(retainedUrl.searchParams.get('view'), 'compact');
+    assert.equal(retainedUrl.searchParams.get('tenantId'), 'tenant-a');
+    assert.equal(retainedUrl.hash, '#centers');
+});
+
+test('unsafe product URLs are text-only and catalog names are rendered as text', async () => {
+    const app = setup();
+    const pending = app.start();
+    const products = ['javascript:alert(1)', 'https://user:password@example.com', 'https://example.com/app'].map((url, index) => ({
+        displayName: '<script>product ' + index + '</script>', url
+    }));
+    app.requests[0].resolve(response({ ...payload(), products }));
+    await pending;
+    const rendered = app.elements['product-grid'].children;
+    assert.equal(rendered.length, 3);
+    assert.deepEqual(rendered.map(card => card.children.at(-1).tag), ['span', 'span', 'a']);
+    assert.equal(rendered[0].children[1].children[0].textContent, products[0].displayName);
+    const link = rendered[2].children.at(-1);
+    assert.equal(link.href, 'https://example.com/app');
+    assert.equal(link.rel, 'noopener noreferrer');
 });
