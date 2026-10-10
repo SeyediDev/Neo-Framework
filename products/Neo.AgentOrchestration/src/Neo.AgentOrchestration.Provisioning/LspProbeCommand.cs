@@ -9,7 +9,7 @@ namespace Neo.AgentOrchestration.Provisioning;
 public static class LspProbeCommand
 {
     private sealed record Configuration(string Workspace, string Document, string LanguageId,
-        string Executable, string[] Arguments, int Line, int Character, int TimeoutSeconds = 60);
+        string Executable, string[] Arguments, int Line, int Character, int TimeoutSeconds = 60, string ReadinessProfile = "none");
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
     {
         WriteIndented = true, UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
@@ -30,7 +30,7 @@ public static class LspProbeCommand
             WorkspacePath.Resolve(root, config.Document);
             if (!Path.IsPathFullyQualified(config.Executable) || !File.Exists(config.Executable) ||
                 config.TimeoutSeconds is < 1 or > 300 || config.Line < 0 || config.Character < 0 ||
-                config.Arguments.Length > 32 || config.Arguments.Any(a => a.Length > 4096))
+                config.ReadinessProfile is not ("none" or "roslyn-project") || config.Arguments.Length > 32 || config.Arguments.Any(a => a.Length > 4096))
                 throw new ArgumentException();
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct);
             deadline.CancelAfter(TimeSpan.FromSeconds(config.TimeoutSeconds));
@@ -53,6 +53,8 @@ public static class LspProbeCommand
             await using (var session = new LspSession(process.StandardOutput.BaseStream, process.StandardInput.BaseStream, root))
             {
                 await session.Initialize(deadline.Token);
+                if (config.ReadinessProfile == "roslyn-project")
+                    await session.WaitForRoslynProjectInitialization(deadline.Token);
                 var document = await session.Open(config.Document, config.LanguageId, deadline.Token);
                 var diagnostics = await session.Diagnostics(deadline.Token);
                 var definition = session.Supports("definitionProvider")

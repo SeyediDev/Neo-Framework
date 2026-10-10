@@ -16,7 +16,8 @@ Configuration (absolute paths are installation-local, not portable defaults):
   "arguments": [],
   "line": 0,
   "character": 0,
-  "timeoutSeconds": 60
+  "timeoutSeconds": 60,
+  "readinessProfile": "none"
 }
 ```
 
@@ -53,6 +54,40 @@ Request cancellation sends $/cancelRequest and invalidates the session rather th
 reusing a possibly partial frame. Normal disposal sends didClose/shutdown/exit.
 workspace/applyEdit is always refused; unsupported server requests get JSON-RPC
 method-not-found. Notifications/logs cannot execute application actions.
+
+`workspace/configuration` is supported with server defaults only: one null result
+per valid item, at most 256 items, with section/scopeUri strings at most 1024
+characters. Foreign scopes and malformed items are rejected; no local settings
+or credentials are returned. Dynamic registration remains unsupported.
+
+`readinessProfile` accepts `none` (default) or `roslyn-project`. The latter waits
+before opening the document for Roslyn's `workspace/projectInitializationComplete`
+notification, using the existing cancellation/deadline. This is an explicit
+Roslyn extension, not a generic LSP readiness guarantee. Configure Roslyn project
+autoload explicitly and use a supported solution/project workspace. A missing
+notification times out without emitting a completed report. The default profile
+does not establish project readiness, so an early empty diagnostic snapshot must
+not be treated as evidence that project analysis completed.
+
+## Experimental React snapshot server
+
+The optional [React snapshot server](../tools/react-lsp/README.fa.md) uses pinned
+TypeScript Language Service diagnostics over the existing read-only stdio client.
+It is a manually configured local tool, not an API/MCP or installer launcher.
+Install its locked dependencies explicitly with npm ci --ignore-scripts in its
+tool directory, using an approved registry; it never downloads dependencies on
+startup. Node 24.12.0 and Windows are the tested runtime. Configure node.exe as
+executable and the absolute server.mjs path as an argument, with readinessProfile
+set to none. No Roslyn readiness notification is involved.
+
+The server accepts one immutable version-1 snapshot, returns full pull reports
+correlated to the diagnostic request, and checks the document/read dependency
+hashes before and after analysis. It does not consume unversioned push reports.
+Changed documents/dependencies invalidate the session; start a fresh invocation.
+The synchronous compiler API relies on the caller's deadline/process cleanup for
+long-running cancellation. An inferred strict/checkJs profile is used without a
+project config; its diagnostics do not replace the frontend's build/lint/test.
+See the tool README for limits and the independent freshness regression test.
 
 ## Evidence and panel
 

@@ -10,6 +10,25 @@ public sealed class LspTests
 {
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
     [Fact]
+    public async Task Shutdown_and_exit_omit_params_while_initialize_preserves_structured_params()
+    {
+        using var f = new Files(); using var input = new MemoryStream(); using var output = new MemoryStream();
+        await Reply(input, 1, new { capabilities = new { } });
+        await Reply(input, 2, (object?)null);
+        input.Position = 0;
+        await using (var session = new LspSession(input, output, f.Root))
+        {
+            await session.Initialize(Ct);
+            await session.Close(Ct);
+        }
+        output.Position = 0;
+        var messages = new List<JsonElement>();
+        while (output.Position < output.Length) messages.Add(await LspFrames.Read(output, Ct));
+        Assert.Equal(JsonValueKind.Object, messages.Single(x => x.GetProperty("method").GetString() == "initialize").GetProperty("params").ValueKind);
+        foreach (var method in new[] { "shutdown", "exit" })
+            Assert.False(messages.Single(x => x.GetProperty("method").GetString() == method).TryGetProperty("params", out _));
+    }
+    [Fact]
     public async Task Frames_roundtrip_utf8_byte_lengths_and_reject_invalid_sizes_and_duplicate_headers()
     {
         using var stream = new MemoryStream();

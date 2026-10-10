@@ -13,6 +13,7 @@ public sealed class LspSession(Stream input, Stream output, string workspace) : 
     private int sequence;
     private bool initialized, initializationAttempted, stopped;
     private JsonElement capabilities;
+    private bool roslynReady;
     private string? documentUri;
     private JsonElement? published;
     public string PositionEncoding { get; private set; } = "utf-16";
@@ -33,7 +34,7 @@ public sealed class LspSession(Stream input, Stream output, string workspace) : 
             capabilities = new
             {
                 general = new { positionEncodings = new[] { "utf-16" } },
-                workspace = new { applyEdit = false, workspaceFolders = true },
+                workspace = new { applyEdit = false, workspaceFolders = true, configuration = true },
                 textDocument = new
                 {
                     synchronization = new { dynamicRegistration = false },
@@ -113,7 +114,7 @@ public sealed class LspSession(Stream input, Stream output, string workspace) : 
     private void RequireDocument()
     { RequireInitialized(); if (documentUri is null) throw new InvalidOperationException("Open a document first."); }
     private Task Notify(string method, object? parameters, CancellationToken ct)
-        => LspFrames.Write(output, new { jsonrpc = "2.0", method, @params = parameters }, ct);
+        => LspFrames.Write(output, parameters is null ? new { jsonrpc = "2.0", method } : (object)new { jsonrpc = "2.0", method, @params = parameters }, ct);
     private async Task<JsonElement> Request(string method, object? parameters, CancellationToken ct)
     {
         if (stopped) throw new InvalidOperationException("Session closed.");
@@ -121,7 +122,7 @@ public sealed class LspSession(Stream input, Stream output, string workspace) : 
         var id = ++sequence;
         try
         {
-            await LspFrames.Write(output, new { jsonrpc = "2.0", id, method, @params = parameters }, ct);
+            await LspFrames.Write(output, parameters is null ? new { jsonrpc = "2.0", id, method } : (object)new { jsonrpc = "2.0", id, method, @params = parameters }, ct);
             while (true)
             {
                 var message = await LspFrames.Read(input, ct);
@@ -144,17 +145,62 @@ public sealed class LspSession(Stream input, Stream output, string workspace) : 
         finally { gate.Release(); }
     }
 
+    // Opt-in Roslyn profile extension, not a generic LSP readiness guarantee.
+    public async Task WaitForRoslynProjectInitialization(CancellationToken ct)
+    {
+        RequireInitialized();
+        await gate.WaitAsync(ct);
+        try
+        {
+            while (!roslynReady) await Handle(await LspFrames.Read(input, ct), ct);
+        }
+        catch (OperationCanceledException) { stopped = true; throw; }
+        finally { gate.Release(); }
+    }
+
+    private object?[] ConfigurationDefaults(JsonElement message)
+    {
+        if (!message.TryGetProperty("params", out var data) || data.ValueKind != JsonValueKind.Object ||
+            !data.TryGetProperty("items", out var items) || items.ValueKind != JsonValueKind.Array ||
+            items.GetArrayLength() > 256) throw new ArgumentException();
+        foreach (var item in items.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.Object) throw new ArgumentException();
+            foreach (var property in item.EnumerateObject())
+            {
+                if (property.Name is not ("scopeUri" or "section") ||
+                    property.Value.ValueKind != JsonValueKind.String ||
+                    property.Value.GetString()!.Length > 1024) throw new ArgumentException();
+                if (property.Name == "scopeUri")
+                {
+                    var value = property.Value.GetString()!;
+                    var rootUri = new Uri(root + Path.DirectorySeparatorChar).AbsoluteUri;
+                    if (value != rootUri) WorkspacePath.ResolveUri(root, value);
+                }
+            }
+        }
+        return new object?[items.GetArrayLength()];
+    }
     private async Task Handle(JsonElement message, CancellationToken ct)
     {
         if (!message.TryGetProperty("method", out var method)) return;
         if (message.TryGetProperty("id", out var id))
         {
-            if (method.GetString() == "workspace/applyEdit")
+            if (method.GetString() == "workspace/configuration")
+            {
+                object response;
+                try { response = new { jsonrpc = "2.0", id, result = ConfigurationDefaults(message) }; }
+                catch (Exception ex) when (ex is ArgumentException or UnauthorizedAccessException)
+                { response = new { jsonrpc = "2.0", id, error = new { code = -32602, message = "Invalid configuration scope or items." } }; }
+                await LspFrames.Write(output, response, ct);
+            }
+            else if (method.GetString() == "workspace/applyEdit")
                 await LspFrames.Write(output, new { jsonrpc = "2.0", id, result = new { applied = false, failureReason = "Read-only client." } }, ct);
             else
                 await LspFrames.Write(output, new { jsonrpc = "2.0", id, error = new { code = -32601, message = "Unsupported client method." } }, ct);
             return;
         }
+        if (method.GetString() == "workspace/projectInitializationComplete") { roslynReady = true; return; }
         if (method.GetString() != "textDocument/publishDiagnostics" || documentUri is null) return;
         var data = message.GetProperty("params");
         if (data.GetProperty("uri").GetString() != documentUri) return;
