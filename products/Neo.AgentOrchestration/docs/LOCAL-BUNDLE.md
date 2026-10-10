@@ -42,3 +42,10 @@ the default sandbox still rejects execution. The included guides are
 Do not enable a gateway or worker simply because its files are present. Native
 runtime installation, real sandbox/evidence, permission replies, metering
 ingestion and live pilot acceptance remain separate work.
+
+The bundle also includes the experimental read-only React LSP tool under
+`tools/react-lsp`. GitHub packaging installs lockfile dependencies with lifecycle
+scripts disabled, runs the freshness test, and passes `-IncludeReactLspDependencies`.
+Local packaging defaults to source only; the manifest distinguishes dependency
+inclusion. Node.js 24.12.0 remains operator-supplied. Packaging and host activation
+do not start this tool. See `tools/react-lsp/README.fa.md` for an explicit CLI probe.

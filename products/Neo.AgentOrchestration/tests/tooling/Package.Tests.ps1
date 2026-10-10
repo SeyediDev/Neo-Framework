@@ -74,11 +74,12 @@ try {
         $manifest.nativeRuntimesIncluded -or $manifest.modelConnectionActivated -or $manifest.databaseMigrationExecuted -or $manifest.seedExecuted){
         throw 'Packaging activation or provenance claims are incorrect.'
     }
-    foreach($relative in @('gateway/mock.dll','docs/GATEWAY-JOURNAL.md','docs/MODEL-CONNECTIONS.md',
+    foreach($relative in @('tools/react-lsp/server.mjs','tools/react-lsp/package-lock.json','tools/react-lsp/tests/test_freshness.py','gateway/mock.dll','docs/GATEWAY-JOURNAL.md','docs/MODEL-CONNECTIONS.md',
         'skill/references/tools.md','skill/references/project-binding.md','deploy/agents/opencode.proxy.template.json',
         'deploy/agents/hermes.proxy.template.yaml','Start-Local-Bundle.ps1')){
         if(!(Test-Path -LiteralPath (Join-Path $output $relative) -PathType Leaf)){ throw "Missing bundled companion: $relative" }
     }
+    if(!$manifest.reactLspIncluded -or $manifest.reactLspDependenciesIncluded -or $manifest.reactLspNodeRuntimeIncluded -or $manifest.reactLspAutoStarted){ throw 'React LSP packaging flags incorrect.' }
     $template=Get-Content -Raw -LiteralPath (Join-Path $output 'deploy/agents/opencode.proxy.template.json') | ConvertFrom-Json
     if($template.disabled_providers -notcontains 'fanasa-proxy' -or $template.permission.'*' -ne 'ask'){
         throw 'Packaged provider must remain disabled/ask.'

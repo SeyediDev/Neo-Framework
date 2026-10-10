@@ -48,9 +48,17 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Restore product
         run: dotnet restore products/Neo.AgentOrchestration/Neo.AgentOrchestration.slnx
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.12.0'
+      - name: Install pinned React LSP dependencies
+        working-directory: products/Neo.AgentOrchestration/tools/react-lsp
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify React LSP freshness
+        run: python3 products/Neo.AgentOrchestration/tools/react-lsp/tests/test_freshness.py
       - name: Build local bundle
         shell: pwsh
-        run: ./products/Neo.AgentOrchestration/tools/Package-Local.ps1 -OutputDirectory "$env:GITHUB_WORKSPACE/.artifacts/neo-agent-orchestration-local"
+        run: ./products/Neo.AgentOrchestration/tools/Package-Local.ps1 -OutputDirectory "$env:GITHUB_WORKSPACE/.artifacts/neo-agent-orchestration-local" -IncludeReactLspDependencies
       - name: Upload local bundle
         uses: actions/upload-artifact@v4
         with:

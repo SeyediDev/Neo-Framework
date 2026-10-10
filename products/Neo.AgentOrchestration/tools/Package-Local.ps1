@@ -2,7 +2,8 @@
 [CmdletBinding()]
 param(
     [string]$OutputDirectory = (Join-Path (Get-Location) '.artifacts/fanasa-agentic-work-local'),
-    [ValidateSet('Debug','Release')][string]$Configuration = 'Release'
+    [ValidateSet('Debug','Release')][string]$Configuration = 'Release',
+    [switch]$IncludeReactLspDependencies
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
@@ -56,6 +57,19 @@ Copy-Item -LiteralPath (Join-Path $root '.agents/skills/neo-agent-orchestration/
 New-Item -ItemType Directory -Path (Join-Path $output 'deploy/agents') -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'deploy/agents/opencode.proxy.template.json'),(Join-Path $root 'deploy/agents/hermes.proxy.template.yaml') -Destination (Join-Path $output 'deploy/agents')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Start-Local-Bundle.ps1') -Destination $output -Force
+$reactSource = Join-Path $PSScriptRoot 'react-lsp'
+$reactOutput = Join-Path $output 'tools/react-lsp'
+New-Item -ItemType Directory -Path (Join-Path $reactOutput 'tests') -Force | Out-Null
+foreach($relative in @('server.mjs','package.json','package-lock.json','README.fa.md','tests/test_freshness.py')){
+    Copy-Item -LiteralPath (Join-Path $reactSource $relative) -Destination (Join-Path $reactOutput $relative)
+}
+if($IncludeReactLspDependencies){
+    $dependencies = Join-Path $reactSource 'node_modules'
+    if(!(Test-Path -LiteralPath (Join-Path $dependencies 'typescript/lib/typescript.js'))){
+        throw 'React LSP dependencies missing; explicitly run npm ci before packaging.'
+    }
+    Copy-Item -LiteralPath $dependencies -Destination $reactOutput -Recurse
+}
 $finalCommit = (git -C $repo rev-parse HEAD).Trim()
 if($LASTEXITCODE -ne 0 -or $finalCommit -ne $commit){ throw 'Source commit changed during packaging; no archive was created.' }
 $finalChanges = @(git -C $repo status --porcelain --untracked-files=no)
@@ -69,6 +83,8 @@ if($LASTEXITCODE -ne 0 -or ($finalChanges -join "`n") -cne ($sourceChanges -join
     seedExecuted = $false; containsCredentials = $false; components = @($projects.Keys)
     gatewayAutoStarted = $false; nativeRuntimesIncluded = $false; modelConnectionActivated = $false
     launcher = 'Start-Local-Bundle.ps1'
+    reactLspIncluded = $true; reactLspDependenciesIncluded = [bool]$IncludeReactLspDependencies
+    reactLspNodeRuntimeIncluded = $false; reactLspAutoStarted = $false
 } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $output 'MANIFEST.json') -Encoding utf8NoBOM
 Compress-Archive -Path (Join-Path $output '*') -DestinationPath $zip -CompressionLevel Optimal
 Get-FileHash -Algorithm SHA256 -LiteralPath $zip
