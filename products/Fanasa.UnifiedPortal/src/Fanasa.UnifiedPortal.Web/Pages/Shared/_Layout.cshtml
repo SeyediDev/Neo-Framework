@@ -14,8 +14,8 @@
     <a class="skip-link" href="#main-content">رفتن به محتوای اصلی</a>
     <div class="portal-shell">
         <nav class="portal-nav" aria-label="ناوبری اصلی">
-            <a class="brand" href="/" aria-label="صفحه اصلی پنجره واحد فن آسا"><img src="~/brand/fanasa-horizontal-fa.svg" alt="فن آسا" width="164" height="56" /></a>
-            <div class="nav-links"><a href="/#workspace">فضای کار</a><a href="/#centers">خدمات فن آسا</a></div>
+            <a class="brand" href="@(Context.Request.Path == "/" ? "#top" : "/")" aria-label="صفحه اصلی پنجره واحد فن آسا"><img src="~/brand/fanasa-horizontal-fa.svg" alt="فن آسا" width="164" height="56" /></a>
+            <div class="nav-links"><a href="@(Context.Request.Path == "/" ? "#workspace" : "/#workspace")">فضای کار</a><a href="@(Context.Request.Path == "/" ? "#centers" : "/#centers")">خدمات فن آسا</a></div>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="account"><span class="account-name">@(User.FindFirstValue("preferred_username") ?? User.Identity.Name ?? "حساب سازمانی")</span><a href="/logout">خروج</a></div>

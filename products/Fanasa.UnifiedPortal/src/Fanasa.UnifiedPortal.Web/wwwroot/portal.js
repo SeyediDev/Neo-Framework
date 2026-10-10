@@ -41,6 +41,9 @@
     const login = document.getElementById('workspace-login');
     let requestId = 0;
     let controller;
+    // Three sequential server calls can each take 15 seconds. Bound the whole
+    // browser request (including its body) without cutting off a normal server timeout.
+    const workspaceTimeoutMs = 50000;
     const textElement = (tag, className, text) => {
         const element = document.createElement(tag);
         element.className = className;
@@ -94,6 +97,12 @@
         const id = ++requestId;
         controller?.abort();
         controller = new AbortController();
+        const requestController = controller;
+        let timedOut = false;
+        const timeout = setTimeout(() => {
+            timedOut = true;
+            requestController.abort();
+        }, workspaceTimeoutMs);
         const requested = select.value;
         panel.setAttribute('aria-busy', 'true');
         refresh.disabled = submit.disabled = select.disabled = true;
@@ -108,13 +117,14 @@
             const url = new URL(location.pathname, location.origin);
             url.searchParams.set('handler', 'Workspace');
             if (requested) url.searchParams.set('tenantId', requested);
-            const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: controller.signal });
+            const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: requestController.signal });
             if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) throw new Error('workspace');
             const data = await response.json();
+            if (requestController.signal.aborted) throw new Error('workspace-aborted');
             if (id === requestId) render(data);
         } catch (error) {
-            if (error.name === 'AbortError' || id !== requestId) return;
-            status.textContent = 'ارتباط برقرار نشد. دوباره تلاش کنید.';
+            if (id !== requestId) return;
+            status.textContent = timedOut ? 'دریافت اطلاعات بیش از حد طول کشید. دوباره تلاش کنید.' : 'ارتباط برقرار نشد. دوباره تلاش کنید.';
             panel.dataset.status = 'Unavailable';
             status.classList.add('is-error');
             empty.hidden = false;
@@ -123,6 +133,7 @@
             login.hidden = true;
             productCount.textContent = 'دریافت ناموفق';
         } finally {
+            clearTimeout(timeout);
             if (id === requestId) {
                 panel.removeAttribute('aria-busy');
                 refresh.disabled = false;
