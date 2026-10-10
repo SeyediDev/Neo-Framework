@@ -29,6 +29,9 @@ builder.Services.AddMediatR(c =>
 // An early branch can permanently select the wrong store before Build applies them.
 builder.Services.AddOrchestrationSql(provider => OrchestrationApiStorage.Connection(provider.GetRequiredService<IConfiguration>()));
 builder.Services.AddHttpHarness();
+builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
+builder.Services.AddSingleton<Neo.AgentOrchestration.Application.ExternalExecution.IAgentRuntimeStatus,
+    Neo.AgentOrchestration.Infrastructure.ExternalExecution.FileAgentRuntimeStatus>();
 builder.Services.AddAuthentication().AddScheme<AuthenticationSchemeOptions, HarnessAuthentication>(HarnessAuthentication.Name, _ => { });
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
 {

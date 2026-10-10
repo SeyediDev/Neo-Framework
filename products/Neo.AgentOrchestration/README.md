@@ -109,6 +109,12 @@ OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 
 ## Optional work-provider direction
 
+The explicit [native runtime installer and panel readiness connection](docs/AGENT-RUNTIME-INSTALL.md)
+now cover pinned non-root Hermes/OpenCode/Codex installation images and scoped,
+fresh authenticated liveness observations. This is separate from the disabled
+task executor: a healthy installation never enables gateway execution or claims
+a completed model/task run. Codex's optional native adapter remains pending.
+
 The [VPS agent execution plan](docs/VPS-AGENT-PLAN.md) records the user-approved
 Hermes + OpenCode direction on the existing durable run path. Scoped
 [native protocol clients](docs/NATIVE-AGENTS.md) cover both engines behind a common

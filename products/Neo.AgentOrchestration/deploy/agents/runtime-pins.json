@@ -1,0 +1,12 @@
+{
+  "schema": "fanasa-agent-runtime-pins/v1",
+  "baseImage": "python@sha256:48b13b003dda20b16f9442b8475aa05fe21bf6579a8c881db92ffb4d8fd20f83",
+  "downloads": {
+    "opencode.tar.gz": { "url": "https://github.com/anomalyco/opencode/releases/download/v1.18.35/opencode-linux-x64-baseline.tar.gz", "sha256": "90c97d4a24d36437bce36f27195c9cd2e0b70ed037a04d1c6a6740eb246c2a73" },
+    "codex.tar.gz": { "url": "https://github.com/openai/codex/releases/download/rust-v0.162.1/codex-package-x86_64-unknown-linux-musl.tar.gz", "sha256": "a676f5722aae0d86cbe3764332f08eab1fdd89dc0a300b3ad4ffbf48611fa3e3" },
+    "hermes.tar.gz": { "url": "https://codeload.github.com/NousResearch/hermes-agent/tar.gz/5f045f842a60184748dda30acb9fecbd961cc18b", "sha256": "de4c668b3d0ddc6fd4e6eb1f3bb16a7e7d05e4f206bf29f0118438f3abeecc7c" },
+    "uv.tar.gz": { "url": "https://github.com/astral-sh/uv/releases/download/0.12.3/uv-x86_64-unknown-linux-gnu.tar.gz", "sha256": "600cf9a742aca00d292673b16b5acffaa7b8c269a364ad0c2e79498dcb1fe101" },
+    "sqlite.tar.gz": { "url": "https://sqlite.org/2026/sqlite-autoconf-3530400.tar.gz", "fallbackUrl": "https://sources.buildroot.net/sqlite/sqlite-autoconf-3530400.tar.gz", "sha256": "0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c" }
+  },
+  "versions": { "hermes": "rev-5f045f842a60", "opencode": "1.18.35", "codex": "0.162.1" }
+}

@@ -5,6 +5,7 @@
 @if (TempData["ProjectDeleted"] is string deleted) { <div class="notice" role="status">@deleted</div> }
 <p>این فرم‌ها به مجوز configure نیاز دارند. هیچ رمز، توکن یا connection string در پروفایل‌ها ثبت نکنید.</p>
 <nav class="tabs"><a href="#projects">پروژه‌ها</a><a href="#roles">رول‌ها</a><a href="#agents">ایجنت‌ها</a><a href="#workflows">فلوها</a></nav>
+<p><a asp-page="/AgentRuntimes" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">وضعیت نصب و اتصال ایجنت‌های VPS</a></p>
 @if(Model.Catalog is {} c){
 <section class="panel" id="projects"><h2>پروژه‌ها</h2><div class="forms">@foreach(var p in c.Projects.Prepend(new ProjectView(Guid.Empty,"","",true))){
 <div><h3>@(p.Id==Guid.Empty?"پروژه جدید":p.Name)</h3><form method="post" asp-page-handler="Project"><input name="Id" value="@p.Id" type="hidden" /><label>کلید<input name="Key" value="@p.Key" readonly="@(p.Id!=Guid.Empty)" required maxlength="80" /></label><label>نام<input name="Name" value="@p.Name" required maxlength="200" /></label><button>ذخیره پروژه</button></form>

@@ -1,0 +1,22 @@
+@page "/work/{organizationId:guid}/{workspaceId:guid}/agent-runtimes"
+@model Neo.AgentOrchestration.Web.Pages.AgentRuntimesModel
+@{ ViewData["Title"] = "اتصال ایجنت‌های VPS"; }
+<partial name="_ScopeNav" model="Model" />
+<p class="eyebrow">اجراکننده‌ها</p><h1>اتصال ایجنت‌های VPS</h1>
+<p>نصب ابزار و سلامت اتصال با آمادگی اجرای تسک متفاوت است. این صفحه فقط وضعیت را می‌خواند؛ هیچ ایجنت یا مدل را اجرا نمی‌کند.</p>
+<form method="get" class="filters"><label>پروژه<select name="ProjectId" required>
+<option value="">انتخاب پروژه</option>
+@foreach (var p in Model.Catalog?.Projects.Where(x => x.IsEnabled) ?? []) { <option value="@p.Id" selected="@(p.Id == Model.ProjectId)">@p.Name</option> }
+</select></label><button>بررسی وضعیت</button></form>
+@if (Model.Error is not null) { <div role="alert" class="notice">@Model.Error</div> }
+@if (Model.RuntimeCatalog is {} c) {
+<section class="panel"><h2>@Model.Project(c.ProjectId)</h2><div class="forms">
+@foreach (var r in c.Runtimes) {
+<article class="panel"><h3 dir="ltr">@(r.Engine switch { "opencode" => "OpenCode", "hermes" => "Hermes", _ => "Codex" })</h3>
+<dl><dt>نسخه نصب‌شده</dt><dd dir="ltr">@(r.Version ?? "—")</dd><dt>نصب</dt><dd>@(r.Installed ? "تأییدشده" : "نامعلوم / تأییدنشده")</dd>
+<dt>اتصال خصوصی</dt><dd>@(r.TransportHealthy ? "سالم" : "آماده نیست")</dd><dt>اجرای تسک</dt><dd>@(r.ExecutionReady ? "آماده" : "فعال نشده")</dd></dl>
+<p>@Neo.AgentOrchestration.Web.Pages.AgentRuntimesModel.Reason(r.Reason)</p>
+@if (r.ObservedAtUtc is {} at) { <small>زمان بررسی: <time dir="ltr" datetime="@at.ToString("O")">@at.ToString("yyyy-MM-dd HH:mm:ss 'UTC'")</time></small> }
+</article> }</div></section>
+<div class="notice">فعال‌سازی اجرا نیازمند محیط مجزای مخزن، گردآوری معتبر diff و تست، اتصال callback و مصرف، و پایلوت موفق تا مرحلهٔ بازبینی است. گزارش سلامت هیچ‌یک از این گیت‌ها را دور نمی‌زند.</div>
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Fanasa agent runtime readiness refresh
+
+[Timer]
+OnBootSec=45s
+OnUnitInactiveSec=60s
+AccuracySec=5s
+Unit=fanasa-agent-runtime-health.service
+
+[Install]
+WantedBy=timers.target

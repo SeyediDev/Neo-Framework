@@ -73,6 +73,14 @@ agent is not independent review. Don't remove gates to force advancement.
 Fake/Queued/202 isn't completed work. Read actual run decisions; don't impersonate
 callbacks or force-release uncertain runs. No polling unchanged work.
 
+For native VPS work, distinguish installation, authenticated private health and
+task execution readiness. The scoped `projects/{id}/agent-runtimes` API/Web status
+is an operator observation (read + configure), not a new MCP dispatch tool or
+execution authority. v1 always reports execution disabled; do not turn profiles,
+Worker or sandbox on from a green health report. See the product's
+`docs/AGENT-RUNTIME-INSTALL.md` for pins/isolation and remaining live acceptance.
+Codex CLI installation does not mean its optional native adapter is implemented.
+
 If ownership or the board cannot be established, continue safe read-only diagnosis
 or independent authorized work, not unclaimed edits or a second offline board.
 

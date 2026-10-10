@@ -1,0 +1,14 @@
+[Unit]
+Description=Fanasa native agent read-only readiness observation
+After=user@1000.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/fanasa-agent-runtime/operator/runtime-admin.py collect
+TimeoutStartSec=45
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/fanasa-agent-runtime /home/fanasa-agent-runner/.docker

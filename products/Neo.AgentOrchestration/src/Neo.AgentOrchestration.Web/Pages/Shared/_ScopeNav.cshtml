@@ -6,5 +6,6 @@
 <a aria-current="@(currentPage == "/Roles" ? "page" : null)" asp-page="/Roles" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">کارهای رول‌ها</a>
 <a aria-current="@(currentPage == "/Manage" ? "page" : null)" asp-page="/Manage" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">پروژه‌ها، رول‌ها و فلوها</a>
 <a aria-current="@(currentPage == "/Templates" ? "page" : null)" asp-page="/Templates" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">الگوهای پروژه</a>
+<a aria-current="@(currentPage == "/AgentRuntimes" ? "page" : null)" asp-page="/AgentRuntimes" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId">اتصال ایجنت‌ها</a>
 <a class="new-work-link" aria-current="@(currentPage == "/NewItem" ? "page" : null)" asp-page="/NewItem" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId"><span aria-hidden="true">＋</span> کار جدید</a></nav></div>
 @if (Model.Error is { } error) { <div class="alert" role="alert">@error <a asp-page="/Login">ورود مجدد</a></div> }

@@ -41,7 +41,10 @@ internal sealed class WorkFixture : IDisposable
             c.TypeEvaluator = type => type != typeof(Neo.AgentOrchestration.Application.Runs.RunHandlers) &&
                 type != typeof(Neo.AgentOrchestration.Application.Runs.HarnessResultHandler) &&
                 // Permanent graph deletion is SQL-only, never a memory fallback.
-                type != typeof(Neo.AgentOrchestration.Application.Workspace.ProjectDeletionHandlers);
+                type != typeof(Neo.AgentOrchestration.Application.Workspace.ProjectDeletionHandlers) &&
+                // Installation observations are private host infrastructure, not
+                // part of this work-domain memory fixture.
+                type != typeof(Neo.AgentOrchestration.Application.ExternalExecution.GetAgentRuntimeStatusHandler);
         });
         services = collection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
     }
