@@ -115,6 +115,22 @@ test('polling does not replace a focused form even before its first edit', async
     assert.equal(calls, 0);
 });
 
+test('submitted GET filters cannot resurrect a stale draft at the destination', async () => {
+    const next = { getAttribute: () => '', querySelectorAll: () => [], childNodes: [] };
+    let target = current;
+    const h = harness(async () => ({...h.response(), ok: true, status: 200, url: target}), 200,
+        {next, replace: form => { h.field.value = new URL(target).searchParams.get('ProjectId') ?? 'project-a'; }});
+    h.form.method = 'get'; h.form.action = current; h.field.name = 'ProjectId';
+    h.field.value = 'project-b'; h.mainListeners.change({target: h.field});
+    target = current + '?ProjectId=project-b';
+    assert.equal(await h.window.NeoWorkbench.navigate(target, {submittedGet: true}), true);
+    // The original destination retained an unsubmitted project-b draft.
+    // Returning through a submitted filter must use the server's project-a.
+    target = current;
+    assert.equal(await h.window.NeoWorkbench.navigate(target, {submittedGet: true}), true);
+    assert.equal(h.field.value, 'project-a');
+});
+
 test('POST draft prevents background polling and retains the unsaved-write warning', async () => {
     let calls = 0;
     const h = harness(async () => { calls++; return h.response(); }, 409, { board: true, fakeClock: true });

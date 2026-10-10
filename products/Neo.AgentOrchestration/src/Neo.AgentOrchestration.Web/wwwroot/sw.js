@@ -2,7 +2,7 @@
  * Static-shell PWA worker. Never cache HTML, API responses, cookies, or any
  * tenant/task content. A user must be online for authenticated navigation.
  */
-const VERSION = 'work-management-static-v1';
+const VERSION = 'work-management-static-v2';
 const STATIC_ASSETS = [
   '/site.css',
   '/fanasa.css',

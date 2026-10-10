@@ -46,10 +46,13 @@
         drafts.set(active, snapshot());
         while (drafts.size > 30) drafts.delete(drafts.keys().next().value);
     }
-    function restore(saved, omitForm = null) {
+    function restore(saved, omitForm = null, submittedGet = false) {
         dirtyForms = new Set();
         if (!saved) { dirty = false; return; }
         forms().forEach((form, i) => {
+            // A submitted GET response is authoritative for its filters. An old
+            // draft at that destination must not contradict the rendered result.
+            if (submittedGet && form.method.toLowerCase() === 'get') return;
             const key = formKey(form, i);
             if (key === omitForm) return;
             const fields = saved.values.get(key);
@@ -172,7 +175,7 @@
                 drafts.delete(from);
                 restore(samePage ? saved : null, options.formKey);
                 // Other edited forms remain in memory; submitted form is now authoritative.
-            } else restore(options.preserve ? saved : drafts.get(active));
+            } else restore(options.preserve ? saved : drafts.get(active), null, options.submittedGet);
             const position = options.preserve || (method === 'POST' && samePage) ? saved : drafts.get(active);
             scrollTo(position?.x ?? 0, position?.y ?? 0);
             if (target.hash) {
@@ -223,7 +226,7 @@
         if (method.toLowerCase() === 'get') {
             const url = new URL(action);
             url.search = new URLSearchParams([...data.entries()].filter(([, value]) => typeof value === 'string')).toString();
-            void show(url.href);
+            void show(url.href, { submittedGet: true });
         } else void show(action, { body: data, formKey: formKey(form, forms().indexOf(form)) });
     });
     function trackDraft(event) {
