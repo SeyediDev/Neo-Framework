@@ -91,6 +91,8 @@
         <div><span class="eyebrow">خدمات و توانمندی‌ها</span><h2 id="centers-title">برای قدم بعدی، کشف کنید</h2><p class="section-description">۱۴ مرکز تخصصی؛ از ساخت محصول و هوش مصنوعی تا زیرساخت و مدیریت کسب‌وکار.</p></div>
         <span class="section-badge" aria-live="polite"><span id="visible-count">۱۴</span> مرکز</span>
     </div>
+    <p id="service-catalog-status" class="workspace-status" role="status" aria-live="polite">@Model.ServiceCatalog.Message</p>
+    <button id="service-catalog-refresh" class="refresh-button" type="button">تازه‌سازی کاتالوگ خدمات ↻</button>
     <div class="catalog-tools">
         <label class="search-box"><span aria-hidden="true">⌕</span><input id="center-search" type="search" placeholder="جست‌وجوی نام مرکز یا خدمت…" aria-label="جست‌وجو در مراکز قابلیت" /></label>
         <div class="filter-pills" role="group" aria-label="فیلتر مراکز">
@@ -105,9 +107,22 @@
     <div class="center-grid" id="center-grid">
         @foreach (var center in centers)
         {
-            <article class="center-card @center.Color" data-state="@center.Pillar" data-search="@center.Name @center.Description @center.Pillar">
+            var centerKey = center.Url.Split('/').Last();
+            var centerId = centerKey == "fanasa-cloud" ? "fanasa.cloud" : "fanasa." + centerKey;
+            var services = Model.ServiceCatalog.Services.Where(x => x.Center == centerId).ToArray();
+            <article class="center-card @center.Color" data-center="@centerId" data-state="@center.Pillar" data-search="@center.Name @center.Description @center.Pillar @string.Join(" ", services.Select(x => x.DisplayName + " " + x.Description))" data-center-search="@center.Name @center.Description @center.Pillar">
                 <div class="center-top"><span class="center-icon"><img src="@center.Logo" alt="نشان @center.Name" loading="lazy" width="40" height="40" /></span><span class="center-pillar">@center.Pillar</span></div>
                 <h3>@center.Name</h3><p>@center.Description</p>
+                <div class="center-services" data-services="@centerId" aria-label="سرویس‌های @center.Name">
+                    @foreach (var service in services)
+                    {
+                        <partial name="Shared/_ServiceCatalogCard" model="service" />
+                    }
+                    @if (services.Length == 0)
+                    {
+                        <p class="service-empty">@(Model.ServiceCatalog.Status == "Ready" ? "هنوز سرویس منتشرشده‌ای در این مرکز نیست." : "فهرست سرویس‌های این مرکز دریافت نشده است.")</p>
+                    }
+                </div>
                 <a class="center-link" href="@center.Url" target="_blank" rel="noopener noreferrer" aria-label="آشنایی با خدمات @center.Name">آشنایی با خدمات <span aria-hidden="true">↗</span></a>
             </article>
         }
@@ -115,4 +130,5 @@
     <p class="no-results" id="no-results" hidden>مرکزی پیدا نشد. نام یا عبارت دیگری را جست‌وجو کنید.</p>
 </section>
 <footer class="portal-note"><img src="/brand/fanasa-horizontal-fa.svg" alt="فن آسا" width="120" height="42" /><p>یک هویت، دسترسی به دنیایی از قابلیت‌ها.</p><a href="#top">بازگشت به بالا ↑</a></footer>
+<script src="~/service-catalog.js" asp-append-version="true" defer></script>
 <script src="~/portal.js" asp-append-version="true" defer></script>

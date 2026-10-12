@@ -1,0 +1,17 @@
+@model Fanasa.UnifiedPortal.Web.ServiceCatalogCard
+<section class="service-card" data-service-id="@Model.ProductId">
+    <h4>@Model.DisplayName</h4>
+    <p class="service-description">@Model.Description</p>
+    <span class="service-access" data-access-state="@Model.AccessState">@(Model.AccessState switch {
+        "allowed" => "دسترسی فعال", "signInRequired" => "برای بررسی دسترسی وارد شوید",
+        "selectOrganization" => "سازمان خود را انتخاب کنید", "requestRequired" => "نیازمند درخواست دسترسی",
+        _ => "دسترسی ورود هنوز تأیید نشده است"
+    })</span>
+    <div class="service-actions">
+        @if (Model.DetailsUrl is not null) { <a href="@Model.DetailsUrl" target="_blank" rel="noopener noreferrer">معرفی و جزئیات ↗</a> }
+        @if (Model.LaunchUrl is not null) { <a class="service-launch" href="@Model.LaunchUrl" target="_blank" rel="noopener noreferrer" aria-label="ورود به @Model.DisplayName">ورود به سامانه ↗</a> }
+        else if (Model.AccessState == "allowed") { <span>نشانی ورود هنوز آماده نیست</span> }
+        else if (Model.RequestAccessUrl is not null) { <a class="service-request" href="@Model.RequestAccessUrl" target="_blank" rel="noopener noreferrer" aria-label="درخواست دسترسی یا خرید @Model.DisplayName">درخواست دسترسی / خرید ↗</a> }
+        else { <span>مسیر درخواست دسترسی هنوز منتشر نشده است</span> }
+    </div>
+</section>

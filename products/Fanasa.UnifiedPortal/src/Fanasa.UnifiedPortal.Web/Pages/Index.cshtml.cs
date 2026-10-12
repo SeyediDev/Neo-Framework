@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Fanasa.UnifiedPortal.Web.Pages;
 
-public sealed class IndexModel(IPlatformCatalogClient catalog) : PageModel
+public sealed class IndexModel(IPlatformCatalogClient catalog, IServiceDiscoveryClient? discovery = null) : PageModel
 {
     public IReadOnlyCollection<PlatformOrganizationView> Organizations { get; private set; } = [];
     public IReadOnlyCollection<PlatformProductView> Products { get; private set; } = [];
@@ -13,19 +13,33 @@ public sealed class IndexModel(IPlatformCatalogClient catalog) : PageModel
     public CatalogStatus Status { get; private set; }
     public string Message { get; private set; } = "";
     public WorkspacePresentation Presentation => WorkspacePresentation.Create(Status, Organizations.Count, ActiveOrganizationId.HasValue, Products.Count);
+    public ServiceCatalogPresentation ServiceCatalog { get; private set; } = ServiceCatalogPresentation.Create(new(CatalogStatus.NotConfigured, []), CatalogStatus.SignInRequired, null, []);
 
-    public async Task OnGetAsync(Guid? tenantId, CancellationToken cancellationToken) => await LoadAsync(tenantId, cancellationToken);
+    public async Task OnGetAsync(Guid? tenantId, CancellationToken cancellationToken) => await LoadPageAsync(tenantId, cancellationToken);
 
     public async Task<IActionResult> OnGetWorkspaceAsync(Guid? tenantId, CancellationToken cancellationToken)
     {
-        await LoadAsync(tenantId, cancellationToken);
+        await LoadPageAsync(tenantId, cancellationToken);
         return new JsonResult(new { status = Status.ToString(), organizations = Organizations,
-            activeOrganizationId = ActiveOrganizationId, activeOrganizationName = ActiveOrganizationName, products = Products, message = Message, presentation = Presentation });
+            activeOrganizationId = ActiveOrganizationId, activeOrganizationName = ActiveOrganizationName, products = Products, message = Message, presentation = Presentation,
+            serviceCatalog = ServiceCatalog });
+    }
+
+    private async Task LoadPageAsync(Guid? tenantId, CancellationToken cancellationToken)
+    {
+        // Public metadata and personal grants are independent; fetch concurrently, never
+        // use a registry-wide product response as proof of permission to launch.
+        var discover = discovery?.GetAsync(cancellationToken) ?? Task.FromResult(new ServiceDiscovery(CatalogStatus.NotConfigured, []));
+        await Task.WhenAll(LoadAsync(tenantId, cancellationToken), discover);
+        ServiceCatalog = ServiceCatalogPresentation.Create(await discover, Status, ActiveOrganizationId, Products);
     }
 
     private async Task LoadAsync(Guid? tenantId, CancellationToken cancellationToken)
     {
         Response.Headers.CacheControl = "no-store";
+        Organizations = [];
+        Products = [];
+        ActiveOrganizationId = null;
         if (User.Identity?.IsAuthenticated != true)
         {
             Status = CatalogStatus.SignInRequired;

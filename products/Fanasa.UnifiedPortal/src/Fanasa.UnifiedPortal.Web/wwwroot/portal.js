@@ -16,6 +16,7 @@
         count.textContent = shown.toLocaleString('fa-IR');
         noResults.hidden = shown !== 0;
     };
+    globalThis.FanasaCenterFilter = filterCenters;
     search?.addEventListener('input', filterCenters);
     document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
         filter = button.dataset.filter;
@@ -92,6 +93,7 @@
         if (data.activeOrganizationId) url.searchParams.set('tenantId', data.activeOrganizationId);
         else url.searchParams.delete('tenantId');
         history.replaceState(null, '', url);
+        globalThis.FanasaServiceCatalog?.render(data.serviceCatalog);
     };
     const load = async () => {
         const id = ++requestId;
@@ -104,6 +106,7 @@
             requestController.abort();
         }, workspaceTimeoutMs);
         const requested = select.value;
+        globalThis.FanasaServiceCatalog?.invalidate();
         panel.setAttribute('aria-busy', 'true');
         refresh.disabled = submit.disabled = select.disabled = true;
         status.textContent = 'در حال دریافت سازمان‌ها و سامانه‌ها…';
@@ -132,6 +135,7 @@
             emptyDescription.textContent = 'با تازه‌سازی فهرست دوباره تلاش کنید.';
             login.hidden = true;
             productCount.textContent = 'دریافت ناموفق';
+            globalThis.FanasaServiceCatalog?.failed();
         } finally {
             clearTimeout(timeout);
             if (id === requestId) {
