@@ -81,6 +81,11 @@ Worker or sandbox on from a green health report. See the product's
 `docs/AGENT-RUNTIME-INSTALL.md` for pins/isolation and remaining live acceptance.
 Codex CLI installation does not mean its optional native adapter is implemented.
 
+An optional Agno observation on that page is advisory only. `AdvisoryStatusFile`
+does not add a dispatch/MCP tool, independent reviewer, coding authority or task
+completion evidence. Use minimal reviewed briefs, not raw chats; model proposals
+require validation. See `docs/AGNO-ADVISORY.md`; do not start jobs from green health.
+
 If ownership or the board cannot be established, continue safe read-only diagnosis
 or independent authorized work, not unclaimed edits or a second offline board.
 

@@ -11,7 +11,7 @@ namespace Neo.AgentOrchestration.Infrastructure.ExternalExecution;
 // Read-only control-plane projection from a private operator-owned collector.
 // No HTTP discovery, shell, Docker socket, model call or start/stop in API/Web.
 // Source path and scope are operator configuration, never request/task prose.
-public sealed class FileAgentRuntimeStatus(IConfiguration configuration, TimeProvider clock) : IAgentRuntimeStatus
+public sealed partial class FileAgentRuntimeStatus(IConfiguration configuration, TimeProvider clock) : IAgentRuntimeStatus
 {
     private static readonly string[] Engines = ["hermes", "opencode", "codex"];
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
@@ -25,7 +25,17 @@ public sealed class FileAgentRuntimeStatus(IConfiguration configuration, TimePro
             Guid.TryParse(c["WorkspaceId"], out var workspace) && workspace == scope.WorkspaceId &&
             Guid.TryParse(c["ProjectId"], out var project) && project == projectId).ToArray();
         if (bindings.Length != 1) return Empty("not-configured");
-        var path = bindings[0]["StatusFile"];
+        var native = await ReadNativeAsync(projectId, bindings[0]["StatusFile"], ct);
+        var advisoryPath = bindings[0]["AdvisoryStatusFile"];
+        if (string.IsNullOrWhiteSpace(advisoryPath)) return native;
+        var advisory = await ReadAdvisoryAsync(advisoryPath, ct);
+        return new(projectId, native.Runtimes.Append(advisory).ToArray());
+        AgentRuntimeCatalog Empty(string reason) => new(projectId,
+            Engines.Select(e => new AgentRuntimeView(e, null, false, false, false, reason, null)).ToArray());
+    }
+
+    private async Task<AgentRuntimeCatalog> ReadNativeAsync(Guid projectId, string? path, CancellationToken ct)
+    {
         if (string.IsNullOrWhiteSpace(path) || !Path.IsPathFullyQualified(path)) return Empty("report-unavailable");
         try
         {

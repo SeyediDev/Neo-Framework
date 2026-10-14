@@ -15,6 +15,8 @@ public sealed class AgentRuntimesModel(OrchestrationClient client) : WorkPageMod
     public static string Reason(string code) => code switch
     {
         "execution-gates-pending" => "اتصال سالم؛ گیت‌های اجرای تسک هنوز تکمیل نشده‌اند",
+        "advisory-healthy" => "اتصال مشاور سالم است؛ خروجی پیشنهادی نیاز به بررسی دارد و تأیید یا تکمیل کار نیست",
+        "advisory-unreachable" => "مشاور نصب است؛ بررسی اتصال خصوصی موفق نبود",
         "cli-installed" => "CLI نصب است؛ اتصال مدیریت‌شده هنوز آماده نیست",
         "native-unreachable" => "بررسی اتصال موفق نبود",
         "not-installed" => "نصب تأیید نشده است",

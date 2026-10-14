@@ -84,6 +84,12 @@ shows CLI installation with managed connection still pending.
 
 ## Operational execution remains gated
 
+An optional [Agno advisory observation](AGNO-ADVISORY.md) now appears in the same
+scoped page when `AdvisoryStatusFile` is explicitly configured. It is independently
+validated and does not change the three-engine v1 report or enable execution.
+Agno provides proposals only; installation/private health is not model quality,
+managed panel dispatch, independent review or task acceptance.
+
 Do not replace `DisabledGatewaySandbox`, enable Worker/bindings or start a
 native task because this report is healthy. Remaining acceptance includes:
 per-run scoped repository/revision/workspace, restricted model egress with scoped
