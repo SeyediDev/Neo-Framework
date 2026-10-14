@@ -82,6 +82,26 @@ Check(result.Status == CatalogStatus.Unavailable && result.Services.Count == 0, 
 result = await Reader(request => Task.FromResult(request.Method == HttpMethod.Post ? Json(new { access_token = "test" })
     : new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("[]", System.Text.Encoding.UTF8, "text/html") })).GetAsync(default);
 Check(result.Status == CatalogStatus.Unavailable, "HTML sign-in response is not a successful JSON catalog");
+result = await Reader(_ => throw new IOException("test-only transport failure")).GetAsync(default);
+Check(result.Status == CatalogStatus.Unavailable && result.Services.Count == 0, "token transport I/O failure becomes unavailable without exposing a response");
+HttpResponseMessage InterruptedCatalog()
+{
+    var content = new StreamContent(new InterruptedReadStream(System.Text.Encoding.UTF8.GetBytes(
+        JsonSerializer.Serialize(new[] { service }, new JsonSerializerOptions(JsonSerializerDefaults.Web)))));
+    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+    return new(HttpStatusCode.OK) { Content = content };
+}
+var interruptedReader = Reader(request => Task.FromResult(request.Method == HttpMethod.Post
+    ? Json(new { access_token = "test" }) : InterruptedCatalog()));
+result = await interruptedReader.GetAsync(default);
+Check(result.Status == CatalogStatus.Unavailable && result.Services.Count == 0, "interrupted catalog body discards all partial metadata");
+var resilientPage = new IndexModel(new WorkspaceSource(new(CatalogStatus.Ready, [org], [allowed], org.Id)), interruptedReader)
+    { PageContext = new() { HttpContext = new DefaultHttpContext() } };
+resilientPage.HttpContext.User = new(new ClaimsIdentity([new Claim("sub", "test-subject")], "Test"));
+await resilientPage.OnGetAsync(org.Id, default);
+Check(resilientPage.Status == CatalogStatus.Ready && resilientPage.Products.Count == 1
+    && resilientPage.ServiceCatalog.Status == "Unavailable" && resilientPage.ServiceCatalog.Services.Count == 0,
+    "discovery stream outage preserves the independently verified workspace instead of failing the page");
 using (var canceled = new CancellationTokenSource())
 {
     canceled.Cancel();
@@ -117,3 +137,14 @@ sealed class DiscoverySource(ServiceDiscovery discovery) : IServiceDiscoveryClie
 { public Task<ServiceDiscovery> GetAsync(CancellationToken cancellationToken) => Task.FromResult(discovery); }
 sealed class WorkspaceSource(PlatformWorkspace workspace) : IPlatformCatalogClient
 { public Task<PlatformWorkspace> GetWorkspaceAsync(string subject, CancellationToken cancellationToken, Guid? organizationId = null) => Task.FromResult(workspace); }
+sealed class InterruptedReadStream(byte[] payload) : MemoryStream(payload)
+{
+    private bool readStarted;
+    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (readStarted) return ValueTask.FromException<int>(new IOException("test-only interrupted response body"));
+        readStarted = true;
+        return base.ReadAsync(buffer[..Math.Min(buffer.Length, 8)], cancellationToken);
+    }
+}

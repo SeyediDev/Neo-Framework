@@ -82,7 +82,7 @@ public sealed class ServiceDiscoveryClient(IHttpClientFactory clients, IConfigur
                 DetailsUrl = ServiceUrls.Safe(x.DetailsUrl), RequestAccessUrl = ServiceUrls.Safe(x.RequestAccessUrl)
             }).OrderBy(x => x.DisplayName).ToArray());
         }
-        catch (Exception ex) when (ex is HttpRequestException or JsonException || ex is OperationCanceledException && !cancellationToken.IsCancellationRequested)
+        catch (Exception ex) when (ex is HttpRequestException or IOException or JsonException || ex is OperationCanceledException && !cancellationToken.IsCancellationRequested)
         {
             logger.LogWarning("Public service discovery unavailable ({FailureType}).", ex.GetType().Name);
             return new(CatalogStatus.Unavailable, []);
