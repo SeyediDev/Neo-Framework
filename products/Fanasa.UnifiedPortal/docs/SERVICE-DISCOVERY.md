@@ -126,3 +126,18 @@ transport مرکزی و هویت‌ها در تست‌ها مصنوعی و فق�
 no-store روی VPS و HTTPS canonical از رایانه تأیید شدند. نسخه قبلی برای
 rollback حفظ شد؛ metadata مرکزی و reader مالی هنوز متصل نیستند. شواهد در
 `SERVICE-DISCOVERY-DEPLOYMENT-2026-10-14.md` ثبت شده‌اند.
+
+## سیاست redirect در transport سرویس
+
+ثبت کلاینت‌های HTTP در `AddFanasaPlatformHttpClients` متمرکز است. هر سه کلاینت
+توکن، فضای کار و discovery با `AllowAutoRedirect = false` ساخته می‌شوند؛ سقف‌های
+۱۵، ۱۵ و ۳۰ ثانیهٔ قبلی تغییر نکرده‌اند. پاسخ 3xx خطای دریافت است، نه مجوز
+دنبال‌کردن مقصد تازه؛ هیچ client secret، پرس‌وجوی subject یا grant با redirect
+به مسیر دیگری منتقل نمی‌شود. این سیاست مربوط به اتصال service-to-service است
+و redirect قانونی مرورگر در جریان OIDC/PKCE کاربر را تغییر نمی‌دهد.
+
+`TransportRedirectChecks` با دو میزبان موقت loopback و credential مصنوعی، رفتار
+پیش‌فرض ارسال مجدد POST روی 307 را بازتولید می‌کند؛ سپس 307 و 308 در مقصد هم‌مبدأ
+و مبدأ متفاوت را برای token، discovery، membership و product بررسی می‌کند.
+پاسخ مستقیم موفق و زمان‌بندی قبلی نیز بررسی می‌شوند. این آزمون با `--http`
+اجرا می‌شود؛ جایگزین آزمون API مرکزی مستقر، SSO یا acquisition واقعی نیست.

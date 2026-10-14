@@ -7,11 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient("platform-control-token", client => client.Timeout = TimeSpan.FromSeconds(15));
-builder.Services.AddHttpClient("platform-control-catalog", client => client.Timeout = TimeSpan.FromSeconds(15));
+builder.Services.AddFanasaPlatformHttpClients();
 builder.Services.AddScoped<IPlatformCatalogClient, PlatformCatalogClient>();
-builder.Services.AddHttpClient("platform-control-discovery", client => client.Timeout = TimeSpan.FromSeconds(30))
-    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
 builder.Services.AddScoped<IServiceDiscoveryClient, ServiceDiscoveryClient>();
 builder.Services.AddAuthentication(options =>
 {

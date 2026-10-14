@@ -127,7 +127,11 @@ Check(page.ServiceCatalog.Services.Single().LaunchUrl is null, "tampered tenant 
 page = Page(new(CatalogStatus.Ready, [org], [allowed], org.Id), false);
 await page.OnGetAsync(null, default);
 Check(page.ServiceCatalog.Services.Count == 1 && page.ServiceCatalog.Services.Single().LaunchUrl is null && page.Organizations.Count == 0, "anonymous page does not expose private organization grants");
-if (args.Contains("--http")) checks += await CatalogHttpChecks.RunAsync(org, allowed, service);
+if (args.Contains("--http"))
+{
+    checks += await CatalogHttpChecks.RunAsync(org, allowed, service);
+    checks += await TransportRedirectChecks.RunAsync(org, allowed, service);
+}
 Console.WriteLine($"{checks} service-discovery checks passed; API transport is stubbed, not deployed central acceptance.");
 
 sealed class Clients(HttpMessageHandler handler) : IHttpClientFactory { public HttpClient CreateClient(string name) => new(handler, false); }
