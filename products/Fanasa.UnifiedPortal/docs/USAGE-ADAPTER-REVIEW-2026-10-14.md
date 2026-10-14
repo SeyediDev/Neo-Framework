@@ -77,3 +77,7 @@ DiscoveryPath در محیط موجود نیست؛ پاسخ ناشناس `SignInR
 کاتالوگ `NotConfigured` است و هیچ organization/product خصوصی ندارد.
 پیگیری نیاز API معرفی با نتیجهٔ موفق ابزار به چت `Fanasa Platform Control Center`
 تحویل شد. این وابستگی از اتصال مالی بالا مستقل است.
+
+در ادامهٔ همین نوبت، مقاوم‌سازی مستقل discovery از کامیت `775605b` منتشر شد؛
+شواهد در `SERVICE-DISCOVERY-DEPLOYMENT-2026-10-14.md` است. اتصال مالی یا فایل‌های
+Workspace همراه آن منتشر/تغییر نکردند و discovery همچنان NotConfigured ماند.

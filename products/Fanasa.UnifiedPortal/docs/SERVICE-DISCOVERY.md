@@ -120,3 +120,9 @@ transport مرکزی و هویت‌ها در تست‌ها مصنوعی و فق�
 باید از سورس کامیت‌شدهٔ مستقل ساخته شود و شامل فایل‌های dirty Workspace نباشد.
 ۲۳ آزمون renderer مستقل مصرف نیز موفق شدند؛ wiring مالی هنوز انجام نشده است.
 بازبینی و مرز مالکیت آن در `USAGE-ADAPTER-REVIEW-2026-10-14.md` ثبت شده است.
+
+سپس همان سورس isolated با ۵۰ بررسی discovery و ۴۹ رگرسیون و ۱۹ آزمون Node
+پذیرفته و کامیت `775605b` در development منتشر شد. health و پاسخ ناشناس
+no-store روی VPS و HTTPS canonical از رایانه تأیید شدند. نسخه قبلی برای
+rollback حفظ شد؛ metadata مرکزی و reader مالی هنوز متصل نیستند. شواهد در
+`SERVICE-DISCOVERY-DEPLOYMENT-2026-10-14.md` ثبت شده‌اند.
