@@ -38,7 +38,7 @@ var settings = new Dictionary<string, string?>
     ["PlatformControlCenter:BaseUrl"] = "https://platform.test",
     ["Authentication:Authority"] = "https://identity.test/realms/fanasa",
     ["PlatformControlCenter:ClientId"] = "portal", ["PlatformControlCenter:ClientSecret"] = "test-only",
-    ["PlatformControlCenter:DiscoveryPath"] = "/api/platform/service-catalog"
+    ["PlatformControlCenter:DiscoveryPath"] = "/api/platform/published-services"
 };
 var requests = new List<(string Url, string? Bearer, string Body)>();
 ServiceDiscoveryClient Reader(Func<HttpRequestMessage, Task<HttpResponseMessage>> handler, Dictionary<string, string?>? config = null)
@@ -53,7 +53,7 @@ var reader = Reader(async request =>
 var result = await reader.GetAsync(default);
 Check(result.Status == CatalogStatus.Ready && result.Services.Count == 1, "adapter only exposes explicitly published metadata");
 Check(requests[0].Body.Contains("scope=platform.catalog") && requests[1].Bearer == "Bearer test-only-token", "adapter uses limited service credentials");
-Check(requests[1].Url == "https://platform.test/api/platform/service-catalog" && !requests[1].Url.Contains("subject") && !requests[1].Url.Contains("tenant"), "discovery does not submit a guessed viewer or tenant");
+Check(requests[1].Url == "https://platform.test/api/platform/published-services" && !requests[1].Url.Contains("subject") && !requests[1].Url.Contains("tenant"), "v1 published-services route does not submit a guessed viewer or tenant");
 var calls = 0;
 foreach (var path in new string?[] { null, "//evil.test/api", "/api/platform/../products", "/api/platform/%2e%2e/products", "/api/platform/catalog?subject=other" })
 {

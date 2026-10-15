@@ -52,7 +52,7 @@ static class TransportRedirectChecks
             if (stage == "token") Redirect(context);
             else await context.Response.WriteAsJsonAsync(new { access_token = "synthetic-token" });
         });
-        upstream.MapGet("/api/platform/service-catalog", async context =>
+        upstream.MapGet("/api/platform/published-services", async context =>
         {
             if (stage == "discovery") Redirect(context);
             else await context.Response.WriteAsJsonAsync(new[] { service });
@@ -79,7 +79,7 @@ static class TransportRedirectChecks
                 ["PlatformControlCenter:Authority"] = origin + "/realms/fanasa",
                 ["PlatformControlCenter:ClientId"] = "synthetic-client",
                 ["PlatformControlCenter:ClientSecret"] = "redirect-test-only",
-                ["PlatformControlCenter:DiscoveryPath"] = "/api/platform/service-catalog"
+                ["PlatformControlCenter:DiscoveryPath"] = "/api/platform/published-services"
             }).Build();
             var registrations = new ServiceCollection();
             registrations.AddLogging();
