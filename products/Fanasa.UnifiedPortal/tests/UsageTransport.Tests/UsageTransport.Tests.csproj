@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/ConsumerUsageReportProjection.cs" Link="ConsumerUsageReportProjection.cs" />
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/ConsumerUsageReportClient.cs" Link="ConsumerUsageReportClient.cs" />
+  </ItemGroup>
+</Project>

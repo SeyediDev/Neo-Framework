@@ -40,7 +40,7 @@ public static class ConsumerUsageReportProjection
             throw new ArgumentException("A subject, consumer and UTC period shorter than 366 days are required.");
 
         var period = $"{UtcLabel(from)} تا پیش از {UtcLabel(to)} · UTC";
-        ConsumerUsageView Empty(string status) => new(consumer, status, from, to, period, null, null, null, []);
+        ConsumerUsageView Empty(string status) => ConsumerUsageReportProjection.Empty(consumer, from, to, status);
         if (json.Length is 0 or > MaximumBytes) return Empty("unavailable");
         try
         {
@@ -101,6 +101,9 @@ public static class ConsumerUsageReportProjection
             return Empty("unavailable");
         }
     }
+
+    internal static ConsumerUsageView Empty(Guid consumer, DateTimeOffset from, DateTimeOffset to, string status)
+        => new(consumer, status, from, to, $"{UtcLabel(from)} تا پیش از {UtcLabel(to)} · UTC", null, null, null, []);
 
     private static string Text(JsonElement value, string name)
         => value.GetProperty(name).GetString() ?? throw new InvalidDataException();

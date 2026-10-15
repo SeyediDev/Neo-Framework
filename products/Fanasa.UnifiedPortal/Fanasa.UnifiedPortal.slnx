@@ -2,4 +2,6 @@
   <Project Path="src/Fanasa.UnifiedPortal.Web/Fanasa.UnifiedPortal.Web.csproj" />
   <Project Path="tests/Portal.Tests/Portal.Tests.csproj" />
   <Project Path="tests/Discovery.Tests/Discovery.Tests.csproj" />
+  <Project Path="tests/UsageProjection.Tests/UsageProjection.Tests.csproj" />
+  <Project Path="tests/UsageTransport.Tests/UsageTransport.Tests.csproj" />
 </Solution>
