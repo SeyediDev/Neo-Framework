@@ -89,12 +89,16 @@
 <section class="catalog" id="centers" aria-labelledby="centers-title">
     <div class="catalog-heading">
         <div><span class="eyebrow">خدمات و توانمندی‌ها</span><h2 id="centers-title">برای قدم بعدی، کشف کنید</h2><p class="section-description">۱۴ مرکز تخصصی؛ از ساخت محصول و هوش مصنوعی تا زیرساخت و مدیریت کسب‌وکار.</p></div>
-        <span class="section-badge" aria-live="polite"><span id="visible-count">۱۴</span> مرکز</span>
+        <span class="section-badge"><span id="visible-count">۱۴</span> مرکز</span>
     </div>
     <p id="service-catalog-status" class="workspace-status" role="status" aria-live="polite">@Model.ServiceCatalog.Message</p>
     <button id="service-catalog-refresh" class="refresh-button" type="button">تازه‌سازی کاتالوگ خدمات ↻</button>
     <div class="catalog-tools">
-        <label class="search-box"><span aria-hidden="true">⌕</span><input id="center-search" type="search" placeholder="جست‌وجوی نام مرکز یا خدمت…" aria-label="جست‌وجو در مراکز قابلیت" /></label>
+        <div class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input id="center-search" type="search" placeholder="جست‌وجوی نام مرکز یا خدمت…" aria-label="جست‌وجو در مراکز و خدمات" aria-controls="center-grid" maxlength="120" />
+            <button id="center-search-clear" class="search-clear" type="button" aria-label="پاک‌کردن عبارت جست‌وجو" hidden><span aria-hidden="true">×</span></button>
+        </div>
         <div class="filter-pills" role="group" aria-label="فیلتر مراکز">
             <button class="filter-pill is-active" aria-pressed="true" type="button" data-filter="all">همه</button>
             <button class="filter-pill" aria-pressed="false" type="button" data-filter="کسب‌وکار و بازار">کسب‌وکار</button>
@@ -104,6 +108,7 @@
             <button class="filter-pill" aria-pressed="false" type="button" data-filter="کنترل">کنترل</button>
         </div>
     </div>
+    <p class="filter-summary" id="center-filter-summary" role="status" aria-atomic="true">۱۴ مرکز نمایش داده می‌شود.</p>
     <div class="center-grid" id="center-grid">
         @foreach (var center in centers)
         {
@@ -127,7 +132,11 @@
             </article>
         }
     </div>
-    <p class="no-results" id="no-results" hidden>مرکزی پیدا نشد. نام یا عبارت دیگری را جست‌وجو کنید.</p>
+    <div class="no-results" id="no-results" hidden>
+        <strong>نتیجه‌ای با این فیلترها پیدا نشد.</strong>
+        <p>عبارت جست‌وجو را تغییر دهید یا همهٔ مراکز را دوباره ببینید.</p>
+        <button id="center-filter-reset" class="button button-secondary" type="button">پاک‌کردن فیلترها و نمایش همهٔ مراکز</button>
+    </div>
 </section>
 <footer class="portal-note"><img src="/brand/fanasa-horizontal-fa.svg" alt="فن آسا" width="120" height="42" /><p>یک هویت، دسترسی به دنیایی از قابلیت‌ها.</p><a href="#top">بازگشت به بالا ↑</a></footer>
 <script src="~/service-catalog.js" asp-append-version="true" defer></script>

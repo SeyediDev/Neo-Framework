@@ -3,29 +3,66 @@
     const search = document.getElementById('center-search');
     const count = document.getElementById('visible-count');
     const noResults = document.getElementById('no-results');
+    const clearSearch = document.getElementById('center-search-clear');
+    const resetFilters = document.getElementById('center-filter-reset');
+    const summary = document.getElementById('center-filter-summary');
+    const filterButtons = [...document.querySelectorAll('[data-filter]')];
     let filter = 'all';
-    const normalize = text => text.normalize('NFKC').replace(/ي/g, 'ی').replace(/ك/g, 'ک').replace(/\u200c/g, ' ').trim().toLocaleLowerCase();
+    const normalize = text => String(text ?? '').normalize('NFKC')
+        .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+        .replace(/[\u0640\u064b-\u065f\u0670\u06d6-\u06ed]/g, '')
+        .replace(/[\u200c\u200d]/g, ' ').replace(/\s+/g, ' ').trim().toLocaleLowerCase('fa-IR');
     const filterCenters = () => {
-        const query = normalize(search.value || '');
+        const query = normalize(search?.value);
+        const terms = query ? query.split(' ') : [];
         let shown = 0;
         cards.forEach(card => {
-            const matches = (filter === 'all' || card.dataset.state === filter) && (!query || normalize(card.dataset.search).includes(query));
+            const text = normalize(card.dataset.search);
+            const matches = (filter === 'all' || card.dataset.state === filter) && terms.every(term => text.includes(term));
             card.hidden = !matches;
             if (matches) shown++;
         });
-        count.textContent = shown.toLocaleString('fa-IR');
-        noResults.hidden = shown !== 0;
+        const total = shown.toLocaleString('fa-IR');
+        if (count) count.textContent = total;
+        if (noResults) noResults.hidden = shown !== 0;
+        if (clearSearch) clearSearch.hidden = !search?.value;
+        if (summary) {
+            const category = filter === 'all' ? '' : ' در گروه «' + filterButtons.find(button => button.dataset.filter === filter)?.textContent.trim() + '»';
+            const phrase = query ? ' برای «' + search.value.trim() + '»' : '';
+            summary.textContent = total + ' مرکز' + category + phrase + ' نمایش داده می‌شود.';
+        }
+    };
+    const selectFilter = value => {
+        filter = value;
+        filterButtons.forEach(button => {
+            const selected = button.dataset.filter === filter;
+            button.classList.toggle('is-active', selected);
+            button.setAttribute('aria-pressed', String(selected));
+        });
+        filterCenters();
+    };
+    const clearQuery = () => {
+        if (!search) return;
+        search.value = '';
+        filterCenters();
+        search.focus();
     };
     globalThis.FanasaCenterFilter = filterCenters;
     search?.addEventListener('input', filterCenters);
-    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
-        filter = button.dataset.filter;
-        document.querySelectorAll('[data-filter]').forEach(item => {
-            item.classList.toggle('is-active', item === button);
-            item.setAttribute('aria-pressed', String(item === button));
-        });
-        filterCenters();
-    }));
+    search?.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && search.value) {
+            event.preventDefault();
+            clearQuery();
+        }
+    });
+    clearSearch?.addEventListener('click', clearQuery);
+    resetFilters?.addEventListener('click', () => {
+        if (search) search.value = '';
+        selectFilter('all');
+        search?.focus();
+    });
+    filterButtons.forEach(button => button.addEventListener('click', () => selectFilter(button.dataset.filter)));
+    filterCenters();
 
     const panel = document.getElementById('workspace');
     const form = document.getElementById('organization-form');

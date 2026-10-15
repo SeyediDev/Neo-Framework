@@ -33,7 +33,8 @@ class Element {
     get options() { return this.children; }
     setAttribute(name, value) { this.attributes[name] = value; }
     removeAttribute(name) { delete this.attributes[name]; }
-    dispatch(name) { return this.listeners[name]({ preventDefault() {} }); }
+    focus() { this.focused = true; }
+    dispatch(name, event = {}) { return this.listeners[name]({ preventDefault() {}, ...event }); }
 }
 class Option extends Element {
     constructor(text, value, defaultSelected = false, selected = false) {
@@ -41,10 +42,12 @@ class Option extends Element {
     }
 }
 function setup(options = {}) {
-    const ids = ['center-search', 'visible-count', 'no-results', 'workspace', 'organization-form',
+    const ids = ['center-search', 'center-search-clear', 'center-filter-reset', 'center-filter-summary',
+        'visible-count', 'no-results', 'workspace', 'organization-form',
         'organization-select', 'organization-submit', 'workspace-refresh', 'workspace-status',
         'product-grid', 'workspace-empty', 'empty-title', 'empty-description', 'product-count', 'workspace-login'];
     const elements = Object.fromEntries(ids.map(id => [id, new Element(id === 'organization-select' ? 'select' : 'div')]));
+    if (options.anonymous) delete elements['organization-form'];
     elements['organization-select'].replaceChildren(new Option('انتخاب', ''), new Option('سازمان', 'tenant-a', false, true));
     elements['product-grid'].append(new Element('stale-link'));
     const requests = [];
@@ -58,6 +61,7 @@ function setup(options = {}) {
     const buttons = ['all', 'active', 'upcoming'].map(filter => {
         const button = new Element('button');
         button.dataset.filter = filter;
+        button.textContent = filter;
         return button;
     });
     const location = new URL(options.location || 'https://portal.test/?tenantId=tenant-a#workspace');
@@ -249,6 +253,104 @@ test('center state filters combine with search and update pressed/empty states',
     assert.deepEqual(app.cards.map(card => card.hidden), [false, false]);
     assert.equal(app.elements['no-results'].hidden, true);
     assert.deepEqual(app.buttons.map(button => button.attributes['aria-pressed']), ['true', 'false', 'false']);
+});
+
+test('Persian search ignores diacritics, tatweel and repeated spaces with terms in any order', () => {
+    const app = setup({ centers: [
+        { search: 'مُديريّت   کار هوشـمند فن‌آسا', state: 'active' },
+        { search: 'مدیریت قرارداد', state: 'upcoming' }
+    ] });
+    for (const query of ['هوشمند مدیریت', ' آسا   فن ', 'كَار مُديريت']) {
+        app.elements['center-search'].value = query;
+        app.elements['center-search'].dispatch('input');
+        assert.deepEqual(app.cards.map(card => card.hidden), [false, true]);
+    }
+    assert.equal(app.requests.length, 0);
+});
+
+test('clear search restores matching centers without discarding the chosen category', () => {
+    const app = setup({ centers: [
+        { search: 'هوش', state: 'active' }, { search: 'هوش', state: 'upcoming' }
+    ] });
+    assert.equal(app.elements['center-search-clear'].hidden, true);
+    app.buttons[1].dispatch('click');
+    app.elements['center-search'].value = 'ناموجود';
+    app.elements['center-search'].dispatch('input');
+    assert.equal(app.elements['center-search-clear'].hidden, false);
+    assert.equal(app.elements['no-results'].hidden, false);
+    app.elements['center-search-clear'].dispatch('click');
+    assert.equal(app.elements['center-search'].value, '');
+    assert.equal(app.elements['center-search'].focused, true);
+    assert.equal(app.elements['center-search-clear'].hidden, true);
+    assert.equal(app.elements['no-results'].hidden, true);
+    assert.deepEqual(app.cards.map(card => card.hidden), [false, true]);
+    assert.equal(app.buttons[1].attributes['aria-pressed'], 'true');
+    assert.match(app.elements['center-filter-summary'].textContent, /۱ مرکز در گروه «active»/);
+    assert.equal(app.requests.length, 0);
+});
+
+test('empty results recovery clears both query and category, restores count and search focus', () => {
+    const app = setup({ centers: [
+        { search: 'هوش', state: 'active' }, { search: 'ابر', state: 'upcoming' }
+    ] });
+    app.buttons[2].dispatch('click');
+    app.elements['center-search'].value = 'هوش';
+    app.elements['center-search'].dispatch('input');
+    assert.match(app.elements['center-filter-summary'].textContent, /۰ مرکز.*upcoming.*هوش/);
+    app.elements['center-filter-reset'].dispatch('click');
+    assert.deepEqual(app.cards.map(card => card.hidden), [false, false]);
+    assert.equal(app.elements['center-search'].value, '');
+    assert.equal(app.elements['center-search'].focused, true);
+    assert.equal(app.elements['center-search-clear'].hidden, true);
+    assert.equal(app.elements['no-results'].hidden, true);
+    assert.equal(app.elements['center-filter-summary'].textContent, '۲ مرکز نمایش داده می‌شود.');
+    assert.deepEqual(app.buttons.map(button => button.attributes['aria-pressed']), ['true', 'false', 'false']);
+    assert.equal(app.requests.length, 0);
+});
+
+test('Escape clears only the query and does not consume unrelated keys or an empty Escape', () => {
+    const app = setup({ centers: [{ search: 'ابر', state: 'upcoming' }] });
+    app.buttons[2].dispatch('click');
+    app.elements['center-search'].value = 'هوش';
+    app.elements['center-search'].dispatch('input');
+    let prevented = 0;
+    const key = name => app.elements['center-search'].dispatch('keydown', { key: name, preventDefault() { prevented++; } });
+    key('Enter');
+    assert.equal(app.elements['center-search'].value, 'هوش');
+    key('Escape');
+    assert.equal(app.elements['center-search'].value, '');
+    assert.equal(app.elements['center-search'].focused, true);
+    assert.equal(app.buttons[2].attributes['aria-pressed'], 'true');
+    assert.equal(app.cards[0].hidden, false);
+    key('Escape');
+    assert.equal(prevented, 1);
+    assert.equal(app.requests.length, 0);
+});
+
+test('search count and summary refresh when catalog metadata changes', () => {
+    const app = setup({ centers: [{ search: 'ابر', state: 'active' }] });
+    app.elements['center-search'].value = 'پایگاه داده';
+    app.elements['center-search'].dispatch('input');
+    assert.equal(app.cards[0].hidden, true);
+    app.cards[0].dataset.search = 'ابر پایگاه داده';
+    // Reapply the current query after the service metadata is refreshed.
+    app.elements['center-search'].dispatch('input');
+    assert.equal(app.cards[0].hidden, false);
+    assert.equal(app.elements['visible-count'].textContent, '۱');
+    assert.match(app.elements['center-filter-summary'].textContent, /۱ مرکز.*پایگاه داده/);
+    assert.equal(app.requests.length, 0);
+});
+
+test('anonymous visitors can search and reset without a signed-in organization form', () => {
+    const app = setup({ anonymous: true, centers: [{ search: 'ابر فن آسا', state: 'upcoming' }] });
+    app.elements['center-search'].value = 'ناموجود';
+    app.elements['center-search'].dispatch('input');
+    assert.equal(app.elements['no-results'].hidden, false);
+    app.elements['center-filter-reset'].dispatch('click');
+    assert.equal(app.cards[0].hidden, false);
+    assert.equal(app.elements['center-filter-summary'].textContent, '۱ مرکز نمایش داده می‌شود.');
+    assert.equal(app.elements['center-search'].focused, true);
+    assert.equal(app.requests.length, 0);
 });
 
 test('workspace refresh on the home alias retains center search, filter and unrelated URL state', async () => {
