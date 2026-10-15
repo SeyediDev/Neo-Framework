@@ -16,6 +16,10 @@ function dotnet {
         $outputIndex = [Array]::IndexOf($arguments, '-o')
         if ($outputIndex -lt 0) { throw 'Publish output argument missing.' }
         [IO.File]::WriteAllText((Join-Path $arguments[$outputIndex + 1] 'Fanasa.UnifiedPortal.Web.dll'), 'test-only mock DLL')
+        $nested = Join-Path $arguments[$outputIndex + 1] 'wwwroot/brand'
+        New-Item -ItemType Directory -Path $nested -Force | Out-Null
+        [IO.File]::WriteAllText((Join-Path $nested 'sample logo.svg'), '<svg>test-only</svg>')
+        [IO.File]::WriteAllText((Join-Path $arguments[$outputIndex + 1] '.test-only-hidden'), 'include-hidden-output')
     }
 }
 function Expect-Failure([string]$OutputDirectory, [string]$ExpectedMessage) {
@@ -68,6 +72,28 @@ try {
     $manifest = Get-Content -LiteralPath (Join-Path $successOutput 'MANIFEST.json') -Raw | ConvertFrom-Json
     if ($manifest.commit -ne $env:GITHUB_SHA -or $manifest.containsCredentials -ne $false -or -not (Test-Path -LiteralPath (Join-Path $successOutput '../fanasa-unified-portal.zip'))) { throw 'Successful mock package contract failed.' }
     Write-Output 'PASS successful mock publish produces the expected manifest and ZIP'
+    $checks++
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $zip = [IO.Compression.ZipFile]::OpenRead((Join-Path $successOutput '../fanasa-unified-portal.zip'))
+    try {
+        $names = @($zip.Entries | ForEach-Object { $_.FullName })
+        if (@($names | Where-Object { $_.Contains('\') -or $_.StartsWith('/') -or $_.Split('/') -contains '..' }).Count -ne 0) {
+            throw 'ZIP entries must be safe forward-slash relative paths on every host.'
+        }
+        Write-Output 'PASS ZIP uses only portable relative forward-slash entry names'
+        $checks++
+        if ('web/Fanasa.UnifiedPortal.Web.dll' -notin $names -or 'MANIFEST.json' -notin $names -or
+            'web/wwwroot/brand/sample logo.svg' -notin $names -or 'web/.test-only-hidden' -notin $names) {
+            throw 'Portable package omitted expected DLL, manifest, nested or dot-file entries.'
+        }
+        $reader = New-Object IO.StreamReader($zip.GetEntry('web/wwwroot/brand/sample logo.svg').Open())
+        try { if ($reader.ReadToEnd() -ne '<svg>test-only</svg>') { throw 'Nested ZIP payload changed.' } }
+        finally { $reader.Dispose() }
+        Write-Output 'PASS portable ZIP preserves nested paths, spaces, dot-files and payload bytes'
+        $checks++
+    } finally { $zip.Dispose() }
+    Expect-Failure $successOutput 'OutputDirectory already exists*'
+    Write-Output 'PASS a completed portable package cannot be overwritten on rerun'
     $checks++
     Write-Output "$checks package guard checks passed. Publish was mocked; this is not release validation."
 }
