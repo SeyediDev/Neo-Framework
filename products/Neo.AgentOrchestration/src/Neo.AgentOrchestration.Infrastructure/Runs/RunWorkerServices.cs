@@ -16,6 +16,9 @@ using Neo.Domain.Features.Client;
 using Neo.Domain.Features.Telementry;
 using Neo.Infrastructure.Features.Cache;
 using Neo.Infrastructure.Features.Outbox;
+using Neo.AgentOrchestration.Infrastructure.Advisory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 namespace Neo.AgentOrchestration.Infrastructure.Runs;
 
@@ -38,7 +41,7 @@ public static class RunWorkerServices
         // Neo's SQL conditional claims, not this process-local compatibility
         // dependency, provide multi-process delivery coordination.
         services.AddSingleton<IDistributedLock, MemoryDistributedLock>();
-        services.AddScoped<IProcessOutboxRecurringJob, ProcessOutboxRecurringJob>();
+        services.AddScoped<IProcessOutboxRecurringJob, EnabledLaneDispatcher>();
         services.AddScoped<IOutboxJobScheduler, RunOutboxScheduler>();
         services.AddScoped<ISimulationHarness, FakeHarness>();
         services.AddScoped<RunExecutionHandler>();
@@ -49,14 +52,21 @@ public static class RunWorkerServices
 }
 
 public sealed class RunOutboxJob(SqlWorkDeliveryExecutor executor, RunExecutionHandler handler,
-    HttpHarnessTransport? transport = null, TimeProvider? clock = null)
+    HttpHarnessTransport? transport = null, TimeProvider? clock = null,
+    IDbContextFactory<OrchestrationDbContext>? factory = null, IConfiguration? config = null, AdvisoryTransport? advisory = null)
 {
     [AutomaticRetry(Attempts = 0), Queue("outbox")]
     public async Task Execute(long outboxId, CancellationToken ct)
     {
+        if (factory is not null && config is not null)
+        {
+            await using var db = await factory.CreateDbContextAsync(ct);
+            if (!await EnabledLaneDispatcher.Enabled(db.Deliveries, config).AnyAsync(x => x.OutboxId == outboxId, ct)) return;
+        }
         string? hold = null;
         _ = await executor.ExecuteAsync(outboxId, async (operation, session, token) =>
         {
+            if (operation.Kind == WorkDeliveryKind.SendAdvisoryRequest) return;
             await handler.ExecuteAsync(operation, session, token);
             if (hold is not null)
             {
@@ -66,6 +76,11 @@ public sealed class RunOutboxJob(SqlWorkDeliveryExecutor executor, RunExecutionH
             }
         }, ct, async (operation, token) =>
         {
+            if (operation.Kind == WorkDeliveryKind.SendAdvisoryRequest)
+            {
+                if (advisory is null) throw new InvalidOperationException("Advisory transport disabled.");
+                await advisory.SendAsync(operation, token); return;
+            }
             if (transport is null) throw new InvalidOperationException("HTTP harness transport is disabled.");
             hold = await transport.SendAsync(operation, token);
         });

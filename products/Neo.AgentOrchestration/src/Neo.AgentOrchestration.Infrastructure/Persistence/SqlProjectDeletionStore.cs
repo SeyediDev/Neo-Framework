@@ -27,7 +27,7 @@ public sealed class SqlProjectDeletionStore(IDbContextFactory<OrchestrationDbCon
     private const string OutboxIds = "SELECT OutboxId FROM nao.Deliveries WHERE ProjectId=@project AND WorkspaceId=@workspace AND OrganizationId=@organization";
     private static readonly (string Table, string Predicate)[] Graph =
     [
-        ("InboxReceipts", Scoped), ("Deliveries", Scoped), ("OutboxMessages", $"t.Id IN ({OutboxIds})"),
+        ("AdvisoryRequests", Scoped), ("InboxReceipts", Scoped), ("Deliveries", Scoped), ("OutboxMessages", $"t.Id IN ({OutboxIds})"),
         ("TokenUsageReports", $"t.AgentRunId IN ({RunIds})"), ("WorkflowApprovals", $"t.ProjectId=@project AND t.WorkItemId IN ({ItemIds})"),
         ("AgentRuns", Scoped), ("WorkflowTransitions", $"t.WorkflowDefinitionId IN ({FlowIds})"), ("WorkflowDefinitions", Scoped),
         ("WorkItemDependencies", $"t.ProjectId=@project AND t.WorkItemId IN ({ItemIds})"),
@@ -132,6 +132,10 @@ public sealed class SqlProjectDeletionStore(IDbContextFactory<OrchestrationDbCon
         var terminal = new[] { OutboxState.Processed, OutboxState.Failed, OutboxState.Expired, OutboxState.Canceled, OutboxState.DuplicateIdempotencyKey };
         var pending = await db.Deliveries.CountAsync(x => x.ProjectId == projectId && x.WorkspaceId == scope.WorkspaceId && x.OrganizationId == scope.OrganizationId &&
             (!terminal.Contains(x.Outbox.OutboxState) || x.Outbox.DeliveryLeaseId != null), ct);
+        // An uncertain external advisory cannot be made safe by deleting its receipt.
+        activeRuns += await db.Set<Neo.AgentOrchestration.Domain.Advisory.AdvisoryRequest>().CountAsync(x =>
+            x.ProjectId == projectId && x.WorkspaceId == scope.WorkspaceId && x.OrganizationId == scope.OrganizationId &&
+            (x.State == Neo.AgentOrchestration.Domain.Advisory.AdvisoryState.Submitting || x.State == Neo.AgentOrchestration.Domain.Advisory.AdvisoryState.Held), ct);
         return new(projectId, project.Key, project.Name, Convert.ToHexString(hash.GetHashAndReset()), counts,
             types.ToDictionary(x => x.Type.ToString(), x => x.Count), await items.CountAsync(x => x.ParentWorkItemId != null, ct), activeManual, activeRuns, pending);
     }

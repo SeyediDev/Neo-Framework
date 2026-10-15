@@ -43,6 +43,7 @@ public sealed class SqlRunWorkerTests
         builder.Logging.ClearProviders();
         builder.Services.Configure<HostOptions>(o => o.ShutdownTimeout = TimeSpan.FromSeconds(15));
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> {
+            ["Orchestration:SimulationEnabled"] = "true",
             ["Hangfire:Storage"] = "SqlServer", ["Hangfire:ConnectionString"] = jobs.ConnectionString,
             ["Hangfire:WorkerCount"] = "2", ["Hangfire:Queues:0"] = "outbox" });
         builder.Services.AddOrchestrationSql(f.Connection);

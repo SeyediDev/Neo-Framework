@@ -35,6 +35,6 @@ public sealed class DeleteProjectModel(OrchestrationClient client) : WorkPageMod
         "TokenUsageReports" => "گزارش توکن اجراها", "WorkflowDefinitions" => "فلوهای پروژه", "WorkflowTransitions" => "گام‌های فلو",
         "WorkflowApprovals" => "تأییدهای فلو", "InboxReceipts" => "رسید رویداد", "Deliveries" => "رکورد تحویل",
         "OutboxMessages" => "پیام صف", "TemplateInstantiations" => "رسید ساخت پروژه از الگو",
-        "ProjectRepositoryBindings" => "اتصال ریپازیتوری", _ => table
+        "ProjectRepositoryBindings" => "اتصال ریپازیتوری", "AdvisoryRequests" => "درخواست‌های مشاورهٔ خصوصی", _ => table
     };
 }

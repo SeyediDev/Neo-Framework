@@ -188,8 +188,7 @@ public sealed class HttpHarnessTests
     [Fact]
     public async Task Compact_context_is_sent_only_when_connection_explicitly_opts_in()
     {
-        var f = await Fixture.Create(); await using var h = await HarnessFixture.Create(f);
-        h.Settings["Harness:Connections:demo:CompactContextOptIn"] = "true";
+        var f = await Fixture.Create(); await using var h = await HarnessFixture.Create(f, compactContext: true);
         using var http = new HttpClient(new DelegateHandler(async (request, _) =>
         {
             var json = await request.Content!.ReadAsStringAsync(Ct);
@@ -216,7 +215,7 @@ public sealed class HttpHarnessTests
         public required TestSecrets Secrets { get; init; }
         public ConfiguredRunProviders Providers => Api.Factory.Services.GetRequiredService<ConfiguredRunProviders>();
         public string Root => ApiFixture.Root(Sql.Scope);
-        public static async Task<HarnessFixture> Create(Fixture f, string endpoint = "https://gateway.example.test/runs")
+        public static async Task<HarnessFixture> Create(Fixture f, string endpoint = "https://gateway.example.test/runs", bool compactContext = false)
         {
             var setup = await SqlRunTests.Configure(f, evidence: true);
             await using (var db = f.Factory.CreateDbContext())
@@ -227,6 +226,7 @@ public sealed class HttpHarnessTests
             }
             var item = await SqlRunTests.Ready(f); var secrets = new TestSecrets();
             var settings = new Dictionary<string,string?> { ["Harness:Enabled"] = "true", ["Harness:AllowLoopbackHttp"] = "true" };
+            settings["Harness:Connections:demo:CompactContextOptIn"] = compactContext.ToString();
             foreach (var key in new[] { "demo", "other" })
             {
                 var prefix = "Harness:Connections:" + key + ":";

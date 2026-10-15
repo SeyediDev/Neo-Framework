@@ -44,7 +44,8 @@ internal sealed class WorkFixture : IDisposable
                 type != typeof(Neo.AgentOrchestration.Application.Workspace.ProjectDeletionHandlers) &&
                 // Installation observations are private host infrastructure, not
                 // part of this work-domain memory fixture.
-                type != typeof(Neo.AgentOrchestration.Application.ExternalExecution.GetAgentRuntimeStatusHandler);
+                type != typeof(Neo.AgentOrchestration.Application.ExternalExecution.GetAgentRuntimeStatusHandler) &&
+                type != typeof(Neo.AgentOrchestration.Application.Advisory.AdvisoryHandlers);
         });
         services = collection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
     }

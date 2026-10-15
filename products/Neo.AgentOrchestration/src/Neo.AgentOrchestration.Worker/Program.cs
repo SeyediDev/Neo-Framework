@@ -4,12 +4,14 @@ using Neo.AgentOrchestration.Infrastructure.Persistence;
 using Neo.AgentOrchestration.Infrastructure.Runs;
 using Neo.Infrastructure.Features.Queue.Hangfire;
 using Neo.AgentOrchestration.Infrastructure.ExternalExecution;
+using Neo.AgentOrchestration.Infrastructure.Advisory;
 
 // A generic host: no HTTP listener, public callback, dashboard or implicit seed.
 var builder = Host.CreateApplicationBuilder(args);
-if (!builder.Configuration.GetValue<bool>("Orchestration:SimulationEnabled") && !builder.Configuration.GetValue<bool>("Harness:Enabled"))
+if (!builder.Configuration.GetValue<bool>("Orchestration:SimulationEnabled") && !builder.Configuration.GetValue<bool>("Harness:Enabled") &&
+    !builder.Configuration.GetValue<bool>("AgnoAdvisory:Enabled"))
 {
-    Console.WriteLine("Run worker disabled. Enable simulation or the HTTP harness explicitly to run it.");
+    Console.WriteLine("Worker disabled. Explicitly enable simulation, HTTP harness or private advisory processing.");
     return;
 }
 var product = builder.Configuration["NEO_ORCHESTRATION_SQL"] ?? builder.Configuration.GetConnectionString("Orchestration")
@@ -30,6 +32,13 @@ builder.Services.AddOrchestrationSql(product);
 builder.Services.AddNeoHangfire(builder.Configuration);
 builder.Services.AddSimulationRunWorker();
 builder.Services.AddHttpHarness();
+if (builder.Configuration.GetValue<bool>("AgnoAdvisory:Enabled"))
+{
+    _ = AdvisoryTransport.Endpoint(builder.Configuration);
+    if (builder.Configuration["AgnoAdvisory:TokenFile"] is not { Length: > 0 } credentialPath || !File.Exists(credentialPath))
+        throw new InvalidOperationException("Configure an accessible worker-only advisory credential file before startup.");
+    builder.Services.AddAgnoAdvisoryWorker();
+}
 if (builder.Configuration.GetValue<bool>("AgentGateway:WorkerEnabled"))
 {
     if (!builder.Configuration.GetValue<bool>("AgentGateway:Enabled"))

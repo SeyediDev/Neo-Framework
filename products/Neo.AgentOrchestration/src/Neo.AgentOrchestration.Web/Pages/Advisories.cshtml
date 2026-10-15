@@ -1,0 +1,38 @@
+@page "/work/{organizationId:guid}/{workspaceId:guid}/items/{id:guid}/advisories"
+@model Neo.AgentOrchestration.Web.Pages.AdvisoriesModel
+@{ ViewData["Title"] = "مشاورهٔ خصوصی"; }
+<div class="page-heading"><div><p class="eyebrow">فضای خصوصی شما</p><h1>یک نظر دوم برای قدم بعدی</h1><p>بدون دسترسی به کد، فرمان‌های سرور یا انتشار.</p></div>
+<a class="button secondary" asp-page="/Item" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@Model.Id">بازگشت به کار</a></div>
+@if (Model.Error is not null) { <div role="alert" class="notice">@Model.Error</div> }
+@if (Model.Item is {} item) {
+<section class="panel"><h2>@item.Title</h2><p>فقط متنی که در کادر زیر می‌نویسید به مشاور Agno ارسال می‌شود. شرح، سابقه و گفت‌وگوی شما خودکار ارسال نمی‌شوند.</p>
+<p class="small">درخواست و پیشنهاد در پنل فقط برای حساب شما قابل مشاهده است؛ اپراتورهای مجاز زیرساخت به دادهٔ ذخیره‌شده دسترسی فنی دارند. اطلاعات محرمانه یا رمز وارد نکنید.</p>
+@if (Model.HasOutstanding) { <div class="notice" role="status">یک درخواست باز دارید. وضعیت آن را در پایین بررسی کنید؛ درخواست دیگری خودکار ارسال نمی‌شود.</div> }
+else if (!Model.SubmissionEnabled) { <div class="notice">مشاوره برای این پروژه هنوز فعال نشده است. درخواست‌های قبلی شما همچنان قابل مشاهده‌اند.</div> }
+else if (!item.IsArchived && item.Status != "Cancelled") {
+<form method="post" asp-page-handler="Create" autocomplete="off">
+<input type="hidden" name="RequestId" value="@Model.RequestId" /><input type="hidden" name="Version" value="@item.Version" />
+<label for="advisory-brief">دربارهٔ چه چیزی پیشنهاد می‌خواهید؟</label>
+<textarea id="advisory-brief" name="Brief" rows="5" maxlength="2000" required aria-describedby="brief-help">@Model.Brief</textarea>
+<p id="brief-help" class="small">هدف، محدودیت و پرسش مشخص را بنویسید؛ حداکثر ۲۰۰۰ نویسه. مهلت درخواست ۳ دقیقه از زمان ثبت است. مدل محلی ممکن است کند یا کم‌کیفیت باشد.</p>
+<label class="check"><input type="checkbox" name="Consent" value="true" required />ارسال همین متن کوتاه به مشاور محلی VPS را اجازه می‌دهم.</label>
+<button>دریافت پیشنهاد خصوصی</button>
+</form> }
+</section>
+<section aria-labelledby="advisory-history"><div class="page-heading"><h2 id="advisory-history">درخواست‌های شما</h2><a class="button secondary" asp-page="/Advisories" asp-route-organizationId="@Model.OrganizationId" asp-route-workspaceId="@Model.WorkspaceId" asp-route-id="@Model.Id">بررسی آخرین وضعیت</a></div>
+@if (Model.Requests.Count == 0) { <p class="muted">هنوز درخواستی ثبت نکرده‌اید.</p> }
+@foreach (var r in Model.Requests) {
+<article class="panel"><h3>@Neo.AgentOrchestration.Web.Pages.AdvisoriesModel.State(r.State)</h3>
+<p class="small"><time dir="ltr" datetime="@r.CreatedAtUtc.ToString("O")">@r.CreatedAtUtc.ToString("u")</time></p>
+@if (r.WorkItemVersion != item.Version) { <p class="notice">این کار پس از ثبت درخواست تغییر کرده است؛ پیشنهاد را با وضعیت جدید تطبیق دهید.</p> }
+<details><summary>متن ارسالی و جزئیات درخواست</summary><div class="prose">@r.Brief</div><p class="small">شناسه: <span dir="ltr">@r.Id</span> · مهلت: <time dir="ltr">@r.DeadlineUtc.ToString("u")</time></p></details>
+@if (r.Draft is not null) { <div class="prose" data-testid="advisory-draft">@r.Draft</div><p class="notice">این فقط پیشنهاد مدل است؛ مدرک اجرای کد، نتیجهٔ تست یا تأیید مستقل نیست. پیش از استفاده بررسی‌اش کنید.</p> }
+@if (r.State == "Held") { <p>نتیجهٔ ارسال قطعی نیست. برای جلوگیری از مصرف تکراری، درخواست دوباره ارسال نمی‌شود. شناسهٔ بالا را برای بررسی به اپراتور بدهید.</p> }
+@if (r.CancelRequested && r.State is "Submitting" or "Held") { <p role="status">درخواست لغو ثبت شد؛ توقف پردازش مدل تأیید نشده است. نتیجه در پنل نمایش داده نخواهد شد.</p> }
+<p class="small">توکن ورودی: @(r.InputTokens?.ToString("N0") ?? "نامعلوم") · خروجی: @(r.OutputTokens?.ToString("N0") ?? "نامعلوم") · مدل: @(r.Model ?? "نامعلوم")</p>
+@if (r.StartedAtUtc is {} started && r.FinishedAtUtc is {} ended) { <p class="small">زمان سپری‌شدهٔ ارسال: @((ended-started).TotalSeconds.ToString("N1")) ثانیه</p> }
+@if (!r.CancelRequested && r.State is "Queued" or "Submitting" or "Held" or "Draft") {
+<form method="post" asp-page-handler="Cancel"><input type="hidden" name="AdvisoryId" value="@r.Id" /><input type="hidden" name="Version" value="@r.Version" /><button class="secondary">@(r.State == "Draft" ? "کنار گذاشتن پیشنهاد" : "درخواست لغو")</button></form>
+}
+</article> }
+</section> }

@@ -70,6 +70,23 @@ public sealed class ProjectDeletionTests
         }
         await new SqlDurableWorkStore(f.Factory, f.Clock).ApplyInboxAsync(f.Scope,
             new(parentId, "fixture", "receipt", "{}"), (_, _) => Task.CompletedTask, Ct);
+        // Populate the private dependency too. Cancel before any native call,
+        // then acknowledge its existing durable delivery through the Neo engine.
+        var advisory = new Neo.AgentOrchestration.Infrastructure.Advisory.SqlAdvisoryRequests(f.Factory, f.Clock, SqlAdvisoryTests.Config(f));
+        var snapshot = (await f.Handlers.Handle(new GetWorkItem(f.Scope, parentId), Ct)).Item;
+        var request = await advisory.CreateAsync(f.Scope, parentId, f.Actor,
+            new(Guid.NewGuid(), snapshot.Version, "Synthetic project-deletion advisory", true), Ct);
+        await advisory.CancelAsync(f.Scope, request.Id, f.Actor, request.Version, Ct);
+        await using (var db = f.Factory.CreateDbContext())
+        {
+            var delivery = await db.Deliveries.SingleAsync(x => x.WorkItemId == parentId && x.Kind == WorkDeliveryKind.SendAdvisoryRequest, Ct);
+            var engine = new Neo.Infrastructure.Features.Outbox.EfOutboxStore<OrchestrationDbContext>(db);
+            var lease = Guid.NewGuid();
+            Assert.NotNull(await engine.ClaimDispatchAsync(delivery.OutboxId, lease, TimeSpan.FromMinutes(5), Ct));
+            await engine.CompleteDispatchAsync(delivery.OutboxId, lease, "fixture-advisory", null, Ct);
+            await new SqlWorkDeliveryExecutor(f.Factory).ExecuteAsync(delivery.OutboxId, (_, _, _) => Task.CompletedTask, Ct,
+                async (operation, token) => { Assert.Null(await advisory.BeginAsync(operation, token)); });
+        }
         var store = Store(f); var preview = await store.PreviewAsync(f.Scope, f.Project.Id, Ct);
         Assert.True(preview.CanDelete); Assert.Equal(5, preview.Records["WorkItems"]);
         Assert.Equal(1, preview.Subtasks); Assert.Equal(1, preview.WorkItemTypes["UserStory"]);
@@ -82,6 +99,7 @@ public sealed class ProjectDeletionTests
         Assert.Empty(await verify.WorkItems.Where(x => x.ProjectId == f.Project.Id).ToArrayAsync(Ct));
         Assert.Empty(await verify.AgentRuns.Where(x => x.ProjectId == f.Project.Id).ToArrayAsync(Ct));
         Assert.Empty(await verify.Deliveries.Where(x => x.ProjectId == f.Project.Id).ToArrayAsync(Ct));
+        Assert.Empty(await verify.Set<Neo.AgentOrchestration.Domain.Advisory.AdvisoryRequest>().Where(x => x.ProjectId == f.Project.Id).ToArrayAsync(Ct));
         Assert.True(await verify.Projects.AnyAsync(x => x.Id == otherId, Ct));
         Assert.Single(await verify.WorkItems.Where(x => x.ProjectId == otherId).ToArrayAsync(Ct));
         Assert.True(await verify.Set<ProjectTemplate>().AnyAsync(x => x.Id == templateId, Ct));

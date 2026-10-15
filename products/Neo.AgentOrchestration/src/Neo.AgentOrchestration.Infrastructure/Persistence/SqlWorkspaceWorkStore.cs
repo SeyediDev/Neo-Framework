@@ -173,6 +173,8 @@ public static class PersistenceRegistration
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IDurableWorkStore, SqlDurableWorkStore>();
         services.AddScoped<SqlWorkDeliveryExecutor>();
+        services.AddScoped<Advisory.SqlAdvisoryRequests>();
+        services.AddScoped<Neo.AgentOrchestration.Application.Advisory.IAdvisoryRequests>(p => p.GetRequiredService<Advisory.SqlAdvisoryRequests>());
         return services;
     }
 }

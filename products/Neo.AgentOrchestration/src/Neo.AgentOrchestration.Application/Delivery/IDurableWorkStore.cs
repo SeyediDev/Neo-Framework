@@ -5,7 +5,7 @@ using Neo.Application.Features.Outbox.Dto;
 
 namespace Neo.AgentOrchestration.Application.Delivery;
 
-public enum WorkDeliveryKind : byte { EvaluateWorkflow = 1, DispatchAgent = 2, ReceiveSimulationResult = 3, SendHarnessRequest = 4 }
+public enum WorkDeliveryKind : byte { EvaluateWorkflow = 1, DispatchAgent = 2, ReceiveSimulationResult = 3, SendHarnessRequest = 4, SendAdvisoryRequest = 5 }
 
 // Source is an authenticated producer/operation namespace, not arbitrary caller
 // authority. Payload is fingerprinted, never stored by the delivery ledger.

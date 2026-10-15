@@ -36,7 +36,7 @@ public sealed class SqlWorkDeliveryExecutor(IDbContextFactory<OrchestrationDbCon
         var execution = new WorkDeliveryExecution(operation.Id, new(operation.OrganizationId, operation.WorkspaceId),
             operation.ProjectId, operation.WorkItemId, operation.WorkItemVersion, operation.Kind, operation.AgentRunId);
         var externalFailed = false;
-        if (operation.Kind == WorkDeliveryKind.SendHarnessRequest)
+        if (operation.Kind is WorkDeliveryKind.SendHarnessRequest or WorkDeliveryKind.SendAdvisoryRequest)
         {
             try
             {

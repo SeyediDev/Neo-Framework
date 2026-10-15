@@ -86,6 +86,15 @@ does not add a dispatch/MCP tool, independent reviewer, coding authority or task
 completion evidence. Use minimal reviewed briefs, not raw chats; model proposals
 require validation. See `docs/AGNO-ADVISORY.md`; do not start jobs from green health.
 
+Task-linked private advisory requests are a separate opt-in API/Web workflow, not
+`neo_run_start` or a new MCP dispatch tool. Read `docs/AGNO-ADVISORY.md` before using
+it. Submit only the explicitly reviewed brief with consent; preserve the original
+request ID/body on uncertain intake retries. A Held native submission must not be
+resent: Agno supplies no declared idempotency guarantee. Advisory counters stay on
+the private request, never also in manual task/run usage. A draft changes no task
+ownership, state, approval or execution evidence. Verify installation/migration and
+the advisory-only worker lane before claiming this workflow is available live.
+
 If ownership or the board cannot be established, continue safe read-only diagnosis
 or independent authorized work, not unclaimed edits or a second offline board.
 

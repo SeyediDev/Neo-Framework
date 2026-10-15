@@ -22,6 +22,128 @@ namespace Neo.AgentOrchestration.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Neo.AgentOrchestration.Domain.Advisory.AdvisoryRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Brief")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<bool>("CancelRequested")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DeadlineUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("DeliveryOperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Draft")
+                        .HasMaxLength(12000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Fingerprint")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<DateTimeOffset?>("FinishedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("InputTokens")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Model")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("NativeRunId")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("OutputTokens")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<Guid>("RequestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RequesterChatId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .UseCollation("Latin1_General_100_BIN2");
+
+                    b.Property<string>("RequesterId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .UseCollation("Latin1_General_100_BIN2");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTimeOffset?>("StartedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<byte>("State")
+                        .HasColumnType("tinyint");
+
+                    b.Property<Guid>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WorkItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WorkItemVersion")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WorkspaceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeliveryOperationId")
+                        .IsUnique();
+
+                    b.HasIndex("WorkItemId", "ProjectId");
+
+                    b.HasIndex("DeliveryOperationId", "WorkItemId", "ProjectId");
+
+                    b.HasIndex("ProjectId", "WorkspaceId", "OrganizationId");
+
+                    b.HasIndex("WorkspaceId", "RequesterId", "RequestId")
+                        .IsUnique();
+
+                    b.HasIndex("WorkspaceId", "WorkItemId", "RequesterId", "CreatedAtUtc");
+
+                    b.ToTable("AdvisoryRequests", "nao", t =>
+                        {
+                            t.HasCheckConstraint("CK_AdvisoryRequests_State", "[State] BETWEEN 1 AND 7");
+
+                            t.HasCheckConstraint("CK_AdvisoryRequests_Usage", "([InputTokens] IS NULL OR [InputTokens]>=0) AND ([OutputTokens] IS NULL OR [OutputTokens]>=0)");
+                        });
+                });
+
             modelBuilder.Entity("Neo.AgentOrchestration.Domain.Agents.AgentProfile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1453,6 +1575,30 @@ namespace Neo.AgentOrchestration.Infrastructure.Persistence.Migrations
                     b.HasIndex("OutboxState", "NextAttemptAtUtc", "DeliveryLeaseUntilUtc");
 
                     b.ToTable("OutboxMessages", "nao");
+                });
+
+            modelBuilder.Entity("Neo.AgentOrchestration.Domain.Advisory.AdvisoryRequest", b =>
+                {
+                    b.HasOne("Neo.AgentOrchestration.Domain.Work.WorkItem", null)
+                        .WithMany()
+                        .HasForeignKey("WorkItemId", "ProjectId")
+                        .HasPrincipalKey("Id", "ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Neo.AgentOrchestration.Infrastructure.Delivery.DeliveryRecord", null)
+                        .WithMany()
+                        .HasForeignKey("DeliveryOperationId", "WorkItemId", "ProjectId")
+                        .HasPrincipalKey("Id", "WorkItemId", "ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Neo.AgentOrchestration.Domain.Projects.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId", "WorkspaceId", "OrganizationId")
+                        .HasPrincipalKey("Id", "WorkspaceId", "OrganizationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Neo.AgentOrchestration.Domain.Agents.AgentProfile", b =>
