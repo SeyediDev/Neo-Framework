@@ -57,3 +57,27 @@ scope مالی downstream نداریم. این اصلاح scope، audience یا 
 رد symlink/reparse point و نهایی‌سازی atomic بدون overwrite استفاده می‌کند.
 ۸ آزمون بسته با publish مصنوعی موفق شدند؛ این آزمون‌ها جای build و بررسی
 بستهٔ واقعی روی لینوکس را نمی‌گیرند.
+
+## انتشار توسعه و پذیرش
+
+- اصلاح پاسخ: کامیت `f1ef75ceea3f5e62497e4b88b0b4a1909a8a6249`.
+- اصلاح ZIP و release فعال: `394fd730b618372d1b083d34e7f94c5d5f4518ba`.
+- SHA256 بستهٔ قابل‌حمل:
+  `b351dc58be03b46fff723068989be76b302f9d84070a7b14ba14433d8c3d66e5`.
+- manifest همان commit را دارد و `containsCredentials=false` است؛ appsettings
+  بسته فاقد secret است. محتوا از سورس isolated و ابزار کامیت‌شده ساخته شد؛
+  فایل‌های dirty Workspace در بسته نیستند.
+- فعال‌سازی پس از تطبیق checksum، مسیرهای ZIP، manifest، نبود secret و release
+  قبلی به‌صورت atomic انجام شد. فقط `fanasa-unified-portal@development` بازراه‌اندازی
+  شد. release قبلی `77f043fb2ba2f892022b00bc03ba1e6f696a6d96` برای rollback محفوظ است.
+- probe VPS، health، `no-store`، عدم افشای سازمان/محصول به ناشناس، script کاتالوگ
+  و ۱۴ mount مرکز را تأیید کرد. اتصال کاتالوگ همچنان `NotConfigured` است.
+- HTTPS رسمی `https://hub.fanasa.net.local/health/live` از رایانه 200/Healthy و
+  `/?handler=Workspace` برابر 200، `no-store`، `SignInRequired`، صفر
+  سازمان/محصول و discovery برابر `NotConfigured` بود. اجرای sandbox ابتدا رد
+  اتصال داد؛ همان درخواست بدون تغییر TLS/trust در اجرای مجاز موفق شد.
+
+۱۴۶ بررسی وب/HTTP/JS و ۸ آزمون بسته، مجموعاً ۱۵۴ بررسی موفق این مرحله بودند.
+حساب واقعی دارای grant، خرید، گزارش مصرف و اتصال مالی زنده در این انتشار
+پذیرفته نشده‌اند؛ وابستگی مرکزی 404 و تنظیم هویت انسانی مالی همچنان باقی‌اند.
+سامانه مرکزی، SSO، grantها، production، بانک و تنظیمات محیطی تغییر نکردند.
