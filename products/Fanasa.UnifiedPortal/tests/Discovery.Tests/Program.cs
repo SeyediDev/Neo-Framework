@@ -118,6 +118,24 @@ IndexModel Page(PlatformWorkspace workspace, bool signedIn)
 var page = Page(new(CatalogStatus.Ready, [org], [allowed], org.Id), true);
 await page.OnGetAsync(org.Id, default);
 Check(page.ServiceCatalog.Services.Single().LaunchUrl == allowed.Url && page.Response.Headers.CacheControl == "no-store", "page joins metadata with its verified workspace and does not cache grants");
+var ajax = (Microsoft.AspNetCore.Mvc.JsonResult)await page.OnGetWorkspaceAsync(org.Id, default);
+var ajaxJson = JsonSerializer.Serialize(ajax.Value, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+using (var ajaxDocument = JsonDocument.Parse(ajaxJson))
+{
+    var card = ajaxDocument.RootElement.GetProperty("products")[0];
+    Check(card.EnumerateObject().Select(x => x.Name).ToHashSet().SetEquals(["id", "key", "displayName", "center", "url"]),
+        "AJAX workspace products expose only the five browser card fields");
+    Check(card.GetProperty("url").GetString() == allowed.Url && card.GetProperty("id").GetGuid() == allowed.Id,
+        "limited AJAX cards retain verified product identity and launch URL");
+}
+Check(!ajaxJson.Contains("private-repository") && !ajaxJson.Contains("private-owner") && !ajaxJson.Contains("do-not-expose")
+    && !ajaxJson.Contains("\"attributes\"") && !ajaxJson.Contains("\"audience\"") && !ajaxJson.Contains("\"tenantId\""),
+    "full AJAX response omits registry internals and arbitrary product attributes");
+var unsafeAjaxPage = Page(new(CatalogStatus.Ready, [org], [allowed with { Url = "javascript:alert(1)" }], org.Id), true);
+var unsafeAjax = (Microsoft.AspNetCore.Mvc.JsonResult)await unsafeAjaxPage.OnGetWorkspaceAsync(org.Id, default);
+using (var unsafeJson = JsonDocument.Parse(JsonSerializer.Serialize(unsafeAjax.Value, new JsonSerializerOptions(JsonSerializerDefaults.Web))))
+    Check(unsafeJson.RootElement.GetProperty("products")[0].GetProperty("url").ValueKind == JsonValueKind.Null,
+        "unsafe registry launch URL is removed from the server AJAX contract");
 page = Page(new(CatalogStatus.Ready, [org], [allowed], otherOrg), true);
 await page.OnGetAsync(org.Id, default);
 Check(page.ServiceCatalog.Services.Single().LaunchUrl is null && page.Products.Count == 0, "mismatched consumer envelope never enables catalog launch");

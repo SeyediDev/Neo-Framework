@@ -55,6 +55,15 @@ static class CatalogHttpChecks
             Check(permittedCard.Contains("class=\"service-launch\"") && permittedCard.Contains("href=\"" + permitted.Url + "\""), "server-rendered granted service has launch");
             Check(deniedCard.Length > 0 && !deniedCard.Contains("service-launch") && deniedCard.Contains("service-request"), "server-rendered ungranted service has request, no launch");
             Check(html.Contains("data-center=\"fanasa.cloud\"") && html.Contains("data-services=\"fanasa.cloud\""), "cloud service has the official center mount");
+            using var signedIn = await client.GetAsync("/?handler=Workspace&tenantId=" + organization.Id);
+            var signedInJson = await signedIn.Content.ReadAsStringAsync();
+            using var signedInDocument = JsonDocument.Parse(signedInJson);
+            var signedInCard = signedInDocument.RootElement.GetProperty("products")[0];
+            Check(signedIn.Headers.CacheControl?.NoStore == true && signedInCard.EnumerateObject().Select(x => x.Name).ToHashSet()
+                .SetEquals(["id", "key", "displayName", "center", "url"]), "authenticated HTTP workspace returns only no-store browser card fields");
+            Check(!signedInJson.Contains("private-repository") && !signedInJson.Contains("private-owner") && !signedInJson.Contains("do-not-expose")
+                && signedInCard.GetProperty("url").GetString() == permitted.Url,
+                "real loopback HTTP serialization excludes private product metadata while preserving authorized launch");
             using var response = await client.GetAsync("/Index?handler=Workspace&synthetic=guest");
             var wire = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
             Check(response.Headers.CacheControl?.NoStore == true && wire.GetProperty("organizations").GetArrayLength() == 0, "anonymous HTTP projection has no private organizations and is no-store");

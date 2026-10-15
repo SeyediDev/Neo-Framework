@@ -21,7 +21,9 @@ public sealed class IndexModel(IPlatformCatalogClient catalog, IServiceDiscovery
     {
         await LoadPageAsync(tenantId, cancellationToken);
         return new JsonResult(new { status = Status.ToString(), organizations = Organizations,
-            activeOrganizationId = ActiveOrganizationId, activeOrganizationName = ActiveOrganizationName, products = Products, message = Message, presentation = Presentation,
+            activeOrganizationId = ActiveOrganizationId, activeOrganizationName = ActiveOrganizationName,
+            products = Products.Select(x => new WorkspaceProductCard(x.Id, x.Key, x.DisplayName, x.Center, SafeProductUrl(x.Url))).ToArray(),
+            message = Message, presentation = Presentation,
             serviceCatalog = ServiceCatalog });
     }
 
@@ -81,6 +83,10 @@ public sealed class IndexModel(IPlatformCatalogClient catalog, IServiceDiscovery
     public static string? SafeProductUrl(string? url) => Uri.TryCreate(url, UriKind.Absolute, out var uri)
         && uri.Scheme is "https" or "http" && string.IsNullOrEmpty(uri.UserInfo) ? uri.AbsoluteUri : null;
 }
+
+// Browser allow-list: central registry records can contain internal metadata and
+// arbitrary attributes. Never serialize the transport entity into an AJAX response.
+public sealed record WorkspaceProductCard(Guid Id, string Key, string DisplayName, string Center, string? Url);
 
 public sealed record WorkspacePresentation(string CountLabel, string OrganizationPlaceholder, string EmptyTitle, bool NeedsSignIn)
 {
