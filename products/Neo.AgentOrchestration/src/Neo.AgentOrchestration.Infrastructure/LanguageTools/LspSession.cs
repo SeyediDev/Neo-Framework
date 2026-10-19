@@ -203,7 +203,11 @@ public sealed class LspSession(Stream input, Stream output, string workspace) : 
         if (method.GetString() == "workspace/projectInitializationComplete") { roslynReady = true; return; }
         if (method.GetString() != "textDocument/publishDiagnostics" || documentUri is null) return;
         var data = message.GetProperty("params");
-        if (data.GetProperty("uri").GetString() != documentUri) return;
+        string publishedPath;
+        try { publishedPath = WorkspacePath.ResolveUri(root, data.GetProperty("uri").GetString()!); }
+        catch (Exception ex) when (ex is ArgumentException or UnauthorizedAccessException or IOException) { return; }
+        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        if (!string.Equals(publishedPath, WorkspacePath.ResolveUri(root, documentUri), comparison)) return;
         // Unversioned push reports cannot establish freshness for this immutable snapshot.
         if (!data.TryGetProperty("version", out var version) || version.ValueKind != JsonValueKind.Number || version.GetInt32() != 1) return;
         published = data.GetProperty("diagnostics").Clone();
@@ -259,7 +263,12 @@ public static class WorkspacePath
         if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) || !uri.IsFile || uri.IsUnc ||
             uri.Host.Length != 0 || uri.Query.Length != 0 || uri.Fragment.Length != 0)
             throw new UnauthorizedAccessException("Nonlocal document URI.");
-        return Resolve(root, Path.GetRelativePath(root, uri.LocalPath));
+        var localPath = uri.LocalPath;
+        // Encoded Windows drive colon (file:///e%3A/...) is exposed as /e:/ by System.Uri.
+        if (OperatingSystem.IsWindows() && localPath.Length > 3 && localPath[0] == '/' &&
+            char.IsAsciiLetter(localPath[1]) && localPath[2] == ':' && localPath[3] == '/')
+            localPath = localPath[1..];
+        return Resolve(root, Path.GetRelativePath(root, localPath));
     }
     private static void RejectLinks(string path)
     {

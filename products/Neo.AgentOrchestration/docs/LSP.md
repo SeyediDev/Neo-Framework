@@ -89,6 +89,31 @@ long-running cancellation. An inferred strict/checkJs profile is used without a
 project config; its diagnostics do not replace the frontend's build/lint/test.
 See the tool README for limits and the independent freshness regression test.
 
+
+## Python, Django and FastAPI with Pyright
+
+Pyright 1.1.414 was tested on Windows with Python 3.12, Django 5.2.18 and
+FastAPI 0.143.3 using six controlled healthy/error fixtures. Pin the server
+version in a private tool package and retain its lockfile. Install dependencies
+explicitly with lifecycle scripts disabled; nothing is downloaded by the probe.
+Configure the absolute Node executable and arguments consisting of the absolute
+`pyright/dist/pyright-langserver.js` path followed by `--stdio`. Use
+`languageId: "python"` and `readinessProfile: "none"` in the configuration above.
+
+Set `venvPath` and `venv` in the workspace's `pyrightconfig.json` to the approved
+Python environment so framework imports resolve. Project package installation
+and configuration remain explicit operator actions. The client resolves encoded
+Windows drive URIs through the existing local workspace/link checks before
+matching versioned diagnostics; equivalent URIs do not grant broader file access.
+
+The fixture acceptance covers versioned diagnostics, document hashes, cross-file
+definition/references and UTF-16 positions after Persian/emoji. It does not accept
+a real application's full type health, Django ORM/template behavior, HTTP server
+startup, migrations or a Python execution profile in the portal launcher.
+`python-lsp-server` 1.13.2 and 1.15.0 returned code-point reference columns after
+emoji in the tested fixtures and were not accepted for this UTF-16 contract.
+
+
 ## Evidence and panel
 
 The JSON report contains document hash/version, observation time, diagnostic counts
