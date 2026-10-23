@@ -24,12 +24,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with: { dotnet-version: '10.0.x' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
       - name: Restore
         run: dotnet restore products/Fanasa.UnifiedPortal/Fanasa.UnifiedPortal.slnx
       - name: Build
         run: dotnet build products/Fanasa.UnifiedPortal/Fanasa.UnifiedPortal.slnx -c Release --no-restore -m:1
       - name: Workspace isolation and catalog checks
         run: dotnet run --project products/Fanasa.UnifiedPortal/tests/Portal.Tests/Portal.Tests.csproj -c Release --no-build
+      - name: Portal and Workspace browser-state unit checks
+        run: |
+          node --test products/Fanasa.UnifiedPortal/tests/portal-client.test.cjs products/Fanasa.UnifiedPortal/tests/service-catalog.test.cjs products/Fanasa.UnifiedPortal/tests/workspace-ui.test.cjs products/Fanasa.UnifiedPortal/tests/workspace-transport.test.cjs
+      - name: Published service transport checks
+        run: dotnet run --project products/Fanasa.UnifiedPortal/tests/Discovery.Tests/Discovery.Tests.csproj -c Release --no-build -- --http
       - name: Consumer usage JSON contract checks
         run: dotnet run --project products/Fanasa.UnifiedPortal/tests/UsageProjection.Tests/UsageProjection.Tests.csproj -c Release --no-build
       - name: Consumer usage transport checks

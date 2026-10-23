@@ -10,6 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
+if (args.Contains("--workspace-preview"))
+{
+    await WorkspacePreview.RunAsync(args.Contains("--synthetic-admin-review"));
+    return;
+}
+
 var checks = 0;
 void Check(bool valid, string name) { if (!valid) throw new Exception(name); Console.WriteLine("PASS " + name); checks++; }
 var first = new PlatformOrganizationView(Guid.NewGuid(), "سازمان اول", "one");
@@ -136,6 +142,7 @@ Check(singleTenant.ProductOrganizationId == first.Id && singleTenant.Products.Co
 await model.OnGetAsync(second.Id, default);
 Check(model.Products.Count == 0 && model.Status == CatalogStatus.Unavailable,
     "page rejects mismatched consumer envelope as a failure, not a successful empty catalog");
+checks += await WorkspaceTests.RunAsync();
 Console.WriteLine($"{checks} checks passed.");
 
 // Explicit local-only preview of authorized UI states. Never part of the web product.
@@ -147,6 +154,8 @@ if (args.Contains("--preview"))
         ContentRootPath = contentRoot, ApplicationName = typeof(PortalHost).Assembly.GetName().Name, EnvironmentName = "Development"
     });
     builder.Services.AddSingleton<IPlatformCatalogClient>(new WorkspaceStub(workspace));
+    builder.Services.AddSingleton<IWorkspaceJourneySource, NotConnectedWorkspaceJourneySource>();
+    builder.Services.AddAuthorization();
     builder.Services.AddRazorPages().AddApplicationPart(typeof(PortalHost).Assembly);
     var app = builder.Build();
     app.UseStaticFiles();
@@ -157,6 +166,7 @@ if (args.Contains("--preview"))
         ], "Preview"));
         await next();
     });
+    app.UseAuthorization();
     app.MapRazorPages();
     var previewPort = int.TryParse(Environment.GetEnvironmentVariable("PORTAL_PREVIEW_PORT"), out var port) && port is > 1024 and <= 65535 ? port : 5183;
     await app.RunAsync($"http://127.0.0.1:{previewPort}");

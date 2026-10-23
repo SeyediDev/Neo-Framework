@@ -1,0 +1,145 @@
+@page
+@model Fanasa.UnifiedPortal.Web.Pages.WorkspaceModel
+@{
+    ViewData["Title"] = "خدمات سازمان";
+    var mode = Model.IsPreview ? "synthetic-preview" : "connected";
+}
+<link rel="stylesheet" href="~/workspace.css" asp-append-version="true" />
+
+<div class="service-workspace" id="service-workspace" data-mode="@mode" data-is-admin="@(Model.IsAdmin ? "true" : "false")">
+    <header class="workspace-heading">
+        <h1>خدمات سازمان</h1>
+        @if (Model.IsPreview)
+        {
+            <span class="workspace-sample-badge" id="workspace-mode">دادهٔ نمونه</span>
+        }
+    </header>
+
+    <div class="workspace-context">
+        <form method="get" action="/Workspace" id="workspace-organization-form">
+            <div class="workspace-field">
+                <label for="workspace-tenant">سازمان فعال</label>
+                <select id="workspace-tenant" name="tenantId" aria-describedby="workspace-message" disabled="@(Model.Organizations.Count == 0)">
+                    <option value="">سازمان خود را انتخاب کنید</option>
+                    @foreach (var organization in Model.Organizations)
+                    {
+                        <option value="@organization.Id" selected="@(organization.Id == Model.ActiveOrganizationId)">@organization.Name</option>
+                    }
+                </select>
+            </div>
+            <button class="button button-secondary" id="workspace-organization-submit" type="submit" disabled="@(Model.Organizations.Count == 0)">نمایش <span aria-hidden="true">←</span></button>
+            <button class="workspace-refresh" id="workspace-refresh" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.8-1L20 9M4 15l2.1 3A7 7 0 0 0 17.9 17"/></svg>تازه‌سازی</button>
+        </form>
+    </div>
+    <p id="workspace-message" class="workspace-message" role="status" aria-live="polite">@(!string.IsNullOrWhiteSpace(Model.ActiveOrganizationName) ? $"فضای کار {Model.ActiveOrganizationName}" : "برای مشاهدهٔ فضای کار، سازمان خود را انتخاب کنید.")</p>
+
+    <noscript><div class="workspace-noscript">برای جست‌وجو و نمایش بخش‌های این فضای کار، جاوااسکریپت مرورگر لازم است. سامانه‌های مجاز خود را در <a href="/#workspace">پنجره واحد</a> ببینید.</div></noscript>
+
+    <div class="workspace-metrics" aria-label="خلاصه فضای کار">
+        <div class="workspace-metric"><span>سرویس‌های فعال</span><strong id="workspace-services-count">—</strong><small>سامانه‌های در دسترس این سازمان</small></div>
+        <div class="workspace-metric"><span>درخواست‌های در انتظار</span><strong id="workspace-requests-count">—</strong><small>در انتظار بررسی درخواست سرویس</small></div>
+        <div class="workspace-metric is-accent"><span>هزینهٔ مصرف این ماه</span><strong id="workspace-consumption-amount">—</strong><small id="workspace-consumption-caption">گزارش سازمان انتخاب‌شده</small></div>
+        <div class="workspace-metric"><span>درخواست‌های عرضهٔ من</span><strong id="workspace-publish-count">—</strong><small>برای قرارگرفتن سرویس در کاتالوگ</small></div>
+    </div>
+
+    <div class="workspace-tabs" role="tablist" aria-label="بخش‌های فضای کار">
+        <button class="workspace-tab" id="tab-catalog" type="button" role="tab" aria-controls="panel-catalog" aria-selected="true" data-workspace-tab="catalog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>کاتالوگ خدمات</button>
+        <button class="workspace-tab" id="tab-requests" type="button" role="tab" aria-controls="panel-requests" aria-selected="false" tabindex="-1" data-workspace-tab="requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 4H5v17h14V4h-3"/><rect x="8" y="2" width="8" height="5" rx="1.5"/><path d="M8 12h8M8 16h5"/></svg>درخواست‌های من</button>
+        <button class="workspace-tab" id="tab-services" type="button" role="tab" aria-controls="panel-services" aria-selected="false" tabindex="-1" data-workspace-tab="services"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4m-3-10 2 2 4-4"/></svg>سرویس‌های فعال</button>
+        <button class="workspace-tab" id="tab-usage" type="button" role="tab" aria-controls="panel-usage" aria-selected="false" tabindex="-1" data-workspace-tab="usage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 3v17h17M8 16v-5M13 16V7M18 16v-8"/></svg>مصرف سازمان</button>
+        <button class="workspace-tab" id="tab-publish" type="button" role="tab" aria-controls="panel-publish" aria-selected="false" tabindex="-1" data-workspace-tab="publish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5zM3 13l9 5 9-5M3 18l9 5 9-5"/></svg>عرضهٔ سرویس من</button>
+        @if (Model.IsAdmin)
+        {
+            <button class="workspace-tab" id="tab-review" type="button" role="tab" aria-controls="panel-review" aria-selected="false" tabindex="-1" data-workspace-tab="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/></svg>کارتابل ادمین</button>
+        }
+    </div>
+
+    <section class="workspace-panel-body" id="panel-catalog" role="tabpanel" aria-labelledby="tab-catalog" data-workspace-panel="catalog">
+        <div class="workspace-panel-heading"><h2>کاتالوگ خدمات</h2></div>
+        <div class="workspace-notice" id="catalog-connection-notice" hidden="@(Model.IsPreview)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg>
+            <p>کاتالوگ در دسترس نیست. سرویس‌های فعال خود را در بخش بعد ببینید.</p>
+        </div>
+        <div class="workspace-tools">
+            <div class="workspace-field workspace-search"><label for="catalog-search">جست‌وجوی خدمت</label><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="catalog-search" type="search" placeholder="نام سرویس یا قابلیت موردنیاز…" autocomplete="off" /></div>
+            <div class="workspace-field"><label for="catalog-center">مرکز قابلیت</label><select id="catalog-center"><option value="">همهٔ مراکز</option></select></div>
+        </div>
+        <div class="workspace-grid" id="catalog-grid"></div>
+        <div class="workspace-empty" id="catalog-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17h7M17.5 14v7"/></svg></span><h3>کاتالوگ خدمات آمادهٔ نمایش نیست</h3><p>با اتصال کاتالوگ، خدمات قابل درخواست برای این سازمان در این بخش نمایش داده می‌شوند.</p><button class="button button-secondary" type="button" data-workspace-tab="services">مشاهدهٔ سرویس‌های فعال <span aria-hidden="true">←</span></button></div>
+    </section>
+
+    <section class="workspace-panel-body" id="panel-requests" role="tabpanel" aria-labelledby="tab-requests" data-workspace-panel="requests" hidden>
+        <div class="workspace-panel-heading"><h2>درخواست‌های من</h2></div>
+        <div class="workspace-notice" id="requests-connection-notice" hidden="@(Model.IsPreview)"><p>سابقهٔ درخواست‌ها در دسترس نیست.</p></div>
+        <div class="workspace-tools"><div class="workspace-field"><label for="request-status">وضعیت درخواست</label><select id="request-status"><option value="">همهٔ وضعیت‌ها</option><option value="pending">در انتظار بررسی</option><option value="approved">تأییدشده</option><option value="rejected">ردشده</option></select></div></div>
+        <div class="workspace-list" id="request-list"></div>
+        <div class="workspace-empty" id="requests-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4H5v17h14V4h-3"/><rect x="8" y="2" width="8" height="5" rx="1.5"/><path d="M8 12h8M8 16h5"/></svg></span><h3>درخواستی برای نمایش وجود ندارد</h3><p>پس از ثبت درخواست، مراحل بررسی و نتیجهٔ آن در اینجا نمایش داده می‌شود.</p><button class="button button-secondary" type="button" data-workspace-tab="catalog">رفتن به کاتالوگ خدمات <span aria-hidden="true">←</span></button></div>
+    </section>
+
+    <section class="workspace-panel-body" id="panel-services" role="tabpanel" aria-labelledby="tab-services" data-workspace-panel="services" hidden>
+        <div class="workspace-panel-heading"><h2>سرویس‌های فعال</h2><a class="workspace-inline-link" href="/#workspace">پنجرهٔ سامانه‌ها <span aria-hidden="true">←</span></a></div>
+        <div class="workspace-grid" id="active-services"></div>
+        <div class="workspace-empty" id="services-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span><h3>سرویس فعالی برای این حساب نمایش داده نشده است</h3><p>سازمان انتخاب‌شده و دسترسی خود را بررسی کنید. فعال‌شدن سرویس به دسترسی معتبر همان سازمان وابسته است.</p></div>
+    </section>
+
+    <section class="workspace-panel-body" id="panel-usage" role="tabpanel" aria-labelledby="tab-usage" data-workspace-panel="usage" hidden>
+        <div class="workspace-panel-heading"><h2>مصرف سازمان</h2><div class="workspace-field"><label for="usage-period">دورهٔ گزارش</label><select id="usage-period"><option value="current">این ماه</option><option value="previous">ماه قبل</option></select></div></div>
+        <div class="workspace-notice" id="usage-connection-notice" hidden="@(Model.IsPreview)"><p>گزارش مصرف در دسترس نیست.</p></div>
+        <p class="workspace-table-note" id="central-accounting-note" hidden="@(Model.AccountingUrl is null)">برای مشاهدهٔ گردش حساب و صورتحساب واقعی به مرکز راهبری بروید و سازمان موردنظر را از حساب‌های مجاز خود انتخاب کنید.</p>
+        <a class="button button-secondary" id="central-accounting-link" href="@Model.AccountingUrl" hidden="@(Model.AccountingUrl is null)">مشاهدهٔ حساب‌های مجاز در مرکز راهبری <span aria-hidden="true">←</span></a>
+        <div class="workspace-usage-summary" id="usage-summary"></div>
+        <div class="workspace-table-container" id="usage-table-container"><table class="workspace-table"><thead><tr><th scope="col">سرویس</th><th scope="col">شاخص مصرف</th><th scope="col">مقدار مصرف</th><th scope="col">هزینهٔ ثبت‌شده</th><th scope="col">دوره</th></tr></thead><tbody id="usage-rows"></tbody></table></div>
+        <div class="workspace-empty" id="usage-empty" hidden><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 3v17h17M8 16v-5M13 16V7M18 16v-8"/></svg></span><h3>گزارش مصرفی برای نمایش وجود ندارد</h3><p>پس از اتصال گزارش و ثبت مصرف، مقدار و هزینهٔ خدمات این سازمان در این بخش نمایش داده می‌شود.</p></div>
+        <p class="workspace-table-note" id="usage-table-note">هزینهٔ مصرف با وضعیت پرداخت و صورتحساب نهایی جداگانه بررسی می‌شود.</p>
+    </section>
+
+    <section class="workspace-panel-body" id="panel-publish" role="tabpanel" aria-labelledby="tab-publish" data-workspace-panel="publish" hidden>
+        <div class="workspace-panel-heading"><div><h2>عرضهٔ سرویس</h2><p>مشخصات سرویس را برای بررسی ارسال کنید.</p></div></div>
+        <div class="workspace-notice" id="publish-connection-notice" hidden="@(Model.IsPreview)"><p>ارسال درخواست عرضه فعلاً در دسترس نیست.</p></div>
+        <div class="workspace-publish-layout">
+            <div>
+                <form class="workspace-publish-form" id="publish-form">
+                    <div class="workspace-field"><label for="publish-name">نام سرویس</label><input id="publish-name" name="name" maxlength="120" required placeholder="نامی که در کاتالوگ نمایش داده می‌شود" /></div>
+                    <div class="workspace-field"><label for="publish-center">مرکز قابلیت اصلی</label><select id="publish-center" name="center" required><option value="">مرکز مناسب را انتخاب کنید</option></select><small>سرویس با یک مرکز اصلی معرفی می‌شود.</small></div>
+                    <div class="workspace-field workspace-field-wide"><label for="publish-url">نشانی رسمی سرویس</label><input id="publish-url" name="url" type="url" dir="ltr" maxlength="2048" required placeholder="https://service.example.com" /><small>نشانی قابل مراجعهٔ سامانه؛ اطلاعات محرمانه را در فرم وارد نکنید.</small></div>
+                    <div class="workspace-field workspace-field-wide"><label for="publish-description">این سرویس چه نیازی را پاسخ می‌دهد؟</label><textarea id="publish-description" name="description" maxlength="1000" required placeholder="قابلیت‌ها، کاربران هدف و شیوهٔ ارائهٔ خدمت را توضیح دهید."></textarea></div>
+                    <div class="workspace-publish-footer"><button class="button" id="publish-submit" type="submit" disabled="@(!Model.IsPreview)">ارسال درخواست عرضه <span aria-hidden="true">←</span></button></div>
+                </form>
+                <p class="workspace-form-message" id="publish-message" role="status" aria-live="polite"></p>
+            </div>
+        </div>
+        <section class="workspace-publication-history" aria-labelledby="publication-title"><h3 id="publication-title">درخواست‌های عرضهٔ من</h3><div class="workspace-list" id="publication-list"></div><div class="workspace-empty" id="publications-empty"><h3>درخواست عرضه‌ای برای نمایش وجود ندارد</h3><p>پس از ارسال درخواست، نتیجهٔ بررسی سرویس در اینجا نمایش داده می‌شود.</p></div></section>
+    </section>
+
+    @if (Model.IsAdmin)
+    {
+        <section class="workspace-panel-body" id="panel-review" role="tabpanel" aria-labelledby="tab-review" data-workspace-panel="review" hidden>
+            <div class="workspace-panel-heading"><h2>بررسی درخواست‌ها</h2></div>
+            <div class="workspace-tools"><div class="workspace-field"><label for="review-status">وضعیت بررسی</label><select id="review-status"><option value="pending">در انتظار بررسی</option><option value="">همهٔ وضعیت‌ها</option><option value="approved">تأییدشده</option><option value="rejected">ردشده</option></select></div></div>
+            <div class="workspace-list" id="review-list"></div><div class="workspace-empty" id="review-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/></svg></span><h3>درخواستی برای بررسی وجود ندارد</h3><p>درخواست‌های مربوط به سازمان انتخاب‌شده، پس از دریافت در اینجا نمایش داده می‌شوند.</p></div>
+        </section>
+    }
+
+    <dialog class="workspace-dialog" id="service-request-dialog" aria-labelledby="request-dialog-title" aria-describedby="request-dialog-description">
+        <div class="workspace-dialog-head"><h2 id="request-dialog-title">ثبت درخواست</h2><button class="workspace-dialog-close" type="button" data-close-dialog aria-label="بستن پنجره">×</button></div>
+        <div class="workspace-dialog-body">
+            <p id="request-dialog-description">طرح موردنظر و دلیل نیاز سازمان را مشخص کنید.</p>
+            <dl class="workspace-dialog-summary" id="request-dialog-summary"></dl>
+            <form id="service-request-form">
+                <div class="workspace-field"><label for="request-form-plan">طرح انتخابی</label><select id="request-form-plan" name="planId" required></select></div>
+                <div class="workspace-field" style="margin-top:16px"><label for="request-form-reason">دلیل درخواست</label><textarea id="request-form-reason" name="reason" maxlength="1000" required placeholder="چه نیازی دارید و چه کسانی در سازمان از این سرویس استفاده می‌کنند؟"></textarea><small>توضیح شما به بررسی درخواست کمک می‌کند.</small></div>
+                <p class="workspace-dialog-note">درخواست برای بررسی ارسال می‌شود.</p>
+                <p class="workspace-form-message" id="request-dialog-message" role="status" aria-live="polite"></p>
+                <div class="workspace-dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>انصراف</button><button class="button" id="request-dialog-submit" type="submit" disabled="@(!Model.IsPreview)">ثبت درخواست <span aria-hidden="true">←</span></button></div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog class="workspace-dialog" id="request-detail-dialog" aria-labelledby="request-detail-title">
+        <div class="workspace-dialog-head"><div><span class="eyebrow">پیگیری درخواست</span><h2 id="request-detail-title">جزئیات درخواست</h2></div><button class="workspace-dialog-close" type="button" data-close-dialog aria-label="بستن پنجره">×</button></div>
+        <div class="workspace-dialog-body"><div id="request-detail-body"></div><div class="workspace-dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>بستن</button></div></div>
+    </dialog>
+</div>
+<script id="workspace-bootstrap" type="application/json">@Html.Raw(Model.BootstrapJson)</script>
+<script src="~/workspace-transport.js" asp-append-version="true" defer></script>
+<script src="~/workspace.js" asp-append-version="true" defer></script>

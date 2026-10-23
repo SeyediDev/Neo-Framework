@@ -10,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddFanasaPlatformHttpClients();
 builder.Services.AddScoped<IPlatformCatalogClient, PlatformCatalogClient>();
 builder.Services.AddScoped<IServiceDiscoveryClient, ServiceDiscoveryClient>();
+builder.Services.AddScoped<IWorkspaceJourneySource, NotConnectedWorkspaceJourneySource>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
