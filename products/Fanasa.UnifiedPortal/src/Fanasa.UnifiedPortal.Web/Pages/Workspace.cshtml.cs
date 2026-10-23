@@ -19,6 +19,9 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
     public bool IsPreview => journeys.IsSyntheticPreview;
     public bool IsAdmin => IsPreview && User.Identity?.IsAuthenticated == true && User.IsInRole("PlatformAdmin");
     public CatalogStatus Status { get; private set; } = CatalogStatus.SignInRequired;
+    public string OrganizationPlaceholder => WorkspacePresentation.Create(Status, Organizations.Count,
+        ActiveOrganizationId.HasValue, 0).OrganizationPlaceholder;
+    public string Message { get; private set; } = "";
     public string? AccountingUrl { get; private set; }
     public string BootstrapJson { get; private set; } = "{}";
 
@@ -36,7 +39,7 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
         IReadOnlyList<WorkspaceActiveService> active = [];
         IReadOnlyCollection<PlatformProductView> authorizedProducts = [];
         WorkspaceJourneyData data = new([], [], [], WorkspaceUsage.NotConnected, Guid.Empty, "");
-        var message = "برای مشاهده خدمات سازمان وارد حساب شوید.";
+        Message = "برای مشاهده خدمات سازمان وارد حساب شوید.";
         if (!string.IsNullOrWhiteSpace(subject))
         {
             var workspace = await catalog.GetWorkspaceAsync(subject, cancellationToken, tenantId);
@@ -72,13 +75,14 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
                     data = new([], [], [], WorkspaceUsage.Unavailable, Guid.Empty, "");
                 }
             }
-            message = Status switch
+            Message = Status switch
             {
                 CatalogStatus.NotConfigured => "اتصال فهرست سازمان‌ها هنوز آماده نیست.",
                 CatalogStatus.Forbidden => "دسترسی به اطلاعات سازمان برقرار نشد.",
                 CatalogStatus.Unavailable => "اطلاعات سازمان دریافت نشد. دوباره تلاش کنید.",
                 CatalogStatus.SignInRequired => "نشست شما نیاز به تازه‌سازی دارد. دوباره وارد شوید.",
                 _ when Organizations.Count == 0 => "هنوز عضویت سازمانی برای حساب شما ثبت نشده است.",
+                _ when tenantId.HasValue && !ActiveOrganizationId.HasValue => "این سازمان در دسترس شما نیست. یک سازمان از فهرست انتخاب کنید.",
                 _ when !ActiveOrganizationId.HasValue => "یک سازمان قابل‌دسترسی را انتخاب کنید.",
                 _ => $"خدمات و مصرف {ActiveOrganizationName}"
             };
@@ -87,9 +91,10 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
         var status = JsonNamingPolicy.CamelCase.ConvertName(Status.ToString());
         // Default encoder escapes HTML delimiters, including closing script tags in provider names.
         BootstrapJson = JsonSerializer.Serialize(new WorkspaceBootstrap(IsPreview ? "synthetic-preview" : "connected",
-            subjectKey, ActiveOrganizationId, Organizations, ActiveOrganizationName, status, message, IsAdmin,
+            subjectKey, ActiveOrganizationId, Organizations, ActiveOrganizationName, status, Message, IsAdmin,
             data.Catalog, active, data.Requests, data.Publications, data.Usage, WorkspaceCenters.All,
-            ServiceCatalogPresentation.Create(await published, Status, ActiveOrganizationId, authorizedProducts), AccountingUrl), JsonOptions);
+            ServiceCatalogPresentation.Create(await published, Status, ActiveOrganizationId, authorizedProducts), AccountingUrl,
+            OrganizationPlaceholder), JsonOptions);
     }
 
     public async Task<IActionResult> OnGetSnapshotAsync(Guid? tenantId, CancellationToken cancellationToken)

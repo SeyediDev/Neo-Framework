@@ -21,6 +21,17 @@ const draft = { id: 'draft-one', serviceId: 'service', planId: 'monthly', reason
 const publication = { id: 'publish-one', key: 'my-service', name: 'خدمت من', center: 'fanasa.rayan', description: 'این خدمت نیازهای سازمان را پاسخ می‌دهد.', url: 'https://supplier.example.test/' };
 const options = extra => ({ now: () => '2026-10-12T10:00:00Z', idFactory: () => 'generated-draft', ...extra });
 
+test('organization prompt is supplied by the shared server presentation, not inferred from an empty list', () => {
+    assert.equal(ui.organizationPrompt({ organizationPlaceholder: 'سازمانی برای این حساب یافت نشد', organizations: [] }), 'سازمانی برای این حساب یافت نشد');
+    assert.equal(ui.organizationPrompt({ organizationPlaceholder: 'فهرست سازمان‌ها دریافت نشده است', organizations: [] }), 'فهرست سازمان‌ها دریافت نشده است');
+    assert.equal(ui.organizationPrompt({ organizationPlaceholder: 'سازمان موردنظر را انتخاب کنید' }), 'سازمان موردنظر را انتخاب کنید');
+});
+
+test('missing organization prompt never implies an empty membership or asks for an impossible selection', () => {
+    for (const value of [undefined, null, {}, { organizationPlaceholder: '' }, { organizationPlaceholder: '  ' }, { organizationPlaceholder: 0 }])
+        assert.equal(ui.organizationPrompt(value), 'فهرست سازمان‌ها دریافت نشده است');
+});
+
 test('published descriptions never grant entry and only approved safe actions are offered', () => {
     const service = { detailsUrl: 'https://catalog.test/details', requestAccessUrl: 'https://catalog.test/request',
         launchUrl: 'https://service.test/', accessState: 'requestRequired' };

@@ -193,6 +193,32 @@ static class WorkspaceTests
         json = Bootstrap(failedDiscovery);
         Check(json.GetProperty("activeServices").GetArrayLength() == 1
             && json.GetProperty("publishedCatalog").GetProperty("status").GetString() == "Unavailable", "discovery outage cannot erase independently authorized services or turn into successful zero catalog");
+        foreach (var status in Enum.GetValues<CatalogStatus>())
+        {
+            var emptyPage = Model(new CatalogStub(new(status, [], [])), source);
+            await emptyPage.OnGetAsync(null, default);
+            var emptyJson = Bootstrap(emptyPage);
+            var expectedPrompt = WorkspacePresentation.Create(status, 0, false, 0).OrganizationPlaceholder;
+            Check(emptyPage.OrganizationPlaceholder == expectedPrompt
+                && emptyJson.GetProperty("organizationPlaceholder").GetString() == expectedPrompt,
+                status + " uses the same organization prompt in HTML and Snapshot");
+            Check(emptyPage.Message == emptyJson.GetProperty("message").GetString()
+                && !string.IsNullOrWhiteSpace(emptyPage.Message), status + " uses the same status message before JavaScript and after refresh");
+        }
+        var emptyMembership = Model(new CatalogStub(new(CatalogStatus.Ready, [], [])), source);
+        await emptyMembership.OnGetAsync(null, default);
+        var unavailableMembership = Model(new CatalogStub(new(CatalogStatus.Unavailable, [], [])), source);
+        await unavailableMembership.OnGetAsync(null, default);
+        Check(emptyMembership.OrganizationPlaceholder != unavailableMembership.OrganizationPlaceholder,
+            "no membership is distinguishable from a failed organization reader");
+        var organizationChoice = Model(reader, source);
+        await organizationChoice.OnGetAsync(null, default);
+        Check(organizationChoice.OrganizationPlaceholder == "سازمان موردنظر را انتخاب کنید"
+            && organizationChoice.Message == "یک سازمان قابل‌دسترسی را انتخاب کنید.", "multiple verified memberships explicitly require selection");
+        await organizationChoice.OnGetAsync(Guid.NewGuid(), default);
+        Check(organizationChoice.Message.StartsWith("این سازمان در دسترس شما نیست.")
+            && Bootstrap(organizationChoice).GetProperty("activeServices").GetArrayLength() == 0,
+            "unverified organization explains rejection without exposing services");
         return count;
     }
 

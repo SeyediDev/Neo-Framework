@@ -43,6 +43,10 @@ dotnet run --project products/Fanasa.UnifiedPortal/tests/Portal.Tests -c Release
 جزئیات آزمون، نصب و معیار تکمیل اتصال در
 [گزارش تکمیل Workspace](docs/WORKSPACE-COMPLETION-2026-10-23.md) ثبت شده است.
 
+بازخورد انتخاب سازمان نیز یکسان شده است: نبود عضویت، شکست دریافت فهرست، نیاز
+به ورود و انتخاب سازمانِ قابل‌دسترسی در HTML اولیه و Snapshot پیام یکسان و
+متمایز دارند. [آزمون و محدودهٔ اصلاح](docs/ORGANIZATION-FEEDBACK-2026-10-23.md).
+
 محصولات فعلی:
 
 - مدیریت کار ایجنتیک؛
