@@ -84,8 +84,10 @@ userinfo، query یا fragment پذیرفته نمی‌شود. هنگام خرو
 نیاز دارد: subject معتبر، سازمان مصرف‌کننده، مجوز زنده، مالکیت سابقهٔ شخصی،
 رسید ارسال تکراری و وضعیت قابل بررسی. مالک wiring و persistence مرکز راهبری،
 چت «Fanasa Platform Control Center» است؛ آداپتور Workspace باید پس از تطبیق
-قرارداد با همان مالک ساخته شود. منبع موجود `platform.catalog` در استقرار با
-source فعلی `platform.registry` تفاوت نسخه دارد؛ تغییر scope راه حل این اختلاف نیست.
+قرارداد با همان مالک ساخته شود. قرارداد مرکزی ۲۳ اکتبر، reader مصرف‌کننده را
+با `platform.catalog` و client ثبت‌شدهٔ service تعریف می‌کند. در بررسی زندهٔ
+همان روز، توکن فعلی صادر شد اما readerها HTTP503 دادند؛ تغییر scope به
+`platform.registry` یا ساخت grant محلی راه‌حل این وضعیت نیست.
 
 bootstrap با JSON serializer پیش‌فرض و escaping HTML تولید می‌شود. نام خدمت
 و متن درخواست در مرورگر با `textContent` نمایش داده می‌شوند. لینک ورود فقط URL
