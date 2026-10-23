@@ -50,6 +50,15 @@ without URL credentials, query or fragment; redirects are not followed. For
 isolated local tests only, `Harness__AllowLoopbackHttp=true` allows loopback HTTP
 in Development/Testing. It never permits remote HTTP or production HTTP.
 
+When using systemd `EnvironmentFile`, choose an alphanumeric connection key
+(for example `codexpilot`), not a key containing `-`: the application accepts
+hyphens, but systemd rejects environment variable names containing them. Check
+the effective process configuration, not just the file. Instance drop-ins are
+applied lexically; load lane overlays after any existing drop-in that resets
+`EnvironmentFile=`. Preserve the existing queue, service account and private
+product/jobs/gateway catalogs. Enabling a connection is a separate authorized
+operation, never a consequence of a green installation status.
+
 The worker runs when either simulation or Harness is enabled; enabling Harness
 does not implicitly enable `fake`. The API never starts a dispatcher.
 

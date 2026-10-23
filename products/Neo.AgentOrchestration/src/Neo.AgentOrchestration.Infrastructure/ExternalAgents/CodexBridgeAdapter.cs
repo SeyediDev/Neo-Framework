@@ -153,7 +153,15 @@ public sealed class CodexBridgeAdapter(NativeAgentBinding binding, CodexBridgePo
             request.Headers.Add("X-Fanasa-Binding", BindingFingerprint);
             request.Headers.Add("X-Fanasa-Run", handle.Scope.RunId.ToString("D"));
             if (write) request.Headers.Add("Idempotency-Key", handle.Scope.RunId.ToString("N"));
-            if (body is not null) request.Content = JsonContent.Create(body, options: Json);
+            // The private strict server admits only a known bounded length;
+            // JsonContent streams chunked HTTP/1.1 and is rejected before intent.
+            if (body is not null)
+            {
+                var payload = JsonSerializer.SerializeToUtf8Bytes(body, Json);
+                if (payload.Length > 100 * 1024) throw new ExternalAgentException("codex-request-limit");
+                request.Content = new ByteArrayContent(payload);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" };
+            }
             using var deadline = HttpRequestDeadline.Start(http, ct);
             using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, deadline.Token);
             if (response.StatusCode != (write ? HttpStatusCode.Accepted : HttpStatusCode.OK))

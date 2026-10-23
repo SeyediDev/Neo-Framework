@@ -60,6 +60,13 @@ idempotency headers. Ready/submit/observe/evidence/stop routes live under
 proves exit. Shared C# deadline is 30 seconds including response body; uncertain
 writes/collection require reconciliation, not replay.
 
+Native POST bodies are bounded UTF-8 buffers with a known `Content-Length`,
+not chunked `JsonContent`. The private server deliberately rejects transfer or
+content encoding and ambiguous length headers before admission. A rejected
+HTTP request is not proof of native absence: reconcile the same run against
+the private ledger and daemon resources before any explicit operator recovery.
+Never reset gateway/ownership rows or fabricate a callback to clear a hold.
+
 ## Evidence, tests and usage
 
 Only trusted daemon inspection, CLI JSONL and the stopped-volume collector supply

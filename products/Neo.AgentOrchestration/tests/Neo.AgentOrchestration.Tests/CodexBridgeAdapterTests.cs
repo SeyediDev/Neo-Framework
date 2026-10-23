@@ -28,6 +28,12 @@ public sealed partial class NativeAgentAdapterTests
         ExternalAgentHandle? handle = null; var state = "Running";
         await using var server = await NativeServer.Start(async ctx =>
         {
+            if (ctx.Request.Method == "POST")
+            {
+                Assert.True(ctx.Request.ContentLength > 0);
+                Assert.Equal(0, ctx.Request.Headers.TransferEncoding.Count);
+                Assert.Equal(0, ctx.Request.Headers.ContentEncoding.Count);
+            }
             ctx.Response.StatusCode = ctx.Request.Method == "POST" ? 202 : 200;
             var r = Receipt(handle!, ctx.Request.Path.StartsWithSegments("/v1/codex/ready") ? "Ready" : state);
             await ctx.Response.WriteAsJsonAsync(r);
