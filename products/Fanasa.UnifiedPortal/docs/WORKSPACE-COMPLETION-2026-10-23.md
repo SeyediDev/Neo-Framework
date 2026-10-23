@@ -91,8 +91,25 @@ reader یا دسترس‌پذیری داده را اثبات نمی‌کند. ن
 
 منبع تشخیص مالک:
 `docs/fanasa-platform-control-center/workstreams/portal-reader-503-diagnosis-2026-10-23.md`.
-برابری نسخهٔ زنده با تمام اصلاحات محلی و رفع خطای ساخت مشترک PIP در این probe
-تأیید نشد. این نتیجه مجوز تغییر تنظیمات، client، grant یا release مرکزی نیست.
+برابری نسخهٔ زنده با تمام اصلاحات محلی در این probe تأیید نشد. نتیجهٔ اجرای
+محلی بعدی برای PIP در بخش زیر آمده است؛ این نتیجه مجوز تغییر تنظیمات، client،
+grant یا release مرکزی نیست.
+
+## اعتبارسنجی محلی پس از رفع PIP
+
+[اجرای مستقل مالک مرکز راهبری](../../../docs/fanasa-platform-control-center/workstreams/portal-post-pip-integration-2026-10-23.md)
+و [manifest نهایی](../../../docs/fanasa-platform-control-center/workstreams/portal-readers-evidence-2026-10-23/post-pip/integration-final-verification.json)
+رفع مانع محلی ساخت PIP را تأیید کردند. ساخت Release مرکز و Portal با صفر خطا
+و هشدار موفق شد؛ ۲۱۹۸ بررسی دات‌نت در ۱۳ مجموعه و ۱۲۳ آزمون JavaScript موفق
+بودند. سهم پروژه‌های فعلی Portal، ۴۱۳ بررسی دات‌نت (۱۰۰، ۷۸، ۹۰ و ۱۴۵) و
+۴۹ آزمون JavaScript بود؛ این تکرار همان ۴۶۲ بررسی Portal است، نه ۴۶۲ بررسی
+اضافه بر جمع یکپارچه. harnessهای مرکزی canonical/adapter/transport مستقل‌اند.
+
+راه‌اندازی واقعی میزبان مرکزی با state و هویت مصنوعی جدا نیز health200 و
+reader ناشناس401 داشت. این شواهد، اعتبارسنجی محلی‌اند؛ reader مجاز زنده، SSO
+و Gateway را اثبات نمی‌کنند. release و تنظیمات عملیاتی و ثبت client تغییر
+نکردند؛ بنابراین رفع مانع ساخت، تشخیص503 و DiscoveryPath خالی را حل‌شده
+نمی‌کند و به معنی نصب نسخهٔ جدید مرکزی نیست.
 
 ## وابستگی‌های باقی‌مانده
 
