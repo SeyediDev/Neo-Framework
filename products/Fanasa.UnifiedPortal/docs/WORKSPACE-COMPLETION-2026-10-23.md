@@ -72,6 +72,28 @@ reader یا دسترس‌پذیری داده را اثبات نمی‌کند. ن
 مجازشده به چت «Fanasa Platform Control Center» ارسال شد؛ هیچ grant، scope،
 کلاینت، تنظیم SSO یا دادهٔ مرکزی تغییر نکرد.
 
+## نتیجهٔ تشخیص مالک مرکز راهبری
+
+در بررسی فقط‌خواندنی `2026-10-23T12:49:25Z` (۱۶:۱۹:۲۵ تهران)، مالک مرکز
+راهبری متن دو پاسخ را «Published service catalog is not configured.» و
+«Consumer application catalog is not configured.» ثبت کرد. در پردازش مرکزی
+سه تنظیم `Platform:ServiceCatalog:ClientId`،
+`Platform:ServiceCatalog:ClientProductKey` و `Platform:ConsumerCatalog:Enabled`
+وجود نداشتند. همچنین تعداد ثبت دقیق `fanasa-unified-portal-service` در Fabric
+صفر بود؛ صدور توکن در Keycloak جای این ثبت و مجوز محلی را نمی‌گیرد.
+
+این مانع با seed کردن محصول یا تغییر scope در Portal رفع نمی‌شود. ابتدا باید
+نسخه و ساخت مرکزی پذیرفته شود، client موجود با محصول/مالک صحیح در همان مرکز
+ثبت و readerها طبق اختیار مصوب آماده شوند. خواندن سازمان‌ها به offer/grant
+محصول وابسته نیست؛ reader آماده برای subject کانونی ناموجود باید `200 []`
+بدهد. نمایش محصول مجاز، جداگانه به عضویت و offer/grant معتبر مصرف‌کننده نیاز
+دارد. نبود publication نیز باید کاتالوگ خالی موفق بدهد، نه 503.
+
+منبع تشخیص مالک:
+`docs/fanasa-platform-control-center/workstreams/portal-reader-503-diagnosis-2026-10-23.md`.
+برابری نسخهٔ زنده با تمام اصلاحات محلی و رفع خطای ساخت مشترک PIP در این probe
+تأیید نشد. این نتیجه مجوز تغییر تنظیمات، client، grant یا release مرکزی نیست.
+
 ## وابستگی‌های باقی‌مانده
 
 - موفقیت readerهای مرکزی با client فعلی و platform.catalog و پذیرش مصرف‌کننده؛
