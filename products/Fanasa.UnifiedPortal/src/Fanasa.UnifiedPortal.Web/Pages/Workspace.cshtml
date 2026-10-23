@@ -20,7 +20,7 @@
             <div class="workspace-field">
                 <label for="workspace-tenant">سازمان فعال</label>
                 <select id="workspace-tenant" name="tenantId" aria-describedby="workspace-message" disabled="@(Model.Organizations.Count == 0)">
-                    <option value="">سازمان خود را انتخاب کنید</option>
+                    <option value="">@Model.OrganizationPlaceholder</option>
                     @foreach (var organization in Model.Organizations)
                     {
                         <option value="@organization.Id" selected="@(organization.Id == Model.ActiveOrganizationId)">@organization.Name</option>
@@ -31,7 +31,7 @@
             <button class="workspace-refresh" id="workspace-refresh" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.8-1L20 9M4 15l2.1 3A7 7 0 0 0 17.9 17"/></svg>تازه‌سازی</button>
         </form>
     </div>
-    <p id="workspace-message" class="workspace-message" role="status" aria-live="polite">@(!string.IsNullOrWhiteSpace(Model.ActiveOrganizationName) ? $"فضای کار {Model.ActiveOrganizationName}" : "برای مشاهدهٔ فضای کار، سازمان خود را انتخاب کنید.")</p>
+    <p id="workspace-message" class="workspace-message" role="status" aria-live="polite">@Model.Message</p>
 
     <noscript><div class="workspace-noscript">برای جست‌وجو و نمایش بخش‌های این فضای کار، جاوااسکریپت مرورگر لازم است. سامانه‌های مجاز خود را در <a href="/#workspace">پنجره واحد</a> ببینید.</div></noscript>
 

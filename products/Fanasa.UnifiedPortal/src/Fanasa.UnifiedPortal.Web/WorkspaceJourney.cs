@@ -43,7 +43,8 @@ public sealed record WorkspaceBootstrap(string Mode, string SubjectKey, Guid? Or
     IReadOnlyList<WorkspaceActiveService> ActiveServices, IReadOnlyList<WorkspaceRequest> Requests,
     IReadOnlyList<WorkspacePublication> Publications, WorkspaceUsage Usage,
     IReadOnlyList<WorkspaceCenter>? Centers = null,
-    ServiceCatalogPresentation? PublishedCatalog = null, string? AccountingUrl = null);
+    ServiceCatalogPresentation? PublishedCatalog = null, string? AccountingUrl = null,
+    string? OrganizationPlaceholder = null);
 
 public static class WorkspaceCenters
 {

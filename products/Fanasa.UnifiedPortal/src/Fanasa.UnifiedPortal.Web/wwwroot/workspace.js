@@ -203,7 +203,11 @@
             }
         };
     }
-    const exported = { parseBootstrapJson, decimalText, formatDecimal, safeServiceUrl, storageScope,
+    function organizationPrompt(data) {
+        const prompt = data?.organizationPlaceholder;
+        return typeof prompt === 'string' && prompt.trim() ? prompt : 'فهرست سازمان‌ها دریافت نشده است';
+    }
+    const exported = { parseBootstrapJson, decimalText, formatDecimal, safeServiceUrl, storageScope, organizationPrompt,
         validateRequestDraft, validatePublicationDraft, selectCatalog, publishedActions, createPreviewSession };
     if (typeof module !== 'undefined' && module.exports) module.exports = exported;
     if (typeof document === 'undefined') return;
@@ -534,6 +538,7 @@
         onStart() {
             root.setAttribute('aria-busy', 'true');
             ui['workspace-refresh'].disabled = organization.disabled = organizationSubmit.disabled = true;
+            if (organization.options[0]) organization.options[0].textContent = 'در حال دریافت فهرست سازمان‌ها…';
             for (const dialog of [ui['service-request-dialog'], ui['request-detail-dialog']]) if (dialog.open) dialog.close();
             requestDraft = null; publicationDraftId = null; requestSubmitted = publicationSubmitted = false;
             ui['publish-form'].reset();
@@ -544,14 +549,17 @@
         },
         onData(data) {
             installSnapshot(data);
-            organization.replaceChildren(new Option('سازمان خود را انتخاب کنید', ''));
+            organization.replaceChildren(new Option(organizationPrompt(data), ''));
             for (const item of data.organizations) organization.add(new Option(item.name, item.id, false, item.id === data.organizationId));
             const url = new URL(location.href);
             if (data.organizationId) url.searchParams.set('tenantId', data.organizationId); else url.searchParams.delete('tenantId');
             history.replaceState(null, '', url);
             message(data.message);
         },
-        onError(timedOut) { message(timedOut ? 'دریافت اطلاعات بیش از حد طول کشید. دوباره تلاش کنید.' : 'اطلاعات دریافت نشد. دوباره تلاش کنید یا وارد حساب شوید.', 'error'); },
+        onError(timedOut) {
+            if (organization.options[0]) organization.options[0].textContent = 'دریافت فهرست کامل نشد؛ دوباره تلاش کنید';
+            message(timedOut ? 'دریافت اطلاعات بیش از حد طول کشید. دوباره تلاش کنید.' : 'اطلاعات دریافت نشد. دوباره تلاش کنید یا وارد حساب شوید.', 'error');
+        },
         onEnd() {
             root.setAttribute('aria-busy', 'false'); ui['workspace-refresh'].disabled = false;
             organization.disabled = organization.options.length <= 1; organizationSubmit.disabled = organization.disabled;
