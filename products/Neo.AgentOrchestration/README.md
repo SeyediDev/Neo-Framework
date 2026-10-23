@@ -113,14 +113,17 @@ The explicit [native runtime installer and panel readiness connection](docs/AGEN
 now cover pinned non-root Hermes/OpenCode/Codex installation images and scoped,
 fresh authenticated liveness observations. This is separate from the disabled
 task executor: a healthy installation never enables gateway execution or claims
-a completed model/task run. Codex's optional native adapter remains pending.
+a completed model/task run. The optional [private Codex bridge](docs/CODEX-BRIDGE.md)
+adds an explicitly opted-in adapter and trusted lifecycle/collector source;
+production enablement and a genuine panel-linked run remain separate acceptance.
 
 The [VPS agent execution plan](docs/VPS-AGENT-PLAN.md) records the user-approved
 Hermes + OpenCode direction on the existing durable run path. Scoped
 [native protocol clients](docs/NATIVE-AGENTS.md) cover both engines behind a common
 application contract; they are not registered by API/Worker startup. Durable gateway,
-isolated workspaces, account setup and real-agent acceptance remain required;
-no installed runner or live model execution is claimed.
+isolated workspaces, account setup and real panel-agent acceptance remain required.
+The explicit synthetic Codex CLI acceptance is recorded separately in the bridge
+guide; it does not enable product dispatch or prove Hermes/OpenCode coding readiness.
 
 The [dual-agent execution journal and private ingress](docs/GATEWAY-JOURNAL.md) add independent
 SQL reservations, native-write recovery holds, fenced leases, approval latches,
@@ -130,8 +133,10 @@ the opt-in Worker uses the existing Hangfire recurring invocation for both store
 Its default sandbox rejects execution. The OpenCode native adapter supports
 source-reviewed, opt-in bounded cursor traversal without partial consumption
 reports or following upstream Link URLs, plus a separately opted-in read-only
-pending-permission snapshot feeding the existing approval latch. Actual sandbox, streaming/approval replies,
-trusted metering ingestion, installation and live pilot remain unimplemented gates.
+pending-permission snapshot feeding the existing approval latch. Streaming/approval
+replies, installation and live pilot remain acceptance gates. Optional authenticated
+[usage ingestion](docs/METERING.md) freezes journaled reports with the callback
+and commits them atomically with the run result; deployment remains separate.
 Native and result-callback HTTP requests bound both headers and streamed body to one 30-second
 deadline (shorter client/caller budgets win); partial responses do not fabricate
 usage or success, and uncertain writes are not replayed.

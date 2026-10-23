@@ -215,7 +215,7 @@ public sealed class HttpHarnessTests
         public required TestSecrets Secrets { get; init; }
         public ConfiguredRunProviders Providers => Api.Factory.Services.GetRequiredService<ConfiguredRunProviders>();
         public string Root => ApiFixture.Root(Sql.Scope);
-        public static async Task<HarnessFixture> Create(Fixture f, string endpoint = "https://gateway.example.test/runs", bool compactContext = false)
+        public static async Task<HarnessFixture> Create(Fixture f, string endpoint = "https://gateway.example.test/runs", bool compactContext = false, bool usageReports = false)
         {
             var setup = await SqlRunTests.Configure(f, evidence: true);
             await using (var db = f.Factory.CreateDbContext())
@@ -231,6 +231,7 @@ public sealed class HttpHarnessTests
             {
                 var prefix = "Harness:Connections:" + key + ":";
                 settings[prefix + "Enabled"] = "true"; settings[prefix + "OrganizationId"] = f.Scope.OrganizationId.ToString();
+                settings[prefix + "UsageReportsOptIn"] = usageReports.ToString();
                 settings[prefix + "WorkspaceId"] = f.Scope.WorkspaceId.ToString(); settings[prefix + "Endpoint"] = endpoint;
                 settings[prefix + "CallbackBaseUrl"] = "https://api.example.test/";
                 settings[prefix + "DispatchSecretRef"] = "env:NEO_TEST_DISPATCH"; settings[prefix + "CallbackSecretRef"] = "env:NEO_TEST_CALLBACK";

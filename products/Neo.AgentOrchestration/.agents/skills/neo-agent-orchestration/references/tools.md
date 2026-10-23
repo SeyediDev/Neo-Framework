@@ -161,3 +161,16 @@ Docker info/inspect with strict scope/identity/resource/mount expectations and
 sanitized bounded output. Policy compliance and observed exit are not task success,
 artifact provenance or permission to release a reservation. No `IGatewaySandbox`
 collector, daemon/container lifecycle change, new grant or model call is provided.
+
+The separately opted-in Codex bridge adds private runtime/collector internals,
+not a new MCP dispatch tool. Read `docs/CODEX-BRIDGE.md` for immutable pins,
+key separation and actual evidence limits. A synthetic CLI run without an AgentRun
+may be reported once as manual task usage; never also ingest that report as run
+usage. An uncertain native write stays held until explicit state reconciliation.
+
+Authenticated result usage is an operator connection/binding opt-in, not a new
+MCP tool. See `docs/METERING.md`: stable native reports are frozen with evidence
+and ingested as `reported-harness` in the same Inbox transaction. They already
+contribute to task/board meters; do not copy them through manual task/run tools.
+Unknown counters stay null. Local SQL/HTTP fixtures and standalone CLI pilots
+do not establish deployed panel-to-agent acceptance or a hard spending limit.

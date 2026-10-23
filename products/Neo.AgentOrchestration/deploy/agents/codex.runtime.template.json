@@ -1,0 +1,30 @@
+{
+  "enabled": false,
+  "statePath": "/var/lib/fanasa-agentic-codex/state",
+  "repositoryPath": "/var/lib/fanasa-agentic-codex/approved-repository",
+  "providerProfilePath": "/etc/fanasa-agentic-codex/private/model.json",
+  "transportKeyPath": "/etc/fanasa-agentic-codex/private/transport.key",
+  "tlsCertPath": "/etc/fanasa-agentic-codex/server.pem",
+  "tlsKeyPath": "/etc/fanasa-agentic-codex/private/server.key",
+  "port": 18113,
+  "organizationId": "00000000-0000-0000-0000-000000000000",
+  "workspaceId": "00000000-0000-0000-0000-000000000000",
+  "projectId": "00000000-0000-0000-0000-000000000000",
+  "bindingFingerprint": "OPERATOR_NATIVE_BINDING_SHA256_UPPERCASE",
+  "engineId": "OPERATOR_ROOTLESS_ENGINE_ID",
+  "engineVersion": "OPERATOR_ROOTLESS_ENGINE_VERSION",
+  "seccompPath": "/etc/fanasa-agentic-codex/seccomp.json",
+  "seccompSha256": "OPERATOR_REVIEWED_SECCOMP_SHA256",
+  "acceptancePath": "/etc/fanasa-agentic-codex/acceptance",
+  "acceptanceTestCount": 3,
+  "provider": "OPERATOR_APPROVED_PROVIDER",
+  "model": "OPERATOR_APPROVED_MODEL",
+  "policy": {
+    "sandboxId": "operator-approved-codex-lane",
+    "repositoryUrl": "https://example.invalid/approved-repository.git",
+    "revision": "OPERATOR_IMMUTABLE_REVISION",
+    "imageDigest": "OPERATOR_IMMUTABLE_IMAGE_SHA256",
+    "runtimeVersion": "0.162.1",
+    "acceptanceSha256": "OPERATOR_ACCEPTANCE_SCRIPT_SHA256"
+  }
+}

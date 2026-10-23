@@ -26,7 +26,9 @@ public static class GatewayRegistration
         services.AddSingleton<IGatewayBindings>(sp => sp.GetRequiredService<ConfiguredGatewayBindings>());
         services.AddScoped<IGatewayJournal, SqlGatewayJournal>();
         services.AddScoped<GatewayExecution>();
-        services.TryAddScoped<IGatewaySandbox, DisabledGatewaySandbox>();
+        if (configuration.GetValue<bool>("AgentGateway:CodexBridgeEnabled"))
+            services.TryAddScoped<IGatewaySandbox, CodexGatewaySandbox>();
+        else services.TryAddScoped<IGatewaySandbox, DisabledGatewaySandbox>();
         services.AddHttpClient<HttpGatewayResultDelivery>(c => c.Timeout = TimeSpan.FromSeconds(30))
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false })
             .RemoveAllLoggers();

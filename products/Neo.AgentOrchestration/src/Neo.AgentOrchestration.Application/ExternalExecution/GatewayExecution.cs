@@ -91,9 +91,19 @@ public sealed class GatewayExecution(IGatewayJournal journal, IGatewayBindings b
                 var evidence = await sandbox.CollectAsync(binding, observation.State, ct);
                 if (evidence.ExecutorExited && evidence.Result is not null)
                 {
+                    // Only journaled, immutable native reports enter the callback.
+                    // A collector may supply evidence, never its own usage totals.
+                    if (evidence.Result.Usage is not null) throw new ExternalAgentException("gateway-usage-invalid");
                     ValidateResult(evidence.Result, observation.State, run.StopPending);
+                    var result = evidence.Result;
+                    if (binding.UsageReportsOptIn)
+                    {
+                        var reports = await journal.ReadUsageAsync(scope, ct);
+                        result = result with { Usage = reports.Select(x => new HarnessUsage(x.ReportId, x.Provider, x.Model,
+                            x.InputTokens, x.OutputTokens, x.CachedInputTokens, x.ReasoningTokens)).ToArray() };
+                    }
                     run = await Change(x => x.FreezeResult(lease,
-                        JsonSerializer.Serialize(evidence.Result, Json), true, Now()), ct);
+                        JsonSerializer.Serialize(result, Json), true, Now()), ct);
                 }
             }
             return run;

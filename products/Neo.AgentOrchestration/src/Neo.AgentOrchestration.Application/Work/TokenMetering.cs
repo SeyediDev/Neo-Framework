@@ -16,7 +16,7 @@ public static class TokenMetering
 
     public static TokenMeterView Summarize(IEnumerable<WorkTokenUsageView> reports)
     {
-        var rows = reports.Where(x => x.Source is "reported" or "imported" or "reported-manual").ToArray();
+        var rows = reports.Where(x => x.Source is "reported" or "reported-harness" or "imported" or "reported-manual").ToArray();
         long? Sum(Func<WorkTokenUsageView, long?> select)
         {
             var known = rows.Select(select).Where(x => x.HasValue).ToArray();

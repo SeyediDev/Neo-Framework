@@ -7,7 +7,7 @@ namespace Neo.AgentOrchestration.Application.ExternalExecution;
 // Resolved by operator configuration, never from task text, model, endpoint or
 // a client-submitted directory. Fingerprint includes sandbox/repository revision.
 public sealed record GatewayBinding(string Key, string Fingerprint, string SandboxId,
-    ExternalAgentScope Scope, Guid AgentProfileId, Uri CallbackUrl);
+    ExternalAgentScope Scope, Guid AgentProfileId, Uri CallbackUrl, bool UsageReportsOptIn = false);
 public interface IGatewayBindings
 {
     GatewayBinding Resolve(string key, ExternalAgentScope scope, Guid profileId, string callbackUrl);
@@ -23,6 +23,7 @@ public interface IGatewayJournal
     // Stable immutable per-message usage. Conflict on changed retry, not sum.
     Task SaveUsageAsync(ExternalAgentScope scope, Guid lease, DateTimeOffset now,
         IReadOnlyList<ExternalAgentUsage> reports, CancellationToken ct);
+    Task<IReadOnlyList<ExternalAgentUsage>> ReadUsageAsync(ExternalAgentScope scope, CancellationToken ct);
 }
 public sealed record GatewaySandboxEvidence(bool ExecutorExited, HarnessResult? Result);
 public interface IGatewaySandbox

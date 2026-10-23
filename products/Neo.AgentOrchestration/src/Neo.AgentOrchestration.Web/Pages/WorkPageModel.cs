@@ -45,4 +45,7 @@ public abstract class WorkPageModel(OrchestrationClient client) : PageModel
     public static readonly string[] ItemTypes = ["Task", "UserStory", "Bug", "Epic"];
     public static string ItemTypeLabel(string value) => value switch {
         "Task" => "تسک", "UserStory" => "یوزر استوری", "Bug" => "اشکال", "Epic" => "اپیک", _ => value };
+    public static string UsageSource(string value) => value switch {
+        "reported-harness" => "گزارش خودکار هارنس", "reported-manual" => "گزارش دستی",
+        "reported" => "گزارش ارائه‌دهنده", "imported" => "واردشده", "estimated" => "تخمین؛ خارج از مصرف", _ => value };
 }

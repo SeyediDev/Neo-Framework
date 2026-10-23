@@ -139,6 +139,13 @@ move it to Blocked and stop time without automatic handoff. A valid callback can
 arrive before dispatch HTTP returns because no SQL transaction is held over
 the network. Workflow decisions remain distinct from execution outcomes.
 
+The separately opted-in optional `usage` result member commits in that same
+transaction. It requires `UsageReportsOptIn` on the matching API connection and
+gateway binding, exact frozen connection identity and immutable scoped native
+reports. Defaults and legacy result bytes remain unchanged. See
+[authenticated metering](METERING.md#authenticated-harness-result-ingestion-operator-opt-in)
+for limits, provenance, failure counters and live acceptance boundaries.
+
 ## Delivery uncertainty and verification
 
 The optional [dual-agent gateway](GATEWAY-JOURNAL.md) implements a separate

@@ -2,7 +2,7 @@ namespace Neo.AgentOrchestration.Application.ExternalAgents;
 
 // Native protocols sit behind the durable harness gateway, not workspace CRUD
 // or API startup. These operations neither claim a task nor complete a workflow.
-public enum ExternalAgentEngine { Hermes, OpenCode }
+public enum ExternalAgentEngine { Hermes, OpenCode, Codex }
 public enum ExternalAgentState { Unknown, Queued, Running, AwaitingApproval, StopRequested, Completed, Failed, Cancelled, Interrupted }
 public sealed record ExternalAgentScope(Guid OrganizationId, Guid WorkspaceId, Guid ProjectId, Guid RunId);
 public sealed record ExternalAgentInput(ExternalAgentScope Scope, string Prompt, string? Instructions = null);

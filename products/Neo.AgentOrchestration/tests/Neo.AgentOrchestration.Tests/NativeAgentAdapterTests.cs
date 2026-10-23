@@ -230,6 +230,16 @@ public sealed partial class NativeAgentAdapterTests
             ["OpenCodeOmittedStatusIsIdle"] = "true", ["OpenCodeCursorPagination"] = cursorPagination.ToString(),
             ["OpenCodePermissionSnapshot"] = permissionSnapshot.ToString()
         }) values[root + key] = value;
+        if (engine == "codex")
+        {
+            values["AgentGateway:CodexBridgeEnabled"] = "true";
+            values[root + "CodexRuntimeVersion"] = "0.162.1";
+            values["AgentGateway:Bindings:pilot:SandboxId"] = "codex-pilot";
+            values["AgentGateway:Bindings:pilot:RepositoryUrl"] = "https://example.org/approved/repository.git";
+            values["AgentGateway:Bindings:pilot:Revision"] = new string('a', 40);
+            values["AgentGateway:Bindings:pilot:ImageDigest"] = "sha256:" + new string('b', 64);
+            values["AgentGateway:Bindings:pilot:CodexAcceptanceSha256"] = new string('f', 64);
+        }
         var services = new ServiceCollection(); services.AddLogging();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().AddInMemoryCollection(values).Build());
         services.AddSingleton<IHostEnvironment>(new TestEnvironment { EnvironmentName = environment });

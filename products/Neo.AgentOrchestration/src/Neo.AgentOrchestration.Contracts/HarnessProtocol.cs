@@ -10,5 +10,9 @@ public sealed record HarnessCompactRequest(string Protocol, Guid RunId, Guid Org
     Guid RoleId, Guid AgentProfileId, string? Model, string? Instructions, string? SkillPath,
     string? Branch, string CallbackUrl, WorkContextView Context);
 public sealed record HarnessEvidence(string Kind, string Reference, string Outcome, string? Details = null, string? CommitSha = null);
-public sealed record HarnessResult(string Outcome, string Summary, IReadOnlyList<HarnessEvidence>? Evidence = null);
+public sealed record HarnessUsage(string ReportId, string Provider, string Model,
+    long? InputTokens, long? OutputTokens, long? CachedInputTokens, long? ReasoningTokens);
+public sealed record HarnessResult(string Outcome, string Summary, IReadOnlyList<HarnessEvidence>? Evidence = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    IReadOnlyList<HarnessUsage>? Usage = null);
 public sealed record HarnessReceipt(Guid ReceiptId, bool Duplicate);

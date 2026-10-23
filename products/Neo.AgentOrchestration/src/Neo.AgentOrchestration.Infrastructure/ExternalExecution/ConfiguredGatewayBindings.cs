@@ -52,7 +52,9 @@ public sealed class ConfiguredGatewayBindings(IConfiguration configuration, IHos
                 key, profileId, NativeFingerprint = adapter.BindingFingerprint, sandbox, revision, repository, image,
                 callbackBase, dispatchRef, callbackRef
             }));
-            return new(key, fingerprint, sandbox, scope, profileId, callback);
+            var usage = c.GetValue<bool>("UsageReportsOptIn");
+            if (usage) fingerprint = GatewayRun.Hash(JsonSerializer.Serialize(new { BaseFingerprint = fingerprint, UsageReportsOptIn = true }));
+            return new(key, fingerprint, sandbox, scope, profileId, callback, usage);
         }
         catch (ExternalAgentException) { throw; }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FormatException)

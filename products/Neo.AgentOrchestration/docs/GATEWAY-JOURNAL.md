@@ -65,8 +65,10 @@ share the same check before startup. Suffixed catalogs require explicit
   the existing success→Review / workflow-decision boundary.
 - Completed-message usage is stored once by immutable report ID/hash; changed
   retries conflict atomically. Nullable counters remain unknown, never invented
-  zero. These journal observations are **not** trusted run metering ingestion or
-  billing; `ORCH-TOKEN-INGEST` remains a separate dependency.
+  zero. The optional `UsageReportsOptIn` binding freezes at most 100 journaled
+  reports with the result for authenticated transactional product ingestion;
+  see [metering](METERING.md). No independent billing, corrections or hard budget
+  is implied; the broader `ORCH-TOKEN-INGEST` story remains separate.
 
 ## Operator binding (disabled by default)
 
@@ -85,6 +87,7 @@ Gateway-only binding fields are:
 | `CallbackBaseUrl` | Operator-owned HTTPS API root/prefix |
 | `DispatchSecretRef` | Private env reference for inbound harness dispatch |
 | `CallbackSecretRef` | Private env reference for outbound API result |
+| `UsageReportsOptIn` | False by default; API connection must also opt in; changes binding fingerprint |
 
 Callback URL must exactly equal the route derived from configured base, key,
 org/workspace/run. Scope/model/endpoint come from native operator configuration.
@@ -162,6 +165,16 @@ The generated `GatewayDurableActivation` migration is explicit and additive.
 Only disposable LocalDB verification is migrated here, **not the VPS**. Never
 automatically dispatch imported or pre-activation journal rows.
 
+## Optional Codex bridge
+
+`AgentGateway:CodexBridgeEnabled` registers the narrowly scoped
+`CodexGatewaySandbox` instead of the disabled default. It only accepts an actual
+Codex bridge adapter with immutable policy pins; it does not enable Hermes or
+OpenCode sandboxes. See [Codex bridge](CODEX-BRIDGE.md) for private lifecycle,
+pre-start/exit inspection, secret-injecting relay and independent test receipts.
+Default execution remains disabled; installation and panel-linked acceptance are
+not established by these source changes or local fixtures.
+
 ## Remaining before operational enablement
 
 A separate operator [read-only offline executor probe](SANDBOX-INSPECTION.md)
@@ -171,8 +184,9 @@ registered as `IGatewaySandbox`; the default still refuses execution. A diagnost
 never releases journal capacity, acknowledges a task or starts/stops an executor.
 
 Full SSE collection, authorized human approval replies/reconciliation,
-production sandbox lifecycle/evidence collection, usage ingestion, VPS installation
-and live pilot also remain gates. Local schema CLI probes do not establish an
+production sandbox lifecycle/evidence collection, deployment of the opt-in
+transactional usage ingestion, VPS gateway installation and a managed live pilot
+also remain gates. Local schema CLI probes do not establish an
 installed runtime's health. A successful journal test
 must not mark `ORCH-DUAL-AGENT-GATEWAY`, installation or pilot fully accepted.
 The [native adapter](NATIVE-AGENTS.md) now has separately opted-in bounded OpenCode

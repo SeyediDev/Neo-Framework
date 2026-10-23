@@ -58,6 +58,7 @@ public sealed class SqlGatewayJournal(IDbContextFactory<GatewayDbContext> factor
         {
             var run = await Scoped(db, scope).SingleOrDefaultAsync(ct) ?? throw new GatewayConflictException("gateway-run-not-found");
             run.RequireLease(lease, now);
+            var count = await db.Usage.CountAsync(x => x.RunId == run.RunId, ct);
             foreach (var report in reports)
             {
                 Validate(report);
@@ -67,6 +68,7 @@ public sealed class SqlGatewayJournal(IDbContextFactory<GatewayDbContext> factor
                     ?? await db.Usage.SingleOrDefaultAsync(x => x.RunId == run.RunId && x.ReportId == report.ReportId, ct);
                 if (existing is not null)
                 { if (existing.BodyHash != hash) throw new GatewayConflictException("gateway-usage-conflict"); continue; }
+                if (++count > 100) throw new GatewayConflictException("gateway-usage-limit");
                 db.Usage.Add(new() { RunId = run.RunId, OrganizationId = run.OrganizationId,
                     WorkspaceId = run.WorkspaceId, ProjectId = run.ProjectId, ReportId = report.ReportId,
                     Body = body, BodyHash = hash, ObservedAtUtc = now });
@@ -77,6 +79,25 @@ public sealed class SqlGatewayJournal(IDbContextFactory<GatewayDbContext> factor
 
     private static IQueryable<GatewayRun> Scoped(GatewayDbContext db, ExternalAgentScope s) => db.Runs.Where(x =>
         x.RunId == s.RunId && x.OrganizationId == s.OrganizationId && x.WorkspaceId == s.WorkspaceId && x.ProjectId == s.ProjectId);
+
+    public async Task<IReadOnlyList<ExternalAgentUsage>> ReadUsageAsync(ExternalAgentScope scope, CancellationToken ct)
+    {
+        await using var db = await factory.CreateDbContextAsync(ct);
+        if (!await Scoped(db, scope).AnyAsync(ct)) throw new GatewayConflictException("gateway-run-not-found");
+        var rows = await db.Usage.AsNoTracking().Where(x => x.RunId == scope.RunId &&
+            x.OrganizationId == scope.OrganizationId && x.WorkspaceId == scope.WorkspaceId && x.ProjectId == scope.ProjectId)
+            .OrderBy(x => x.ReportId).Take(101).ToArrayAsync(ct);
+        if (rows.Length > 100) throw new GatewayConflictException("gateway-usage-limit");
+        return rows.Select(x =>
+        {
+            if (GatewayRun.Hash(x.Body) != x.BodyHash) throw new GatewayConflictException("gateway-usage-invalid");
+            var report = JsonSerializer.Deserialize<ExternalAgentUsage>(x.Body)
+                ?? throw new GatewayConflictException("gateway-usage-invalid");
+            Validate(report);
+            if (report.ReportId != x.ReportId) throw new GatewayConflictException("gateway-usage-invalid");
+            return report;
+        }).ToArray();
+    }
 
     private async Task<T> Execute<T>(Func<GatewayDbContext, Task<T>> action, CancellationToken ct)
     {

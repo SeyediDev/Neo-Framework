@@ -267,7 +267,7 @@ public sealed partial class SqlGatewayJournalTests
     {
         public required Factory Factory { get; init; }
         public required SqlGatewayJournal Journal { get; init; }
-        public ExternalAgentScope Scope { get; } = new(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        public ExternalAgentScope Scope { get; init; } = new(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
         public ManualClock Clock { get; } = new();
         public TestAdapter Adapter { get; } = new();
         public TestSandbox Sandbox { get; } = new();
@@ -287,7 +287,7 @@ public sealed partial class SqlGatewayJournalTests
             await outbox.CompleteDispatchAsync(activation.OutboxId, lease, "fixture-job", null, Ct);
             return activation.OutboxId;
         }
-        public static async Task<Fixture> Create()
+        public static async Task<Fixture> Create(ExternalAgentScope? scope = null)
         {
             var connection = Environment.GetEnvironmentVariable("FANASA_GATEWAY_TEST_SQL");
             Assert.SkipUnless(!string.IsNullOrWhiteSpace(connection), "Set a dedicated FanasaAgentGateway_Verification SQL connection.");
@@ -300,7 +300,7 @@ public sealed partial class SqlGatewayJournalTests
             // production/board data. Clear only its own journal tables per case.
             await db.Activations.ExecuteDeleteAsync(Ct); await db.OutboxMessages.ExecuteDeleteAsync(Ct);
             await db.Usage.ExecuteDeleteAsync(Ct); await db.Runs.ExecuteDeleteAsync(Ct);
-            var f = new Fixture { Factory = factory, Journal = new(factory) }; f.Bindings = new(f.Adapter); return f;
+            var f = new Fixture { Factory = factory, Journal = new(factory), Scope = scope ?? new(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()) }; f.Bindings = new(f.Adapter); return f;
         }
         public string Body()
         {
@@ -315,9 +315,10 @@ public sealed partial class SqlGatewayJournalTests
     { public GatewayDbContext CreateDbContext() => new(new DbContextOptionsBuilder<GatewayDbContext>().UseSqlServer(connection).Options); }
     private sealed class TestBindings(TestAdapter adapter) : IGatewayBindings
     {
-        public Guid Profile { get; } = Guid.NewGuid(); public string Fingerprint { get; set; } = new('A', 64);
+        public Guid Profile { get; set; } = Guid.NewGuid(); public string Fingerprint { get; set; } = new('A', 64);
+        public bool UsageReportsOptIn { get; set; }
         public GatewayBinding Resolve(string key, ExternalAgentScope scope, Guid profile, string callback)
-            => profile == Profile ? new(key, Fingerprint, "test-sandbox", scope, profile, new(callback)) : throw new ExternalAgentException("test-profile");
+            => profile == Profile ? new(key, Fingerprint, "test-sandbox", scope, profile, new(callback), UsageReportsOptIn) : throw new ExternalAgentException("test-profile");
         public IExternalAgentAdapter Adapter(GatewayBinding binding) => adapter;
     }
     private sealed class TestAdapter : IExternalAgentAdapter
@@ -327,11 +328,12 @@ public sealed partial class SqlGatewayJournalTests
         public int Prepared { get; private set; } public int Submitted { get; private set; }
         public int Stopped { get; private set; }
         public bool LoseSubmit { get; set; } public ExternalAgentState State { get; set; } = ExternalAgentState.Unknown;
+        public IReadOnlyList<ExternalAgentUsage> Usage { get; set; } = [];
         public ExternalAgentHandle Handle(ExternalAgentScope scope) => new(scope, Engine, BindingFingerprint, "msg_" + scope.RunId.ToString("N"), "test-session");
         public Task<ExternalAgentHandle> PrepareAsync(ExternalAgentInput input, CancellationToken ct) { Prepared++; return Task.FromResult(Handle(input.Scope)); }
         public Task<ExternalAgentHandle> SubmitAsync(ExternalAgentInput input, ExternalAgentHandle prepared, CancellationToken ct)
         { Submitted++; return LoseSubmit ? throw new ExternalAgentException("test-lost-write", true) : Task.FromResult(prepared); }
-        public Task<ExternalAgentObservation> ObserveAsync(ExternalAgentHandle handle, CancellationToken ct) => Task.FromResult(new ExternalAgentObservation(State, [], State == ExternalAgentState.AwaitingApproval ? "permission-1" : null));
+        public Task<ExternalAgentObservation> ObserveAsync(ExternalAgentHandle handle, CancellationToken ct) => Task.FromResult(new ExternalAgentObservation(State, Usage, State == ExternalAgentState.AwaitingApproval ? "permission-1" : null));
         public Task RequestStopAsync(ExternalAgentHandle handle, CancellationToken ct) { Stopped++; return Task.CompletedTask; }
     }
     private sealed class TestSandbox : IGatewaySandbox
@@ -345,9 +347,10 @@ public sealed partial class SqlGatewayJournalTests
     private sealed class TestDelivery : IGatewayResultDelivery
     {
         private readonly Guid receipt = Guid.NewGuid(); public bool LoseNext { get; set; }
+        public Func<string, Task<Guid>>? Sender { get; set; }
         public List<string> Bodies { get; } = [];
         public Task<Guid> DeliverAsync(GatewayBinding binding, string result, CancellationToken ct)
-        { Bodies.Add(result); if (LoseNext) { LoseNext = false; throw new ExternalAgentException("test-lost-callback", true); } return Task.FromResult(receipt); }
+        { Bodies.Add(result); if (LoseNext) { LoseNext = false; throw new ExternalAgentException("test-lost-callback", true); } return Sender?.Invoke(result) ?? Task.FromResult(receipt); }
     }
 }
 

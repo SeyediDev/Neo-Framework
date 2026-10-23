@@ -1,0 +1,9 @@
+# BASE is a local reference whose immutable image ID is verified before/after
+# the network-disabled build. Pin the resulting image ID for runtime use.
+ARG BASE
+FROM ${BASE}
+USER 0:0
+COPY codex_evidence.py codex_model_proxy.py codex_workspace.py /opt/fanasa-codex/
+RUN chmod 0755 /opt /opt/fanasa-codex && chmod 0444 /opt/fanasa-codex/*.py
+USER 10000:10000
+WORKDIR /workspace

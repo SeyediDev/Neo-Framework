@@ -18,7 +18,7 @@ namespace Neo.AgentOrchestration.Infrastructure.ExternalAgents;
 public sealed record NativeAgentBinding(string Key, ExternalAgentEngine Engine, Guid OrganizationId,
     Guid WorkspaceId, Guid ProjectId, Uri Endpoint, string SecretRef, string ModelProvider,
     string ModelId, string? Username, bool OpenCodeDisjointTokenAccounting, bool OpenCodeOmittedStatusIsIdle,
-    bool OpenCodeCursorPagination = false, bool OpenCodePermissionSnapshot = false)
+    bool OpenCodeCursorPagination = false, bool OpenCodePermissionSnapshot = false, string? CodexPolicyFingerprint = null)
 {
     // Keep existing opt-out fingerprints stable. A reviewed cursor contract
     // changes interpretation and must invalidate old opt-in reservations.
@@ -27,7 +27,8 @@ public sealed record NativeAgentBinding(string Key, ExternalAgentEngine Engine, 
         Key, Engine, OrganizationId, WorkspaceId, ProjectId, Endpoint, SecretRef,
         ModelProvider, ModelId, Username, OpenCodeDisjointTokenAccounting, OpenCodeOmittedStatusIsIdle
     }) + (OpenCodeCursorPagination ? "|opencode-cursor-v1" : "") +
-        (OpenCodePermissionSnapshot ? "|opencode-pending-permission-v1" : ""))));
+        (OpenCodePermissionSnapshot ? "|opencode-pending-permission-v1" : "") +
+        (CodexPolicyFingerprint is null ? "" : "|codex-bridge-v1|" + CodexPolicyFingerprint))));
 }
 
 public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHostEnvironment environment,
@@ -46,6 +47,7 @@ public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHos
             {
                 "hermes" => ExternalAgentEngine.Hermes,
                 "opencode" => ExternalAgentEngine.OpenCode,
+                "codex" => ExternalAgentEngine.Codex,
                 _ => throw new ExternalAgentException("native-agent-configuration")
             };
             var local = configuration.GetValue<bool>("NativeAgents:AllowLoopbackHttp") &&
@@ -61,14 +63,17 @@ public sealed class NativeAgentAdapterFactory(IConfiguration configuration, IHos
                 section.GetValue<Guid>("WorkspaceId"), section.GetValue<Guid>("ProjectId"), endpoint,
                 section["SecretRef"] ?? "", Value(section["ModelProvider"]), Value(section["ModelId"]), username,
                 section.GetValue<bool>("OpenCodeDisjointTokenAccounting"), section.GetValue<bool>("OpenCodeOmittedStatusIsIdle"),
-                section.GetValue<bool>("OpenCodeCursorPagination"), section.GetValue<bool>("OpenCodePermissionSnapshot"));
+                section.GetValue<bool>("OpenCodeCursorPagination"), section.GetValue<bool>("OpenCodePermissionSnapshot"),
+                engine == ExternalAgentEngine.Codex ? CodexBridgePolicy.Read(configuration, key).Fingerprint : null);
             RequireScope(binding, scope);
             if (!Regex.IsMatch(binding.SecretRef, @"\Aenv:[A-Z][A-Z0-9_]{0,100}\z", RegexOptions.CultureInvariant))
                 throw new ExternalAgentException("native-agent-configuration");
             var secret = secrets.Resolve(binding.SecretRef);
             if (secret.Length is < 32 or > 1024 || secret.Any(char.IsWhiteSpace) || secret.Any(char.IsControl))
                 throw new ExternalAgentException("native-agent-configuration");
-            return new NativeAgentAdapter(binding, secret, clients.CreateClient("fanasa-native-agent"));
+            return engine == ExternalAgentEngine.Codex
+                ? new CodexBridgeAdapter(binding, CodexBridgePolicy.Read(configuration, key), secret, clients.CreateClient("fanasa-native-agent"))
+                : new NativeAgentAdapter(binding, secret, clients.CreateClient("fanasa-native-agent"));
         }
         catch (ExternalAgentException) { throw; }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FormatException)

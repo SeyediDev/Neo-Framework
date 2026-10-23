@@ -65,16 +65,19 @@ public sealed class HarnessCallbacksController(ISender sender, ConfiguredRunProv
         var scope = new WorkspaceScope(organizationId, workspaceId);
         var provider = User.FindFirstValue("harness.provider") ?? throw new UnauthorizedAccessException();
         var target = providers.Resolve(provider, scope);
+        if (body.Usage is not null && (!target.UsageReportsOptIn || body.Usage.Count > 100 || body.Usage.Any(x => x is null)))
+            throw new ArgumentException("Usage reporting is unavailable or invalid.");
         // Reject known transport credentials if a misconfigured gateway puts
         // them in a result. Never store response bodies or secrets as log data.
-        var text = new[] { body.Summary }.Concat((body.Evidence ?? []).SelectMany(x => new[] { x.Reference, x.Details, x.CommitSha }));
+        var text = new[] { body.Summary }.Concat((body.Evidence ?? []).SelectMany(x => new[] { x.Reference, x.Details, x.CommitSha }))
+            .Concat((body.Usage ?? []).SelectMany(x => new[] { x.ReportId, x.Provider, x.Model }));
         foreach (var reference in new[] { target.DispatchSecretRef, target.CallbackSecretRef })
         {
             var secret = secrets.Resolve(reference);
             if (text.Any(value => value?.Contains(secret, StringComparison.Ordinal) == true))
                 throw new ArgumentException("Result contains a transport credential.");
         }
-        return sender.Send(new ReceiveHarnessResult(scope, runId, provider, body), ct);
+        return sender.Send(new ReceiveHarnessResult(scope, runId, provider, body, target.Fingerprint), ct);
     }
 }
 public sealed class HarnessContractProcessor : IOperationProcessor

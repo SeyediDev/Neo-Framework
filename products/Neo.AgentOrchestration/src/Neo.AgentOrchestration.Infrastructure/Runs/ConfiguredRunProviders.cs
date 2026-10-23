@@ -25,10 +25,12 @@ public sealed class EnvironmentHarnessSecrets : IHarnessSecrets
     }
 }
 public sealed record HttpHarnessConnection(string Key, Uri Endpoint, Uri CallbackBaseUrl, string DispatchSecretRef, string CallbackSecretRef,
-    bool CompactContextOptIn)
+    bool CompactContextOptIn, bool UsageReportsOptIn = false)
 {
     public string Fingerprint => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
-        CompactContextOptIn
+        UsageReportsOptIn
+            ? JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef, CompactContextOptIn, UsageReportsOptIn = true })
+            : CompactContextOptIn
             ? JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef, CompactContextOptIn = true })
             : JsonSerializer.Serialize(new { Key, Endpoint, CallbackBaseUrl, DispatchSecretRef, CallbackSecretRef }))));
 }
@@ -79,7 +81,7 @@ public sealed class ConfiguredRunProviders(IConfiguration configuration, IHostEn
                 if (!Regex.IsMatch(reference, @"\Aenv:[A-Z][A-Z0-9_]{0,100}\z", RegexOptions.CultureInvariant))
                     throw new RunProviderUnavailableException(provider);
             if (dispatchRef == callbackRef) throw new RunProviderUnavailableException(provider);
-            return new(key, endpoint, callback, dispatchRef, callbackRef, section.GetValue<bool>("CompactContextOptIn"));
+            return new(key, endpoint, callback, dispatchRef, callbackRef, section.GetValue<bool>("CompactContextOptIn"), section.GetValue<bool>("UsageReportsOptIn"));
         }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FormatException)
         { throw new RunProviderUnavailableException(provider); }

@@ -11,6 +11,13 @@ Kanban cards, role cards and full-filter board metrics. Time estimates accept
 human units. Usage is provider-reported, never inferred from conversation length;
 partial/unknown coverage and budget-vs-completion remain explicit.
 
+The run page separates that run's token reports from a collapsed whole-task
+estimate/budget meter. An absent report explicitly means unknown, not zero;
+`reported-harness` is labeled automatic harness reporting. Its receipt-based
+ingestion requires the operator opt-ins in METERING.md. Do not also enter these
+same counters manually. These display changes add no privacy/access grant or
+claim of independent provider billing.
+
 `/product` is the public, static Fanasa-branded introduction, linked from the
 shared header. It makes no API requests and exposes no tenant/task data. Its
 illustrative workflow is labeled as a demo; SaaS, token metering and mobile

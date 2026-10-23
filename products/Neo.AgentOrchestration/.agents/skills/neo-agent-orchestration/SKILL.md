@@ -79,7 +79,10 @@ is an operator observation (read + configure), not a new MCP dispatch tool or
 execution authority. v1 always reports execution disabled; do not turn profiles,
 Worker or sandbox on from a green health report. See the product's
 `docs/AGENT-RUNTIME-INSTALL.md` for pins/isolation and remaining live acceptance.
-Codex CLI installation does not mean its optional native adapter is implemented.
+Codex CLI installation or a synthetic pilot is not panel execution readiness.
+The optional private adapter/lifecycle contract is in `docs/CODEX-BRIDGE.md`;
+read it before authorized Codex gateway provisioning or execution. Keep real model
+keys outside executors, and require actual exit plus independent frozen evidence.
 
 An optional Agno observation on that page is advisory only. `AdvisoryStatusFile`
 does not add a dispatch/MCP tool, independent reviewer, coding authority or task

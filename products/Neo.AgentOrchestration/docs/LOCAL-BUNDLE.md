@@ -15,7 +15,11 @@ created. This check does not lock other chats or detect every concurrent content
 edit that leaves the same status; use a clean isolated checkout for a release.
 
 The bundle includes the complete Markdown guide directory, portable skill and
-its references, plus disabled Hermes/OpenCode model templates. Credentials and
+its references, disabled Hermes/OpenCode model templates, and the optional Codex
+bridge's explicit source/test allowlist and disabled runtime template. These are
+not installed native CLIs/images. See `docs/CODEX-BRIDGE.md`; operator profiles,
+runtime state, provider keys and private acceptance suites are never bundled.
+Credentials and
 real operator endpoints must remain outside the source and release bundle.
 The manifest's `containsCredentials=false` is that packaging policy, not a
 general secret-scanning attestation for arbitrary locally modified binaries.

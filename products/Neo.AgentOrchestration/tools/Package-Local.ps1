@@ -56,6 +56,13 @@ Copy-Item -LiteralPath (Join-Path $root '.agents/skills/neo-agent-orchestration/
 Copy-Item -LiteralPath (Join-Path $root '.agents/skills/neo-agent-orchestration/references') -Destination (Join-Path $output 'skill') -Recurse
 New-Item -ItemType Directory -Path (Join-Path $output 'deploy/agents') -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'deploy/agents/opencode.proxy.template.json'),(Join-Path $root 'deploy/agents/hermes.proxy.template.yaml') -Destination (Join-Path $output 'deploy/agents')
+# Explicit source allowlist: no operator profiles, state, credentials, caches or
+# installed CLI images. Presence never activates a runtime or dispatch worker.
+foreach($relative in @('Dockerfile.codex-bridge','codex.runtime.template.json',
+    'codex_runtime.py','codex_evidence.py','codex_model_proxy.py','codex_workspace.py',
+    'test_codex_runtime.py','test_codex_evidence.py','test_codex_model_proxy.py')){
+    Copy-Item -LiteralPath (Join-Path $root "deploy/agents/$relative") -Destination (Join-Path $output 'deploy/agents')
+}
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Start-Local-Bundle.ps1') -Destination $output -Force
 $reactSource = Join-Path $PSScriptRoot 'react-lsp'
 $reactOutput = Join-Path $output 'tools/react-lsp'

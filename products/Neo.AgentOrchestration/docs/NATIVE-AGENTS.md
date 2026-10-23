@@ -1,4 +1,10 @@
-# Hermes + OpenCode native adapters
+# Native agent adapters
+
+The optional [Codex CLI bridge](CODEX-BRIDGE.md) adds `Engine=codex` only with
+`AgentGateway:CodexBridgeEnabled=true` and immutable runtime/acceptance pins.
+This is Fanasa's private protocol, not an upstream Codex HTTP server API.
+Implementation/tests do not enable live dispatch. Hermes/OpenCode behavior is
+unchanged; the three lanes are not interchangeable readiness or approval proofs.
 
 User-approved direction: use both runtimes behind one Fanasa control plane.
 OpenCode is the proposed coding lane; Hermes is the automation/general lane.
