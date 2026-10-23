@@ -110,6 +110,18 @@ its callbacks until safely restored; plan shutdown/rotation around active runs.
 
 ## Authenticated result
 
+When Web and API share a canonical HTTPS host, route the result path to the API
+before the Web fallback. Razor antiforgery is not harness authentication: routing
+this POST to Web returns 400 before the callback controller can validate its key.
+The [scoped nginx include](../deploy/nginx-harness-callback.conf) preserves the
+remaining Web/SSO routes and exposes no raw-agent endpoint. Review the installation
+port, retain the old ingress configuration, run `nginx -t`, then reload. Verify
+an unauthenticated request is rejected by the API (401), and a genuine gateway
+delivery receives a receipt; never test with an invented success callback.
+Fix ingress without changing the frozen callback URL, binding or result. Recovery
+may advance the existing journaled result but must not resubmit an admitted model
+run. A delivered Failed result stops tracking and stays Blocked, not Review.
+
 POST to the supplied callback URL:
 
 ```text

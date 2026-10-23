@@ -174,3 +174,7 @@ and ingested as `reported-harness` in the same Inbox transaction. They already
 contribute to task/board meters; do not copy them through manual task/run tools.
 Unknown counters stay null. Local SQL/HTTP fixtures and standalone CLI pilots
 do not establish deployed panel-to-agent acceptance or a hard spending limit.
+On a shared Web/API host, verify the supplied callback reaches the API rather
+than the Razor fallback (see docs/HARNESS.md). Fix routing without changing the
+frozen callback/result or resubmitting an admitted execution. Only an actual
+authenticated receipt establishes delivery; a delivered failure is not Review.

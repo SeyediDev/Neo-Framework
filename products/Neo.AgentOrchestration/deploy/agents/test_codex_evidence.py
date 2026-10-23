@@ -83,6 +83,26 @@ class EvidenceTests(unittest.TestCase):
         self.assertFalse(result["modelCompleted"])
         self.assertIsNone(result["usage"])
 
+    def test_exact_recovered_transport_notice_requires_same_completed_turn(self):
+        notice = dict(type="error", message="Reconnecting... waiting for network (Connection failed: error sending request)")
+        def with_notice(raw, event=notice, position=2):
+            rows = raw.splitlines()
+            rows.insert(position, json.dumps(event).encode())
+            return b"\n".join(rows)
+        result = evidence.cli_observation(with_notice(trace()), "test", "model")
+        self.assertTrue(result["modelCompleted"])
+        self.assertEqual(100, result["usage"]["inputTokens"])
+        for raw in (with_notice(trace(final="turn.failed")),
+                    with_notice(trace(), notice | dict(message="fatal transport error")),
+                    with_notice(trace(), notice | dict(message=notice["message"] + " extra")),
+                    with_notice(trace(), notice | dict(code="unknown")),
+                    with_notice(trace(), position=1),
+                    with_notice(b"\n".join(trace().splitlines()[:-1]))):
+            with self.subTest(raw=raw[:100]):
+                self.assertFalse(evidence.cli_observation(raw, "test", "model")["modelCompleted"])
+        with self.assertRaises(evidence.EvidenceError):
+            evidence.cli_observation(trace() + b"\n" + json.dumps(notice).encode(), "test", "model")
+
     def test_malformed_ambiguous_or_negative_usage_rejected(self):
         for raw in (b'not json', b'{"type":"x","type":"y"}', trace(dict(input_tokens=True)),
                     trace(dict(input_tokens=-1)), trace(dict(input_tokens=1, cached_input_tokens=2)),

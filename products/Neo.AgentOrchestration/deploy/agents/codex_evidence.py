@@ -73,7 +73,13 @@ def cli_observation(stdout, provider, model):
     if len(starts) != 1 or events[0]["type"] != "thread.started":
         raise EvidenceError("cli-order-invalid")
     completed = bool(turns) and events.index(turns[0]) > starts[0]
-    failed = any(x["type"] in ("error", "turn.failed") for x in events)
+    # CLI 0.162.1 can recover after this exact transport notification and finish
+    # the SAME turn. Unknown errors and terminal failures still fail closed.
+    recovered_notice = "Reconnecting... waiting for network (Connection failed: error sending request)"
+    failed = any(x["type"] == "turn.failed" or x["type"] == "error" and not (
+        completed and starts[0] < i < events.index(turns[0]) and
+        set(x) == {"type", "message"} and x.get("message") == recovered_notice)
+        for i, x in enumerate(events))
     usage = None
     if turns:
         if not completed or events[-1] != turns[0]:

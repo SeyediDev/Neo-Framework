@@ -55,6 +55,7 @@ Copy-Item -LiteralPath (Join-Path $sourceDocs 'LOCAL-BUNDLE.md') -Destination (J
 Copy-Item -LiteralPath (Join-Path $root '.agents/skills/neo-agent-orchestration/SKILL.md') -Destination (Join-Path $output 'skill') -Force
 Copy-Item -LiteralPath (Join-Path $root '.agents/skills/neo-agent-orchestration/references') -Destination (Join-Path $output 'skill') -Recurse
 New-Item -ItemType Directory -Path (Join-Path $output 'deploy/agents') -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $root 'deploy/nginx-harness-callback.conf') -Destination (Join-Path $output 'deploy')
 Copy-Item -LiteralPath (Join-Path $root 'deploy/agents/opencode.proxy.template.json'),(Join-Path $root 'deploy/agents/hermes.proxy.template.yaml') -Destination (Join-Path $output 'deploy/agents')
 # Explicit source allowlist: no operator profiles, state, credentials, caches or
 # installed CLI images. Presence never activates a runtime or dispatch worker.

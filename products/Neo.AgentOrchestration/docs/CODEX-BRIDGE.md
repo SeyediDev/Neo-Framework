@@ -128,5 +128,12 @@ dispatch activation occurred. Two earlier attempts failed before executor startu
 (helper permissions, Docker log-driver compression); they were explicitly
 reconciled against daemon state, not blindly replayed or called successful.
 
+For pinned CLI 0.162.1, the collector recognizes only the exact recoverable
+`Reconnecting... waiting for network (Connection failed: error sending request)`
+notification inside a single turn that subsequently ends with `turn.completed`.
+Unknown error events, `turn.failed`, missing completion and post-completion output
+still fail closed. Executor exit, immutable pins and independent offline tests
+remain mandatory. This parser repair never rewrites an already frozen receipt.
+
 Upstream: [non-interactive Codex](https://learn.chatgpt.com/docs/non-interactive-mode),
 [credential separation](https://developers.openai.com/api/docs/guides/agents-api/environments/security).

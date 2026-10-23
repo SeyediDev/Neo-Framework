@@ -76,7 +76,7 @@ try {
     }
     foreach($relative in @('tools/react-lsp/server.mjs','tools/react-lsp/package-lock.json','tools/react-lsp/tests/test_freshness.py','gateway/mock.dll','docs/GATEWAY-JOURNAL.md','docs/MODEL-CONNECTIONS.md',
         'skill/references/tools.md','skill/references/project-binding.md','deploy/agents/opencode.proxy.template.json',
-        'deploy/agents/hermes.proxy.template.yaml','Start-Local-Bundle.ps1')){
+        'deploy/agents/hermes.proxy.template.yaml','deploy/nginx-harness-callback.conf','Start-Local-Bundle.ps1')){
         if(!(Test-Path -LiteralPath (Join-Path $output $relative) -PathType Leaf)){ throw "Missing bundled companion: $relative" }
     }
     if(!$manifest.reactLspIncluded -or $manifest.reactLspDependenciesIncluded -or $manifest.reactLspNodeRuntimeIncluded -or $manifest.reactLspAutoStarted){ throw 'React LSP packaging flags incorrect.' }
@@ -90,6 +90,11 @@ try {
             throw 'Gateway missing from archive.'
         }
     }finally{ $archive.Dispose() }
+    $callbackRoute=Get-Content -Raw -LiteralPath (Join-Path $output 'deploy/nginx-harness-callback.conf')
+    if($callbackRoute -notmatch 'proxy_pass http://127\.0\.0\.1:18110;' -or
+        $callbackRoute -notmatch '/result\$' -or $callbackRoute -match 'auth_request off|ssl_verify off'){
+        throw 'Scoped callback routing companion changed its target or protection.'
+    }
     Reject $output 'Output already exists*'
     if($global:FanasaBundleTest.publishCalls -ne 6){ throw 'Replay started publishing.' }
 
