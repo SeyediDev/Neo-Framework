@@ -1,0 +1,754 @@
+{
+  "schemaVersion": "fanasa.hr3.actual-host-source-package/1",
+  "generatedAtUtc": "2026-10-23T18:45:59.476967+00:00",
+  "operationalAcceptance": false,
+  "liveHostRegistration": false,
+  "runtimeDefault": "disabled",
+  "evidenceStatus": "reviewed-local-ready-for-ci",
+  "expectedTestAssertions": 908,
+  "previousSourcePackage": {
+    "directory": "hr-read-host-v3-r4",
+    "manifestSha256": "ea64dc9b358d4526456bb30873d26363031155cc97da263fc6820b9dc20eb32d"
+  },
+  "hostInputScope": "Web recursive C#/Razor/resources/project/build files and .editorconfig; all regular wwwroot assets; Web-root base appsettings.json only; direct linked PCC *.cs; fixed ancestor build metadata. Generated bin/obj/__pycache__ are excluded. Environment/local appsettings.*.json are excluded and suppressed by the HR3 build targets. Inventory contains paths and SHA-256 only, never file contents or live credentials.",
+  "dependencies": [
+    {
+      "directory": "hr-read-profile-v3",
+      "manifestSha256": "9875088ffe6e3efc9553b0ca42873fa52b8a05d23d8101acd084c69e16b82329"
+    },
+    {
+      "directory": "hr-read-pdp-v3",
+      "manifestSha256": "4679302e5a4c409337a00a2cf8784c88a8b62d0a0799fcf37368c2460ed2c414"
+    }
+  ],
+  "hostInputs": [
+    {
+      "path": "Directory.Build.props",
+      "sha256": "00679235cbce23f1389574844a0d74f9922d3dc7a1c4d851009cb082561bb61b"
+    },
+    {
+      "path": "Directory.Packages.props",
+      "sha256": "6c269313fbafc7410a837f95038aa31eacec7f0dd6ba19e6a52f646d3fecb95b"
+    },
+    {
+      "path": "NuGet.config",
+      "sha256": "af9295ef04def3a827ae6a8022f4163e5a5c9b3b2b6a2d862daccab815191347"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractGatewayPublication.cs",
+      "sha256": "4bb0aed3b4b58ca7c27e2c9831d01bd2f17ce344955799cfe4ca2d0e94f88e9a"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyApi.cs",
+      "sha256": "23fdee8fc2be6ad1d0790e203a0c2476467f22524b2952065321238ff5a23e16"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyGatewayApi.cs",
+      "sha256": "fd86ea08952b28c3ef81d73f573208de892917f2cdde18638841feb70e3023ee"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyGatewayContext.cs",
+      "sha256": "a83f8a2898b3d811bbb89775ffa51bed6670eca2b39f6ce52233c9a0f1627308"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyGatewayDecision.cs",
+      "sha256": "73f27721182bd6ee152705fcf8cbdcd0f9265156f44277590dc5c313b53be3a2"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyGatewaySecurity.cs",
+      "sha256": "3be738df1128c3429adfa7c401b8720bea821714d684ddde90e897d2827a6baf"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyHost.cs",
+      "sha256": "af3121e55a476f8941e15e9ad4eb7fa23905113a4aa85bf3e0f672e27cc67df4"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicySecurity.cs",
+      "sha256": "c1f1265578c49db87601019dd7a315c57d14e88b9e553df82eeec4a0356a5daa"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyStore.cs",
+      "sha256": "f94bee3d9f9d951b08b498bcc704e479bc39dadcaa2774dce07c0bbfca440a02"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/Directory.Build.props",
+      "sha256": "6db8fc88dd0a18737ee5895f16c1256f20ff30718581b5e6c1f319eb4e327728"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/Directory.Packages.props",
+      "sha256": "a3db9bb97c2e70e2414892241dabc74d62c6e270f7e588eec8d32216c5c0926e"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessApi.cs",
+      "sha256": "b841a987f59c3e3e67a4242078f679d967f9dea13bb91254f415b905207bbcc6"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessApplication.cs",
+      "sha256": "e9726834cfeeb34aad7e8cccfb6de7da37865f6431beef7e445723cc6c9ae074"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessBoundaryFilter.cs",
+      "sha256": "ce5809ad475889fc7d683e2152a6979f3c8b521d129eae31a1dc9fbc0ac96c20"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessDomain.cs",
+      "sha256": "2d7f27dbf6756d20cf8d10520947b5bb128206c82ed53744a5f5a395844178fb"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessPersistence.cs",
+      "sha256": "76f16b9e846e93dc16cb276e69fb0347be0789661a99149521d568f671c075d2"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessPolicies.cs",
+      "sha256": "e29c4af7f3cc81b18279be52dc8bbef4be7bcfffcbf2713371b15db4ad282a19"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Accounting.cs",
+      "sha256": "86ab72298a1ced9afbf48fb05aa8f5aca8af1b7661707950428af80e9877e56d"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccountingApi.cs",
+      "sha256": "b3861562f2f1c4c9d076e8acd495ffc5555209a378ae6a68c1a7cdb1135184e3"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/CapabilityCatalog.cs",
+      "sha256": "32c1545c1168922eb18a0b7e479fd8316d298df56ab3f92f945d805ed6b96b5c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerApplicationCatalog.cs",
+      "sha256": "9f9c416fa540b5338ebd1935fb7257252bb026763e95374371a0a662e14753b3"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerUsageReport.cs",
+      "sha256": "09e4bd0e566bb4faa8442a2072104ddc7f54f09adcac58a5a29e88d79ca3f3ec"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerUsageReportApi.cs",
+      "sha256": "45737d9e9d5bbc058405f3b5b7902d004c0d44b2b2015d0d234c06898478c5f5"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/DeveloperProjectRegistration.cs",
+      "sha256": "61d0d823fcd6b848698fed5057d375d27d9fb46d70176a88191e58f753ee812f"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricDatabase.cs",
+      "sha256": "7de828e9e414b1c9cd2582e50b72bf2270fd43263429690bec91820252eea38b"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricMigration.cs",
+      "sha256": "db49f2d49b463e62e243221f7de60a86ae5ff7fe6a54bcdfa7000b67be9e51ac"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricRecovery.cs",
+      "sha256": "bf57eeed71e8ef17110208e1aefc16c41366d76c6c727fa744494c51c3b66eb1"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs",
+      "sha256": "b3278797016ae0dbcf5ec56c4c9021fdc1cef60ff4650ef3e5f67a957704b8c6"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj",
+      "sha256": "1a684b4ce0cc06ecac3be38a610a0bc89e9b58f226d80751d152c7657a011839"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/GovernanceApi.cs",
+      "sha256": "8f45e3d370c5ec7e1b9caf0bc699e6ac580505631ba6521383bae09c0c1113c1"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/HttpUsageOutboxTransport.cs",
+      "sha256": "f36ffcf7270b54a4456ce37da30e150acba558549a191220ba28a3650032e365"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/IdentityLifecycle.cs",
+      "sha256": "60f2b546c3b7b4e372963e1b8afe37df7112d0a6f281dac0d01a99dfea5b80ed"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/MeasuredUsageRecoveryStore.cs",
+      "sha256": "f6c58c3ebbd72f8e8f5c443bbe499cc2e0f76a7f195ab1df9e9b7797994cae2c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/MeasuredUsageStore.cs",
+      "sha256": "c720f2be2fe82093f39dbd1772cead5163192c4d873266b7fa7388c1da818561"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/MobileApplicationCatalog.cs",
+      "sha256": "5fab5a90e8f9013a61e3098be911fc94bf687857e054a1e9cf16f5669194fea1"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationApi.cs",
+      "sha256": "9664c10dbf8721ea72e09129653db14ccec93b87247ff88c1ab4f5e2c23dfe85"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationBearerSecurity.cs",
+      "sha256": "21ec9cf3224b6edf055bcd0c4285541d6a1f88a41db65c6e151e7d35ddb9f027"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationCalendarApi.cs",
+      "sha256": "dd6f2f404009c8aae9816be266221e066459d851fa07c6667013b0010af00d16"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationCalendars.cs",
+      "sha256": "e7793510baad03674232cbd1bbaa727a18f823032a6d401f21847e7669c19e24"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationComparison.cs",
+      "sha256": "b8b41c2ed538654153c47392cecca52a012379c861c116f7d380e332328e92eb"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationFabric.cs",
+      "sha256": "b0430d6b90878f4c04138f75f6dd265f2727af821c6162e2d004f0f999c6c54b"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationHrApi.cs",
+      "sha256": "2fdeb141300578ce740005162bfe725a5932d32441c5764652c35c99dc165b0c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationHrHosting.cs",
+      "sha256": "82864d28f2925f620986a60aecdfed9747f8d625d06debefbe469969ac82f47c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationHrSecurity.cs",
+      "sha256": "5683d63a829b38a8357b19e00c2620b12728bfb361db2b768b137c2360910d63"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationOperationApi.cs",
+      "sha256": "b95bd327f43da564ed808399ada5d969449387aef4ca87eedab0c4fb91e493b5"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationUsageMetering.cs",
+      "sha256": "12065b3a36d2d391531dc6d250f8b5fbe2f58efcb6ec024a267b03a0464a3f58"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationUsagePriceApi.cs",
+      "sha256": "ba15cc3cbcab9d7e14de37edb52ea5793bdae65bdcf0a5ff6888241193a4d39d"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationUsagePriceStore.cs",
+      "sha256": "3383c7e8074478bc8e465f64e70a735f1dae48028e2e57d63a9cad46232fdf5e"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Accounting.cshtml",
+      "sha256": "7ced16183146318f545ccc43d82ebb0b6cb62b2fefe6f3a76f9ef502035c6f67"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Accounting.cshtml.cs",
+      "sha256": "08e305f71eabf27bc63ae66d074a29e8798f3e8dfb9d4b37d8b0416fedaa9946"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Architecture.cshtml",
+      "sha256": "6d3caa625ea9d2a7834da107d2a6ab04cfde0c4613ebc0964e9c41868e7da706"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Architecture.cshtml.cs",
+      "sha256": "c85123a00c410e1da622d38a1f1cfe4466d5ca301b6100b7ca82ba107229bc94"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Audit.cshtml",
+      "sha256": "d74d2bc7759e5a4070eced2736b395ab09cb4c28810b78a6f1e5392bb665ec3a"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Audit.cshtml.cs",
+      "sha256": "3b690a39c29e20e43136986c27faed3b7db80e2cd0ded9ab146d34f158180e36"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Billing.cshtml",
+      "sha256": "de9121e5681828833cbbfec566d087bd8a3421bdb218f59c894182260edb1b38"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Centers.cshtml",
+      "sha256": "1b1dd33194b8dc62ba4222f95260ef73c7d741929616c7808a052d918c57eb0c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Error.cshtml",
+      "sha256": "c534550d47428816878fa9b2c58e35bf0748ce53a16f143d20e0bfc80b51b203"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Governance.cshtml",
+      "sha256": "4dccf7bb5afd945f80d7c76cfc932f816e7b213fa22798ffbe50585a9c0ccfb2"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Governance.cshtml.cs",
+      "sha256": "dffa1e65a851a69a6aac6344b57064e372d9cb553df293feb0eec942ad81421d"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Index.cshtml",
+      "sha256": "abd02ea6788c6b7467aa175e70388349ec0bfd7db787328ac3f1659b676ce64f"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Organization.cshtml",
+      "sha256": "59030bc01a22f861cda877e7968636ce28591c1c760169e63753284cf089f30a"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Organization.cshtml.cs",
+      "sha256": "86fa1d7218e5f90789877ca43dca71e0772a468b1398e55f441e53a4a201bdab"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/OrganizationHr.cshtml",
+      "sha256": "fb4ff31bf1e1abdc14f1cc1cbbbf57f9d49773155677ced84d8309f51573a289"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/OrganizationHr.cshtml.cs",
+      "sha256": "7630d0bb1d5cd8501ab7b42e4834e3961207769f9b84054a0c1d100c9f8d7b51"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Platform.cshtml",
+      "sha256": "f25d92f6ad95f00f826e4e92d87c7c41d4e14a50a2320afaff29b92d7fcd6524"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Platform.cshtml.cs",
+      "sha256": "3b4cf5b0d70871f32e6c1352ebce543f81a9d9fc285fe2d3ece23dca35a7a0dd"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/PolicyWorkbench.cshtml",
+      "sha256": "9b369217892d59541d5fb28d275de939e9aa9bcc87a5c5f1c029d064a2695a9e"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/PolicyWorkbench.cshtml.cs",
+      "sha256": "d195ed96e79dfbf1ba92bf5abaa915f4208e43895cce12860fc4d01a90ea43df"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/ProductRegistration.cshtml",
+      "sha256": "03720f2940dcb980d7bdbea4fbfb67c362c67690f491e6a62e4c0c86922f2663"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/ProductRegistration.cshtml.cs",
+      "sha256": "80eb034fc7818a0c841fc9fcbe17c6e7dcedae845de760857e1d72e20c234291"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Products.cshtml",
+      "sha256": "0e6879a82046745ad410916bab3bb8bbcecd2900f987c0e460feb5ef3d30a83e"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Roles.cshtml",
+      "sha256": "e9d77bf7d0206425e13218eb4ca003a9dc8f961a3991fbc3949f0e238352cb9d"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Shared/_Layout.cshtml",
+      "sha256": "c73cbff070a509f98072af01969fa8bd68ae41d6034411972459bea2bb0772bf"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Tenancy.cshtml",
+      "sha256": "32b66fd95f764fec5bb0dc1fa0a72b53613e1553487283c137834b8b4e744e72"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Tenancy.cshtml.cs",
+      "sha256": "18807538bd185fd680bd715119c5510f7615cab4e7a98c915922946328548006"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Tenants.cshtml",
+      "sha256": "d71d0f8888f1638184c52687887d1f3e124d8ffeb71ad6a1380ce7adbdb7a239"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/UsageAccounting.cshtml",
+      "sha256": "93650dbeffb7db7f8be5c63e482cb523377e8eed11b154fda03b0963f9991278"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/UsageAccounting.cshtml.cs",
+      "sha256": "d2d66c62f7f0e445648e2ce8b02c63c98c048562aea6be703ec3fb64fe5574ad"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Users.cshtml",
+      "sha256": "1d9300bfcaecf8bcce2b4e4ad5f427b02969c3432e2b5de860a42ab457f9e31f"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/_ViewImports.cshtml",
+      "sha256": "6aa5ac8c021cdbd91a3bbce5d1d699a4fedadba9d54301b2d0487e66051ece36"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/_ViewStart.cshtml",
+      "sha256": "3a8c523f595b40ed4d5b54a0ea7b8a42728d368582b2a29ef12db188990f7373"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PersistentAccessManagement.cs",
+      "sha256": "3d0f2dd510a3b59f72105c491536b9a59a5a80449141d065f7b3c669207f541c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipApi.cs",
+      "sha256": "2064c1aea2a0e804b27fd15580bcd7a5387e03fcc5006f1c59fba5a79f45d676"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipContracts.cs",
+      "sha256": "3d1c67f9c948cc7615dd76b86889cb6d227a3dbd0af73b392f63dbfc4180f839"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipEducationalExample.cs",
+      "sha256": "82819b14cb86c5889d8a275b71ace74e5212d232e50d83ddab3c13be01e7eec9"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipInformationPoint.cs",
+      "sha256": "b1cbb0a60ab70495d6fbb0ee7f87d2a07644a149c8a3266babbc32e93899815b"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipStoreScheduling.cs",
+      "sha256": "8135b4d4023fbcecf8acf3ff6939252693b9f19e42ed147daea42ab6305aa350"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipSyncWorker.cs",
+      "sha256": "40ec823f72ea9ec344c74de3535266a4b1481f137ffc71551e69541c4f5221dc"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipTransport.cs",
+      "sha256": "cd35e68c85afaf30d3cb1661e97cecafc6da7db64eb6b20b0bd3bd3694d21229"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PipTransportOptions.cs",
+      "sha256": "06bc9a6485d0a3aee51a99193fe7ff251cd587068d6a97843a421fbfa0117dae"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PlatformApi.cs",
+      "sha256": "213ae417a8b8143414c144bba96234d873ccb67c79bb0e1ee205bcac221c52dc"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PlatformInitialMembership.cs",
+      "sha256": "ac58d50badcdbaf7267572c56297b0e68c77702411a28981e45884abf3bfa9ca"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PlatformRegistry.cs",
+      "sha256": "c86277f202529f7f024d2e99f9907787c68825edf1c067c85e8dfd91c2ee0b33"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Program.cs",
+      "sha256": "e0309216dcbe36f0238a39e7895a592967bc1d01e4ba541db85f3b58600e02c2"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PublishedServiceCatalog.cs",
+      "sha256": "5bdfdc6bb3a06369d6b2ae1983929873ad3ad9247a014afab8fac1fbaa109c53"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/SqlAccessManagement.cs",
+      "sha256": "fbd7f92e660432c7925f8f5fc01a9d99f72ef3840eb4cf186a54d6b0994eacb4"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/TemplateOrganization.cs",
+      "sha256": "7d4099362cdf3d89077545eb29bacf4b79d56e4fb682ce9a16baf5da45ed622c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/TemplateOrganizationApi.cs",
+      "sha256": "62edf20688b67e739ade43a6761614b2fc63626b3d9fcd7335caa1ac76581c74"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/TemplateOrganizationWriteGuard.cs",
+      "sha256": "97ebea56ecb9933f7bd4f8dccb051a014eb40aa801cca5f01c3333aa79c41fe3"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/TemporalAccessEnforcement.cs",
+      "sha256": "427ab59efb6b4037ac7eb3f416dd5e813a7afaddd95f5aa0d9bc52267099a9ef"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/TenantAdministrationApi.cs",
+      "sha256": "ea26aabf85c71d148ddea7bc254cf8e7217c4cdd02cbda1df943502143ac2b72"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/TenantAuthorization.cs",
+      "sha256": "beb9173da505f7ba427c124812e688feb00bfede518bc22fff89804ac6b3a3b9"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/UsageAccountingRecoveryApi.cs",
+      "sha256": "48fc1c63391d20077c2564ba1768228223e816614f0848641fa7f05452a0e41a"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/UsageContracts.cs",
+      "sha256": "c7fc41c9fd8078db7b8061938f688379150c328a8c2b0c1ef4dd02a20df0363d"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/UsageOutboxDispatcher.cs",
+      "sha256": "21231e13110a00b0edf47fe9edf099aade2c6e5aae37419d887abb003fced9ce"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/UsageReconciliationStore.cs",
+      "sha256": "2b38c14c80be466bee36085ddddd84b7206126e2486541a864de9c9f88e18966"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/WorkbenchApi.cs",
+      "sha256": "3b6c2945dfc78e4241a54ad489b5258bfad73941f35fc766673d74771fac30ee"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ZarinpalApi.cs",
+      "sha256": "07af6b50f72e639ceffdc31393c84c9ed4bbe6dbab972da3e880078f4183dc84"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ZarinpalPayments.cs",
+      "sha256": "404de49cf07dd38c3647b0c1efdf270b79dc109d75e406fa5af0bf92f8a67ecc"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/appsettings.json",
+      "sha256": "991fe1075e2146e210fac68cd90f40b3838e897bd3ccae82482e45368d8bfd0b"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/contracts/organization-hr-v1.openapi.json",
+      "sha256": "11e666aadf493fd6db58450375bd465aa8490c28746077eb111916516bc8c8a0"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/contracts/portal-readers-v1.openapi.json",
+      "sha256": "64c151280e76075c94d3812c4f971f746262edefc66f4c58317a982bf8a934b4"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/access-enhancements.css",
+      "sha256": "f9285a88431ccbc26ee11a695df7d46bf008f5c67882204ad6f249bf8aa67929"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/app.css",
+      "sha256": "c746f59fc7bcab9c187f0a47aa37f875a14060f19d97401cff44cfb213aec898"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/architecture-delivery.css",
+      "sha256": "6f11bc7e3363366c698d480e29f304810b4b222da81b2bcaa7c5a675bf6a8513"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/architecture.css",
+      "sha256": "b19b5ded38dfca35d6e9b08911c6ce2fffc6aba5ce675a977aac9b4e2fdfea0d"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/control-center-preview.css",
+      "sha256": "be8d24e9659ed5979b7ac94de4e372bf7c4712c02aeccf58868bc8085ffb1484"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/governance.css",
+      "sha256": "e458e82ad1e6dbf026189f52ce924159a5c2fb4d34c086153054102980fb1365"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/organization-hr.css",
+      "sha256": "19e4afd2236427af12a514b02ceebef0fb7fdfe0abee62ea787692f97f914c4f"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/organization.css",
+      "sha256": "aaf7617585e821fbc187fe41b306240e33a17bb90a1e28a3df767ad710462fc9"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/platform-navigation.css",
+      "sha256": "4d660692bfdfc874cf1c9db240f37486d36dc09d435a60895820fa59844139f5"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/css/usage-accounting.css",
+      "sha256": "422af38aa05e8b5818db702cb52f1b4f69f07d558fb3d34c802145fadb6910a5"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/fanasa-horizontal-fa.svg",
+      "sha256": "4e8ff0d771b22ed5cf27e845def835eb35c0d8014a321a40a6b7d3688507a1b5"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/fonts/vazir/Vazir-Bold.woff2",
+      "sha256": "5afb0a312c19f0cd040acf84c6e26138e90f07c1cb61a1936d17528ec179be35"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/fonts/vazir/Vazir-Regular.woff2",
+      "sha256": "39f59d886eb3c5651bb7a801c905028710b85571798204d733ee81da204dbe17"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/accounting.js",
+      "sha256": "6cf3d040894707a2e007ee8b3f630205cbda3bcbb4e4f7b55f95e62dba190799"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/architecture.js",
+      "sha256": "58bcbbf9632927dd8c4510eef803492d8e08a2b0f9bdd775b319fb023f2e1c09"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/control-center-preview.js",
+      "sha256": "3ceef8f9409a9eaf62e955add65035018b68ec8c1c8b7752b418750ceb8fa650"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/governance.js",
+      "sha256": "a76561cb6d6954299d2d47876087f32a10e81c2af86d3328dd5436e9d042545f"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/organization.js",
+      "sha256": "884285a690d0bb3c2b2f47351a506f4d28c8dacb46fac810122e1fa8d4d1d4e3"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/payments.js",
+      "sha256": "c3d838a30722925eb904b5e4858066270f3e8ead7b7657c3a26dbb287a8af488"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/platform-navigation.js",
+      "sha256": "7be86709933e2fcd3eb7295ed3cdb4bd50daec14120ec18f3689762a31bc851c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/tenancy.js",
+      "sha256": "6bb2bcdfba623fc496482ebbd769f5974b93cd787ca6f4522e25ddb27f98e9c5"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/usage-accounting.js",
+      "sha256": "e5c8834e13019ac6189ab16490e960b6a330d5bb230602bfabc05be3b4039978"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/previews/control-center.html",
+      "sha256": "501b5b737e64f50a417c8f50d02ba206c6c513f8376c87ce9120b6e47f62b381"
+    }
+  ],
+  "files": [
+    {
+      "path": "Directory.Build.props",
+      "sha256": "a7edad6153962207f4655cc4568ea766db66d924f3336644484388e165555d9d"
+    },
+    {
+      "path": "Directory.Packages.props",
+      "sha256": "e107928b4b719c963b18c429357d4c7fb1358311e95a5f225b2ba0cb4c44b73f"
+    },
+    {
+      "path": "README.fa.md",
+      "sha256": "6b6ca5955592093789fdd604fdd52f1eda995bca9ac24cccf00c2059c019d95a"
+    },
+    {
+      "path": "REVIEW-DELTA.fa.md",
+      "sha256": "bd5436e4ccd8586304b24ace03d44a26123a40267e8a3b4e5dd8794f76698b80"
+    },
+    {
+      "path": "appsettings.hr3.disabled.json",
+      "sha256": "036c6cf5438226f8f19ee42bd4fefafac80749cf3eabedfaaca35d7bd198893f"
+    },
+    {
+      "path": "compatibility/ContractPolicyStore.cs",
+      "sha256": "94c5cd7f6643d6646f812575fef5d4d1dd0658f2aead8731632ce2442a713c90"
+    },
+    {
+      "path": "compatibility/Program.Hr3.cs",
+      "sha256": "ab8ed8b12ba55a0efb778f91815a090fe6ee060052ff4294bff48377b410b52c"
+    },
+    {
+      "path": "compatibility/README.fa.md",
+      "sha256": "60c16eb7a2caee64c4e6e1ea87d6b5fce4e4dfcff9dd714f30fbec220bbddbc1"
+    },
+    {
+      "path": "compatibility/program-source-pin.json",
+      "sha256": "9f997fac0b63d047aecd5476bdc0d8b751ebf024af300945b016aa575bb2690a"
+    },
+    {
+      "path": "compatibility/source-pin.json",
+      "sha256": "a3993c9c73f23540309f0bdf192ed296f2c6126f630a353e0ac88b009a32e97f"
+    },
+    {
+      "path": "integration/Hr3Host.targets",
+      "sha256": "3d965474681034f1a0ca461474261c5824b587ba9de62baa5affaedf725b9bde"
+    },
+    {
+      "path": "src/Hr3CentralHostRecords.cs",
+      "sha256": "f84aecf2b6f015654fe411c083107ae10fc426ada2c8bbc89ef2ebc29d1fa5e9"
+    },
+    {
+      "path": "src/Hr3CentralIntrospectionAuthority.cs",
+      "sha256": "fece094f2494305a5e9453681113bcc4c3d18de3539bb8155218338183007418"
+    },
+    {
+      "path": "src/Hr3HostPdpEndpoint.cs",
+      "sha256": "ab98048a080eb88314713f2e05abace66a81a8a9c08f986914a8a29643e235d0"
+    },
+    {
+      "path": "src/Hr3HostServices.cs",
+      "sha256": "c25db82387756671927edb6ea50b4ad7be9c2bbcb1379c31a35c1a8c10995a92"
+    },
+    {
+      "path": "src/Hr3Introspection.cs",
+      "sha256": "c3f118d8fa00192245c8982ee18702f9720afa3094b43f5d9b20faa95fb3713e"
+    },
+    {
+      "path": "src/Hr3PublicationStore.cs",
+      "sha256": "d695804131bebe5cffa037b448b5cb8f0c20209d421c64b6711304599b244c36"
+    },
+    {
+      "path": "test-host.ps1",
+      "sha256": "081a8c626951bb2e25a3f3e73c439f336fa798b3aa3577d56853b6c1bb7dde10"
+    },
+    {
+      "path": "test-host.sh",
+      "sha256": "30b1bc74604f2e9df827fd62630c667ef8d215bcad1ee847ebd3544bba34bc7f"
+    },
+    {
+      "path": "tests/CalendarCoexistenceTests.cs",
+      "sha256": "b92d96dfa03a5c2d22034fd204a743891e06facf58a36fa58eb53054b1c991d5"
+    },
+    {
+      "path": "tests/CentralHostRecordsTests.cs",
+      "sha256": "3871546ffc7ce4fb0ccc0ebab6c4f759748824f5286d33800da9f31ed7bec1fd"
+    },
+    {
+      "path": "tests/CentralIntrospectionAuthorityTests.cs",
+      "sha256": "92b75636dc2b80d514dc04b4ce111d05488107084d7c26385628a02a424925b3"
+    },
+    {
+      "path": "tests/CompatibilityTests.cs",
+      "sha256": "ed622efdd87981f5dd6eb5d9e94b40c2bfbb379af022646b505db310348ba2c9"
+    },
+    {
+      "path": "tests/Fanasa.HrReadHost.Tests.csproj",
+      "sha256": "49751f57698c7bdf01fe845d10215ff8e4fc49b10556788a278a287c3cef83cb"
+    },
+    {
+      "path": "tests/HostEndpointTests.cs",
+      "sha256": "1500497b7c3c374f0a0a27b966c1ec19ae32700c334292ff64554c4dd0170b27"
+    },
+    {
+      "path": "tests/HostServicesTests.cs",
+      "sha256": "9dc5179b9fde0ac50f94395808a017d5bfc8c0060607170e28fa5c41896d6538"
+    },
+    {
+      "path": "tests/IntrospectionTests.cs",
+      "sha256": "1399c2a50b82650ade28fe45ca7c471aa313c265aa5836990b6729f2a13625ba"
+    },
+    {
+      "path": "tests/PipCoexistenceTests.cs",
+      "sha256": "2593f1106a887c15fd5e77bfef808568333c67eb7ed999e29657666be90df0d1"
+    },
+    {
+      "path": "tests/Program.cs",
+      "sha256": "ae86f754dd79c20b761a4a3ef20151e5d91f6e321d3cf9489ebedd30d9d602bd"
+    },
+    {
+      "path": "tests/PublicationTests.cs",
+      "sha256": "ab6ac9fa46338163d79e9a95780ab601003751ddf380b0d15247674f93506d96"
+    },
+    {
+      "path": "tests/test_verify_package.py",
+      "sha256": "dfcbf006108c5770c763fb8c217fd94b2c076c9d14312943c0f64b214e16980c"
+    },
+    {
+      "path": "verify-package.py",
+      "sha256": "1f33c0c2a0468b6880138e709f90f696fac2302ec83f8162595fd2b0f6ef9fba"
+    }
+  ],
+  "candidateStatus": "reviewed-local-ready-for-ci",
+  "sourceReview": "REVIEW-DELTA.fa.md",
+  "localVerification": {
+    "scope": "local Windows source integration; final metadata differs from tested manifest",
+    "testedManifestSha256": "869c397defa681a90a7ad1c5040ebf3c75faa021057480ea9886925e935e53c1",
+    "receipt": "../hr3-r5-local-validation.json",
+    "actualHostAssertions": 908,
+    "newPipAssertions": 61,
+    "suiteCount": 13,
+    "dotnetSdk": "10.0.401",
+    "nugetAuditEnabled": true,
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "hostInputCount": 138,
+    "compiledBuildInputsUnchangedAfterTest": true,
+    "actualHostLogSha256": "4f27fdfdf42ad7f95afe7e7654fb77046e6b92c30331f9c82ef619f5c9d606c4",
+    "hostInventoryBeforeAfterSha256": "afc7ffd5d4b8ac440dac8d31a411ca773ad8877849b0d6f2a3850ed5dc6e4f96",
+    "trustedCi": false,
+    "operationalAcceptance": false,
+    "pythonFinalization": {
+      "deploy": {
+        "log": ".build/hr3-r5-ci-finalization-20261023-r1/deploy-python-tests.log",
+        "logSha256": "3f3e62087fcb72d73ed067c6d1d03d9be12aa152289de7ae211b1a14d70b4037",
+        "total": 58,
+        "passed": 58,
+        "skipped": 0,
+        "exitCode": 0
+      },
+      "oci": {
+        "log": ".build/hr3-r5-ci-finalization-20261023-r1/oci-python-tests.log",
+        "logSha256": "2317fc0bedbc260acb61f52bef4e94156cdad6f2913aaf2edcab070ac50eae62",
+        "total": 20,
+        "passed": 20,
+        "skipped": 0,
+        "exitCode": 0
+      },
+      "filesystem": {
+        "log": ".build/hr3-r5-ci-finalization-20261023-r1/r5-filesystem-tests.log",
+        "logSha256": "74c52a50cca9f74d3e7fd523b370cf2c50be962ada682107b83a31baee835876",
+        "total": 34,
+        "passed": 31,
+        "skipped": 3,
+        "exitCode": 0
+      }
+    }
+  }
+}

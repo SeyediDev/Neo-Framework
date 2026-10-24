@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "fanasa.organization-hr.verification.v1",
+  "recordedAtUtc": "2026-10-13T07:01:22Z",
+  "testLogLastWriteUtc": "2026-10-12T15:04:57Z",
+  "scope": "Local application Kestrel HTTPS, JWT, actual synthetic TLS client certificates and existing SQLite Fabric",
+  "build": {
+    "project": "products/Fanasa.AccessManagement/tests/Organization.Hr.Tests/Organization.Hr.Tests.csproj",
+    "configuration": "Debug",
+    "targetFramework": "net10.0",
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  "test": {
+    "exitCode": 0,
+    "passedChecks": 171,
+    "failedChecks": 0,
+    "log": "hr-api-test.log",
+    "logSha256": "ade21914b43e34df10842ad26e4347b097c9f9efbcdc6cf0e9505dc436e2dd9c",
+    "checksAreDistinctProductionScenarios": false,
+    "identitiesAndCertificates": "disposable synthetic only",
+    "issuerDiscovery": "offline signing configuration; live JWKS not tested",
+    "serverTrust": "test client leaf pin; production trust not tested"
+  },
+  "verified": [
+    "TLS client pin and explicit clientAuth; missing/forged/nonmatching peer denied",
+    "JWT signature/issuer/audience/lifetime; scalar claims and true duplicate payload properties",
+    "Cookie isolation; exact service identity, scope, live central registration, membership, tenant and current grants",
+    "Strict JSON/media/body/date/idempotency bounds; seven chart operations",
+    "OrgRole and appointment create no software role/grant",
+    "Replay once, payload/revision conflict, immutable history and reopen persistence",
+    "Real token/grant expiry during Store processing; post-Execute rollback of chart/history/receipt/outbox; same request recovers once without ghost receipt",
+    "Disabled/misconfigured auth fails closed; invalid enabled upstream rejects startup",
+    "Separate named human listener preserved; HR TLS bypass denied on that listener",
+    "Metered unit.save denied; HR commercial admission adapter not implemented"
+  ],
+  "sourceHashCapture": "After test; critical HR hashes match 2026-10-13 follow-up. Full before-run workspace stability not claimed.",
+  "sourceSha256": {
+    "OrganizationHrSecurity.cs": "5683d63a829b38a8357b19e00c2620b12728bfb361db2b768b137c2360910d63",
+    "OrganizationHrApi.cs": "91e0b77dd51ee3d1d866ae3b87409d8ca9bb8cc7f445b2b732b10c205fc05c51",
+    "OrganizationHrHosting.cs": "82864d28f2925f620986a60aecdfed9747f8d625d06debefbe469969ac82f47c",
+    "tests/Organization.Hr.Tests/Program.cs": "7f72f47585ad6e6a9d5e7f17a2ae44ddfa93a8fb5e96e7796ac77740f9169e4b",
+    "tests/Organization.Hr.Tests/Organization.Hr.Tests.csproj": "75b34e159770c8ef1d32ae6ea9c1b87a131a51478c996bcc977bb4e0dc3ce546"
+  },
+  "testedArtifactSha256": {
+    "Organization.Hr.Tests.dll": "e72924b5a159afa65c2b907674c6144d05fc52fd6a3e9f583c11dc55c4990250",
+    "Fanasa.AccessManagement.Web.dll": "30828c909f0c23c208f4fbe70bfb56109df89b3deeaa70ede17418b16ecdfeec"
+  },
+  "publishedOpenApi": {
+    "file": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/contracts/organization-hr-v1.openapi.json",
+    "jsonParsing": "passed",
+    "localReferencesResolved": 18,
+    "publicPaths": 3,
+    "operations": 7,
+    "yamlParsing": "passed",
+    "pilotPublishedRoutesAndSchemasAgree": true,
+    "schemaDialect": "JSON Schema Draft 2020-12",
+    "schemaChecks": "passed",
+    "validExamples": 1,
+    "invalidExamples": 10,
+    "log": "hr-openapi-validation.log",
+    "limit": "Parsing, local refs, route/schema agreement and focused JSON Schema validation; not a full OpenAPI validator or business authorization."
+  },
+  "limits": [
+    "No native APISIX-to-PCC HR acceptance; Nginx development read-only evidence reported separately. No main-organization service activation proved.",
+    "Independent database/store reopen tested; full app process restart not tested.",
+    "OrgRole-to-AccessRole binding, provenance reconciliation, selective transfer and delegation remain later stages.",
+    "Registry and Fabric distinct databases; no cross-database atomicity or instantaneous global revocation claim."
+  ],
+  "runtimeReadonlyEvidence": "hr-api-runtime-readonly.json",
+  "finalWebBuild": {
+    "warnings": 0,
+    "logLastWriteUtc": "2026-10-13T06:49:11.3599979Z",
+    "project": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj",
+    "configuration": "Debug",
+    "logSha256": "2eca65e3dce32e34c21ce0e97204c185907a0b61ee798075a84a098d818e4992",
+    "errors": 0,
+    "log": "hr-api-build.log",
+    "exitCode": 0
+  },
+  "gatewayLocalEvidence": {
+    "sha256": "6a6c62395a00d808105a723b2a87c29d4b63a05cfe468e64301c317dac824c3a",
+    "passed": 36,
+    "exitCode": 0,
+    "nativeHrVerified": false,
+    "limit": "Separate owner local evidence; guide editorial changes after its source snapshot do not imply a rerun. General Gateway suite not added to HR counts.",
+    "profileEnabled": false,
+    "file": "E:/SJVS/Projects/NeoCluster/fanasa-platform-workstreams/api-gateway/hr-integration/verification.json",
+    "skipped": 2
+  },
+  "generatedOutputCleanup": {
+    "testedArtifactHashesMatchedBeforeFirstCleanupAttempt": true,
+    "scope": "Only task-created Organization.Hr.Tests bin/obj; source, logs, artifact hashes and shared outputs preserved.",
+    "firstSandboxAttempt": "Access denied after partial deletion; retry counts cover only remaining files, not original total.",
+    "completedAtUtc": "2026-10-13T07:01:22.1567294Z",
+    "targets": [
+      {
+        "path": "E:\\SJVS\\Projects\\Neo\\products\\Fanasa.AccessManagement\\tests\\Organization.Hr.Tests\\bin",
+        "remainingFileCountBeforeRetry": 190,
+        "remainingBytesBeforeRetry": 112497202
+      },
+      {
+        "path": "E:\\SJVS\\Projects\\Neo\\products\\Fanasa.AccessManagement\\tests\\Organization.Hr.Tests\\obj",
+        "remainingFileCountBeforeRetry": 39,
+        "remainingBytesBeforeRetry": 977714
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+[Unit]
+Description=Follow successful protected HR development GitLab pipelines
+
+[Timer]
+OnBootSec=90
+OnUnitInactiveSec=60
+AccuracySec=10
+Persistent=true
+Unit=fanasa-organization-hr-gitlab-cd.service
+
+[Install]
+WantedBy=timers.target

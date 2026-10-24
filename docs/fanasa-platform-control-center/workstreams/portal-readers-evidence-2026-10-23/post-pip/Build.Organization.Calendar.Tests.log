@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\tests\Organization.Calendar.Tests\Organization.Calendar.Tests.csproj (in 1.06 sec).
+  2 of 3 projects are up-to-date for restore.
+  Fanasa.ContractPolicy -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.ContractPolicy\release\Fanasa.ContractPolicy.dll
+  Fanasa.AccessManagement.Web -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.AccessManagement.Web\release\Fanasa.AccessManagement.Web.dll
+  Organization.Calendar.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Organization.Calendar.Tests\release\Organization.Calendar.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:10.09

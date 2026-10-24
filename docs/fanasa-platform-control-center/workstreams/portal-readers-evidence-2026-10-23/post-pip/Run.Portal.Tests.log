@@ -1,0 +1,101 @@
+PASS membership API supplies organization options
+PASS authorized SaaS catalog is scoped to consumer, not producer membership
+PASS blank service authority falls back to login authority
+PASS portal requests dedicated read-only catalog scope
+PASS catalog request supplies verified consumer tenant explicitly
+PASS access_token wire field mapped for both authorized requests
+PASS subject query is escaped
+PASS single organization selected automatically
+PASS multiple organizations require a choice
+PASS unavailable or revoked organization cannot be selected
+PASS unsafe product links rejected
+PASS canonical HTTPS product link allowed
+PASS mapped cookie subject works and authorized cross-owner SaaS is displayed
+PASS personal workspace is not cached
+PASS tampered organization hides all links
+PASS anonymous visitor receives sign-in state without tenant information
+PASS service 401 is distinguishable from empty membership
+PASS rejected OAuth scope is a configuration state
+PASS network outage becomes retryable state
+PASS missing configuration is not reported as no membership
+PASS anonymous workspace does not claim zero products
+PASS invalid organization asks for selection rather than claiming zero products
+PASS NotConfigured has unknown count and unavailable list, not empty membership
+PASS Forbidden has unknown count and unavailable list, not empty membership
+PASS Unavailable has unknown count and unavailable list, not empty membership
+PASS successful empty membership is distinct from connection failure
+PASS zero products is shown only for a successfully loaded selected organization
+PASS multi-organization empty state guides selection
+PASS failed workspace never exposes stale product links even with retained organizations
+PASS AJAX and initial HTML share the same state presentation
+PASS valid empty membership avoids unnecessary product request
+PASS invalid membership response fails safely: null
+PASS invalid membership response fails safely: [null]
+PASS invalid membership response fails safely: [{}]
+PASS invalid membership response fails safely: {}
+PASS invalid membership response fails safely: not-json
+PASS invalid products preserve only verified memberships: null
+PASS invalid products preserve only verified memberships: [null]
+PASS invalid products preserve only verified memberships: [{}]
+PASS invalid products preserve only verified memberships: {}
+PASS invalid products preserve only verified memberships: not-json
+PASS product access denial preserves membership but exposes no links
+PASS product timeout preserves verified membership for retry
+PASS caller cancellation is not converted into a service outage
+PASS invalid service URL produces configuration state before any network request
+PASS multiple organizations without selection never request aggregate catalog
+PASS tampered tenant does not trigger a product request
+PASS single organization auto-selection fetches its authorized SaaS catalog
+PASS page rejects mismatched consumer envelope as a failure, not a successful empty catalog
+PASS service workspace: page requires authentication
+PASS service workspace: personal data is not cached
+PASS service workspace: journey reader receives trusted subject and verified consumer organization
+PASS service workspace: authorized products from another producer remain visible
+PASS service workspace: storage key hides raw identity
+PASS service workspace: bootstrap cannot terminate JSON script element
+PASS service workspace: foreign organization requests and publications excluded
+PASS service workspace: same organization rows with case-only foreign subjects are excluded
+PASS service workspace: row ownership subjects are never serialized into browser bootstrap
+PASS service workspace: unsafe supplier launch URL rejected
+PASS service workspace: exact money string retained
+PASS service workspace: ordinary consumer has no preview review controls
+PASS service workspace: synthetic preview never exposes a real central accounting link
+PASS service workspace: explicit platform role enables synthetic review
+PASS service workspace: tampered organization cannot load journey or products
+PASS service workspace: wrong consumer product envelope cannot load journey
+PASS service workspace: anonymous state clears prior personal information
+PASS service workspace: production never enables synthetic review
+PASS service workspace: missing central contracts stay explicit, never fake zero consumption
+PASS service workspace: production retains authorized service launches
+PASS service workspace: production accounting link targets the verified consumer organization instead of the producer
+PASS service workspace: central accounting URL preserves base path and normalizes trailing slash
+PASS service workspace: central accounting URL supports a host without a base path
+PASS service workspace: central accounting URL supports an explicit HTTP base
+PASS service workspace: central accounting URL rejects an empty consumer organization
+PASS service workspace: central accounting URL rejects absent configuration, credentials, unsupported schemes, query and fragment
+PASS service workspace: reused production model clears accounting link for an untrusted organization
+PASS service workspace: reused production model clears accounting link when session becomes anonymous
+PASS service workspace: wrong usage envelope rejects every journey datum
+PASS service workspace: same organization with wrong subject envelope hides every journey datum
+PASS service workspace: wrong journey subject keeps independently authorized active services
+PASS service workspace: case-only subject envelope mismatch is rejected ordinally
+PASS service workspace: mapped NameIdentifier fallback supplies the trusted journey subject
+PASS service workspace: reused model reloads rows and storage identity for the second authenticated subject
+PASS service workspace: first subject loads its matching journey envelope
+PASS service workspace: reused model clears previous-subject journey when the provider returns a stale envelope
+PASS service workspace: Forbidden hides products and suppresses journey requests
+PASS service workspace: Forbidden cannot expose a central accounting link
+PASS service workspace: Unavailable hides products and suppresses journey requests
+PASS service workspace: Unavailable cannot expose a central accounting link
+PASS service workspace: NotConfigured hides products and suppresses journey requests
+PASS service workspace: NotConfigured cannot expose a central accounting link
+PASS service workspace: workspace shows all published services, not only allowed products
+PASS service workspace: launch comes only from independently verified consumer product
+PASS service workspace: ungranted service has only metadata and the official request link
+PASS service workspace: cloud center uses the same canonical identity as central discovery
+PASS service workspace: snapshot is JSON and no-store
+PASS service workspace: snapshot does not expose raw identity or unescaped HTML
+PASS service workspace: snapshot retains only the verified consumer accounting destination
+PASS service workspace: untrusted organization clears every launch and financial link while retaining public descriptions
+PASS service workspace: discovery outage cannot erase independently authorized services or turn into successful zero catalog
+100 checks passed.

@@ -1,0 +1,316 @@
+{
+  "manifestVersion": "1.0.0",
+  "module": "Fanasa.ContractPolicy",
+  "deliveryVersion": "0.3.0",
+  "moduleVersion": "0.2.0",
+  "versionMeaning": "Source integration delivery 0.3.0 retains unchanged native library build version 0.2.0; no NuGet package created or published.",
+  "recordedOn": "2026-10-10",
+  "targetFramework": "net10.0",
+  "schemaVersions": [
+    "1.0.0",
+    "2.0.0"
+  ],
+  "profileIds": [
+    "fanasa.contract-policy/1",
+    "fanasa.contract-policy/2"
+  ],
+  "deliveryKind": "local-source-with-pcc-wiring",
+  "hostSourceWired": true,
+  "pipSourceImplemented": true,
+  "producerConfiguredByDefault": false,
+  "organizationEvaluationConfiguredByDefault": false,
+  "gatewayExecutorConfiguredByDefault": false,
+  "productionDeploymentVerified": false,
+  "verificationSynthetic": true,
+  "realBusinessAcceptanceVerified": false,
+  "authenticationDeadlineRequired": true,
+  "producerAuthenticationScheme": "ContractProducerBearer",
+  "producerReceiverAudience": "fanasa-access-management-web",
+  "producerProductBinding": "configured sending client owner ProductKey; independent from receiver audience",
+  "decisionAuthenticationScheme": "OrganizationBearer",
+  "evidence": "EVIDENCE.v0.3.0.md",
+  "guide": "PCC-INTEGRATION.md",
+  "hashAlgorithm": "SHA-256",
+  "pathBase": "implementation/",
+  "sharedHooksPathBase": "workspace-root/",
+  "verification": {
+    "dotnetSdk": "10.0.401",
+    "dotnetRuntime": "10.0.12",
+    "existingHostPackageVersion": "10.0.8",
+    "actualWebBuildExitCode": 0,
+    "actualWebBuildWarnings": 0,
+    "actualWebBuildErrors": 0,
+    "nativeCoreTestsPassed": 241,
+    "nativeAdapterTestsPassed": 103,
+    "nativeTestsPassed": 344,
+    "nativeTestsFailed": 0,
+    "pccTestsPassed": 114,
+    "pccTestsFailed": 0,
+    "organizationBearerChecksPassed": 77,
+    "organizationChecksPassed": 248,
+    "finalDotnetChecksPassed": 783,
+    "suiteExitCodes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pccHarnessBuildWarnings": 0,
+    "pccHarnessBuildErrors": 0,
+    "localPublishExitCode": 0,
+    "publishedSchemaCount": 10,
+    "publishedSchemasMatchSource": true,
+    "actualDefaultOrganizationOperationStatus": 403,
+    "referenceBaselineTestsPassed": 171,
+    "referenceBaselineRerun": false,
+    "referenceBaselineEvidence": "EVIDENCE.md",
+    "previousNativeIncompleteRun": {
+      "passed": 343,
+      "failed": 1,
+      "exactFailureRetained": false,
+      "cause": "unproven; two later independent complete runs passed 344/0"
+    },
+    "historicalNativeInputsCompared": 34,
+    "historicalNativeInputMismatches": 0,
+    "finalHostBuildUtc": "2026-10-10T14:48:54.2128098Z",
+    "finalSourceTimestampAuditPassed": true,
+    "allThreeHostDependentSuitesRerun": true,
+    "nativeDllUnchangedFromTestedOutput": true,
+    "previousPcc112PassResultSuperseded": true
+  },
+  "buildArtifacts": [
+    {
+      "name": "Fanasa.AccessManagement.Web.dll",
+      "sha256": "43e36a331b306c3f21d1647f2399f2b26da55e9ad0a54c5a6012aae7e4905d0b",
+      "testCopyMatchesBuild": true,
+      "allThreeHostDependentTestCopiesMatchBuild": true,
+      "localPublishMatchesBuild": true
+    },
+    {
+      "name": "Fanasa.ContractPolicy.dll",
+      "sha256": "02085b13dccd134a2bd7a4b4d187d2e6241f9b914e645d58360957eb1b75230f",
+      "testCopyMatchesBuild": true,
+      "allThreeHostDependentTestCopiesMatchBuild": true,
+      "localPublishMatchesBuild": true
+    }
+  ],
+  "historicalManifests": [
+    "manifest.v0.1.0.json",
+    "manifest.v0.2.0.json"
+  ],
+  "excluded": [
+    "bin/",
+    "obj/",
+    "results/",
+    "temporary runtime data/",
+    "publication output/",
+    "historical evidence/",
+    "manifest*.json"
+  ],
+  "files": [
+    {
+      "path": "../fixtures/context.v1.json",
+      "sha256": "672a88b7e02c62f0f8b58dcc98dcb1699c4d804426b8c1758bd5c63520e80955"
+    },
+    {
+      "path": "../fixtures/golden-decisions.v1.json",
+      "sha256": "e0688f0e20b10190d4c42f81030e6601d81384efe60f6b8a6107d8341eaf30dd"
+    },
+    {
+      "path": "../fixtures/integration-context.v2.json",
+      "sha256": "e342d4a6566be9fd519ffdfb811db723a06f6ba48b613b5b5eac89fb6fe35341"
+    },
+    {
+      "path": "../fixtures/integration-decision.v2.json",
+      "sha256": "17eebeb459c6c58d3ed5d82af64b15c55eb1cde8b8664e27e40c26fffca75ac3"
+    },
+    {
+      "path": "../fixtures/integration-projection-event.v2.json",
+      "sha256": "8f6aaa063e069c70b337a9978c1a150898b5b8015dfca45b1362ba60301325c6"
+    },
+    {
+      "path": "../fixtures/integration-projection.v2.json",
+      "sha256": "de5eb67aa592fcee7fa2448ec39e4448483ac88d954dd5386fa9fb61463e3291"
+    },
+    {
+      "path": "../fixtures/projection-event.v1.json",
+      "sha256": "d34759be5b1adc9ae4e6ca5a4a3205552976ef830f7c172406e668589bb1889d"
+    },
+    {
+      "path": "../fixtures/projection.v1.json",
+      "sha256": "3d92552fa06b0a414bfa4823ee6c7e6cda463c97a0de35b0559f77cc97f39b96"
+    },
+    {
+      "path": "../README.md",
+      "sha256": "6fb76d36c7e5f6412180b8dfb35c5d09302820ad37e42b3e942853ff7e21cedc"
+    },
+    {
+      "path": "../schemas/contract-access-projection.v1.schema.json",
+      "sha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "path": "../schemas/contract-access-projection.v2.schema.json",
+      "sha256": "59621609f0d0199a45ac2a903b8f04b032377024bffe9617daf1f9d6374c3d5c"
+    },
+    {
+      "path": "../schemas/decision.v1.schema.json",
+      "sha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "path": "../schemas/decision.v2.schema.json",
+      "sha256": "b91ff92751cadf414ad2cad9ccf07467e0a243af967d16c8464fdd1155205411"
+    },
+    {
+      "path": "../schemas/limits.v1.schema.json",
+      "sha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "path": "../schemas/limits.v2.schema.json",
+      "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "path": "../schemas/projection-event.v1.schema.json",
+      "sha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "path": "../schemas/projection-event.v2.schema.json",
+      "sha256": "fd941be3728c061b4fac2d6de61a1079feac5bee811ca86c9a356862d1d8a37c"
+    },
+    {
+      "path": "../schemas/request-context.v1.schema.json",
+      "sha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "path": "../schemas/request-context.v2.schema.json",
+      "sha256": "57a60e81499e1cb1790a648db66f1288262206f792fff9803534d60186809bfd"
+    },
+    {
+      "path": "../SOURCE-AND-WIRING.md",
+      "sha256": "77cea140f0ab0b78c09b43e7cb9dd49904ff2def495fddba5ac14c579754c282"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "6ef7bf260cc4749cb851e253d7c013df4a3c59bb4d4eacf8096c5c1405700226"
+    },
+    {
+      "path": "ADAPTERS.md",
+      "sha256": "78f4f7ada911a37274914fcef558b77cce5a4f386f94040259b1c64b735d2a41"
+    },
+    {
+      "path": "Directory.Build.props",
+      "sha256": "2774dc1b621b47ade6c01b6015d662782e0d9f1c1af9822a5dfe2424aeaed6a0"
+    },
+    {
+      "path": "EVIDENCE.v0.3.0.md",
+      "sha256": "f182dd7eeb5c5f58fe67932ce78549b009a60442ef0c99d1333e5a80b47428be"
+    },
+    {
+      "path": "PCC-INTEGRATION.md",
+      "sha256": "e1155f1169099a6f6d11082d968762c698389598e3a74abc1329fad9a75f73cb"
+    },
+    {
+      "path": "pcc/ContractPolicyApi.cs",
+      "sha256": "5842999f69b43c4e3316c38ca83bcb46bfe75db98cc76fa5a7b7d70dec115c0d"
+    },
+    {
+      "path": "pcc/ContractPolicyHost.cs",
+      "sha256": "f391432bd182f0024bfb1870c7533059cf8b8cd27deb6a67b6ef1c717c5e4b63"
+    },
+    {
+      "path": "pcc/ContractPolicySecurity.cs",
+      "sha256": "c1f1265578c49db87601019dd7a315c57d14e88b9e553df82eeec4a0356a5daa"
+    },
+    {
+      "path": "pcc/ContractPolicyStore.cs",
+      "sha256": "db056a11a0a2e4fbd342d113bd9978e599bc6f989e776c2ee3331a784c3de471"
+    },
+    {
+      "path": "README.md",
+      "sha256": "938505120026449f712d9602ba6b3fa78a105588ba8eb4b9b8e3aa957dd5b105"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractEventAdapter.cs",
+      "sha256": "084a359c425c12eca3594adb903e695f7ddfa56195515648bda4e85ac333c6c5"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractJson.cs",
+      "sha256": "504123a104c9de47cd4898268a54dd0ca75b5e3b29930c8a3159385262321c41"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractPolicyEvaluator.cs",
+      "sha256": "b2c788f71854139ebf7ac358f2ae552e1be9f6e552fae4ea139fb2fa2b2cf167"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractPolicyModule.cs",
+      "sha256": "5f527b30a4d2dc797619ab4970b7cf503a367701f6081ddbe06772e063b9ae91"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractPolicyPep.cs",
+      "sha256": "00f8f00b8eb54af0b34422a7be99df58e7c4eb4b01b7688ea4878d166d5084a4"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractProjectionProjector.cs",
+      "sha256": "c35823a5f1811a139f66f4d80ede0d5204b9503ffc0476c25b309c4142d44a3f"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractProjectionValidator.cs",
+      "sha256": "31cd44f4f47998991962ab92e7633ef6b2f71259fa4b692e91ebe523651deab3"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/ContractSchemaValidator.cs",
+      "sha256": "b5b288c3b6eb0223900c6f700c48049a40377876daa34e01fb2e77376ad48799"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj",
+      "sha256": "bb399621b6456870ab9c6b7d20f8439b61b29d1b6aa68cc74aa316655e2765d0"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/Models.cs",
+      "sha256": "ba0520b667fdc812a911c6ce232cebb35dc1c3b9c4b78e0a1bba88168534c549"
+    },
+    {
+      "path": "src/Fanasa.ContractPolicy/TrustedAccessSnapshotProvider.cs",
+      "sha256": "2e2d86f0150ae452880e7fca95432a9baf5aabe7ede23d6fd6609d9597ed2f33"
+    },
+    {
+      "path": "tests/Fanasa.ContractPolicy.Pcc.Tests/Fanasa.ContractPolicy.Pcc.Tests.csproj",
+      "sha256": "a349c92baeb07c295026694ab6e16ac9183b96f3bfeb49eca57e31923784640c"
+    },
+    {
+      "path": "tests/Fanasa.ContractPolicy.Pcc.Tests/Program.cs",
+      "sha256": "990d9adcf37142d55fced8a6fcda35614e96fb9a61df7b084c00dfdf92661193"
+    },
+    {
+      "path": "tests/Fanasa.ContractPolicy.Tests/AdapterTests.cs",
+      "sha256": "237ae3d5be9fbb6150b6f5e7e532a3aea9ad1f549d7a9049082b0e210c3f6eb7"
+    },
+    {
+      "path": "tests/Fanasa.ContractPolicy.Tests/Fanasa.ContractPolicy.Tests.csproj",
+      "sha256": "37f29f43d515eee41de54636889e5fa647e776504e83290ec1b64399ffaca5f5"
+    },
+    {
+      "path": "tests/Fanasa.ContractPolicy.Tests/Program.cs",
+      "sha256": "271113eeea5f57789a6889116d268dffaa5c61710bd43adc3a2cfed3c798920a"
+    }
+  ],
+  "sharedHooks": [
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj",
+      "sha256": "d0d0bfdbcf037f7e05f6dcfc2975d2e1c73d7ca27bd0bd6308bb587445e4ebae",
+      "snapshotKind": "whole-file-current-workspace",
+      "ownership": "only the integration hook or paragraph is attributed to this delivery"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs",
+      "sha256": "be06c166e6daa4e676936e82cc0e70475c333ea44b41b9ac0b6fa0001944e238",
+      "snapshotKind": "whole-file-current-workspace",
+      "ownership": "only the integration hook or paragraph is attributed to this delivery"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/README.md",
+      "sha256": "9292247d06b7a8507c9fab67283616e95762a81bda6878a82dffe03bb4c6f3b2",
+      "snapshotKind": "whole-file-current-workspace",
+      "ownership": "only the integration hook or paragraph is attributed to this delivery"
+    }
+  ]
+}

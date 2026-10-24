@@ -1,0 +1,66 @@
+PASS duplicate JSON object names are rejected before canonical hashing
+PASS base fixture and two-event reconciliation agree
+PASS new operation v8 charges 18 IRR
+PASS same event and payload replay changes no receipt, usage, ledger or outbox
+PASS sorted event fingerprint ignores JSON object property order
+PASS same event with different payload conflicts
+PASS event conflict leaves all committed counts unchanged
+PASS new eventId for the same operation adds only a receipt, without another charge or outbox event
+PASS same operation conflicts when an immutable binding changes
+PASS same operation conflicts when an immutable binding changes
+PASS same operation conflicts when an immutable binding changes
+PASS same operation conflicts when an immutable binding changes
+PASS same operation conflicts when an immutable binding changes
+PASS operation conflicts cannot create a second charge
+PASS fault before commit injected after staging receipt, usage, ledger and outbox
+PASS Fabric rollback removes every staged document and ledger/outbox change
+PASS historical v7 event blocks the unsafe current-tariff integration path
+PASS historical validation never mutates the live tariff
+PASS new work requires acceptedAt <= occurredAt <= producedAt
+PASS new work requires strict UTC Z timestamps
+PASS malformed timeline and non-UTC events leave no accounting effects
+PASS actual FabricRecovery verifies the offline checksummed backup bundle
+PASS fault after commit loses the acknowledgement
+PASS restart after committed-but-unacknowledged intake safely replays
+PASS known ledger fixture has exactly two usage and operation records
+PASS known ledger preserves historical amount/price, registration time and separate occurredAt for unit-save-op-001
+PASS known ledger preserves historical amount/price, registration time and separate occurredAt for unit-save-op-002
+PASS ledger reconciles 30 IRR outstanding, 9970 credit, and zero unexplained difference
+PASS owner is not charged and live v8 tariff remains 18 IRR
+PASS outbox crash after remote acknowledgement and before local checkpoint
+PASS durable sink absorbs the duplicate delivery: three attempts, two unique charge receipts
+PASS outbox preserves consumer and owner bindings
+PASS outbox preserves consumer and owner bindings
+PASS restore has the recorded recovery point: one retained charge, one later 12 IRR charge absent
+PASS known ledger fixture has exactly two usage and operation records
+PASS known ledger preserves historical amount/price, registration time and separate occurredAt for unit-save-op-001
+PASS known ledger preserves historical amount/price, registration time and separate occurredAt for unit-save-op-002
+PASS ledger reconciles 30 IRR outstanding, 9970 credit, and zero unexplained difference
+PASS owner is not charged and live v8 tariff remains 18 IRR
+PASS authoritative event replay after restore reconstructs the missing charge/outbox without duplicates
+PASS stable business-derived charge identity lets the newer sink absorb both restored outbox deliveries
+PASS existing Execute ignores requested historical price/amount and uses live tariff plus processing time
+PASS backend commits but response times out with unknown outcome
+PASS timeout does not invent completion or a charge
+PASS restart blocks blind backend replay for the same unknown business key
+PASS missing non-authoritative status stays unknown and does not authorize another execution
+PASS same-key backend status reconciliation accounts exactly once without reexecuting business work
+PASS zero-credit backend response is lost after business commit
+PASS unknown reconciliation retains a completed event when accounting lacks credit
+PASS pending evidence survives restart outside the attempt-status transaction
+PASS later same-key inquiry after credit resolution charges once without backend replay
+PASS completed remote event exceeding credit is accounting-pending
+PASS pending event/evidence are durable while ledger stays unchanged
+PASS equivalent new eventId also remains pending for the same zero-credit operation
+PASS credit resolution cannot charge a changed payload under the pending event key
+PASS new eventId cannot replace pending operation immutable bindings
+PASS both pending conflicts leave the ledger uncharged
+PASS credit resolution replays the completed evidence into accounting without backend execution
+PASS one charge resolves every pending event alias and alias replay never charges again
+PASS late event for issued period awaits manual adjustment
+PASS closed-period event is retained and issued invoice remains unchanged
+PASS pending-retention race rechecks a competing committed receipt and never overwrites success
+LIMIT: snapshot append is PROPOSED; production integration must move it into AccountingStore.ExecuteMeasuredUsage.
+LIMIT: fixture resolver, backend status, source replay and sink are synthetic; no live endpoint, route, broker, limiter or metering setting is installed.
+LIMIT: backup RPO is the last offline snapshot; event/source retention and downstream reconciliation are required beyond that point.
+LIMIT: owner/platform revenue share, payout and settlement are undefined; only consumer usage debt is verified.

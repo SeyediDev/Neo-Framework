@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "profileId": "fanasa.contract-policy/1",
+  "contractId": "sample-contract-club",
+  "contractVersion": 7,
+  "ownerTenantId": "tenant-a",
+  "consumerTenantId": "tenant-b",
+  "productId": "club",
+  "offerId": "sample-club-offer",
+  "subscriptionId": "sample-subscription-b",
+  "status": "Active",
+  "validFrom": "2026-10-01T00:00:00.000Z",
+  "validTo": "2026-11-01T00:00:00.000Z",
+  "effectiveAt": "2026-10-10T08:00:00.000Z",
+  "featureEntitlements": [
+    "report.read"
+  ],
+  "eligibleRoles": [
+    "ApiInvoker"
+  ],
+  "seats": {
+    "maximum": 25,
+    "unit": "active-membership",
+    "scope": "consumer-product-subscription"
+  },
+  "limits": {
+    "allocationId": "sample-allocation-club-b",
+    "scope": {
+      "consumerTenantId": "tenant-b",
+      "productIds": [
+        "club"
+      ],
+      "environments": [
+        "development"
+      ],
+      "operationGroups": [
+        "reporting"
+      ]
+    },
+    "canonicalScope": "tenant=tenant-b;products=club;environments=development;groups=reporting",
+    "meter": "api.request.admitted",
+    "unit": "request",
+    "rate": {
+      "algorithm": "token-bucket",
+      "requestsPerSecond": 120,
+      "burstCapacity": 240
+    },
+    "quota": {
+      "algorithm": "fixed-calendar-utc",
+      "period": "month",
+      "requests": 100000
+    }
+  },
+  "zoneConstraints": [
+    "ir-private-1"
+  ],
+  "pricingReference": {
+    "priceId": "sample-price-reference",
+    "priceVersion": 1
+  },
+  "policy": {
+    "policyId": "sample-club-report-read",
+    "policyVersion": 3,
+    "templateId": "report-read/1",
+    "combiningAlgorithm": "deny-overrides",
+    "explicitDenyActions": []
+  }
+}

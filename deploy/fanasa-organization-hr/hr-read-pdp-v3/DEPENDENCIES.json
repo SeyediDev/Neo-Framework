@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "fanasa.hr-read.pdp.dependencies/1",
+  "profilePackage": "../hr-read-profile-v3",
+  "profileManifest": "SOURCE-PACKAGE.json",
+  "profileManifestSha256": "9875088ffe6e3efc9553b0ca42873fa52b8a05d23d8101acd084c69e16b82329",
+  "profileFileCount": 80,
+  "copiedSchemas": [
+    {"path": "schemas/decision.v3.schema.json", "sha256": "a1ee58445cc9d4c76c9370d2696a08de4709c4581ffa360c89029dbb0ddfc029"},
+    {"path": "schemas/limits.v2.schema.json", "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"}
+  ],
+  "directPackage": {"id": "Microsoft.AspNetCore.Authentication.JwtBearer", "version": "10.0.8"},
+  "targetFramework": "net10.0",
+  "observedSdk": "10.0.401",
+  "liveHostRegistration": false,
+  "defaultSource": "UnavailableHrReadPdpSourceFactory",
+  "defaultHostRecords": "UnavailableHrReadPdpHostRecords"
+}

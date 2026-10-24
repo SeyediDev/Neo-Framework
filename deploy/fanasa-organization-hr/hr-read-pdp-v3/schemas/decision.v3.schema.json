@@ -1,0 +1,343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fanasa:contract-policy:decision:3.0.0",
+  "title": "HR read candidate decision v3.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "profileId",
+    "requestId",
+    "decision",
+    "reasonCode",
+    "evaluatedAt",
+    "validUntil",
+    "policyReferences",
+    "projectionReference",
+    "allocationReference",
+    "obligations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "3.0.0"
+    },
+    "profileId": {
+      "const": "fanasa.organization-hr-read/1"
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+    },
+    "decision": {
+      "enum": [
+        "Permit",
+        "Deny",
+        "NotApplicable",
+        "Indeterminate"
+      ]
+    },
+    "reasonCode": {
+      "type": "string",
+      "pattern": "^[a-z][a-z-]{0,63}$"
+    },
+    "evaluatedAt": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "validUntil": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "policyReferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "policyId",
+          "policyVersion"
+        ],
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+          },
+          "policyVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        }
+      },
+      "minItems": 0,
+      "maxItems": 1,
+      "uniqueItems": true
+    },
+    "projectionReference": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contractId",
+            "contractVersion",
+            "subscriptionId"
+          ],
+          "properties": {
+            "contractId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+            },
+            "contractVersion": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "subscriptionId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "allocationReference": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allocationId",
+            "canonicalScope"
+          ],
+          "properties": {
+            "allocationId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+            },
+            "canonicalScope": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 13000
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "obligations": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "fulfillOn",
+              "parameters"
+            ],
+            "properties": {
+              "id": {
+                "const": "urn:fanasa:obligation:admit-allocation:1"
+              },
+              "fulfillOn": {
+                "const": "Permit"
+              },
+              "parameters": {
+                "$ref": "limits.v2.schema.json"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "fulfillOn",
+              "parameters"
+            ],
+            "properties": {
+              "id": {
+                "const": "urn:fanasa:obligation:resource-tenant:1"
+              },
+              "fulfillOn": {
+                "const": "Permit"
+              },
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "consumerTenantId",
+                  "productId",
+                  "environment",
+                  "action"
+                ],
+                "properties": {
+                  "consumerTenantId": {
+                    "type": "string",
+                    "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+                  },
+                  "productId": {
+                    "const": "organization-fabric"
+                  },
+                  "environment": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+                  },
+                  "action": {
+                    "enum": [
+                      "organization.hr.chart.read",
+                      "organization.hr.history.read"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "Permit"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evaluatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "projectionReference": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "contractId",
+              "contractVersion",
+              "subscriptionId"
+            ],
+            "properties": {
+              "contractId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+              },
+              "contractVersion": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "subscriptionId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+              }
+            }
+          },
+          "allocationReference": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "allocationId",
+              "canonicalScope"
+            ],
+            "properties": {
+              "allocationId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+              },
+              "canonicalScope": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 13000
+              }
+            }
+          },
+          "policyReferences": {
+            "minItems": 1
+          },
+          "obligations": {
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "allOf": [
+          {
+            "properties": {
+              "obligations": {
+                "contains": {
+                  "properties": {
+                    "id": {
+                      "const": "urn:fanasa:obligation:admit-allocation:1"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            }
+          },
+          {
+            "properties": {
+              "obligations": {
+                "contains": {
+                  "properties": {
+                    "id": {
+                      "const": "urn:fanasa:obligation:resource-tenant:1"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            }
+          }
+        ]
+      },
+      "else": {
+        "properties": {
+          "validUntil": {
+            "type": "null"
+          },
+          "obligations": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

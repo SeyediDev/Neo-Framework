@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "fanasa.pilot-lua-test-dependency.v1",
+  "testOnly": true,
+  "package": "lupa",
+  "version": "2.6",
+  "wheel": "lupa-2.6-cp312-cp312-win_amd64.whl",
+  "wheelSha256": "c735a1ce8ee60edb0fe71d665f1e6b7c55c6021f1d340eb8c865952c602cd36f",
+  "wheelBytes": 1688529,
+  "releaseMetadataUrl": "https://pypi.org/pypi/lupa/2.6/json",
+  "wheelUrl": "https://files.pythonhosted.org/packages/b8/15/5121e68aad3584e26e1425a5c9a79cd898f8a152292059e128c206ee817c/lupa-2.6-cp312-cp312-win_amd64.whl",
+  "pythonVersion": "3.12.14",
+  "luaVersion": "Lua 5.4",
+  "installedFiles": [
+    {
+      "path": "lupa/__init__.py",
+      "sha256": "d1f7d659bbbb804e58cf8eadb6480609858db8680177f4bee81992fa55a6eb8d"
+    },
+    {
+      "path": "lupa/lua51.cp312-win_amd64.pyd",
+      "sha256": "a8b16a8bc376e4c7a19f027d7ac6cb055a44476d693c6aede1c534bc6f485924"
+    },
+    {
+      "path": "lupa/lua52.cp312-win_amd64.pyd",
+      "sha256": "e198dc9b05960b2696c2352ecbb3bfeb6055a0c6e90bcdfce086b0fd910bde5d"
+    },
+    {
+      "path": "lupa/lua53.cp312-win_amd64.pyd",
+      "sha256": "db8ccfb0b24d00f5f210019366f1dc12432eb9e94b34086447e8cea0e670e512"
+    },
+    {
+      "path": "lupa/lua54.cp312-win_amd64.pyd",
+      "sha256": "7a1c188a21d2feda952f4a31a3f4f789a1bae07aa22520edc73271d34f44a746"
+    },
+    {
+      "path": "lupa/luajit20.cp312-win_amd64.pyd",
+      "sha256": "21902898820ea0335870cccd25b1670bb6dc86564c1047447ea791ad74cb0fc5"
+    },
+    {
+      "path": "lupa/luajit21.cp312-win_amd64.pyd",
+      "sha256": "466523daa53665df3d54f27bf7d0fc6e47b0dd428cb06a4e92c231dfb7bdc652"
+    },
+    {
+      "path": "lupa/version.py",
+      "sha256": "b4037d51a33e39bf4d7fba1e660f2f56859898922f49c17d7785c1b95a36836d"
+    },
+    {
+      "path": "lupa-2.6.dist-info/licenses/LICENSE.txt",
+      "sha256": "be85bf5e0a2dea5b91e5f34a55c0e43aec8ec29f4fa5b5858e6727b60a00f22c"
+    },
+    {
+      "path": "lupa-2.6.dist-info/METADATA",
+      "sha256": "682c90fc76034c507d5a5f94982883bfa18e09f0e1461e5c2f12c9994e0e7c09"
+    },
+    {
+      "path": "lupa-2.6.dist-info/WHEEL",
+      "sha256": "f143fdc7da6e588d0fd55fddecada831306a7de2cd9b6d424f367f3edaf43575"
+    },
+    {
+      "path": "lupa-2.6.dist-info/top_level.txt",
+      "sha256": "cc18eafce130565281513db92f610d70c3bef5777055048ded7e951f21fb3dc8"
+    },
+    {
+      "path": "lupa-2.6.dist-info/RECORD",
+      "sha256": "9634205f78a6c0e2e28b1423817eb506fbe1cf318aad61a9c884754e5b850b8d"
+    }
+  ],
+  "installationScope": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\tests\\Fanasa.GatewayUsage.Pilot.Tests\\.tools\\python",
+  "permanentRuntimeChanged": false
+}

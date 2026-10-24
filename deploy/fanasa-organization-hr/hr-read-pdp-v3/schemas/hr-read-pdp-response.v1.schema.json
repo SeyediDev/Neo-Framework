@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fanasa:hr-read:pdp:response:1",
+  "title": "HR read PDP evaluation response v1",
+  "description": "Complete bounded read-only PDP response. A Permit carries the immutable HR3 decision's unfulfilled admission and resource obligations; it never grants admission, consumes allocation, creates a receipt or proves backend fulfillment.",
+  "$comment": "Maximum serialized UTF-8 size 65536 bytes. All root fields are required. The service correlates the tuple to the parsed request and fresh sources, bounds validity at the request/token/authority/current UTC month, serializes fully, then independently reads the current source again before send. Consumers must correlate exact identifiers, RawTarget, subject-token hash, deadlines, month bounds and nested decision references. JSON Schema cannot prove cross-field equality or current authority. decision.v3.schema.json and its limits.v2 dependency are exact immutable HR3 copies; see README.md.",
+  "type": "object", "additionalProperties": false,
+  "required": [
+    "transportVersion", "schemaVersion", "profileId", "requestId", "method", "rawTarget",
+    "subjectId", "clientId", "consumerTenantId", "ownerTenantId", "ownership", "productId",
+    "audience", "environment", "zone", "action", "operationGroup", "tokenSha256", "tokenExpiresAt",
+    "contractId", "contractVersion", "policyId", "policyVersion", "allocationId", "allocationScope",
+    "configRevision", "allocationPeriodId", "periodStartMs", "periodEndMs", "evaluatedAt", "validUntil",
+    "admissionConfirmed", "decision"
+  ],
+  "properties": {
+    "transportVersion": { "const": "fanasa.hr-read.pdp.response/1" },
+    "schemaVersion": { "const": "3.0.0" },
+    "profileId": { "const": "fanasa.organization-hr-read/1" },
+    "requestId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/requestId" },
+    "method": { "const": "GET" },
+    "rawTarget": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/rawTarget" },
+    "subjectId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/uuid" },
+    "clientId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "consumerTenantId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/uuid" },
+    "ownerTenantId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/nullableUuid" },
+    "ownership": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/ownership" },
+    "productId": { "const": "organization-fabric" },
+    "audience": { "const": "fanasa-organization-fabric" },
+    "environment": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "zone": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "action": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/action" },
+    "operationGroup": { "const": "organization.hr.read" },
+    "tokenSha256": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/tokenSha256" },
+    "tokenExpiresAt": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/tokenExpiresAt" },
+    "contractId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "contractVersion": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/version" },
+    "policyId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "policyVersion": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/version" },
+    "allocationId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "allocationScope": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/allocationScope" },
+    "configRevision": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/version" },
+    "allocationPeriodId": {
+      "type": "string", "minLength": 7, "maxLength": 7,
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+      "description": "Current UTC calendar month yyyy-MM with exact exclusive month bounds in periodStartMs and periodEndMs."
+    },
+    "periodStartMs": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/epochMilliseconds" },
+    "periodEndMs": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/epochMilliseconds" },
+    "evaluatedAt": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/epochSeconds" },
+    "validUntil": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/epochSeconds" },
+    "admissionConfirmed": { "const": false },
+    "decision": { "$ref": "decision.v3.schema.json" }
+  },
+  "allOf": [
+    { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/routeActionCorrelation" },
+    { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/ownershipCorrelation" }
+  ]
+}

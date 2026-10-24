@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <GeneratedGatewayFixture>$(MSBuildProjectDirectory)\obj\SharedFixture\GatewayFixture.g.cs</GeneratedGatewayFixture>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../../workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj" />
+    <ProjectReference Include="../../../../../products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj" />
+    <Compile Include="$(GeneratedGatewayFixture)" />
+    <None Include="../../../workstreams/contract-policy/fixtures/*.json" Link="Fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="ExtractPinnedGatewayFixture" BeforeTargets="CoreCompile">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\extract-fixture.ps1&quot; -OutputPath &quot;$(GeneratedGatewayFixture)&quot;" />
+  </Target>
+</Project>

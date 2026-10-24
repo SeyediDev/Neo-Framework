@@ -1,0 +1,7 @@
+apiVersion: v2
+name: organization-hr
+description: Development-only Fanasa Organization HR API candidate; no automatic activation
+type: application
+version: 0.1.1
+appVersion: "adapter-v2"
+kubeVersion: ">=1.29.0-0"

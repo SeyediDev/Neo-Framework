@@ -1,0 +1,498 @@
+{
+  "schemaVersion": "fanasa.gateway-build-cleanup.v1",
+  "authorization": "Coordinator approved removing only gateway-connection-check/bin and generated obj files after completed tests, retaining all 15 gateway restore assets, logs and evidence; PCC and owner build paths remain preserved.",
+  "startedAtUtc": "2026-10-10T17:09:14.9213809Z",
+  "completedAtUtc": "2026-10-10T17:09:29.8206127Z",
+  "exactRoot": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check",
+  "relevantGatewayWorkers": 0,
+  "noReparsePoints": true,
+  "before": {
+    "binFiles": 13,
+    "binBytes": 222668,
+    "objFiles": 45,
+    "objBytes": 1005491,
+    "restoreAssetsFiles": 15,
+    "restoreAssetsBytes": 580864,
+    "generatedObjFiles": 30,
+    "generatedObjBytes": 424627
+  },
+  "binSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.deps.json",
+      "bytes": 459,
+      "lastWriteTicksUtc": 639272471404710428,
+      "sha256": "8f3810e50bfd0c161386f158a081f7828e81cbc113fbceafa2ccac818b625cc7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.dll",
+      "bytes": 136704,
+      "lastWriteTicksUtc": 639272471393409872,
+      "sha256": "862e993cda02a6b5a2b4765f864a7f59af3ccb9276cadf190a869bc80831f7da"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.pdb",
+      "bytes": 39824,
+      "lastWriteTicksUtc": 639272471386008957,
+      "sha256": "f7accc148507db4231bb236d533e1023c2ddf80af2eec17976a55afada48857e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\contract-access-projection.v1.schema.json",
+      "bytes": 4420,
+      "lastWriteTicksUtc": 639272232727508407,
+      "sha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\contract-access-projection.v2.schema.json",
+      "bytes": 4600,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "59621609f0d0199a45ac2a903b8f04b032377024bffe9617daf1f9d6374c3d5c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\decision.v1.schema.json",
+      "bytes": 8342,
+      "lastWriteTicksUtc": 639272232727609596,
+      "sha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\decision.v2.schema.json",
+      "bytes": 8421,
+      "lastWriteTicksUtc": 639272260396998668,
+      "sha256": "b91ff92751cadf414ad2cad9ccf07467e0a243af967d16c8464fdd1155205411"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\limits.v1.schema.json",
+      "bytes": 2967,
+      "lastWriteTicksUtc": 639272222438099957,
+      "sha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\limits.v2.schema.json",
+      "bytes": 3317,
+      "lastWriteTicksUtc": 639272260396958509,
+      "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\projection-event.v1.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272224994096820,
+      "sha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\projection-event.v2.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272260397018758,
+      "sha256": "fd941be3728c061b4fac2d6de61a1079feac5bee811ca86c9a356862d1d8a37c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\request-context.v1.schema.json",
+      "bytes": 5527,
+      "lastWriteTicksUtc": 639272222438119955,
+      "sha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\request-context.v2.schema.json",
+      "bytes": 6087,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "57a60e81499e1cb1790a648db66f1288262206f792fff9803534d60186809bfd"
+    }
+  ],
+  "generatedObjSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+      "bytes": 200,
+      "lastWriteTicksUtc": 639272471733341459,
+      "sha256": "93d67476196ebfc80d1d7d8844b91146cfd678d105f5ce635eb900ca40610c9b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.AssemblyInfo.cs",
+      "bytes": 1055,
+      "lastWriteTicksUtc": 639272471734168852,
+      "sha256": "ef01558d3c917eebb71f94bd020d0dd4ee416b52cfc5194197675928986bcef4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.AssemblyInfoInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272471734088473,
+      "sha256": "1ae589871ab5b22bb45bfd80711dcca6313a42bc81c07c35494d26f56ca8a026"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.assets.cache",
+      "bytes": 68311,
+      "lastWriteTicksUtc": 639272471416018277,
+      "sha256": "700151251be14e17033d72d98a053b7380d05e37ebf2a450aec4589fecef5832"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.csproj.AssemblyReference.cache",
+      "bytes": 25589,
+      "lastWriteTicksUtc": 639272471706482517,
+      "sha256": "b74f31ea7872c1fd3324e400593e4dcd6e97be36bdfb931e9fb8406da66101f4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.csproj.CoreCompileInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272471734274306,
+      "sha256": "b72c20b84b5c83beb522aa8eff7446eb70962ae296d4dcc03198fea2fd96b604"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.csproj.FileListAbsolute.txt",
+      "bytes": 1438,
+      "lastWriteTicksUtc": 639272473046341861,
+      "sha256": "952c4f4a1af97f81de7e18aceb5b297c4e418b3bb686ec08d975e012353c6deb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.GeneratedMSBuildEditorConfig.editorconfig",
+      "bytes": 5830,
+      "lastWriteTicksUtc": 639272471732536349,
+      "sha256": "4995ca9ef55d1de356ef13a34967263b9254591be1f295b94049256734a1bbc0"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.GlobalUsings.g.cs",
+      "bytes": 642,
+      "lastWriteTicksUtc": 639272471410386912,
+      "sha256": "dcdf55702e02f3cc88efc9a8ec2b6881891f8821df27db90157ba496ae9813a1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.MvcApplicationPartsAssemblyInfo.cache",
+      "bytes": 0,
+      "lastWriteTicksUtc": 639272471748080803,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.RazorAssemblyInfo.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272471748118383,
+      "sha256": "f8c8a3e2e2fb599efc8641842f86c2050435b60e905330f4ce886f29a03a49e3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.RazorAssemblyInfo.cs",
+      "bytes": 694,
+      "lastWriteTicksUtc": 639272471748425703,
+      "sha256": "1dec7660fd203d95e2380bd5c4f52aed530592ae9968e54ad5c80e6f738ee79f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.sourcelink.json",
+      "bytes": 147,
+      "lastWriteTicksUtc": 639272471750616255,
+      "sha256": "de71c3a5494f457b8808abb6e61bbd82f7446c1606a5c67b5ce30674ebc2e8da"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\debug\\rpswa.dswa.cache.json",
+      "bytes": 14642,
+      "lastWriteTicksUtc": 639272471724122932,
+      "sha256": "3645f91b3c308ae9e5b081dc4219e08789a8dce0810b7334d2b53ea8e3545f10"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+      "bytes": 200,
+      "lastWriteTicksUtc": 639272470948007803,
+      "sha256": "93d67476196ebfc80d1d7d8844b91146cfd678d105f5ce635eb900ca40610c9b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.AssemblyInfo.cs",
+      "bytes": 1040,
+      "lastWriteTicksUtc": 639272470970677120,
+      "sha256": "e7085aa248ccca4be2131700f1a135433f9ebd58c1691dc709ea60c2c362990c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.AssemblyInfoInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272470969614543,
+      "sha256": "93f031d8da5e5ea3e36a40249fb85b8d23c12b032fc2470928373533ddc0b648"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.assets.cache",
+      "bytes": 236,
+      "lastWriteTicksUtc": 639272470921944739,
+      "sha256": "59b31b4498ed5054e42f657b5b3a4f85e547c5ec95aa58ca66efbef78cc77e38"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.csproj.CoreCompileInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272470970742036,
+      "sha256": "2671fe3d5f0295c053aa2cd378525156147bfe1528182ed1e3417d1d5bf7a4b3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.csproj.FileListAbsolute.txt",
+      "bytes": 2713,
+      "lastWriteTicksUtc": 639272471406542770,
+      "sha256": "3fb1bf13a93bbdb6d75c083d0acd098b9648f38f338febd4b627e2d1944626d3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.dll",
+      "bytes": 136704,
+      "lastWriteTicksUtc": 639272471393409872,
+      "sha256": "862e993cda02a6b5a2b4765f864a7f59af3ccb9276cadf190a869bc80831f7da"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.GeneratedMSBuildEditorConfig.editorconfig",
+      "bytes": 921,
+      "lastWriteTicksUtc": 639272470947951891,
+      "sha256": "ef8e064f26b0a77c283240ad48ddf2ea4fc4494a48581a4e0711b3312484efab"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.GlobalUsings.g.cs",
+      "bytes": 239,
+      "lastWriteTicksUtc": 639272470921704669,
+      "sha256": "a3c6048bb4d922b1799a9977f84362a3787b68810cac67aa86ac3aa23295f227"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.pdb",
+      "bytes": 39824,
+      "lastWriteTicksUtc": 639272471386008957,
+      "sha256": "f7accc148507db4231bb236d533e1023c2ddf80af2eec17976a55afada48857e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.sourcelink.json",
+      "bytes": 147,
+      "lastWriteTicksUtc": 639272470974946701,
+      "sha256": "de71c3a5494f457b8808abb6e61bbd82f7446c1606a5c67b5ce30674ebc2e8da"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\ref\\Fanasa.ContractPolicy.dll",
+      "bytes": 45568,
+      "lastWriteTicksUtc": 639272471393409872,
+      "sha256": "47acab573abdc2d31de62027d6124c8bba1d4e5f4a0472f50746c60a7183457f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\debug\\refint\\Fanasa.ContractPolicy.dll",
+      "bytes": 45568,
+      "lastWriteTicksUtc": 639272471393409872,
+      "sha256": "47acab573abdc2d31de62027d6124c8bba1d4e5f4a0472f50746c60a7183457f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\debug\\Fanasa.ContractPolicy.Gateway.Tests.assets.cache",
+      "bytes": 32350,
+      "lastWriteTicksUtc": 639272470578657914,
+      "sha256": "bad4efdcaff2b67582d3beaaf2f75db2091f16b2ecc774d5509a7cbc73caf955"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\debug\\Fanasa.ContractPolicy.Gateway.Tests.csproj.FileListAbsolute.txt",
+      "bytes": 0,
+      "lastWriteTicksUtc": 639272473046693984,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\debug\\Fanasa.ContractPolicy.Gateway.Tests.GlobalUsings.g.cs",
+      "bytes": 239,
+      "lastWriteTicksUtc": 639272470563516126,
+      "sha256": "a3c6048bb4d922b1799a9977f84362a3787b68810cac67aa86ac3aa23295f227"
+    }
+  ],
+  "preservedSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\run-1.log",
+      "bytes": 546,
+      "lastWriteTicksUtc": 639272473054799442,
+      "sha256": "e2853bad21a375785cfd83bc9f4d5ffcae14f3f8643f9cad8882d8eb48eab806"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.dgspec.json",
+      "bytes": 66280,
+      "lastWriteTicksUtc": 639272468729000991,
+      "sha256": "29df8cd17e93254c16b7c39c503282254daa807906cb3f5d3a66358cd58ee03a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.props",
+      "bytes": 2572,
+      "lastWriteTicksUtc": 639272466806618931,
+      "sha256": "ac7ce9d9e6bbe4b4d253f4b637a16a2db547eb83d8ef7a6e4f710748a2710a9d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.targets",
+      "bytes": 1029,
+      "lastWriteTicksUtc": 639272466806638912,
+      "sha256": "8ab501e004c7d6a3385cfadaa5a9efe2015ef1f242aaf8e7c480c591b6b1ad8d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\project.assets.json",
+      "bytes": 220817,
+      "lastWriteTicksUtc": 639272468727255888,
+      "sha256": "b28620f89ba7dc8a554f63b1733c83f041f1c90ed93f404761aa5c582864de79"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\project.nuget.cache",
+      "bytes": 7968,
+      "lastWriteTicksUtc": 639272468728526550,
+      "sha256": "54eba30d5ad4f9491eee7c42d8b1810446f7911538e792a8e84fb0b7ccf313a1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.dgspec.json",
+      "bytes": 31882,
+      "lastWriteTicksUtc": 639272464615444344,
+      "sha256": "7711bbc703d24ceb65e23f87661b46ea9f0d5e0423cb03d04393b46f38a7fe65"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.props",
+      "bytes": 1318,
+      "lastWriteTicksUtc": 639272464604613448,
+      "sha256": "37b19835965b8ef760bdcce22b46656d321f5112e1076616bd108ba90b7ff6e7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.targets",
+      "bytes": 150,
+      "lastWriteTicksUtc": 639272464604956214,
+      "sha256": "971cc9b535384849b5c661d776cd7a80833a416265e32e8968e06c367368b8b5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\project.assets.json",
+      "bytes": 30739,
+      "lastWriteTicksUtc": 639272464606610582,
+      "sha256": "17d6b443030949efbc6e00d6807d751ce278d5d748dee8d7c1df7cc576ce200f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\project.nuget.cache",
+      "bytes": 310,
+      "lastWriteTicksUtc": 639272464613307076,
+      "sha256": "540a592024a804c6d8179088e2fe0019950150f3b12f19cbc40fa139f7221d85"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\Fanasa.ContractPolicy.Gateway.Tests.csproj.nuget.dgspec.json",
+      "bytes": 108900,
+      "lastWriteTicksUtc": 639272468727099798,
+      "sha256": "7ea6c535379c8bfc23f720d6157abbacbcacee70f74cab154fab8c52aa9eeb26"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\Fanasa.ContractPolicy.Gateway.Tests.csproj.nuget.g.props",
+      "bytes": 1691,
+      "lastWriteTicksUtc": 639272464711280463,
+      "sha256": "0462fcd1688b68b410dbdac73267cae044635d298cba5d0316f381c2d49683c8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\Fanasa.ContractPolicy.Gateway.Tests.csproj.nuget.g.targets",
+      "bytes": 523,
+      "lastWriteTicksUtc": 639272464711300476,
+      "sha256": "046d24e20c58d6a9bdfe6cc71b4c03c0f8a39bc040a1d633f92006d335e6e36c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\project.assets.json",
+      "bytes": 101432,
+      "lastWriteTicksUtc": 639272464711539272,
+      "sha256": "14839b0e09b305224c5215d7c4358e9a8ef0fb2f246ef07bcae02d602b8ff6fb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\project.nuget.cache",
+      "bytes": 5253,
+      "lastWriteTicksUtc": 639272468726253663,
+      "sha256": "48cf736cc12136347566e84eb6f3283c973f1775a3e864294a072be6bcac6245"
+    }
+  ],
+  "restoreAssetsSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.dgspec.json",
+      "bytes": 66280,
+      "lastWriteTicksUtc": 639272468729000991,
+      "sha256": "29df8cd17e93254c16b7c39c503282254daa807906cb3f5d3a66358cd58ee03a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.props",
+      "bytes": 2572,
+      "lastWriteTicksUtc": 639272466806618931,
+      "sha256": "ac7ce9d9e6bbe4b4d253f4b637a16a2db547eb83d8ef7a6e4f710748a2710a9d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.targets",
+      "bytes": 1029,
+      "lastWriteTicksUtc": 639272466806638912,
+      "sha256": "8ab501e004c7d6a3385cfadaa5a9efe2015ef1f242aaf8e7c480c591b6b1ad8d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\project.assets.json",
+      "bytes": 220817,
+      "lastWriteTicksUtc": 639272468727255888,
+      "sha256": "b28620f89ba7dc8a554f63b1733c83f041f1c90ed93f404761aa5c582864de79"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.AccessManagement.Web\\project.nuget.cache",
+      "bytes": 7968,
+      "lastWriteTicksUtc": 639272468728526550,
+      "sha256": "54eba30d5ad4f9491eee7c42d8b1810446f7911538e792a8e84fb0b7ccf313a1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.dgspec.json",
+      "bytes": 31882,
+      "lastWriteTicksUtc": 639272464615444344,
+      "sha256": "7711bbc703d24ceb65e23f87661b46ea9f0d5e0423cb03d04393b46f38a7fe65"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.props",
+      "bytes": 1318,
+      "lastWriteTicksUtc": 639272464604613448,
+      "sha256": "37b19835965b8ef760bdcce22b46656d321f5112e1076616bd108ba90b7ff6e7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.targets",
+      "bytes": 150,
+      "lastWriteTicksUtc": 639272464604956214,
+      "sha256": "971cc9b535384849b5c661d776cd7a80833a416265e32e8968e06c367368b8b5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\project.assets.json",
+      "bytes": 30739,
+      "lastWriteTicksUtc": 639272464606610582,
+      "sha256": "17d6b443030949efbc6e00d6807d751ce278d5d748dee8d7c1df7cc576ce200f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy\\project.nuget.cache",
+      "bytes": 310,
+      "lastWriteTicksUtc": 639272464613307076,
+      "sha256": "540a592024a804c6d8179088e2fe0019950150f3b12f19cbc40fa139f7221d85"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\Fanasa.ContractPolicy.Gateway.Tests.csproj.nuget.dgspec.json",
+      "bytes": 108900,
+      "lastWriteTicksUtc": 639272468727099798,
+      "sha256": "7ea6c535379c8bfc23f720d6157abbacbcacee70f74cab154fab8c52aa9eeb26"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\Fanasa.ContractPolicy.Gateway.Tests.csproj.nuget.g.props",
+      "bytes": 1691,
+      "lastWriteTicksUtc": 639272464711280463,
+      "sha256": "0462fcd1688b68b410dbdac73267cae044635d298cba5d0316f381c2d49683c8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\Fanasa.ContractPolicy.Gateway.Tests.csproj.nuget.g.targets",
+      "bytes": 523,
+      "lastWriteTicksUtc": 639272464711300476,
+      "sha256": "046d24e20c58d6a9bdfe6cc71b4c03c0f8a39bc040a1d633f92006d335e6e36c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\project.assets.json",
+      "bytes": 101432,
+      "lastWriteTicksUtc": 639272464711539272,
+      "sha256": "14839b0e09b305224c5215d7c4358e9a8ef0fb2f246ef07bcae02d602b8ff6fb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj\\Fanasa.ContractPolicy.Gateway.Tests\\project.nuget.cache",
+      "bytes": 5253,
+      "lastWriteTicksUtc": 639272468726253663,
+      "sha256": "48cf736cc12136347566e84eb6f3283c973f1775a3e864294a072be6bcac6245"
+    }
+  ],
+  "targets": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin",
+      "kind": "generated_bin_tree",
+      "status": "deleted",
+      "removedFiles": 13,
+      "removedBytes": 222668,
+      "afterExists": false,
+      "pathValidated": true,
+      "hashesStableBeforeDeletion": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj",
+      "kind": "generated_obj_files_only",
+      "status": "generated_files_deleted_restore_assets_retained",
+      "removedFiles": 30,
+      "removedBytes": 424627,
+      "preservedFiles": 15,
+      "preservedBytes": 580864,
+      "exactFilePathsValidated": true,
+      "hashesStableBeforeDeletion": true
+    }
+  ],
+  "removedFiles": 43,
+  "removedBytes": 647295,
+  "preservedFilesVerifiedUnchanged": true,
+  "pccBinAndObjPreserved": true
+}

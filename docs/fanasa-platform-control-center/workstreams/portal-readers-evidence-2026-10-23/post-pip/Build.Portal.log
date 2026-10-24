@@ -1,0 +1,17 @@
+  Determining projects to restore...
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.UnifiedPortal\tests\UsageProjection.Tests\UsageProjection.Tests.csproj (in 411 ms).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.UnifiedPortal\tests\UsageTransport.Tests\UsageTransport.Tests.csproj (in 411 ms).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.UnifiedPortal\tests\Portal.Tests\Portal.Tests.csproj (in 932 ms).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.UnifiedPortal\src\Fanasa.UnifiedPortal.Web\Fanasa.UnifiedPortal.Web.csproj (in 931 ms).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.UnifiedPortal\tests\Discovery.Tests\Discovery.Tests.csproj (in 209 ms).
+  Fanasa.UnifiedPortal.Web -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.UnifiedPortal.Web\release\Fanasa.UnifiedPortal.Web.dll
+  Discovery.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Discovery.Tests\release\Discovery.Tests.dll
+  Portal.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Portal.Tests\release\Portal.Tests.dll
+  UsageProjection.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\UsageProjection.Tests\release\UsageProjection.Tests.dll
+  UsageTransport.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\UsageTransport.Tests\release\UsageTransport.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:22.57

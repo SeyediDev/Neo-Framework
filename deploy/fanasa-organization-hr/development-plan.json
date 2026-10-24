@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "environment": "development",
+  "source": "https://gitlab.fanasa.net.local/javadsayedi/organization-hr-api.git",
+  "sourceBranch": "develop",
+  "ciEngine": "GitLab CI",
+  "ciConfigPath": ".gitlab-ci.hr-development.yml",
+  "ciProjectId": 2,
+  "ciJob": "hr_verify_package",
+  "runner": { "projectLocked": true, "protectedOnly": true, "concurrent": 1, "privileged": false, "hostSocketInJobs": false, "memoryMiB": 768, "memoryAndSwapMiB": 1536, "cpus": 1 },
+  "cdMode": "bounded-systemd-development",
+  "gitOpsPromotion": "adapter-pending",
+  "publicBaseUrl": "https://api.fanasa.net.local/development/organization-hr/v1",
+  "documentationUrl": "https://platform.fanasa.net.local/OrganizationHr",
+  "upstreamUrl": "https://127.0.0.1:5193/api/organization-hr/v1",
+  "upstreamTlsName": "organization-hr-upstream.fanasa.net.local",
+  "product": { "key": "organization-fabric", "audience": "fanasa-organization-fabric", "owner": "platform", "center": "fanasa.ayin" },
+  "serviceClient": {
+    "clientId": "fanasa-organization-hr-development",
+    "serviceAccountsEnabled": true,
+    "standardFlowEnabled": false,
+    "directAccessGrantsEnabled": false,
+    "fullScopeAllowed": false,
+    "scopes": ["organization.hr.read", "organization.hr.write"],
+    "adminRoles": []
+  },
+  "verificationTenant": {
+    "key": "hr-development",
+    "displayName": "محیط آزمون یکپارچه‌سازی منابع انسانی",
+    "syntheticOnly": true,
+    "grantPermissions": ["organization.read", "organization.write"],
+    "grantExpiryDays": 7,
+    "operationalTenantGrants": []
+  },
+  "gateway": {
+    "upstreamServerCertificateVerified": true,
+    "actualClientCertificatePinRequired": true,
+    "maximumBodyBytes": 65536,
+    "ratePerSecond": 5,
+    "burst": 10,
+    "routes": ["GET /tenants/{tenantId}/chart", "GET /tenants/{tenantId}/history/{revision}", "POST /tenants/{tenantId}/commands"]
+  },
+  "preserve": ["existing SSO clients", "operational tenant permissions", "workbench database", "accounting configuration", "existing Gateway routes"]
+}

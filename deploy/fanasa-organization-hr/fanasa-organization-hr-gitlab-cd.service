@@ -1,0 +1,15 @@
+[Unit]
+Description=Verified GitLab HR development artifact deployment
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0077
+ExecStart=/usr/bin/python3 /usr/local/lib/fanasa-organization-hr/gitlab-cd.py
+TimeoutStartSec=1200
+Nice=10
+IOSchedulingClass=idle
+# The reviewed bounded deploy helper owns service/state activation. Source jobs have no access.

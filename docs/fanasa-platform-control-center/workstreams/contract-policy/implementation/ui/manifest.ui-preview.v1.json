@@ -1,0 +1,207 @@
+{
+  "manifestVersion": "1.0.0",
+  "deliveryId": "contract-policy-ui-preview/1",
+  "recordedOn": "2026-10-11",
+  "kind": "local-static-interactive-demo",
+  "pathBase": "implementation/ui/",
+  "hashAlgorithm": "SHA-256",
+  "sampleEvaluationDate": "2026-10-10",
+  "backendVersionUnchanged": "0.4.0",
+  "apiConnected": false,
+  "productionDeployed": false,
+  "dependenciesInstalled": false,
+  "verification": {
+    "browser": "Chrome/155.0.8059.40",
+    "browserChecksPassed": 47,
+    "browserChecksFailed": 0,
+    "browserExitCode": 0,
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 1100
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "javascriptErrors": 0,
+    "externalPageRequests": 0,
+    "failedPageRequests": 0,
+    "baselineHashesMatched": 5,
+    "report": "evidence/qa-results.json",
+    "evidence": "EVIDENCE.md"
+  },
+  "baseline": {
+    "pathBase": "workspace-root/",
+    "files": [
+      {
+        "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/bin/Debug/net10.0/Fanasa.AccessManagement.Web.dll",
+        "sha256": "89E1863FC651961BD187DC040153B9252FB5A3B5D7BE3D7A1AD446590E6B5209"
+      },
+      {
+        "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/bin/Debug/net10.0/Fanasa.ContractPolicy.dll",
+        "sha256": "4C87ACC8FB26E112DD86E5ACBE306B390A881030B7A02D9955426153B84B4841"
+      },
+      {
+        "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyGatewayContext.cs",
+        "sha256": "A83F8A2898B3D811BBB89775FFA51BED6670ECA2B39F6CE52233C9A0F1627308"
+      },
+      {
+        "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Gateway.Tests/Program.cs",
+        "sha256": "0979C82022A5F7E91D743576E23D0DCB84831EEE0756984CEE5C4AB7B77E3377"
+      },
+      {
+        "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Gateway.Tests/bin/Debug/net10.0/Fanasa.ContractPolicy.Gateway.Tests.dll",
+        "sha256": "072517E7BFA4D7F39A00A0C97D0DA7709975C48084D97EC7D4772BBE67FDDA8B"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "app.js",
+      "bytes": 43367,
+      "sha256": "a0005c102949631ecfe252b626f29738593a99d8c8964a3125e7f6cca0fd5a05"
+    },
+    {
+      "path": "assets/fanasa-favicon.svg",
+      "bytes": 970,
+      "sha256": "86686398e24d85fc97414fa100d59fc9af08a1b2a7aae4c2b37fca183e197bcb"
+    },
+    {
+      "path": "assets/fanasa-logo-horizontal-fa-color.svg",
+      "bytes": 4093,
+      "sha256": "2566a0edfd493a16a2c51d87da67dc97fd46797144476dbe369153bcfbb90785"
+    },
+    {
+      "path": "assets/fanasa-logo-horizontal-fa-reverse.svg",
+      "bytes": 4093,
+      "sha256": "2fa9947f0a65b4decf6e8b26834ee69e4679875e1d922367d8faa94d47363392"
+    },
+    {
+      "path": "assets/OFL.txt",
+      "bytes": 4391,
+      "sha256": "17e355067c8284f47743a1ee3b1ef7ff684ff0601eda357f9353b10b3016ab31"
+    },
+    {
+      "path": "assets/provenance.json",
+      "bytes": 2151,
+      "sha256": "f00dd4e861700aed3c70799862c46f698ae771a57dd38a9aeaae0b73e32203e4"
+    },
+    {
+      "path": "assets/Vazirmatn-Fa.woff2",
+      "bytes": 46272,
+      "sha256": "07c90f3690c05c7722300d9933824191a77f5eb8367e498a07ffc9552f2c2635"
+    },
+    {
+      "path": "assets/Vazirmatn-Latin.woff2",
+      "bytes": 34444,
+      "sha256": "454d44a1112afe0a95f40216cd231d0fb725269e31c8692ff36003c56eb23d7c"
+    },
+    {
+      "path": "assets/Vazirmatn-LatinExt.woff2",
+      "bytes": 21796,
+      "sha256": "a448627c36553c00e67cc488376e13f8f4211f3ddc9d12de22e48a468d306a90"
+    },
+    {
+      "path": "assets/vazirmatn.css",
+      "bytes": 1390,
+      "sha256": "28a34c17f0fc2c06da21c932729c472ebb9cd028b096cb0ed8fea08fb3183885"
+    },
+    {
+      "path": "EVIDENCE.md",
+      "bytes": 7169,
+      "sha256": "fee5d01e549a2f21ce0bb8da866e92eb6a76c63d433808011013472a5bedbf07"
+    },
+    {
+      "path": "evidence/desktop-architecture.png",
+      "bytes": 140195,
+      "sha256": "a081a4df01e1d00cf94569bc721e71d5e342640819df2c953770e61a32c766b3"
+    },
+    {
+      "path": "evidence/desktop-contracts.png",
+      "bytes": 140875,
+      "sha256": "78d21558b0569b6111f999c34b56c6dd84a3be443336f71d18a0da4ff227a347"
+    },
+    {
+      "path": "evidence/desktop-decision.png",
+      "bytes": 148164,
+      "sha256": "50addebae5f855a648c72add57daa53cf8f1be3a85a18688f73a821c63df4d2a"
+    },
+    {
+      "path": "evidence/desktop-drawer.png",
+      "bytes": 203796,
+      "sha256": "726b1a9d0c0f0f3754eafcac44841b7dc4c6792ba2092037cd4c1b4f815f75f2"
+    },
+    {
+      "path": "evidence/desktop-revision-conflict.png",
+      "bytes": 248917,
+      "sha256": "f68f97f983016b7d3e4d7fdc875da9c104ac3731fbb2643aacc41dac7e31368d"
+    },
+    {
+      "path": "evidence/fanasa-contract-policy-demo.json",
+      "bytes": 7875,
+      "sha256": "14f6fa66a1642dc905b3d695a844ea16d09725abee7158327feda9bc2a49a85e"
+    },
+    {
+      "path": "evidence/mobile-contracts-table.png",
+      "bytes": 48107,
+      "sha256": "24f6e7f1b1c1f8fa2377d66efa4c5e76953a913516d25c19c25b4a116f726a45"
+    },
+    {
+      "path": "evidence/mobile-contracts.png",
+      "bytes": 54659,
+      "sha256": "b4cf2a85f6165f2b0626d7d99c8d9afaa326a0d0543f328161c7335f2015d6e6"
+    },
+    {
+      "path": "evidence/mobile-decision.png",
+      "bytes": 49879,
+      "sha256": "e27c718a82c476d175556d6b1876d808cf0ae5763b63b20bd5815a209beda0fe"
+    },
+    {
+      "path": "evidence/mobile-drawer.png",
+      "bytes": 46316,
+      "sha256": "3842db909d01d6a4ecbeba0ac710f3836f02db2f4ce2c6d6cca433b4bb6f096a"
+    },
+    {
+      "path": "evidence/qa-results.json",
+      "bytes": 4729,
+      "sha256": "a9c84826f8cfc06ac5fa268803a14aaf90308a6a4021bfeed9dc7c5b6a2a505d"
+    },
+    {
+      "path": "index.html",
+      "bytes": 19381,
+      "sha256": "4fc3c139af226521ffb81d5203e599f16986a0595fcc347c209c5308f39ffb43"
+    },
+    {
+      "path": "qa.cjs",
+      "bytes": 23977,
+      "sha256": "f8971162436807e0c7c4e622cf7fe4c7419a2e09917fd8e0fcc296f3e875ff78"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5474,
+      "sha256": "f6cb65946c690bc6de3b6dc9dc375321fb501046008bfc31bcaf9f9defeb1300"
+    },
+    {
+      "path": "serve.cjs",
+      "bytes": 1517,
+      "sha256": "79c1a6a6402b0eb6c5bb4dd4204702922c3a27041d6ea11c34f3bd8ad9446467"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 41498,
+      "sha256": "fd25f4e767f16c3a5e5de3866410bd67b59e987cf22d3c7f70c6640b978f8097"
+    }
+  ],
+  "excludedFiles": [
+    {
+      "path": "evidence/last-failure.png",
+      "reason": "Superseded diagnostic screenshot from a failed QA attempt; final screenshots are listed in files."
+    },
+    {
+      "path": "evidence/downloads.htm",
+      "reason": "Unreferenced scratch output; excluded from the deliverable."
+    }
+  ]
+}

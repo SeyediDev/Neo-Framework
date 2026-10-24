@@ -1,0 +1,53 @@
+PASS actual policy Decision and generated Gateway witness match the common binding and separate meters
+PASS Permit/admission alone before committed business evidence: no debit/receipt/usage/outbox mutation
+PASS synthetic backend commits and flushes evidence before losing its response
+PASS backend commit alone produces no accounting debit
+PASS Deny: no debit/receipt/usage/outbox mutation
+PASS missing admission: no debit/receipt/usage/outbox mutation
+PASS unknown/failed/uncorrelated admission: no debit/receipt/usage/outbox mutation
+PASS unknown/failed/uncorrelated admission: no debit/receipt/usage/outbox mutation
+PASS unknown/failed/uncorrelated admission: no debit/receipt/usage/outbox mutation
+PASS unknown/failed/uncorrelated admission: no debit/receipt/usage/outbox mutation
+PASS wrong consumer: no debit/receipt/usage/outbox mutation
+PASS wrong Usage binding ownerTenantId: no debit/receipt/usage/outbox mutation
+PASS wrong Usage binding productKey: no debit/receipt/usage/outbox mutation
+PASS wrong Usage binding environment: no debit/receipt/usage/outbox mutation
+PASS wrong Usage binding contractId: no debit/receipt/usage/outbox mutation
+PASS wrong Usage binding allocationId: no debit/receipt/usage/outbox mutation
+PASS wrong Usage binding allocationPeriodId: no debit/receipt/usage/outbox mutation
+PASS nonempty unresolved reference decisionId: no debit/receipt/usage/outbox mutation
+PASS nonempty unresolved reference policyVersion: no debit/receipt/usage/outbox mutation
+PASS nonempty unresolved reference admissionId: no debit/receipt/usage/outbox mutation
+PASS missing resource obligation: no debit/receipt/usage/outbox mutation
+PASS wrong resource tenant: no debit/receipt/usage/outbox mutation
+PASS unknown obligation: no debit/receipt/usage/outbox mutation
+PASS duplicate obligation: no debit/receipt/usage/outbox mutation
+PASS unhandled multiple policies: no debit/receipt/usage/outbox mutation
+PASS out-of-range contractVersion 0: no debit/receipt/usage/outbox mutation
+PASS out-of-range contractVersion 2147483648: no debit/receipt/usage/outbox mutation
+PASS out-of-range contractVersion 9007199254740991: no debit/receipt/usage/outbox mutation
+PASS fractional contractVersion: no debit/receipt/usage/outbox mutation
+PASS wrong contractVersion: no debit/receipt/usage/outbox mutation
+PASS zero policyVersion: no debit/receipt/usage/outbox mutation
+PASS unsafe policyVersion: no debit/receipt/usage/outbox mutation
+PASS zero allocation revision: no debit/receipt/usage/outbox mutation
+PASS allocation revision inferred from contract: no debit/receipt/usage/outbox mutation
+PASS witness revision mismatch: no debit/receipt/usage/outbox mutation
+PASS witness resource context mismatch: no debit/receipt/usage/outbox mutation
+PASS witness allocation scope mismatch: no debit/receipt/usage/outbox mutation
+PASS witness calendar bound mismatch: no debit/receipt/usage/outbox mutation
+PASS witness token expiry before deadline: no debit/receipt/usage/outbox mutation
+PASS wrong principal UUID: no debit/receipt/usage/outbox mutation
+PASS unsupported Decision DTO version: no debit/receipt/usage/outbox mutation
+PASS unsupported quota period: no debit/receipt/usage/outbox mutation
+PASS zero quota cannot produce a successful witness: no debit/receipt/usage/outbox mutation
+PASS missing limits: no debit/receipt/usage/outbox mutation
+PASS expired Decision at backend acceptance: no debit/receipt/usage/outbox mutation
+PASS uncommitted outcome: no debit/receipt/usage/outbox mutation
+PASS fabricated business receipt: no debit/receipt/usage/outbox mutation
+PASS unbound rate snapshot: no debit/receipt/usage/outbox mutation
+PASS one committed common operation charges the existing artificial 12 IRR snapshot
+PASS identical event replay creates no additional accounting mutation
+PASS new delivery/attempt for the same committed operation adds only an alias receipt
+PASS recorded financial replay uses its immutable receipt when the admission resolver is unavailable, without creating a debit
+PASS final reconciliation: one business execution, one consumer debit, one usage/outbox, owner uncharged

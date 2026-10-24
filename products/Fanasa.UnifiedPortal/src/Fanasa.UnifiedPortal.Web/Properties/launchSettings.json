@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Fanasa.UnifiedPortal.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:64285;http://localhost:64286"
+    }
+  }
+}

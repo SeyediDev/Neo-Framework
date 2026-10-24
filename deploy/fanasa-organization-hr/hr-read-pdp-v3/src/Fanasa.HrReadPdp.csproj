@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <ProjectReference Include="$(HrReadProfileRoot)/http/Fanasa.HrReadCandidate.Http.csproj" />
+    <ProjectReference Include="$(HrReadProfileRoot)/fabric/Fanasa.HrReadCandidate.Fabric.csproj" />
+    <ProjectReference Include="$(HrReadProfileRoot)/contract-policy/src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj" />
+    <InternalsVisibleTo Include="Fanasa.HrReadPdp.Tests" />
+  </ItemGroup>
+</Project>

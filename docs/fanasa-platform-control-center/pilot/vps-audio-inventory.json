@@ -1,0 +1,2506 @@
+{
+  "schemaVersion": "fanasa.vps-audio-inventory.v1",
+  "passed": true,
+  "readOnly": true,
+  "base": "/var/lib/fanasa-transcription",
+  "files": [
+    {
+      "relativePath": ".cache/Microsoft/DeveloperTools/.onnxruntime/deviceid",
+      "bytes": 36,
+      "mode": "0o600",
+      "uid": 991,
+      "suffix": "",
+      "sha256": "1ed46f7bfb8f9b5ddf4eebb10b88cc1fb3f4ae4c1f5e648631e0289d1208880e"
+    },
+    {
+      "relativePath": ".cache/Microsoft/DeveloperTools/.onnxruntime/onnxruntime.db",
+      "bytes": 24576,
+      "mode": "0o600",
+      "uid": 991,
+      "suffix": ".db",
+      "sha256": "d29ac776da124cf2797944dc9161339481daafd37130b73577e6506d86016ee8"
+    },
+    {
+      "relativePath": "batch-02/batch.log",
+      "bytes": 477,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".log",
+      "sha256": "7a3d5aef21d9bcf336e5f966148c04986f96575fdef7381a34478e49aa5c5cf5"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/chunk-0001.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "29f8c49b5369db79eec735346d857203940aee232284e579159cb999dcc39349"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/chunk-0002.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "b034ac14dcb26c37aa7bcbe5a08224d46565d059166a723e0895dc5df5337dac"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/chunk-0003.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "557de1bc9e4cbd7e5d7b7ac5f9a4ee0937fa979345d1916c8198ed7fb199f42c"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/chunk-0004.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "ee2b08d08018138e0ec2f374d0982f3bb7b013d8fab7bdec61959cf8185f4581"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/chunk-0005.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "e4efd04ebd82b5ef5f9fa3b1b444438bef4f97c772ccae22e006fa3ddbf7996b"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/chunk-0006.wav",
+      "bytes": 4912684,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "e15a66736cb7e784ef7bdc82bac86494c5c276ada80b244aade57de769e9d203"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/chunks.json",
+      "bytes": 960,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "e753b70713c32125dffc1d8416c5d23722284491f44868af2bc7a498f4c4fb3e"
+    },
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/source.json",
+      "bytes": 202,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "a50834fef40b2d020d05458230143a1b43f2e334f4afcc4f1972ad9d61d8d2f9",
+      "jsonKeys": [
+        "chunk_seconds",
+        "overlap_seconds",
+        "sample_rate",
+        "source_name",
+        "source_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0001.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "eae888eb02ad8bdfc1306e664c3661a06713c83be30044239d4ca43729e16ff2",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0001.jsonl",
+      "bytes": 16141,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "0fc5c261b586acd59e55cc787ce0cec1d86daf6d3cc5ae960e5cd92fcf91634f",
+      "jsonlNonemptyLines": 57,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0001.status.json",
+      "bytes": 191,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "ada8fe8aec99d67c40f4639e098ed8fc847c026b9922ced99a14d7b0acb37180",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0001.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "25b0deb8cebd4ad6050f862870cc37cb08f88b72427d3e95dcd7388940e5223a"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0002.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "df554b5ef2cce9585e83e290be4a41859e7825c5586b5b02844ec5a8a7310493",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0002.jsonl",
+      "bytes": 21570,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "4e50d02f4ab8365d463aaddd237eb3dfd1134112ab9b72ed2620ae27910f6462",
+      "jsonlNonemptyLines": 91,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0002.status.json",
+      "bytes": 193,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "ac34ad322f5485bf6127ffbced81990815a0b1f546a6e816599a074273bb8948",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0002.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "21086cc5c2d8c030da70fbb8e4ca94ef5c712ea47b3356d5eca34494e812a196"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0003.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "57f7a30aaaf444a7ef7656799af279a3e468d8c48fb3f545589a0547aac8594e",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0003.jsonl",
+      "bytes": 21912,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "9427adcd4f31e9ef09eac051e8846e69ed4a7b17aee2855c44e78601585b7aed",
+      "jsonlNonemptyLines": 92,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0003.status.json",
+      "bytes": 193,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "b13878426c21516fb9d4bca483ee58a88ced6e2281908dd78bef87102e269ace",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0003.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "4f38df5a91237cdbee161b5a3b3e4cd149ab4bf0513803672daa21f866a53327"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0004.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "3afe841135e6b4ddca1d33025085fd3375babe453f48729629dccf7dcbbc8e45",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0004.jsonl",
+      "bytes": 25332,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "9643a8c8d6f71ebccfff4f37972d90ef7069a69f148d15dff51c6c1cad309be5",
+      "jsonlNonemptyLines": 107,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0004.status.json",
+      "bytes": 194,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "00f93b512025dda5a454406ae49c1db770feb12d1e90d8880c179d3b8aca3775",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0004.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "f9323af57d388e5f0f281f0bbd5c133f3861047a5daa70d34af7accf5f3fdffe"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0005.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "6a45aa6ffd9f880e1e136f2b4cfc35a0e96efc45d5facdde38f285e46e534a1e",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0005.jsonl",
+      "bytes": 20676,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "59ffa8e417f7690e040972bfb2620786a6344cd84886aa0bd2aca708db260414",
+      "jsonlNonemptyLines": 80,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0005.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "c4aab187d8b6a1f01c80aacc5cf71a3e762bb9e0494dc2b84d140c943f8655df",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0005.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "70dd91a8dd62e7f1eac456b57dc424c9bbefd25b3bae5b59ae3eddc1a9c62131"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0006.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "6879900165f497368cc3bbfe77be55618fd37d445ad4676c707a2e0be55d461b",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0006.jsonl",
+      "bytes": 17613,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "eee96213ef7accabd548e880d38586da2b9a893d114d35de7ccf85b7921836fa",
+      "jsonlNonemptyLines": 74,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0006.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "32953d530cbae8bed2ae6eac910e95e8f3e0f0758b6cfa77aa3526bbc47279a5",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0006.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "9f20e35cc2cdef0dd4ad762e4dbbcf7cc6856abfda61faf24170267ad7f89f1e"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0007.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "7789be4f763c4c01caf6ab2aeaf53adccb8dbe57843a19fda32b2bb97116049e",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0007.jsonl",
+      "bytes": 23122,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "5c396bc7a540d0366651506085a00726fc47cab64768295d3ede9d20e8623bbd",
+      "jsonlNonemptyLines": 96,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0007.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "e3acd7efcfe381861cb2b60f783cd19b6a350b3cc98f73d4dc0379b36e64c79f",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0007.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "83baca711ce55dbb244618eb422713fe5bd5d187b2657a36fd601200fd9e138a"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0008.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "28e04c0983ec71b190450e1bf7e209308dc6f579c9ae2edfdc07c53674595481",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0008.jsonl",
+      "bytes": 20562,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "b5f54b132bef9b78b923ec850c4da43d22f75a43004f095f29d627fce3721ddc",
+      "jsonlNonemptyLines": 85,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0008.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "0fb1a1305998510f5e2b8a9f32b540ee29ca174bad1fcdddebb35b49585868fb",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0008.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "6fe6c9dea799b4c15118a9ca8737ae7bf32d993dc13794876dd581e8548550ef"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0009.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "740143e7fddfed950d7f92060eb28b61a8299e63746af5fe4d7bc927338e089f",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0009.jsonl",
+      "bytes": 21452,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "142d0c80173ad945607930b7c22ef9f36683c799fe00e38fc4c137b037ded63f",
+      "jsonlNonemptyLines": 90,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0009.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "119c7db8d682282385c28ce4ccc7aaef72ad1073ace1335c7a8ab7f22ea0c286",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0009.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "068db07554ae4492cfbe3d7510bce7143a034c25ecd724bdff95519cbf9204e1"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0010.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "c7a8615f26557bb8e51cc17fd0f92a74b138b4ed09d1e8f9e9dc71eaefaea127",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0010.jsonl",
+      "bytes": 22895,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "1747232cb98531be44a5e83d559b0323c9e157f9ea8f4e6955d6503730cfaf15",
+      "jsonlNonemptyLines": 92,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0010.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "a3dc877c56f1a59d62008b05f4037695d36e97d1fc3901a71e66909e42e70ead",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0010.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "de190ee57372ce555a6a644d64e41da41442d4ed6b90caabf6bfd4d00753597f"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0011.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "2cd1c236cf69e761af28a37fe7b0af722fa9a396728cbf58dc6c85baf1440f63",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0011.jsonl",
+      "bytes": 18037,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "9f460a7886b290318a5740eab3d0708cff810004e74ddc3e748c8ec60fb29bce",
+      "jsonlNonemptyLines": 75,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0011.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "d114ae7be30d085524c1b6e402fb891111acadbef0c76ecde20d6ad479904c9a",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0011.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "91b29bb7ca034bd8e79fdabfdc89c3db938e51a79274237abfae847da351b0ff"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0012.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "655687625aa853428c148759f5a684919ac3c240a2bce821b6f7d577607dc8ab",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0012.jsonl",
+      "bytes": 1626,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "ceb48514b0ad2b9937e79be1cea6d547a2b04b7f63d205d2c7a163058e7148fb",
+      "jsonlNonemptyLines": 7,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0012.status.json",
+      "bytes": 196,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "31c344f8681baada54c915c82a2e28ac8d1c531fdefc6f30dd968fd6b2ef92bf",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0012.wav",
+      "bytes": 4329004,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "4ff8a3936a84a4a967381c704eaec8faaaa668bccac7b7700437f30e45823f11"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunks.json",
+      "bytes": 1926,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "f3a654f7be517ae2e8d7dbfa889cc01df75faed50730fd34a5c1cc11e5db5c7c"
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/complete.json",
+      "bytes": 220,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "cbd37218da7adc7f39f98b4d88a19eea643b392035526a830d19413be0d4ef42",
+      "jsonKeys": [
+        "chunks",
+        "merged_sha256",
+        "review_complete",
+        "source_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/merged.jsonl",
+      "bytes": 223085,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "040db4527158910c192dc4b02139f6167fa1f5c051db8775a428fc89806e7cb8",
+      "jsonlNonemptyLines": 913,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/source.json",
+      "bytes": 202,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "5699f3d1d2cadfaaa6211547dccc03a2a2f6ca3b0a34bae9f6c49195596edc35",
+      "jsonKeys": [
+        "chunk_seconds",
+        "overlap_seconds",
+        "sample_rate",
+        "source_name",
+        "source_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/transcription-config.json",
+      "bytes": 189,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "8c92b3e095aa90610ebd72776d645d1a6ea32c5e14500ddfbe25ef8892fc4497",
+      "jsonKeys": [
+        "beam_size",
+        "compute_type",
+        "condition_on_previous_text",
+        "language",
+        "model",
+        "threads",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/chunks-run.log",
+      "bytes": 1534,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".log",
+      "sha256": "2dc534a05722e3f08580d167cc52804f2601dcfb377978febc75317bc655109e"
+    },
+    {
+      "relativePath": "batch-02/input/01-recording-05.mp3",
+      "bytes": 22009368,
+      "mode": "0o600",
+      "uid": 991,
+      "suffix": ".mp3",
+      "sha256": "4a205df4fa0251dbdb4cb7385180eed1c0292b45c07231c296e6e3f600c8148f"
+    },
+    {
+      "relativePath": "batch-02/input/02-recording-04.mp3",
+      "bytes": 46454208,
+      "mode": "0o600",
+      "uid": 991,
+      "suffix": ".mp3",
+      "sha256": "d47bd478614e95ee3ab1bf68e4d7073eeeb0a62c0ca698b5213a05d5bb867fd7"
+    },
+    {
+      "relativePath": "batch-02/output/inventory.json",
+      "bytes": 396,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "68bc9f136c3f4a2c32636b3f0ccd0a40a81ed8c52ce45a4383d6b7a3b8f58619"
+    },
+    {
+      "relativePath": "batch-02/output/recording-01.complete.json",
+      "bytes": 496,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "6c38fed79c158085554c4aded47bdc787c3ad6b53a65815d0e14cf359806ae1a",
+      "jsonKeys": [
+        "beam_size",
+        "completed_at",
+        "compute_type",
+        "condition_on_previous_text",
+        "detected_language",
+        "duration_after_vad",
+        "language",
+        "model",
+        "source",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/output/recording-01.config.json",
+      "bytes": 380,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "2e02eda03fc50779564579d2f0fda51fe88d8552a3fb8a4f3a03abb20533fcb9",
+      "jsonKeys": [
+        "beam_size",
+        "compute_type",
+        "condition_on_previous_text",
+        "language",
+        "model",
+        "source",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/output/recording-01.jsonl",
+      "bytes": 93925,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "eda0509122e5c18422ae69328eeead6525ac4ed9b70b57d8c2bc387c5ffc09fb",
+      "jsonlNonemptyLines": 459,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "batch-02/output/recording-02.config.json",
+      "bytes": 380,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "ad341c5324db488806fa041ca89443878f3995b3646fa0589c090a334dc074ec",
+      "jsonKeys": [
+        "beam_size",
+        "compute_type",
+        "condition_on_previous_text",
+        "language",
+        "model",
+        "source",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "batch-02/retry.log",
+      "bytes": 1712,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".log",
+      "sha256": "8073ffb7b0255bc0ba64424b78e7e1813f0ff9a10d643b25231c9c5e668d2109"
+    },
+    {
+      "relativePath": "input/recording-02.mp3",
+      "bytes": 12165360,
+      "mode": "0o600",
+      "uid": 991,
+      "suffix": ".mp3",
+      "sha256": "ff2be44b7b845900f829ada4143690a28a37cd552b98fceb54d1e63f3048ad0f"
+    },
+    {
+      "relativePath": "output/inventory.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "861b66402fae7d705b2ae52efe4f7acf3b801df2fc05e7ce2efd781c74d27274"
+    },
+    {
+      "relativePath": "output/recording-01.complete.json",
+      "bytes": 492,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "37fac35a647ecff1e1f8953569c993bd448fb5a62f3051d1501080517a4b8ce4",
+      "jsonKeys": [
+        "beam_size",
+        "completed_at",
+        "compute_type",
+        "condition_on_previous_text",
+        "detected_language",
+        "duration_after_vad",
+        "language",
+        "model",
+        "source",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "output/recording-01.config.json",
+      "bytes": 376,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "d49e9b5ee6fc32ff4005b5975ed64f01c2549f703a912cd04765da69654242c6",
+      "jsonKeys": [
+        "beam_size",
+        "compute_type",
+        "condition_on_previous_text",
+        "language",
+        "model",
+        "source",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "output/recording-01.jsonl",
+      "bytes": 44849,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "3946bd66466ee50d219640f47750f93e180b34f07f27b08c13219d81d4d0423b",
+      "jsonlNonemptyLines": 211,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/input/recording-03-tail.mp3",
+      "bytes": 53976956,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".mp3",
+      "sha256": "0ef9788e1a0b212033fc379b96fd28c64659913db4c608af4deeea4ab325f98f"
+    },
+    {
+      "relativePath": "recording-03/input/recording-03-tail.provenance.json",
+      "bytes": 331,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "9b71976966c8a44374c1c2f23408c4c8623cfb925e67493e84ec41a5f96772e6",
+      "jsonKeys": [
+        "actual_source_offset_seconds",
+        "original_name",
+        "original_sha256",
+        "reencoded",
+        "tail_duration_seconds",
+        "tail_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0001.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "6112c89e08e6ff858b0c856ecd3d36f7c4675d0f48e09edec18d36460014bb5f",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0001.jsonl",
+      "bytes": 18058,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "77bb6250c1bfd1e2a284256ddea27113a074e06a3813a4fe3adda763871949d4",
+      "jsonlNonemptyLines": 73,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0001.status.json",
+      "bytes": 191,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "e77bfc5889ce17f2ce3e6c5a35f8dd99b52f5facbd4ac47332e71f909745a83a",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0001.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "12e020d255a80e64ee729f9f38206f481b571c402e53b8b3bfecf7f64475257c"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0002.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "f7b4b013d6ee7f0db386f2e27f35fe07c5c05826f11cb3e10201e09384689dbb",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0002.jsonl",
+      "bytes": 13915,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "d09447550ead34c4483a1d87af4c8b0d7109f0a00a50cf272d2f9be77c863f91",
+      "jsonlNonemptyLines": 57,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0002.status.json",
+      "bytes": 193,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "5614b13b1779b4064a0692b950d836377021e6c31394d8c88e1e114bd6012323",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0002.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "93005e508c79e54175bc10a7af88b0bfc2d2f13492ab80a3a24f0c3c1245428b"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0003.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "042355f18fb143438bbe9218ac394922ab656d5c1871004a25f2991e0059f51f",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0003.jsonl",
+      "bytes": 6732,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "07a6d826409e3bc7f19c3ab90d6cf53b950b7e76fd7c46a0a0cd992e32abc038",
+      "jsonlNonemptyLines": 27,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0003.status.json",
+      "bytes": 193,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "f102de5676f908d0585c2cbe4ced58fed5065e0881c1b617e9a067e4f27a2c51",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0003.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "b4b41e8924176369b7e5558e6a05dba6a093c8f48d04e0a6b3dfbf0d87dce959"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0004.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "fb96b22e6e03f622a1f3b0a942dc239bd5f33311e76ed353fb8b4db2b5f5203c",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0004.jsonl",
+      "bytes": 0,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "jsonlNonemptyLines": 0,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0004.status.json",
+      "bytes": 194,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "937ce072c44f9dd087edc04a2affd522573574db562be2c0c0e61a54bb9fae66",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0004.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "d1151b7926ba20845850abf589e8315cb8a0c69d4d3e7f371157ec209d9fefc5"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0005.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "f101c07daeb1d8adf3adfac3cc15b81bc9fd1af8261d9a833f7ff1a3f56dadc3",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0005.jsonl",
+      "bytes": 210,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "21ef55c6f716d99cfcb3fc455d338bc024896ce78ccd49fa5af8b679bd3f6915",
+      "jsonlNonemptyLines": 1,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0005.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "e822753b251aad2d257a132882b4e5da11c6f91255496314b3233617c67f0c14",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0005.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "a44a021958906a16f6df767c4c1048070f00f9bfa734be5b8b23d14cf837284d"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0006.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "42354c30992b84f7276b9b9b27f91a58e79f2e67a449fa662addcb633f735ec8",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0006.jsonl",
+      "bytes": 15057,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "746acc4dd748753dc78e14edd750197ffe243b453df8b1ccde2d06b2761476ba",
+      "jsonlNonemptyLines": 63,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0006.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "76f82ae178b27502f8d489c551514d74c8f7717e541e9c5fd07e22d87df072ed",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0006.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "ba0b0b4d068ff1476ff46fa36706f8736227c4fcaa167ca1bb04a33f19a72778"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0007.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "7c44bebfe33b37db167539afb3f25d40fcec8cf3700b602c66410509401a5f61",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0007.jsonl",
+      "bytes": 11509,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "ae72b044641418370da6be423aacd2ba107d274c5d62e8a4efda6456d8164c3d",
+      "jsonlNonemptyLines": 51,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0007.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "a34c0edb88cc08a89f7ca58822d6536c7927e821edd1e17c38e07289c9e30e2e",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0007.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "6631c92d721b154a2d59534e43a11f8ec5e924a50e5cc3d3b1c2158156ef4faf"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0008.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "4a477c8c23e554c4a9082e6163a88dfc27ea571d03275a152167b22f6d2c04d6",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0008.jsonl",
+      "bytes": 12300,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "47231efa71256b18095a59ff9ebfa0b5e0e8e684472e5ec058c970184ac5cb51",
+      "jsonlNonemptyLines": 53,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0008.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "1fd7361276d4725cda7140b77479ea2ec26701e0d6127818ac3095ac6fb33586",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0008.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "bcdf529a6854b41a6e58a924a25606e5f4339573d917d3c377db3e16fecb2c1a"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0009.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "7e1f55acf19acbe419bd7c5172619f70d12af3c06c38383fecba61d724b5640c",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0009.jsonl",
+      "bytes": 14272,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "bfb0363188aa8d33ffde7c73a107fe0cd3ccd52f45456e9b69997a2e453da6e0",
+      "jsonlNonemptyLines": 63,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0009.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "88af8299e0260f3defaa8d2980fcf733b4961e54479af251dcf43cf9d537fe46",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0009.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "26f302f29a34c975b1e7f42bd10ee0c1a3573597e627077450fae5cae189ba29"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0010.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "6bd5503c909786bb15d14e952cf560c53c109077eb2f4350b559fa00e4140b4d",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0010.jsonl",
+      "bytes": 15409,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "2b8e9496493d189bf1359fb170d0d3635c043b9c41a4cf561aaa9418713333ac",
+      "jsonlNonemptyLines": 67,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0010.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "78c46aeb8b3b003b8229d848820041fbcae7521586bd3da79514378e028f90aa",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0010.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "834185c8eb1cdf4e07aaf08d95bf9568ad59cb5bff426a8eef90dcd831bef70c"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0011.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "517718703375f8673c028ef7241559ad58b43cfeb59a1bcb9f0418c3ed39bef2",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0011.jsonl",
+      "bytes": 8919,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "d0a07264cde53445bbbc73f36b76c85695e5c512bd8c3ce4b2dd00d08a2f719d",
+      "jsonlNonemptyLines": 40,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0011.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "9801f06458e85d43ef2b93b0495246606bd52ec0110ecb83d850ac3ec7155616",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0011.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "40495eddca6590ec4cc80074f04ff4aa830b482596112e5745d50de4520dd6e7"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0012.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "2eb41498349b71b5f54aa4e791204182c6287bcb9f9b61c5632ad6621c9562d2",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0012.jsonl",
+      "bytes": 688,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "6880bbd9084902d2df46607004ad26afdece14fff3b8381bbc9abd3e15bc027d",
+      "jsonlNonemptyLines": 3,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0012.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "f1d7a8bf73ec0e79c3a69621f81749f578d8025dfcd517c2951709730b882e6c",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0012.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "8aca41d7bbf1519b4ea9562fa703cd237e4ae65b60892922ecbbd8429358e706"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0013.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "b17d2b2ca1d2eb529c3f792da149bf3d822e9c926f67d3e1dbe93629a7f987de",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0013.jsonl",
+      "bytes": 6966,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "3b0ccd56f41d7ca41af3f30dd2b57be67bd4a7b8cf05746711b6074f5cf19d04",
+      "jsonlNonemptyLines": 32,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0013.status.json",
+      "bytes": 195,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "8664b3ba7ec8c10eea5f2ce50e858fa976484607de20631fa946de1775b75179",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0013.wav",
+      "bytes": 9600044,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "b5bc11e7443a536312b4539ec1740af6d87633aced2cbfa8a61cbb7be265fb3f"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0014.complete.json",
+      "bytes": 233,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "ac87e984dedcbbd75c59d532b4b15dd2345384318a7fbe719f68666e36a5166b",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0014.jsonl",
+      "bytes": 203,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "ed62f4d88b22895d7273bb049706b048adc6772e1a4cb5af04cc1c768616d82a",
+      "jsonlNonemptyLines": 1,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0014.status.json",
+      "bytes": 201,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "23262ed05579d70788c89e20989d4fa13a286cbfaf23cd0dc1b5c9beda8200a0",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0014.wav",
+      "bytes": 4784738,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".wav",
+      "sha256": "f43f22c6065176ad8f150e7a099aeda9ae92f537762602a20757d54f26d95589"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunks.json",
+      "bytes": 2253,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "51492a7124cfd57ac6e10f009b5928530113fd2dbc3c075cb336b8a9f0437381"
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/complete.json",
+      "bytes": 220,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "d037790d1c5e30f4d1b246be2d441b9eb58f45057fcef6373da233735be9754a",
+      "jsonKeys": [
+        "chunks",
+        "merged_sha256",
+        "review_complete",
+        "source_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/merged-original-times.jsonl",
+      "bytes": 123993,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "4e22ddd76da63844635e8269331adfc796d46a994f5d93b8e96beae7c2becc6e",
+      "jsonlNonemptyLines": 510,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/merged.jsonl",
+      "bytes": 119502,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".jsonl",
+      "sha256": "95a96da98d3611f29bca25a4e13e59161e5b959c4b22f373607aefefa5b4ddef",
+      "jsonlNonemptyLines": 510,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/source.json",
+      "bytes": 204,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "0b8d5ceb78b2f856f6366af17c23a14bf7bda9802f566ce2107adfa7e1262e98",
+      "jsonKeys": [
+        "chunk_seconds",
+        "overlap_seconds",
+        "sample_rate",
+        "source_name",
+        "source_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/transcription-config.json",
+      "bytes": 223,
+      "mode": "0o644",
+      "uid": 991,
+      "suffix": ".json",
+      "sha256": "13eccad787af5e968e85f6c3517fbf9ce4568831addd0210e3cc52d94aa2366e",
+      "jsonKeys": [
+        "beam_size",
+        "compute_type",
+        "condition_on_previous_text",
+        "language",
+        "model",
+        "source_time_offset",
+        "threads",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-03/review03-first7-20261009-2045.tar",
+      "bytes": 92160,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".tar",
+      "sha256": "4ea75632dfb32a14d4e1b10ada418ce803ca0b976f8a61cc747f6aace92c7027"
+    },
+    {
+      "relativePath": "recording-03/tail-run.log",
+      "bytes": 1552,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".log",
+      "sha256": "917da6023ac7bedd19036900702fec034e834416bb82071265c223e3a0440e89"
+    },
+    {
+      "relativePath": "recording-06/input/recording-06.mp3",
+      "bytes": 65038896,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".mp3",
+      "sha256": "f90d0fc19ff8b6451944e77a7022466033d0cbd12e9ae3dbcb54f4d98eb2d249"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0001.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "2680f6c603ea03f2e51c049b20aca928bebf7cf582c0dc0cf16b5a8649615da4",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0001.jsonl",
+      "bytes": 10167,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "31dbb91e833bc945e325ab885ef917b8fa246a4910d2d9f07a4680c00f3220f6",
+      "jsonlNonemptyLines": 39,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0001.status.json",
+      "bytes": 191,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "d40306adc677206b53e995415c5f2e2a9694fe46f53c055cc38f3bf47e6458b9",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0001.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "52ada59ebac9e69858e22de920540bf1192abee0f408efd83ae9f0bcd41e6a08"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0002.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "343894b5ca2f2690b7b0659173ef3bfb22852827f03bb88459d195f0a24ac053",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0002.jsonl",
+      "bytes": 15549,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "34fd8d444cab075b5581ec0d73b39f701e3afa0bb57615f8603c1e14f9ce5475",
+      "jsonlNonemptyLines": 61,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0002.status.json",
+      "bytes": 193,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "d013930c48f2a5aa9e307cae9cbe3ecbdd60efc22a096a7fba8b4d825bcadb33",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0002.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "dc62d2383547e162f059ed3f7d81c6b31ac699ad80b026792311ca3a3604f402"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0003.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "717f1423836cc4598e8949a7a505ad245ed48820ad1eed094df1195a1c7feb71",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0003.jsonl",
+      "bytes": 22061,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "f95c748dad7b68b273c1d4b6ff9d59219abe15ca9b6227ee30a224e9fe30eb48",
+      "jsonlNonemptyLines": 93,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0003.status.json",
+      "bytes": 193,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "70a6227892724b1b66b64615f0c97903ceb09cbc759b9946d74958847ab8835b",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0003.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "583947ae13447fd2bf98457911153b10c60f18d974f9b2334239932de62bd535"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0004.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "4dc5f49ce78b3da5e05d18229410f97a51c109a67bae467f891eabae75d6807a",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0004.jsonl",
+      "bytes": 20937,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "86281611f10aa86505594b0190770422336d53589750aceb33ed856c00c6c114",
+      "jsonlNonemptyLines": 87,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0004.status.json",
+      "bytes": 194,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "65bd2c06db28a5a23a9e30b10977a0c6ecfee5081ebc593ba52d5dc1ce5a1d85",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0004.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "3c91bc88bc55a15e645d59cf069f9840a358d4223f2d734c20943a4de37ede64"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0005.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "7421684a38f10af668581179ee9a529411deebc8596e10dcdae6d4388a0345de",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0005.jsonl",
+      "bytes": 21184,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "26a87673ae949be5521df7295ffa13571f73d7fd4a76dbbbe5fdad1dc52fcd3f",
+      "jsonlNonemptyLines": 85,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0005.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "322a93f4e74948ad13b590372ebf8af5f2d28f5adf3d2da86966ccf870d007d4",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0005.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "a379cc3820e829ea9d8b1ce1ccf00e6eee16a69c5a9856ae318ab5016ccf99cf"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0006.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "14874fbf6f7b47052c3f35af009e11b5ea988005ebfdce8a748bc9fa6c7c2a0f",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0006.jsonl",
+      "bytes": 17918,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "f8136f2ce1b9826e1a166d68f59ffcdb3f35f54ab2aeb24655b2f6ef0ec7549e",
+      "jsonlNonemptyLines": 72,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0006.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "ff1742b2fb65e6a594afc69f6f83925de26eca51d4adb3ada762dfa937f567c7",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0006.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "99e95badc7853072314cb2e69b394aa6363c8eddb46cfe87e7b2fc00e482d640"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0007.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "018c9ab124eacd95992aedb77f1919b7a630c36043b618569e9d5a8b4f63a525",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0007.jsonl",
+      "bytes": 22948,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "0ec3d2f2beee3088ec29eebea1c2d9d1f41ed124ee36a9b2e957401c2c7240f7",
+      "jsonlNonemptyLines": 96,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0007.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "f37c346c1f4950f1edc64b9855debec1871a39886fd94db1b865d577d08223b3",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0007.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "5e74aaa187e4353ab84da4f7c2bb5ac52ac9a9b3e50e286619ef8cce0a7b5af2"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0008.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "51cab0ac2d86feb05cd46eae8feede5ec5d74615550b4467a47d72e0b799974a",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0008.jsonl",
+      "bytes": 24837,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "7959b0a96ef9f493f481a4eddebe955ba6d53015467374f86a11885cb5aba031",
+      "jsonlNonemptyLines": 102,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0008.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "19ef2fe3a5182b003c8d7e1949f0c1c4fcae679a5e59a1d5ff2f53d3a4935659",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0008.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "f8ddac98bb8915287c912382eeb3aef0814c221582687c07f4d454893f98daaa"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0009.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "8f58ab9a4d65577e7113954ba7ff58ee3726c87be6a911558ef54bfc9b940895",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0009.jsonl",
+      "bytes": 16920,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "13d2e377a119c51309358dc43f24cfe3684edce5f2d4eb1456e6683a27d73d8d",
+      "jsonlNonemptyLines": 72,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0009.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "52845b7da0cbdff97d5c91be7c9e65875b2ae7f7f9610379c05828a9a9d197de",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0009.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "c31416fa2bab546ba536dd3e0ba79e4112e1cbb05b2c86f117d9eb20c916e44b"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0010.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "515c3a685b0c801ea6dd08db5a3c0089334000b5af6b7263a9b353b9216645ba",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0010.jsonl",
+      "bytes": 24180,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "9721dc3035ecb42d2a06d5bd7ddecfcfe1be11a125b04c1fefed1ae1c5e02099",
+      "jsonlNonemptyLines": 109,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0010.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "c6e3ae6fb7749157c3e25bb1f777e2aae920e523c93dc0db48f5100feb081d08",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0010.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "ac2ec8e639e786b8925771385253b6f860773b84adecc765465fd2c56d5ee94c"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0011.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "2f01c395af16b6f8cee4b6d9e15669788248e0db265ec100279606a59317671f",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0011.jsonl",
+      "bytes": 20801,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "5c8b6d069a907263cb48cc8ee49d49af8c1b623a35fe1dcf7cdb2ec054627e2b",
+      "jsonlNonemptyLines": 89,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0011.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "5b2817a117c9b73be57ca925f0632bd617949f524f40cbc8e16da0f75d8aa324",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0011.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "4cebf7f519d21a675964f86ef48a991df5c08109d16b1b8ee027962d7ddc80c1"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0012.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "7a7de21dff7a173c20c2e65c895c048d574aea5e65f590b1b275890be40b24b8",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0012.jsonl",
+      "bytes": 24258,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "cfb9711ce20ef1cb52cb08aed69dbb47948776688a176cce651a711a789ced71",
+      "jsonlNonemptyLines": 105,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0012.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "b498431089d528a82506cd16470e9c8a7d81f2dd83867cf23678b89994004e11",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0012.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "754bf7487bfdf3541a91349917c5059cdad5534ce7e1152b4ab0b92d4f8dc823"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0013.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "481982463a156351aaa8fd22b3ac5c9d605ed79843cfbc90d08fd90b32e9fada",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0013.jsonl",
+      "bytes": 20570,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "38a07f24c06de27edeaf0417d6f568c179e4e05686470c0aeedd48f554e85699",
+      "jsonlNonemptyLines": 87,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0013.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "482653d7e2c376e4d61327b23ef7863ce178dc172af069bc3ae190b93ce75167",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0013.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "37b5743bb6fa9a8b58a19764f189a0cc2c3da47c6708068113fc8b818a8a58f8"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0014.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "597d9837547646684fac478e5fe6488369660e8eed9c223679745934d40605ca",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0014.jsonl",
+      "bytes": 19542,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "35534f068d7e4efa1306a489fa1ba9e6c8033d124f9b7a280f848bec722045ad",
+      "jsonlNonemptyLines": 81,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0014.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "cdf15b4edffc6d9ef9292210add652e838f9ac885bcb129e4bba3f867df1e4fb",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0014.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "3a2cb40462faafcaeb790058b2a07138499bc34be69b81da7303a466597336c8"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0015.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "7dfafdad4d1f7ca91f83e5bd4a35b75228d1fc8270248639ff8e74e59ee96b15",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0015.jsonl",
+      "bytes": 25796,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "4123840271897bfbb549149308c165df5cb9de7e0665ea17dcb027fdc0d6105f",
+      "jsonlNonemptyLines": 109,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0015.status.json",
+      "bytes": 195,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "6ed110ca46897c722eaf640b8a135b4c13af738d5e1c12da188f4fde35bf5456",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0015.wav",
+      "bytes": 9600044,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "a961329edc52cefaeb3877c0b9b61c8b7d23950c100644db1b815b4d441f254b"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0016.complete.json",
+      "bytes": 233,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "7035e3b75cb4bd2aa429f8835e2464682f50060b64db4c003443e073cd69e884",
+      "jsonKeys": [
+        "audio_sha256",
+        "completed_at",
+        "transcript_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0016.jsonl",
+      "bytes": 22588,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "b9bef223f35115cd6eeedd999bd14a3344112c4ad58772c389fb8c5b7c668cb0",
+      "jsonlNonemptyLines": 94,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0016.status.json",
+      "bytes": 196,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "730584d1f2b6b6642c1369b94f54ac65da8dfbe0861d2ce31292da6fe129ddb0",
+      "jsonKeys": [
+        "chunk",
+        "state"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0016.wav",
+      "bytes": 8824364,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".wav",
+      "sha256": "c2b4471fefa7554bb6413301f943d67247b12a6eafaaa056eae644122d515846"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunks.json",
+      "bytes": 2570,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "98887901bc5b7027ce76fd4dc2c2bd414b8d9f7c42dd57a45233f93202b22465"
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/complete.json",
+      "bytes": 220,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "7ea196fbdfd3090d80b6b00b5e624038ac90ec25e008cf238a4d56bc67b107d8",
+      "jsonKeys": [
+        "chunks",
+        "merged_sha256",
+        "review_complete",
+        "source_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/merged.jsonl",
+      "bytes": 319318,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".jsonl",
+      "sha256": "8654ca08e22d84226b96edce7cd1df18e02613d70cb439a56f86acb361966507",
+      "jsonlNonemptyLines": 1335,
+      "jsonlParsePassed": true
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/source.json",
+      "bytes": 199,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "f393b6d8016146987a3e0c80484f68c824f8f9228c8b0d7cc16a622ac6b207f6",
+      "jsonKeys": [
+        "chunk_seconds",
+        "overlap_seconds",
+        "sample_rate",
+        "source_name",
+        "source_sha256"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/transcription-config.json",
+      "bytes": 189,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "8c92b3e095aa90610ebd72776d645d1a6ea32c5e14500ddfbe25ef8892fc4497",
+      "jsonKeys": [
+        "beam_size",
+        "compute_type",
+        "condition_on_previous_text",
+        "language",
+        "model",
+        "threads",
+        "vad_filter"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/provenance.json",
+      "bytes": 323,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".json",
+      "sha256": "d3f9a323ad7f94c6f5ee1e6b3293fcc3beedece3adbd0140ce21f315bd0b88e1",
+      "jsonKeys": [
+        "duration_seconds",
+        "original_bytes",
+        "original_inventory_index",
+        "original_sha256",
+        "private_processing",
+        "review_complete",
+        "wait_for"
+      ],
+      "completionFlags": {}
+    },
+    {
+      "relativePath": "recording-06/queue-error.log",
+      "bytes": 0,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relativePath": "recording-06/queue.log",
+      "bytes": 1772,
+      "mode": "0o600",
+      "uid": 0,
+      "suffix": ".log",
+      "sha256": "5f04a56c48c3fa7d75a795a84d6813933a81273d9c0eb7daabfc6357f94a4178"
+    },
+    {
+      "relativePath": "recording-06/queue_recording06.py",
+      "bytes": 2526,
+      "mode": "0o700",
+      "uid": 0,
+      "suffix": ".py",
+      "sha256": "0529594319230473d08e1d7446e99767e6b3e1479c4e584cc77dd447bce325e3"
+    },
+    {
+      "relativePath": "review-final-03-06-20261010.tar",
+      "bytes": 1228800,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".tar"
+    },
+    {
+      "relativePath": "trial.log",
+      "bytes": 698,
+      "mode": "0o644",
+      "uid": 0,
+      "suffix": ".log",
+      "sha256": "a9240a64eabf709e1deabc67e9c295225fde76dd33423176757503e8b20eb9b6"
+    }
+  ],
+  "workers": [],
+  "symlinks": [],
+  "hashesComplete": true,
+  "services": [
+    {
+      "unit": "fanasa-transcription-batch-02-retry.service",
+      "Result": "oom-kill",
+      "ExecMainCode": "2",
+      "ExecMainStatus": "9",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    {
+      "unit": "fanasa-transcription-batch-02.service",
+      "Result": "oom-kill",
+      "ExecMainCode": "2",
+      "ExecMainStatus": "9",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    }
+  ],
+  "elapsedSeconds": 3.012
+}

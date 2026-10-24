@@ -1,0 +1,170 @@
+{
+  "observedAtUtc": "2026-10-23T12:49:25.377727+00:00",
+  "mode": "read-only",
+  "units": [
+    {
+      "unit": "fanasa-access-management@development.service",
+      "properties": {
+        "MainPID": "4046443",
+        "WorkingDirectory": "/opt/fanasa-access-management/development/current/web",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "processCwd": "/opt/fanasa-access-management/development/releases/hr-development-958e9abd658b-55f9cb82f454/web",
+      "configuration": {
+        "environment": "development",
+        "files": [
+          {
+            "name": "appsettings.json",
+            "readable": true
+          }
+        ],
+        "selected": {
+          "Platform:ServiceCatalog:ClientId": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:ServiceCatalog:ClientProductKey": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:ConsumerCatalog:Enabled": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:ServiceCatalog:OfficialLinkHosts": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:RegistryPath": {
+            "present": true,
+            "nonblank": true,
+            "value": "/opt/fanasa-access-management/development/state/platform-registry.db"
+          },
+          "Fabric:DataDirectory": {
+            "present": true,
+            "nonblank": true,
+            "value": "/opt/fanasa-access-management/development/state/fabric"
+          }
+        }
+      },
+      "webDllSha256": "61e854d01ee4aefdce73103ebac8ab13be439f628f219a49025278e69047de5b"
+    },
+    {
+      "unit": "fanasa-unified-portal@development.service",
+      "properties": {
+        "MainPID": "1088437",
+        "WorkingDirectory": "/opt/fanasa-unified-portal/development/current/web",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "processCwd": "/opt/fanasa-unified-portal/development/releases/b2e36cf183737ab52aa6a37a82b285294cdd9fcb/web",
+      "configuration": {
+        "environment": "development",
+        "files": [
+          {
+            "name": "appsettings.json",
+            "readable": true
+          }
+        ],
+        "selected": {
+          "Platform:ServiceCatalog:ClientId": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:ServiceCatalog:ClientProductKey": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:ConsumerCatalog:Enabled": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:ServiceCatalog:OfficialLinkHosts": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Platform:RegistryPath": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "Fabric:DataDirectory": {
+            "present": false,
+            "nonblank": false,
+            "value": null
+          },
+          "portalSafeSettings": {
+            "platformcontrolcenter:scope": "platform.catalog",
+            "platformcontrolcenter:discoverypath": "",
+            "platformcontrolcenter:discoveryscope": "platform.catalog",
+            "platformcontrolcenter:baseurl": "http://127.0.0.1:5191",
+            "platformcontrolcenter:authority": "https://sso.fanasa.net.local/realms/fanasa",
+            "platformcontrolcenter:clientid": "fanasa-unified-portal-service"
+          }
+        }
+      }
+    }
+  ],
+  "httpProbe": {
+    "tokenPersisted": false,
+    "tlsVerification": "system CA and hostname verification",
+    "tokenEndpointStatus": 200,
+    "tokenClaimDiagnostics": {
+      "azpMatchesExistingClient": true,
+      "catalogScopePresent": true,
+      "expectedAudiencePresent": true
+    },
+    "responses": [
+      {
+        "path": "/api/platform/published-services",
+        "status": 503,
+        "contentType": "application/json; charset=utf-8",
+        "error": "Published service catalog is not configured."
+      },
+      {
+        "path": "/api/platform/application-tenants?subject=ffffffff-ffff-4fff-bfff-ffffffffffff",
+        "status": 503,
+        "contentType": "application/json; charset=utf-8",
+        "error": "Consumer application catalog is not configured."
+      }
+    ]
+  },
+  "storagePrerequisites": {
+    "mode": "SQLite mode=ro; query_only=ON",
+    "observedAtUtc": "2026-10-23T12:49:25.590186+00:00",
+    "registryTables": {
+      "platform_products": {
+        "present": true,
+        "rows": 5
+      },
+      "platform_application_offers": {
+        "present": true,
+        "rows": 0
+      },
+      "platform_application_grants": {
+        "present": true,
+        "rows": 0
+      }
+    },
+    "productJsonValid": true,
+    "fabricDocumentCountsBounded": {
+      "client": 1,
+      "tenant": 4,
+      "membership": 8,
+      "platform.service-publication.v1": 0
+    },
+    "fabricSelectedJsonValid": true,
+    "existingPortalClient": {
+      "matches": 0
+    }
+  }
+}

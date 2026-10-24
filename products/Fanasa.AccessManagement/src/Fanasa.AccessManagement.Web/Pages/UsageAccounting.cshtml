@@ -1,0 +1,85 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.UsageAccountingModel
+@{ ViewData["Title"] = "پایش مصرف و ثبت مالی"; }
+<link rel="stylesheet" href="~/css/usage-accounting.css" asp-append-version="true" />
+
+@if (!Model.SelectedTenant.HasValue)
+{
+    <section class="ua-app ua-panel ua-empty"><h2>سازمانی برای نمایش وجود ندارد</h2><p>پس از فعال شدن یک سازمان در مدیریت مرکزی، گزارش مصرف آن در این صفحه قابل مشاهده است.</p></section>
+}
+else
+{
+<div id="usage-accounting-app" class="ua-app" data-tenant="@Model.SelectedTenant" aria-busy="true">
+    @Html.AntiForgeryToken()
+    @if (Model.IsPreview)
+    {
+        <p class="ua-demo">پیش‌نمایش با دادهٔ نمونه؛ حساب‌های واقعی تغییر نمی‌کنند.</p>
+    }
+    <section class="ua-hero" aria-labelledby="ua-page-title">
+        <div class="ua-hero-copy">
+            <span class="ua-eyebrow">شفافیت مصرف سازمان</span>
+            <h2 id="ua-page-title">هر مصرف، یک مسیر روشن</h2>
+            <p>شواهد مصرف، ثبت مالی و آماده‌سازی ارسال را در کنار هم ببینید؛ موارد در انتظار را با مبلغ تثبیت‌شده پیگیری کنید.</p>
+            <div class="ua-hero-note"><span class="ua-note-dot" aria-hidden="true"></span>گزارش وضعیت ثبت‌شده در همین سامانه</div>
+        </div>
+        <div class="ua-hero-visual" aria-hidden="true">
+            <div class="ua-visual-ring"></div>
+            <div class="ua-visual-card"><span class="ua-visual-check">✓</span><strong>مصرف قابل پیگیری</strong><span>شواهد · مبلغ · وضعیت</span><div class="ua-visual-lines"><i></i><i></i></div></div>
+            <span class="ua-visual-orbit ua-visual-orbit--one"></span><span class="ua-visual-orbit ua-visual-orbit--two"></span>
+        </div>
+    </section>
+
+    <div class="ua-toolbar">
+        <form method="get" class="ua-tenant-form">
+            <label for="ua-tenant">سازمان</label>
+            <select id="ua-tenant" name="tenant">@foreach (var tenant in Model.Tenants) { <option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option> }</select>
+            <button type="submit" class="ua-button ua-button--quiet">نمایش گزارش</button>
+        </form>
+        <div class="ua-refresh-group"><span id="ua-load-status" class="ua-muted" role="status" aria-live="polite">در حال دریافت گزارش…</span><button id="ua-refresh" type="button" class="ua-button ua-button--outline"><span aria-hidden="true">↻</span> به‌روزرسانی</button></div>
+    </div>
+
+    <section id="ua-banner" class="ua-banner" role="status" aria-live="polite" hidden><strong id="ua-banner-title"></strong><p id="ua-banner-text"></p></section>
+    <section id="ua-state" class="ua-panel ua-state" role="status" aria-live="polite"><div class="ua-state-mark" aria-hidden="true">◌</div><h3 id="ua-state-title">گزارش مصرف در حال آماده شدن است</h3><p id="ua-state-text">شواهد و ثبت‌های مالی سازمان انتخاب‌شده بررسی می‌شوند.</p></section>
+
+    <div id="ua-content" hidden>
+        <section class="ua-metrics" aria-label="نمای کلی گزارش">
+            <article class="ua-metric"><span class="ua-metric-label">ثبت مالی انجام‌شده</span><strong id="ua-metric-committed">—</strong><span class="ua-metric-caption">مصرف با ثبت مالی کامل</span><span class="ua-metric-symbol" aria-hidden="true">✓</span></article>
+            <article class="ua-metric ua-metric--pending"><span class="ua-metric-label">در انتظار ثبت مالی</span><strong id="ua-metric-pending">—</strong><span class="ua-metric-caption">نیازمند پیگیری حساب</span><span class="ua-metric-symbol" aria-hidden="true">◷</span></article>
+            <article class="ua-metric"><span class="ua-metric-label">پوشش بررسی شواهد</span><strong id="ua-metric-coverage" class="ua-metric-word">—</strong><span id="ua-coverage-detail" class="ua-metric-caption">—</span><span class="ua-metric-symbol" aria-hidden="true">⌕</span></article>
+            <article class="ua-metric"><span class="ua-metric-label">موارد نیازمند بررسی</span><strong id="ua-metric-findings">—</strong><span class="ua-metric-caption">ناهماهنگی شواهد و ثبت‌ها</span><span class="ua-metric-symbol" aria-hidden="true">≋</span></article>
+        </section>
+
+        <section class="ua-panel ua-trace" aria-labelledby="ua-trace-title">
+            <div class="ua-section-heading"><div><span class="ua-eyebrow">مسیر ثبت مصرف</span><h3 id="ua-trace-title">از شواهد تا آماده‌سازی ارسال</h3></div><span class="ua-label">ثبت محلی سامانه</span></div>
+            <ol class="ua-trace-steps">
+                <li id="ua-receipt-step"><span class="ua-step-number">۱</span><div><strong>دریافت شواهد</strong><span id="ua-stage-receipts">—</span><small>رسید مصرف حفظ شده است</small></div></li>
+                <li id="ua-ledger-step"><span class="ua-step-number">۲</span><div><strong>ثبت مبلغ در حساب</strong><span id="ua-stage-ledger">—</span><small>مبلغ و نشان ثبت بررسی می‌شوند</small></div></li>
+                <li id="ua-outbox-step"><span class="ua-step-number">۳</span><div><strong>رویداد آمادهٔ ارسال</strong><span id="ua-stage-outbox">—</span><small>رویداد ثبت مالی در صف نگهداری می‌شود</small></div></li>
+            </ol>
+            <p class="ua-local-note">شمارش صف مربوط به رویدادهای محفوظ است؛ وضعیت جاری هر مصرف در دفتر زیر دیده می‌شود. ثبت رویداد در صف، دریافت آن در مقصد را تأیید نمی‌کند.</p>
+        </section>
+
+        <div class="ua-attention-grid">
+            <section class="ua-panel" aria-labelledby="ua-pending-title"><div class="ua-section-heading"><h3 id="ua-pending-title">در انتظار اقدام</h3><span id="ua-pending-count" class="ua-label">—</span></div><p class="ua-section-note">پس از رفع محدودیت حساب، ثبت مالی همین مصرف را دوباره بررسی کنید.</p><div id="ua-pending-list" class="ua-pending-list"></div><p id="ua-pending-empty" class="ua-empty-inline" hidden>مصرفی در انتظار ثبت مالی نیست.</p></section>
+            <section class="ua-panel" aria-labelledby="ua-findings-title"><div class="ua-section-heading"><h3 id="ua-findings-title">سلامت شواهد</h3><span class="ua-label">بررسی تطابق</span></div><p class="ua-section-note">ناهماهنگی‌ها باید پیش از تلاش مجدد ثبت مالی بررسی شوند.</p><div id="ua-findings-list" class="ua-findings-list"></div><p id="ua-findings-empty" class="ua-empty-inline" hidden>ناهماهنگی در شواهد بررسی‌شده دیده نشد.</p></section>
+        </div>
+
+        <section class="ua-panel ua-operations" aria-labelledby="ua-operations-title">
+            <div class="ua-section-heading"><div><span class="ua-eyebrow">دفتر مصرف</span><h3 id="ua-operations-title">مصرف‌های قابل پیگیری</h3></div><span id="ua-visible-count" class="ua-muted">—</span></div>
+            <div class="ua-table-tools"><label class="ua-search-label" for="ua-search"><span class="ua-sr-only">جست‌وجو در شناسه، مبلغ یا وضعیت مصرف</span><input id="ua-search" type="search" placeholder="جست‌وجو در شناسه یا مبلغ مصرف" autocomplete="off" /></label><label class="ua-filter-label" for="ua-filter">وضعیت<select id="ua-filter"><option value="all">همهٔ مصرف‌ها</option><option value="accounting-pending">در انتظار ثبت مالی</option><option value="committed">ثبت مالی انجام‌شده</option><option value="issues">نیازمند بررسی شواهد</option></select></label></div>
+            <div class="ua-table-scroll"><table id="ua-table" class="ua-table"><caption class="ua-sr-only">مصرف سازمان @Model.SelectedTenantName</caption><thead><tr><th scope="col">شناسه مصرف</th><th scope="col">زمان مصرف</th><th scope="col">مبلغ تثبیت‌شده</th><th scope="col">وضعیت</th><th scope="col"><span class="ua-sr-only">جزئیات</span></th></tr></thead><tbody id="ua-table-body"></tbody></table></div><p id="ua-table-empty" class="ua-empty-inline" hidden>مصرفی مطابق این جست‌وجو وجود ندارد.</p>
+        </section>
+    </div>
+
+    <dialog id="ua-detail" class="ua-detail" aria-labelledby="ua-detail-title">
+        <div class="ua-detail-header"><div><span class="ua-eyebrow">شواهد و اقدام</span><h2 id="ua-detail-title">جزئیات ثبت مصرف</h2></div><button id="ua-detail-close" type="button" class="ua-icon-button" aria-label="بستن جزئیات">×</button></div>
+        <div class="ua-detail-body">
+            <div class="ua-detail-summary"><span id="ua-detail-status" class="ua-status"></span><strong id="ua-detail-amount">—</strong><span id="ua-detail-currency">—</span><div><button id="ua-copy-amount" type="button" class="ua-copy-button">کپی مبلغ دقیق</button></div><p id="ua-detail-time" class="ua-muted">—</p></div>
+            <section class="ua-detail-section"><h3>مبلغ و شواهد محفوظ</h3><p id="ua-detail-rate-note" class="ua-section-note">مبلغ نهایی با ارز ثبت‌شده نمایش داده می‌شود. جزئیات نرخ هر واحد در این گزارش ارائه نشده است.</p><div class="ua-identity"><div><span>شناسه مصرف</span><button id="ua-copy-key" type="button" class="ua-copy-button">کپی شناسه</button></div><code id="ua-detail-key" class="ua-code" dir="ltr"></code></div><div class="ua-identity"><div><span>اثر انگشت شواهد</span><button id="ua-copy-fingerprint" type="button" class="ua-copy-button">کپی اثر انگشت</button></div><code id="ua-detail-fingerprint" class="ua-code" dir="ltr"></code></div></section>
+            <section class="ua-detail-section"><h3>نتیجهٔ بررسی این مصرف</h3><div id="ua-detail-findings" class="ua-findings-list"></div></section>
+            <section class="ua-detail-section ua-recovery-section"><h3>پیگیری ثبت مالی</h3><p id="ua-recovery-eligibility" class="ua-section-note">امکان تلاش مجدد پس از بررسی گزارش مشخص می‌شود.</p><form id="ua-recovery-form"><label for="ua-recovery-reason">دلیل تلاش مجدد<textarea id="ua-recovery-reason" name="reason" maxlength="1000" rows="4" required placeholder="مرجع رفع محدودیت اعتبار یا توضیح اقدام انجام‌شده"></textarea></label><p class="ua-form-note">فقط ثبت مالی همین مصرف با مبلغ تثبیت‌شده دوباره بررسی می‌شود.</p><button id="ua-recovery-submit" type="submit" class="ua-button ua-button--primary" disabled>تلاش مجدد برای ثبت مالی</button><button id="ua-new-request" type="button" class="ua-button ua-button--outline" hidden>آماده‌سازی درخواست جدید</button></form><p id="ua-recovery-message" role="status" aria-live="polite"></p><div class="ua-request-id"><span>شناسه درخواست</span><code id="ua-recovery-request" dir="ltr">—</code></div></section>
+        </div>
+    </dialog>
+</div>
+}
+@section Scripts { <script src="~/js/usage-accounting.js" asp-append-version="true" defer></script> }

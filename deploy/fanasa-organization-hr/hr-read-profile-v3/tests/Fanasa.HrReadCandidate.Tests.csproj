@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><ItemGroup><ProjectReference Include="../src/Fanasa.HrReadCandidate.csproj" /><ProjectReference Include="../contract-policy/src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj" /><ProjectReference Include="../fabric/Fanasa.HrReadCandidate.Fabric.csproj" /></ItemGroup></Project>

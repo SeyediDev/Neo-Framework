@@ -1,0 +1,44 @@
+# Initial verification only: no mirror, image publication, CD or release approval.
+# This exact committed source is intentionally fixed until the next reviewed binding.
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop" && $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_SHA == "9698138aa22434967142fda23de0f12643689eaf" && $CI_PIPELINE_SOURCE == "web"'
+    - when: never
+stages: [verify]
+default:
+  image:
+    name: fanasa/neo-ci-build:9698138-gitleaks8301
+    pull_policy: never
+  tags: [fanasa-neo-committed-verification]
+  interruptible: false
+  retry: 0
+  timeout: 30m
+  artifacts:
+    when: always
+    access: maintainer
+    expire_in: 7 days
+    paths: [.ci-reports/]
+variables:
+  GIT_DEPTH: "0"
+  GIT_STRATEGY: clone
+  GIT_SUBMODULE_STRATEGY: none
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  DOTNET_PROCESSOR_COUNT: "2"
+  NUGET_PACKAGES: /home/neo-ci/.nuget/packages
+secrets-history:
+  stage: verify
+  script: ["python3 /opt/fanasa-ci/run.py secrets"]
+  allow_failure: false
+core-unit:
+  stage: verify
+  script: ["python3 /opt/fanasa-ci/run.py core-unit"]
+  allow_failure: false
+portal-contract:
+  stage: verify
+  script: ["python3 /opt/fanasa-ci/run.py portal-contract"]
+  allow_failure: false
+portal-node:
+  stage: verify
+  script: ["python3 /opt/fanasa-ci/run.py portal-node"]
+  allow_failure: false

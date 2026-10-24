@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fanasa:usage-event:1.0",
+  "title": "Fanasa UsageEvent 1.0 (organization unit pilot)",
+  "description": "Completed, billable backend operation. Intake receivedAt is server-owned receipt metadata. Prices and party bindings require trusted historical resolver validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "occurredAt",
+    "producedAt",
+    "producer",
+    "environment",
+    "ownerTenantId",
+    "consumerTenantId",
+    "productKey",
+    "contractId",
+    "contractVersion",
+    "allocationId",
+    "allocationPeriodId",
+    "operation",
+    "authorization",
+    "meter",
+    "rateSnapshot",
+    "outcome",
+    "evidence",
+    "correlationId"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "eventId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z(?![\\s\\S])"
+    },
+    "producedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z(?![\\s\\S])"
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "deploymentId"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "kind": {
+          "const": "product-backend"
+        },
+        "deploymentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      }
+    },
+    "environment": {
+      "enum": [
+        "development",
+        "pilot",
+        "production"
+      ]
+    },
+    "ownerTenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "consumerTenantId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "productKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "contractId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "contractVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "allocationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "allocationPeriodId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "actorId",
+        "requestId",
+        "requestFingerprint",
+        "acceptedAt",
+        "billableBoundary"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "requestFingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+        },
+        "acceptedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z(?![\\s\\S])"
+        },
+        "billableBoundary": {
+          "const": "organization-unit-committed/v1"
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decisionId",
+        "policyVersion",
+        "admissionId"
+      ],
+      "properties": {
+        "decisionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "policyVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "admissionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      }
+    },
+    "meter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "unit",
+        "quantity"
+      ],
+      "properties": {
+        "id": {
+          "const": "organization.change"
+        },
+        "version": {
+          "const": "1"
+        },
+        "unit": {
+          "const": "change"
+        },
+        "quantity": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?(?![\\s\\S])",
+          "maxLength": 25,
+          "const": "1"
+        }
+      }
+    },
+    "rateSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rateId",
+        "rateVersion",
+        "effectiveFrom",
+        "effectiveTo",
+        "unitPrice",
+        "currency",
+        "minorUnitScale",
+        "rounding",
+        "billingMode"
+      ],
+      "properties": {
+        "rateId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "rateVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "effectiveFrom": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z(?![\\s\\S])"
+        },
+        "effectiveTo": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z(?![\\s\\S])"
+        },
+        "unitPrice": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?(?![\\s\\S])",
+          "maxLength": 25
+        },
+        "currency": {
+          "enum": [
+            "IRR",
+            "USD",
+            "EUR"
+          ]
+        },
+        "minorUnitScale": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "rounding": {
+          "const": "away-from-zero"
+        },
+        "billingMode": {
+          "const": "postpaid"
+        }
+      }
+    },
+    "outcome": {
+      "const": "completed"
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "businessReceiptId",
+        "resultDigest",
+        "reference"
+      ],
+      "properties": {
+        "businessReceiptId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "resultDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      }
+    },
+    "correlationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "traceId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}(?![\\s\\S])"
+    }
+  }
+}

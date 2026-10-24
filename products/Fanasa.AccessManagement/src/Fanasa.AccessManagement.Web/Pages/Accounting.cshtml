@@ -9,6 +9,10 @@ else {
 @Html.AntiForgeryToken()
 <div class="org-toolbar"><form method="get"><label>سازمان <select name="tenant" onchange="this.form.submit()">@foreach(var tenant in Model.Tenants){<option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option>}</select></label></form><button class="button secondary" id="billing-refresh">بارگذاری مجدد</button><span id="billing-mode" class="pill blue"></span></div>
 <p id="billing-message" role="status" aria-live="polite"></p><div id="billing-metrics" class="metrics"></div>
+@if (User.HasClaim("permission", "platform.admin"))
+{
+    <p><a class="button secondary" asp-page="/UsageAccounting" asp-route-tenant="@Model.SelectedTenant">بررسی تطبیق مصرف و بازیابی ثبت‌های در انتظار</a></p>
+}
 @if(Model.CanWrite && Model.GatewayEnabled){<section class="panel org-editor"><h3>پرداخت با زرین‌پال</h3><p>@(Model.GatewaySandbox ? "محیط آزمایشی؛ پرداخت واقعی انجام نمی‌شود." : "شارژ کیف اعتبار یا تسویه صورتحساب از درگاه بانکی")</p><form id="gateway-payment"><label>مبلغ پرداخت (ریال) <input name="amount" type="number" min="1" step="1" required /></label><label id="gateway-invoice-label">صورتحساب پرداخت <select name="invoiceId"></select></label><button class="button primary" type="submit">ادامه به زرین‌پال</button></form><p id="gateway-message" role="status" aria-live="polite"></p><div id="gateway-attempts"></div></section>}
 @if(Model.CanWrite){<section class="panel org-editor"><h3>مدیریت حساب</h3><form id="billing-command">
 <label>عملیات <select name="operation"><option value="configure">تنظیم مدل و سقف اعتبار</option><option value="tariff">تعرفه شاخص مصرف</option><option value="credit">ثبت شارژ تأییدشده</option><option value="invoice">صدور صورتحساب دوره بسته</option><option value="payment">ثبت تسویه تأییدشده</option></select></label>

@@ -1,0 +1,2460 @@
+{
+  "schemaVersion": "fanasa.pcc-build-cleanup.v1",
+  "authorization": "Coordinator authorized this final PCC cleanup only after session 75144 completion and saved DLL/source/log hashes, retaining all 15 PCC restore assets, logs and evidence; every other build path remains outside scope.",
+  "startedAtUtc": "2026-10-10T17:25:13.8320071Z",
+  "completedAtUtc": "2026-10-10T17:25:45.2541064Z",
+  "exactRoot": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair",
+  "relevantPccWorkers": 0,
+  "noReparsePoints": true,
+  "before": {
+    "binFiles": 290,
+    "binBytes": 137824485,
+    "objFiles": 87,
+    "objBytes": 3796954,
+    "restoreAssetsFiles": 15,
+    "restoreAssetsBytes": 580711,
+    "generatedObjFiles": 72,
+    "generatedObjBytes": 3216243
+  },
+  "binSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\appsettings.Development.json",
+      "bytes": 144,
+      "lastWriteTicksUtc": 639265792696106635,
+      "sha256": "2517aa41ec849af0dd8b306a0c6d75a5efeace986b29c8e67d08aedddf012599"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\appsettings.json",
+      "bytes": 121,
+      "lastWriteTicksUtc": 639265792696086647,
+      "sha256": "ac74855ac053970689cdf87c0045d497243cc99bf620f3e30efcabd3ca9b8225"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Azure.Core.dll",
+      "bytes": 437304,
+      "lastWriteTicksUtc": 638881934700000000,
+      "sha256": "224d09cb39eae4d8c30272a0c49beb19d873c87347eae9487f0ddd859d752b56"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Azure.Identity.dll",
+      "bytes": 356912,
+      "lastWriteTicksUtc": 638877898660000000,
+      "sha256": "af18f20be25b2895c912f3ba0a9f2901a82dda823edcad76e6a19eac9886a40f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.deps.json",
+      "bytes": 51717,
+      "lastWriteTicksUtc": 639272396576202688,
+      "sha256": "dfdbf258656138ffa1a72d44bb2284e6db80d7a90915c411816035a12710d272"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.dll",
+      "bytes": 1169408,
+      "lastWriteTicksUtc": 639272491240044659,
+      "sha256": "e131b39452abd874dfcbdac400d2929f356b9837a14dae0a3ee657eee937a02d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.exe",
+      "bytes": 162816,
+      "lastWriteTicksUtc": 639272491244779445,
+      "sha256": "add2b394ecf096d1bf419c707636fb9d9ded84e0449beaf32aae84709f916526"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.pdb",
+      "bytes": 283596,
+      "lastWriteTicksUtc": 639272491220803223,
+      "sha256": "59cd0801c4eac45d867431d04eca5e9b88fa548516e672575cc60c04681ecc32"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.runtimeconfig.json",
+      "bytes": 488,
+      "lastWriteTicksUtc": 639272396581557886,
+      "sha256": "5a26de741a59e2654c7badfe3d6d9a134bf09fe67f621f584e7746147c9d2686"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.staticwebassets.endpoints.json",
+      "bytes": 50163,
+      "lastWriteTicksUtc": 639272396552643420,
+      "sha256": "4faff937a1b3afdff662eb5a0cf945f6248e0b70366b44d91f375844a1cffeaa"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.staticwebassets.runtime.json",
+      "bytes": 3802,
+      "lastWriteTicksUtc": 639272396554698794,
+      "sha256": "ef5ae2a85b706c8acaaaea22265eec7607b41a5d5f6d1527c91922901d1c548d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.ContractPolicy.dll",
+      "bytes": 136704,
+      "lastWriteTicksUtc": 639272464618244323,
+      "sha256": "e17f6ccc1386333234d585324badd87e215b897a0e98cb81d2240450494acf58"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Fanasa.ContractPolicy.pdb",
+      "bytes": 39816,
+      "lastWriteTicksUtc": 639272464588080054,
+      "sha256": "c61ef8dfbc4484fc595068d2cf216a0d56f61845b59c4a7efebff4285d577e62"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Humanizer.dll",
+      "bytes": 355944,
+      "lastWriteTicksUtc": 637790654440000000,
+      "sha256": "d6853075547d7e303efd60354d911a2ff18edba582cda2fa59d91a2e5dcf9e98"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "bytes": 52008,
+      "lastWriteTicksUtc": 639131137600000000,
+      "sha256": "56861b005b748d0bd7f4135f266fbc0e9527a72f67a136a327e924c8603c8b39"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll",
+      "bytes": 126800,
+      "lastWriteTicksUtc": 639131137660000000,
+      "sha256": "cc46deda1ca405c020e78666885c26376516375c51813e9f9414ba7e49b2861f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "bytes": 19104,
+      "lastWriteTicksUtc": 638343611300000000,
+      "sha256": "136d5965cf4768e8420b547a8bddea882921f426c371833d558a858a2f0c235a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Bcl.Cryptography.dll",
+      "bytes": 16688,
+      "lastWriteTicksUtc": 638775003520000000,
+      "sha256": "009a27b8e3093fdd2960bba63e4acd48eab05c4f8f8a6d9fe8c24b4657f44c4f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Build.Framework.dll",
+      "bytes": 269608,
+      "lastWriteTicksUtc": 638966385540000000,
+      "sha256": "1a7c784aefd2df26a77a4f8e8b46722da73b82578eca1e1cb6edee54e5bf6061"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.CodeAnalysis.CSharp.dll",
+      "bytes": 6839608,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "36f5ac8da30a6107f53a2ca6509b61e284c08eb59aa1b22956d4e200e4514aa5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.CodeAnalysis.CSharp.Workspaces.dll",
+      "bytes": 944904,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "bf30fb9aafcd99c4a74b9d6733774abcbf82c4a836c5a94fae6d91c45523f085"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.CodeAnalysis.dll",
+      "bytes": 3059000,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "10f489db67b8ac7489e58d392166c928302ba5698506dd652311da5d89f0a0f8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.CodeAnalysis.ExternalAccess.RazorCompiler.dll",
+      "bytes": 21256,
+      "lastWriteTicksUtc": 638990186340000000,
+      "sha256": "5092cc2cee3f241a2bf3abec35096b0669cb181720a3cf463cddf7f6a45c1a0b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.CodeAnalysis.Workspaces.dll",
+      "bytes": 4230448,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "79498055635572590009a4781a6e3ee1e2e70e3085b2ea3ce161820f809b0b2b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll",
+      "bytes": 141576,
+      "lastWriteTicksUtc": 638990187260000000,
+      "sha256": "746a9474ed7f0f6a5102b88379c3312edc41eca664a8b3b7717ba31b1cede73f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Data.SqlClient.dll",
+      "bytes": 929912,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "5a34e2fa3479b1508dbc20fbeb2c9172f18c3868bdb147a185213a446645b400"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Data.Sqlite.dll",
+      "bytes": 177464,
+      "lastWriteTicksUtc": 639131125180000000,
+      "sha256": "4ffa9156ebb9332bc53196cde2e62997447ad046629216be555e07d5d65f6c19"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "bytes": 34616,
+      "lastWriteTicksUtc": 639131125140000000,
+      "sha256": "c29df8f2db22e129bb6929130d98aa612b570a5ebab9842a11e809796cf03448"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.EntityFrameworkCore.Design.dll",
+      "bytes": 631648,
+      "lastWriteTicksUtc": 639131125600000000,
+      "sha256": "d2d7e7cf28c056636ed2c143b2d35ae73f75b080940990123473ef0d7c7dbafd"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.EntityFrameworkCore.dll",
+      "bytes": 2828600,
+      "lastWriteTicksUtc": 639131125400000000,
+      "sha256": "6750a0c56a1d557d7590728d4d7378f6e1ec65cb96e59489023cdc9fd139f6ca"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "bytes": 2194744,
+      "lastWriteTicksUtc": 639131125560000000,
+      "sha256": "687f84616b0a58de7ba0c20d14b4fe38871d79161f2de5bb3f48d171c292a0db"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "bytes": 641888,
+      "lastWriteTicksUtc": 639131125620000000,
+      "sha256": "b5bf0e142be6341ad3922d487cdc6c47a1bbcfeeadf6525a4273ff249b9d047e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Extensions.DependencyModel.dll",
+      "bytes": 84776,
+      "lastWriteTicksUtc": 639131095500000000,
+      "sha256": "8dadc004effa669d9caf231019413e469d58632eadb9dacf56aad07d8bac82a3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Identity.Client.dll",
+      "bytes": 1028656,
+      "lastWriteTicksUtc": 638864729120000000,
+      "sha256": "10d59df4170053ea9597e3c20adc9607ad17318ad5d8747eda3d930a5a4b463a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "bytes": 66616,
+      "lastWriteTicksUtc": 638864731160000000,
+      "sha256": "9c1f736b16cacd318afe07d3b9d707a4b4b56def5e403b0aff471c1af413aaf0"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.IdentityModel.Abstractions.dll",
+      "bytes": 19488,
+      "lastWriteTicksUtc": 638572883160000000,
+      "sha256": "c3b97d1b1c42faa95bb92eabb7511ca61e89075388f122197040fcfdfb492013"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "bytes": 143392,
+      "lastWriteTicksUtc": 638572883560000000,
+      "sha256": "e85d3d751b4254771f59ff8a14444ef701ba65efb84e312281d675c44536da71"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.IdentityModel.Logging.dll",
+      "bytes": 36784,
+      "lastWriteTicksUtc": 638572883360000000,
+      "sha256": "32ebeeb2163db6aa0a81659ff0b590894d78350c50c459196b6cc33c98ba21f3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.IdentityModel.Protocols.dll",
+      "bytes": 40880,
+      "lastWriteTicksUtc": 638572883360000000,
+      "sha256": "7c8702a7f6c019d962faf4b8af2da751dc32af9b6be998688e774394fb5f8730"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "bytes": 137144,
+      "lastWriteTicksUtc": 638572883360000000,
+      "sha256": "d1f7dbbb71cbf69f5242a74e43b632610ff5dca913f164d1dcf53b2f6e0046ac"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.IdentityModel.Tokens.dll",
+      "bytes": 329248,
+      "lastWriteTicksUtc": 638572883160000000,
+      "sha256": "b2dacc5120971efceb60f6febfe9685fe5a509ddb803c45956a63fc36e67631b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.SqlServer.Server.dll",
+      "bytes": 23976,
+      "lastWriteTicksUtc": 637789007480000000,
+      "sha256": "a9dca1b42bc875f966b78b2c0880e62b838f0ed6567166d7f1f07ae4b76ec4bf"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Microsoft.VisualStudio.SolutionPersistence.dll",
+      "bytes": 172072,
+      "lastWriteTicksUtc": 638767117460000000,
+      "sha256": "a1150f4a162d9c9992b6e99b2949e2de092017182264218b7b5666ceebbc16d4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Mono.TextTemplating.dll",
+      "bytes": 177664,
+      "lastWriteTicksUtc": 638609974360000000,
+      "sha256": "e9f742d672c8f567471974fcb7163f955d1e1f01060bb15d067ac220361d23cb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Newtonsoft.Json.dll",
+      "bytes": 712464,
+      "lastWriteTicksUtc": 638138561940000000,
+      "sha256": "22c649f75fce5be7c7ccda8880473b634ef69ecf33f5d1ab8ad892caf47d5a07"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\SQLitePCLRaw.batteries_v2.dll",
+      "bytes": 5120,
+      "lastWriteTicksUtc": 639222328500000000,
+      "sha256": "bc69777001eb4db81c580f62835396f67e74aaa381eef446193a904499d5310b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\SQLitePCLRaw.core.dll",
+      "bytes": 51200,
+      "lastWriteTicksUtc": 639222328280000000,
+      "sha256": "50c999a1ab2afeacc93bce5ac2948d3bb630d99d23efc3cfcbd8bc11d3426eb7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\SQLitePCLRaw.provider.e_sqlite3.dll",
+      "bytes": 36864,
+      "lastWriteTicksUtc": 639222328340000000,
+      "sha256": "02ad639f45a26de1919ffbb6696bdb399ad01afc149970a163c3867162f310b3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.ClientModel.dll",
+      "bytes": 175664,
+      "lastWriteTicksUtc": 638881349860000000,
+      "sha256": "ce44a4fae4c4787c12475700e19a365fc2f388ae5d0f6182557ce5ea175be7f6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.CodeDom.dll",
+      "bytes": 184944,
+      "lastWriteTicksUtc": 637705432660000000,
+      "sha256": "bfb75074ac26c7632bbe9ffc1063ceca9a56aae86ac4913481d6bba88c4c4a34"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Composition.AttributedModel.dll",
+      "bytes": 20248,
+      "lastWriteTicksUtc": 638657662900000000,
+      "sha256": "d4f1ec85e742b77cda48f709210daaf34d8b4a7e1e540f353eff741dcc058128"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Composition.Convention.dll",
+      "bytes": 54040,
+      "lastWriteTicksUtc": 638657663040000000,
+      "sha256": "be95f480449ab3236315beb321ce598a61382d64479ddf500e7434637345f474"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Composition.Hosting.dll",
+      "bytes": 56072,
+      "lastWriteTicksUtc": 638657663080000000,
+      "sha256": "2c8f10923c3b60fd1b16d89f2661712a9be112e697990bedbd6fab9dbaabb1b6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Composition.Runtime.dll",
+      "bytes": 27424,
+      "lastWriteTicksUtc": 638657662960000000,
+      "sha256": "148012db7ddafc76d28bbeaa0baea3e2351e7bc195e9031d57f107989c2e0eaa"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Composition.TypedParts.dll",
+      "bytes": 65816,
+      "lastWriteTicksUtc": 638657663160000000,
+      "sha256": "ebc942c358d997e41635c9a365db542a3fd2a05f301f602d5d6a8b0d5dd42071"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Configuration.ConfigurationManager.dll",
+      "bytes": 443192,
+      "lastWriteTicksUtc": 638775004000000000,
+      "sha256": "08b618461d62fe65451bdac4dbc25f8ac8ab16a914a687f2dbe3923bf0e8b3e7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.IdentityModel.Tokens.Jwt.dll",
+      "bytes": 90032,
+      "lastWriteTicksUtc": 638572882560000000,
+      "sha256": "83218e29958e265b4eebce62cda6d69d41e7bf1898b7fa21ed52102675f6dfe3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Memory.Data.dll",
+      "bytes": 30472,
+      "lastWriteTicksUtc": 638621250060000000,
+      "sha256": "bae79a4ff6e8fcfb65a3d88eb53d281898e699e5471ebd780843e5616753f0c3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\System.Security.Cryptography.ProtectedData.dll",
+      "bytes": 38712,
+      "lastWriteTicksUtc": 638775003920000000,
+      "sha256": "02321322ec85e0a68f28ad33e549213b1dbf3de0e66c3f7803f9ae32c0d00ffd"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\cs\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 444168,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "1b7a95334e0457ed334646cb62e1287b88e908e50a5ccdce60891613fff7295c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\cs\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "be261586e5f90c7ebdc8b5e12d41f2f493bb18f6b5a76fe1fab4a14a3d80314f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\cs\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 40200,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "b6f9770c7c83160b27d96e41486da99ed43deb71bbfb8d15bd70f25dc452c1ab"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\cs\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "5f5e0c469c1127ff80e4811e4c2e44727791ebff1abdd097f2bb36b9a7f350ee"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\cs\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 41224,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "c5e242fc938db3efdde8ff4457eb1c03f50abc63dfb3e6edd60188a0151849d8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\cs\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 257656,
+      "lastWriteTicksUtc": 638908036740000000,
+      "sha256": "6e9b997f45393346cf2f96da99f7fa868f2286964a49ce66a59988defdaf84b6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\de\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 474376,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "74ee2d88897be211e89ad4cd11a145a973bd4af0e74877b5a64f8d227e0ba409"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\de\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "6eb4c209143a8b977c61d9f30a1eb92d39a7b6a741102c221663f0e60fbc4427"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\de\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 41736,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "cd62a1bfe99811c971bec1328a548dbc5f24e3bc9cd27f9715373c1e52abf32f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\de\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "212cfa8a51d5708b54de0f21acba6d3f8ec767c01ab6d985a950729cfd355ee9"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\de\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 42760,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "96d639a66c6c8a182dc532b47f7abd7216bcd1d3ad2c3618777ed8890bfc7feb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\de\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 267384,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "30e111759eb091735455f8a7e3cb2a5aff16287149cf3d4e7a67624f00320fc3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\es\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 463120,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "719bc0f799e12704498649267e473166f91015b629f4116474091f8ee9253e4d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\es\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "a8db27c5eab7825e5d6b967d8e214f0136c12c3c8a91d344cefd2b3485ab3ead"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\es\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 41272,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "4c741b47fa2becf2f1283e96ec6f76d958f1defc2868d93c2c011cafcbc9f9f4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\es\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "7da0bd6a7d84a44c3f61e5ac9c51f1445fac66163a8cfcb156cfc0ba695dd21b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\es\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 42248,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "c5c863fa842c5dc4462dcd54e9a6b8c2531ae1cc1f1a5e8016f64126f77cb766"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\es\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 259192,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "6bb867e62e3aef301cecc99311603339301a086bdcfc8683c2c21f9f99850b34"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\fr\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 475920,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "463e22ba0fdfee0025d6fb00314a0a7cf8a47d6b6689d88e0429686025a8f53c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\fr\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "a70609f91ad5c1d223f2f9dbff6e4ae7221a03a7ca59f9ae3bd894f1015c5344"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\fr\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 41736,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "80f5a07838b046388fda788223279c1c6638eccf9610fe80a598bb17f3b20f22"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\fr\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "5330e886183987a386636f26f7902f0aa0551fcaadb3d4adf5ed83311a0d3c68"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\fr\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 43320,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "ff1ee1395f15d8f13e9fd3113c3facda1e321c665d30765890034ee5bbbbc093"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\fr\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 268432,
+      "lastWriteTicksUtc": 638908037020000000,
+      "sha256": "2eac255e2a16495d0bb89aeafa5aa668f74e12358e76eb1756de271b8b91e1de"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\it\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 469768,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "a853f3e433c9892150c47ad5bbedd46d3acb755bbc20ed58796b9e3e75aa9250"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\it\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "29791cba2bd4adee27fc945dbd7bc26d6a2db45d38cda68e5bfc39693a624d43"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\it\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 41784,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "321a24f5ac605314380585f4991db0d99bcac59ec976be896a589fe842fef7a0"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\it\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17720,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "d1967347cbc0e243d711f32f3444eaccf3c22682e44b4e052fcb89f7376297d2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\it\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 42808,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "6c4759807aeb547437adc3e77a4e24852753d07876f0056f65c7b6e3d3f6506d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\it\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 260216,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "5a50867ea6c62b3be1fe4429360fe8018f3002b95c4c7b2d306daf19b4a50053"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ja\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 515848,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "4d2baad888d7da2f20d528d27f6b56286961a6caa294a3d3927f834a3459f71d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ja\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "eab73a963bb4603272ed17d2ffecf701a64876e2e86b9e93960cb30495b67636"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ja\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 44304,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "f66432a517a834ca169317c170d32a610094c3ebc0c2b1f59d0087b33e2d36ad"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ja\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "4cfbaa8cebde81d60f626b5cc0545d9081226460dc20dc2bea6a969b9414571f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ja\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 45320,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "021a4a339d89d06e2b300480416597a61d97cf1c787fd3c7024c849220387e43"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ja\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 289400,
+      "lastWriteTicksUtc": 638908036740000000,
+      "sha256": "75539952a99301eba174bcaeeaded6da4d758c6f12565bed4208dc50b0344abe"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ko\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 475920,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "6a2e477c2a8604157f2c9f8e3756a98ab07995c0e6fcfe22f2e7bf6679f30389"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ko\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "08814208264064105abccc96957c1e2ae073d4e7dd97ed745998f04b777273cb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ko\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 41744,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "1033d3d5d10557f7070430be5643dc89620d84cbeac2112cfb8c4a1d1580845f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ko\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "d7054c0bf6bdca4013ccd75face70958b5dc0709f3a577e61f8c0e560bef6eb5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ko\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 43280,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "6f28e1cd4c7ce5311ddfb4de3b42966a555ee42aa41603332f88154f6a9b21c4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ko\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 267416,
+      "lastWriteTicksUtc": 638908038580000000,
+      "sha256": "a5eac865982205ce0d1b94ae4cae4ec003b514829542140c91e67cf86312d5fc"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pl\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 476432,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "39b5e1471817790a31ec4038639188f7b89fd6713ea19c88472bdcf4fa56f795"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pl\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17712,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "49292bf397e478694f68d7cb186aefa8e6565faa7668e70d486c53cadb4abc9e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pl\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 41736,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "f8779e45b1f699fe722898b1865377bedaf5a433c1aab6298af5b3edf067e88f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pl\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "dd022150ad075152f44c90e75abcc6e4cc045b0b6b57eec997213a2ffe25e493"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pl\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 42760,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "e2ee84f74b48dbb730809341b5279e521dbfd6844c013400777e0e1d02160c0f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pl\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 266896,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "ca9d25b7405908146f988c7fad48ded63e7f02df0e43bd1406803010428338be"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pt-BR\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 456456,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "0188246fa239eadad25885093f21c20df4a775f794fc34468430729974a8c1ec"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pt-BR\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17712,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "ba6b4079d560af3176e48e8f46aa7f3305b43717b051fc7cd27a913ba93730a9"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pt-BR\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 40720,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "8ffdb0eff7c2de635a38f0093da5e95f52ca905ec2080cab4efac42585dd0143"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pt-BR\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "3b38428fec1990fefde9dea01a913bc2709f81dad2c4b7a72c8cab8c8bcae1f6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pt-BR\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 42296,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "53fa339d0151215cfdec187b2eaa73215f809b95ca86a8c882b0de82f6d48550"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\pt-BR\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 255128,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "2a295a383e9076b24f47c1759e1c43176dfd876bc6444a661dee21170cde6b52"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ru\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 617744,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "d0b7b57bb90a4aed649f10c30fcdae5c9efb8280447287a76a3d64eb0db13e41"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ru\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 18192,
+      "lastWriteTicksUtc": 638990184120000000,
+      "sha256": "3862e9990ea7d92eec34066e8730e5c84d454bf3a1abfd35623ae75d05cebf1d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ru\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 49464,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "5153d18368224e120d2415262c49302100bb76ef7aff8aa686300d4225766c67"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ru\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "6f83219312c32e3e6303fe58957e4350a4afd63efdee875f2277593bda6fcbb1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ru\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 47888,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "c248867e873c629a2214eed85a4fd9bd426b21404723468981daab77beef3c2f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\ru\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 344696,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "f7d51f47b1eba12021161ee39a7d08d24df1dcd52c131d1d94ee2c7e432f4cb4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\browser-wasm\\nativeassets\\net9.0\\e_sqlite3.a",
+      "bytes": 1308854,
+      "lastWriteTicksUtc": 639189868860000000,
+      "sha256": "c64ae8d44dc3e1aa03aca4e79ccc501cbc3a3c490e8e2ea9e369367f68cf0f21"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-arm\\native\\libe_sqlite3.so",
+      "bytes": 982224,
+      "lastWriteTicksUtc": 639189869260000000,
+      "sha256": "43556c2f5075857bf57be1136d556733bdc27195884fbdde127cd976d1c25ad5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-arm64\\native\\libe_sqlite3.so",
+      "bytes": 1534296,
+      "lastWriteTicksUtc": 639189871380000000,
+      "sha256": "707fff6b18c1f083158e7a543c8d2545d5485f547ffd96db29679a95f52878d5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-armel\\native\\libe_sqlite3.so",
+      "bytes": 1375344,
+      "lastWriteTicksUtc": 639189869440000000,
+      "sha256": "3f4d9b9ca49bb3f100882e78ba85807398cee19b481bfd4c301a8f5f58d48540"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-mips64\\native\\libe_sqlite3.so",
+      "bytes": 1756544,
+      "lastWriteTicksUtc": 639189869640000000,
+      "sha256": "985884523e512414f3e50aa359f08dad3ce635e99405e7823de9b26a7db38d09"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-musl-arm\\native\\libe_sqlite3.so",
+      "bytes": 1322584,
+      "lastWriteTicksUtc": 639189870780000000,
+      "sha256": "7fec7057d16e8b5ae54fed0c42a0e6b85e40df0d57092ef20cd647a4e1c1e0ed"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-musl-arm64\\native\\libe_sqlite3.so",
+      "bytes": 1450704,
+      "lastWriteTicksUtc": 639189870580000000,
+      "sha256": "530e2f74f259fe04faa4b595336e671fab5eedbb6f4e94dad59494efb7b00c2a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-musl-riscv64\\native\\libe_sqlite3.so",
+      "bytes": 1015888,
+      "lastWriteTicksUtc": 639189871200000000,
+      "sha256": "d8e54eb7dc52ea0a7df9b78ac6feb85af429e7264613099df478825dea5805d4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-musl-s390x\\native\\libe_sqlite3.so",
+      "bytes": 1685752,
+      "lastWriteTicksUtc": 639189871000000000,
+      "sha256": "64260c0460ad6efa7dce9263bff7a4b64ad66172ccc580cb09181c845e1a3407"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-musl-x64\\native\\libe_sqlite3.so",
+      "bytes": 1445336,
+      "lastWriteTicksUtc": 639189870360000000,
+      "sha256": "647b7b5886526691aed58e0fcbb56dc1e6dea8b1f9f5390782f0c95269250db1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-ppc64le\\native\\libe_sqlite3.so",
+      "bytes": 1937408,
+      "lastWriteTicksUtc": 639189870000000000,
+      "sha256": "1ef00b5e3ac63e491f59ecf587680fc52ad844cea62e0a879a1315ef6bd10fc6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-riscv64\\native\\libe_sqlite3.so",
+      "bytes": 1291896,
+      "lastWriteTicksUtc": 639189870220000000,
+      "sha256": "6b390eecbc6f55c44d9ab8a774f1fe4283dfb33a72e6f29f4e0b173065e7e105"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-s390x\\native\\libe_sqlite3.so",
+      "bytes": 1655776,
+      "lastWriteTicksUtc": 639189869820000000,
+      "sha256": "dfd5ab35f6d61155a3c629d0bceff4d6e0f0f190983f3fb8f681fb34ec08c67e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-x64\\native\\libe_sqlite3.so",
+      "bytes": 1470784,
+      "lastWriteTicksUtc": 639189875980000000,
+      "sha256": "b0f5c48026fedcf9f05cf31c6fadf9e1e001ca59cd85aa68b8b6814e52c18a07"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\linux-x86\\native\\libe_sqlite3.so",
+      "bytes": 1547984,
+      "lastWriteTicksUtc": 639189876160000000,
+      "sha256": "fe8229e5baeaf21e721cf65626a6b07ec22d9b17d07bd624e7a77927174277f1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\maccatalyst-arm64\\native\\libe_sqlite3.dylib",
+      "bytes": 1695264,
+      "lastWriteTicksUtc": 639189869860000000,
+      "sha256": "8d63d80bc6caa754679d6fc89fd741a32c156f136c34759cc8fff8cd51468a93"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\maccatalyst-x64\\native\\libe_sqlite3.dylib",
+      "bytes": 1724352,
+      "lastWriteTicksUtc": 639189869740000000,
+      "sha256": "43d27adbc5ba40850bac42a12aea08314a22a43d3ce77cdc7a6cc47ecffb5746"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\osx-arm64\\native\\libe_sqlite3.dylib",
+      "bytes": 1696624,
+      "lastWriteTicksUtc": 639189868480000000,
+      "sha256": "09fe20a6c050912a7944b2f2f2981debe31679f7919f523c87251ae8cf0f2daa"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\osx-x64\\native\\libe_sqlite3.dylib",
+      "bytes": 1724472,
+      "lastWriteTicksUtc": 639189868340000000,
+      "sha256": "02344e1d0bcb5ed447ad9b79ed19e37a590fb1ece3eba1e63efbc35e36e47bdf"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\unix\\lib\\net9.0\\Microsoft.Data.SqlClient.dll",
+      "bytes": 2102944,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "4a95c42d14d8a83ca1007793648b6dae59cee957ea12470578f10c918f91d225"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\win\\lib\\net9.0\\Microsoft.Data.SqlClient.dll",
+      "bytes": 2167440,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "13011951ee100b419e0b494baecdbe1402be5cb487d72056014a83253afc1d6e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\win-arm64\\native\\e_sqlite3.dll",
+      "bytes": 1814528,
+      "lastWriteTicksUtc": 639189871380000000,
+      "sha256": "4177542756bd94f75b55fb74367e0cf34e66a88ffaf95755489af14c6ca2f792"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "bytes": 551976,
+      "lastWriteTicksUtc": 638725837940000000,
+      "sha256": "73b61c3381e32613f59bbe3af7f58871c8cd486e04a9c0e71409f6a1972d6f84"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\win-x64\\native\\e_sqlite3.dll",
+      "bytes": 1978880,
+      "lastWriteTicksUtc": 639189870900000000,
+      "sha256": "b7385d722c83fb52142a00477a726723745916d22a555711ee89834c1111fb2e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "bytes": 566832,
+      "lastWriteTicksUtc": 638725838160000000,
+      "sha256": "7e37c5bba3da06a955c122e3515b2980e2f1b8732ec0297f0a7e77e79b4de331"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\win-x86\\native\\e_sqlite3.dll",
+      "bytes": 1533952,
+      "lastWriteTicksUtc": 639189870060000000,
+      "sha256": "d13eb819d1353d98c684c88672868bbfcc6a52eb5987bdf2557ec02fabce4ea7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "bytes": 477736,
+      "lastWriteTicksUtc": 638725837840000000,
+      "sha256": "16efa76f220e23166a95873baaed43899191470c13848c944a679ff2bf5ac941"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\contract-access-projection.v1.schema.json",
+      "bytes": 4420,
+      "lastWriteTicksUtc": 639272232727508407,
+      "sha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\contract-access-projection.v2.schema.json",
+      "bytes": 4600,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "59621609f0d0199a45ac2a903b8f04b032377024bffe9617daf1f9d6374c3d5c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\decision.v1.schema.json",
+      "bytes": 8342,
+      "lastWriteTicksUtc": 639272232727609596,
+      "sha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\decision.v2.schema.json",
+      "bytes": 8421,
+      "lastWriteTicksUtc": 639272260396998668,
+      "sha256": "b91ff92751cadf414ad2cad9ccf07467e0a243af967d16c8464fdd1155205411"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\limits.v1.schema.json",
+      "bytes": 2967,
+      "lastWriteTicksUtc": 639272222438099957,
+      "sha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\limits.v2.schema.json",
+      "bytes": 3317,
+      "lastWriteTicksUtc": 639272260396958509,
+      "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\projection-event.v1.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272224994096820,
+      "sha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\projection-event.v2.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272260397018758,
+      "sha256": "fd941be3728c061b4fac2d6de61a1079feac5bee811ca86c9a356862d1d8a37c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\request-context.v1.schema.json",
+      "bytes": 5527,
+      "lastWriteTicksUtc": 639272222438119955,
+      "sha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\Schemas\\request-context.v2.schema.json",
+      "bytes": 6087,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "57a60e81499e1cb1790a648db66f1288262206f792fff9803534d60186809bfd"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\tr\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 452360,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "09ff456d47d79b6f1a7ee5512662a490afdaa05c60eb8190a7dcd76ae050dc0e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\tr\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990184160000000,
+      "sha256": "f4d005d18148227a171a5689c122ecde11c22442644e698c5dba6810d26fe7dc"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\tr\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 40240,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "5fde98451be8b9d11efa9aa0783c64dcfba6c552f405d03b82a575ceff631027"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\tr\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17720,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "bf1d4a66daeeb639aaacd54543dc67f9036452186444c9a34129c337b91a9123"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\tr\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 41784,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "b9023cb23fe7b1960b01c5c68bb34d2f258dc4f7463cec0868a0084c6e7dfa76"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\tr\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 250528,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "fc8df599a964558fc9587aeaa6c956e1d375944283907193660fa3e96ee38980"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hans\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 405776,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "fe526a7cdfb9a06e2c679a67bc07f1f4f4f1afcb4ac2d176f38ea2fc4b11bfbe"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hans\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17680,
+      "lastWriteTicksUtc": 638990184160000000,
+      "sha256": "f091e36cd829445ae557248ef8ef7ca766428fe0f654bdcaf159be354eabc8f9"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hans\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 37640,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "2b8460e62d86c91cce2182c31b59dc3cef9cf8ac7face19ae0592516c3227897"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hans\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "6ccabbefc428b2198ed03f54ac550cdeca22d53f5973c584cadce49acb19766e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hans\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 40200,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "61d2b8938866a2835fcae414bcc209cfc7efc3676563062d80deb865385e400b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hans\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 225912,
+      "lastWriteTicksUtc": 638908036740000000,
+      "sha256": "d12450a0c88feaafbf3db907ba9e66e0735ecf43f9089a1b6b583675e561a571"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hant\\Microsoft.CodeAnalysis.CSharp.resources.dll",
+      "bytes": 405304,
+      "lastWriteTicksUtc": 638990184080000000,
+      "sha256": "515e77ddebd633c7f79dfae31c8d5b343ed278832119357bdc3228c726c3e48d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hant\\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll",
+      "bytes": 17720,
+      "lastWriteTicksUtc": 638990184160000000,
+      "sha256": "5d822240421b9abb5f853eeb15abe745048db7723e9dff116d968950d0bebf80"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hant\\Microsoft.CodeAnalysis.resources.dll",
+      "bytes": 38152,
+      "lastWriteTicksUtc": 638990180580000000,
+      "sha256": "e1b882a624fc2fef8fc63a2dd0a61e19543f6c2974b0ae5f1a8e580c0a490aed"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hant\\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll",
+      "bytes": 17672,
+      "lastWriteTicksUtc": 638990187300000000,
+      "sha256": "0613ec2f04506e99aff95608ad8c531e3fdffdea41ce24432edf05db8ef6a322"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hant\\Microsoft.CodeAnalysis.Workspaces.resources.dll",
+      "bytes": 40248,
+      "lastWriteTicksUtc": 638990183260000000,
+      "sha256": "2f99d0bc2ebbd1f6b838ef450b6f744b955ba99675f7980b5e11631274a366c9"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.AccessManagement.Web\\debug\\zh-Hant\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 229520,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "6a045428a176c4a42518ef6918b93ba0ee4a126dd15b523cc123bb14cad55e21"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.deps.json",
+      "bytes": 459,
+      "lastWriteTicksUtc": 639272396078120096,
+      "sha256": "8f3810e50bfd0c161386f158a081f7828e81cbc113fbceafa2ccac818b625cc7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.dll",
+      "bytes": 136704,
+      "lastWriteTicksUtc": 639272464618244323,
+      "sha256": "e17f6ccc1386333234d585324badd87e215b897a0e98cb81d2240450494acf58"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.pdb",
+      "bytes": 39816,
+      "lastWriteTicksUtc": 639272464588080054,
+      "sha256": "c61ef8dfbc4484fc595068d2cf216a0d56f61845b59c4a7efebff4285d577e62"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\contract-access-projection.v1.schema.json",
+      "bytes": 4420,
+      "lastWriteTicksUtc": 639272232727508407,
+      "sha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\contract-access-projection.v2.schema.json",
+      "bytes": 4600,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "59621609f0d0199a45ac2a903b8f04b032377024bffe9617daf1f9d6374c3d5c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\decision.v1.schema.json",
+      "bytes": 8342,
+      "lastWriteTicksUtc": 639272232727609596,
+      "sha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\decision.v2.schema.json",
+      "bytes": 8421,
+      "lastWriteTicksUtc": 639272260396998668,
+      "sha256": "b91ff92751cadf414ad2cad9ccf07467e0a243af967d16c8464fdd1155205411"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\limits.v1.schema.json",
+      "bytes": 2967,
+      "lastWriteTicksUtc": 639272222438099957,
+      "sha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\limits.v2.schema.json",
+      "bytes": 3317,
+      "lastWriteTicksUtc": 639272260396958509,
+      "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\projection-event.v1.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272224994096820,
+      "sha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\projection-event.v2.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272260397018758,
+      "sha256": "fd941be3728c061b4fac2d6de61a1079feac5bee811ca86c9a356862d1d8a37c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\request-context.v1.schema.json",
+      "bytes": 5527,
+      "lastWriteTicksUtc": 639272222438119955,
+      "sha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy\\debug\\Schemas\\request-context.v2.schema.json",
+      "bytes": 6087,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "57a60e81499e1cb1790a648db66f1288262206f792fff9803534d60186809bfd"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\appsettings.Development.json",
+      "bytes": 144,
+      "lastWriteTicksUtc": 639265792696106635,
+      "sha256": "2517aa41ec849af0dd8b306a0c6d75a5efeace986b29c8e67d08aedddf012599"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\appsettings.json",
+      "bytes": 121,
+      "lastWriteTicksUtc": 639265792696086647,
+      "sha256": "ac74855ac053970689cdf87c0045d497243cc99bf620f3e30efcabd3ca9b8225"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Azure.Core.dll",
+      "bytes": 437304,
+      "lastWriteTicksUtc": 638881934700000000,
+      "sha256": "224d09cb39eae4d8c30272a0c49beb19d873c87347eae9487f0ddd859d752b56"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Azure.Identity.dll",
+      "bytes": 356912,
+      "lastWriteTicksUtc": 638877898660000000,
+      "sha256": "af18f20be25b2895c912f3ba0a9f2901a82dda823edcad76e6a19eac9886a40f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.AccessManagement.Web.deps.json",
+      "bytes": 51717,
+      "lastWriteTicksUtc": 639272396576202688,
+      "sha256": "dfdbf258656138ffa1a72d44bb2284e6db80d7a90915c411816035a12710d272"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.AccessManagement.Web.dll",
+      "bytes": 1169408,
+      "lastWriteTicksUtc": 639272491240044659,
+      "sha256": "e131b39452abd874dfcbdac400d2929f356b9837a14dae0a3ee657eee937a02d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.AccessManagement.Web.exe",
+      "bytes": 162816,
+      "lastWriteTicksUtc": 639272491244779445,
+      "sha256": "add2b394ecf096d1bf419c707636fb9d9ded84e0449beaf32aae84709f916526"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.AccessManagement.Web.pdb",
+      "bytes": 283596,
+      "lastWriteTicksUtc": 639272491220803223,
+      "sha256": "59cd0801c4eac45d867431d04eca5e9b88fa548516e672575cc60c04681ecc32"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.AccessManagement.Web.runtimeconfig.json",
+      "bytes": 488,
+      "lastWriteTicksUtc": 639272396581557886,
+      "sha256": "5a26de741a59e2654c7badfe3d6d9a134bf09fe67f621f584e7746147c9d2686"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.AccessManagement.Web.staticwebassets.endpoints.json",
+      "bytes": 50163,
+      "lastWriteTicksUtc": 639272396552643420,
+      "sha256": "4faff937a1b3afdff662eb5a0cf945f6248e0b70366b44d91f375844a1cffeaa"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.AccessManagement.Web.staticwebassets.runtime.json",
+      "bytes": 3802,
+      "lastWriteTicksUtc": 639272396554698794,
+      "sha256": "ef5ae2a85b706c8acaaaea22265eec7607b41a5d5f6d1527c91922901d1c548d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.dll",
+      "bytes": 136704,
+      "lastWriteTicksUtc": 639272464618244323,
+      "sha256": "e17f6ccc1386333234d585324badd87e215b897a0e98cb81d2240450494acf58"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.deps.json",
+      "bytes": 30543,
+      "lastWriteTicksUtc": 639272396791992025,
+      "sha256": "bfab334466e5f2b8182c929b2217fc8fd1b0892f46f5a3ba92259e63ceb06038"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.dll",
+      "bytes": 166400,
+      "lastWriteTicksUtc": 639272491850603619,
+      "sha256": "152e2578f51c5d55b76a1a433b242068f1be6b296f35b5a1aa08a1d9bf7a21cb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.exe",
+      "bytes": 162816,
+      "lastWriteTicksUtc": 639272491856735235,
+      "sha256": "34dc975606f38c09a68cc2d56be898a704d6bacc2d52952bca6b203d0adad5f3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.pdb",
+      "bytes": 51520,
+      "lastWriteTicksUtc": 639272491846708537,
+      "sha256": "5049032569fdbde584607617077a2ba76ec1cb86b6d5461cb1b44eb51e8c6f13"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.runtimeconfig.json",
+      "bytes": 455,
+      "lastWriteTicksUtc": 639272396792328158,
+      "sha256": "a5e0a6135c8fc7f0463848f9b69b73f63ec806597dcec65cacdef1fb0832252a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.pdb",
+      "bytes": 39816,
+      "lastWriteTicksUtc": 639272464588080054,
+      "sha256": "c61ef8dfbc4484fc595068d2cf216a0d56f61845b59c4a7efebff4285d577e62"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "bytes": 52008,
+      "lastWriteTicksUtc": 639131137600000000,
+      "sha256": "56861b005b748d0bd7f4135f266fbc0e9527a72f67a136a327e924c8603c8b39"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll",
+      "bytes": 126800,
+      "lastWriteTicksUtc": 639131137660000000,
+      "sha256": "cc46deda1ca405c020e78666885c26376516375c51813e9f9414ba7e49b2861f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "bytes": 19104,
+      "lastWriteTicksUtc": 638343611300000000,
+      "sha256": "136d5965cf4768e8420b547a8bddea882921f426c371833d558a858a2f0c235a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.Bcl.Cryptography.dll",
+      "bytes": 16688,
+      "lastWriteTicksUtc": 638775003520000000,
+      "sha256": "009a27b8e3093fdd2960bba63e4acd48eab05c4f8f8a6d9fe8c24b4657f44c4f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.Data.SqlClient.dll",
+      "bytes": 929912,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "5a34e2fa3479b1508dbc20fbeb2c9172f18c3868bdb147a185213a446645b400"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.Data.Sqlite.dll",
+      "bytes": 177464,
+      "lastWriteTicksUtc": 639131125180000000,
+      "sha256": "4ffa9156ebb9332bc53196cde2e62997447ad046629216be555e07d5d65f6c19"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "bytes": 34616,
+      "lastWriteTicksUtc": 639131125140000000,
+      "sha256": "c29df8f2db22e129bb6929130d98aa612b570a5ebab9842a11e809796cf03448"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.EntityFrameworkCore.dll",
+      "bytes": 2828600,
+      "lastWriteTicksUtc": 639131125400000000,
+      "sha256": "6750a0c56a1d557d7590728d4d7378f6e1ec65cb96e59489023cdc9fd139f6ca"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "bytes": 2194744,
+      "lastWriteTicksUtc": 639131125560000000,
+      "sha256": "687f84616b0a58de7ba0c20d14b4fe38871d79161f2de5bb3f48d171c292a0db"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "bytes": 641888,
+      "lastWriteTicksUtc": 639131125620000000,
+      "sha256": "b5bf0e142be6341ad3922d487cdc6c47a1bbcfeeadf6525a4273ff249b9d047e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.Identity.Client.dll",
+      "bytes": 1028656,
+      "lastWriteTicksUtc": 638864729120000000,
+      "sha256": "10d59df4170053ea9597e3c20adc9607ad17318ad5d8747eda3d930a5a4b463a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "bytes": 66616,
+      "lastWriteTicksUtc": 638864731160000000,
+      "sha256": "9c1f736b16cacd318afe07d3b9d707a4b4b56def5e403b0aff471c1af413aaf0"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.IdentityModel.Abstractions.dll",
+      "bytes": 19488,
+      "lastWriteTicksUtc": 638572883160000000,
+      "sha256": "c3b97d1b1c42faa95bb92eabb7511ca61e89075388f122197040fcfdfb492013"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "bytes": 143392,
+      "lastWriteTicksUtc": 638572883560000000,
+      "sha256": "e85d3d751b4254771f59ff8a14444ef701ba65efb84e312281d675c44536da71"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.IdentityModel.Logging.dll",
+      "bytes": 36784,
+      "lastWriteTicksUtc": 638572883360000000,
+      "sha256": "32ebeeb2163db6aa0a81659ff0b590894d78350c50c459196b6cc33c98ba21f3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.IdentityModel.Protocols.dll",
+      "bytes": 40880,
+      "lastWriteTicksUtc": 638572883360000000,
+      "sha256": "7c8702a7f6c019d962faf4b8af2da751dc32af9b6be998688e774394fb5f8730"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "bytes": 137144,
+      "lastWriteTicksUtc": 638572883360000000,
+      "sha256": "d1f7dbbb71cbf69f5242a74e43b632610ff5dca913f164d1dcf53b2f6e0046ac"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.IdentityModel.Tokens.dll",
+      "bytes": 329248,
+      "lastWriteTicksUtc": 638572883160000000,
+      "sha256": "b2dacc5120971efceb60f6febfe9685fe5a509ddb803c45956a63fc36e67631b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Microsoft.SqlServer.Server.dll",
+      "bytes": 23976,
+      "lastWriteTicksUtc": 637789007480000000,
+      "sha256": "a9dca1b42bc875f966b78b2c0880e62b838f0ed6567166d7f1f07ae4b76ec4bf"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\SQLitePCLRaw.batteries_v2.dll",
+      "bytes": 5120,
+      "lastWriteTicksUtc": 639222328500000000,
+      "sha256": "bc69777001eb4db81c580f62835396f67e74aaa381eef446193a904499d5310b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\SQLitePCLRaw.core.dll",
+      "bytes": 51200,
+      "lastWriteTicksUtc": 639222328280000000,
+      "sha256": "50c999a1ab2afeacc93bce5ac2948d3bb630d99d23efc3cfcbd8bc11d3426eb7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\SQLitePCLRaw.provider.e_sqlite3.dll",
+      "bytes": 36864,
+      "lastWriteTicksUtc": 639222328340000000,
+      "sha256": "02ad639f45a26de1919ffbb6696bdb399ad01afc149970a163c3867162f310b3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\System.ClientModel.dll",
+      "bytes": 175664,
+      "lastWriteTicksUtc": 638881349860000000,
+      "sha256": "ce44a4fae4c4787c12475700e19a365fc2f388ae5d0f6182557ce5ea175be7f6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\System.Configuration.ConfigurationManager.dll",
+      "bytes": 443192,
+      "lastWriteTicksUtc": 638775004000000000,
+      "sha256": "08b618461d62fe65451bdac4dbc25f8ac8ab16a914a687f2dbe3923bf0e8b3e7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\System.IdentityModel.Tokens.Jwt.dll",
+      "bytes": 90032,
+      "lastWriteTicksUtc": 638572882560000000,
+      "sha256": "83218e29958e265b4eebce62cda6d69d41e7bf1898b7fa21ed52102675f6dfe3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\System.Memory.Data.dll",
+      "bytes": 30472,
+      "lastWriteTicksUtc": 638621250060000000,
+      "sha256": "bae79a4ff6e8fcfb65a3d88eb53d281898e699e5471ebd780843e5616753f0c3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\System.Security.Cryptography.ProtectedData.dll",
+      "bytes": 38712,
+      "lastWriteTicksUtc": 638775003920000000,
+      "sha256": "02321322ec85e0a68f28ad33e549213b1dbf3de0e66c3f7803f9ae32c0d00ffd"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\cs\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 257656,
+      "lastWriteTicksUtc": 638908036740000000,
+      "sha256": "6e9b997f45393346cf2f96da99f7fa868f2286964a49ce66a59988defdaf84b6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\de\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 267384,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "30e111759eb091735455f8a7e3cb2a5aff16287149cf3d4e7a67624f00320fc3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\es\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 259192,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "6bb867e62e3aef301cecc99311603339301a086bdcfc8683c2c21f9f99850b34"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\context.v1.json",
+      "bytes": 1205,
+      "lastWriteTicksUtc": 639272224994466567,
+      "sha256": "672a88b7e02c62f0f8b58dcc98dcb1699c4d804426b8c1758bd5c63520e80955"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\golden-decisions.v1.json",
+      "bytes": 4219,
+      "lastWriteTicksUtc": 639272227651515036,
+      "sha256": "e0688f0e20b10190d4c42f81030e6601d81384efe60f6b8a6107d8341eaf30dd"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\integration-context.v2.json",
+      "bytes": 1477,
+      "lastWriteTicksUtc": 639272260962418819,
+      "sha256": "e342d4a6566be9fd519ffdfb811db723a06f6ba48b613b5b5eac89fb6fe35341"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\integration-decision.v2.json",
+      "bytes": 2114,
+      "lastWriteTicksUtc": 639272260962438904,
+      "sha256": "17eebeb459c6c58d3ed5d82af64b15c55eb1cde8b8664e27e40c26fffca75ac3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\integration-projection-event.v2.json",
+      "bytes": 2278,
+      "lastWriteTicksUtc": 639272260962438904,
+      "sha256": "8f6aaa063e069c70b337a9978c1a150898b5b8015dfca45b1362ba60301325c6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\integration-projection.v2.json",
+      "bytes": 1889,
+      "lastWriteTicksUtc": 639272260962347984,
+      "sha256": "de5eb67aa592fcee7fa2448ec39e4448483ac88d954dd5386fa9fb61463e3291"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\projection-event.v1.json",
+      "bytes": 2024,
+      "lastWriteTicksUtc": 639272224994586500,
+      "sha256": "d34759be5b1adc9ae4e6ca5a4a3205552976ef830f7c172406e668589bb1889d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fixtures\\projection.v1.json",
+      "bytes": 1665,
+      "lastWriteTicksUtc": 639272224994316668,
+      "sha256": "3d92552fa06b0a414bfa4823ee6c7e6cda463c97a0de35b0559f77cc97f39b96"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\fr\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 268432,
+      "lastWriteTicksUtc": 638908037020000000,
+      "sha256": "2eac255e2a16495d0bb89aeafa5aa668f74e12358e76eb1756de271b8b91e1de"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\it\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 260216,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "5a50867ea6c62b3be1fe4429360fe8018f3002b95c4c7b2d306daf19b4a50053"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\ja\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 289400,
+      "lastWriteTicksUtc": 638908036740000000,
+      "sha256": "75539952a99301eba174bcaeeaded6da4d758c6f12565bed4208dc50b0344abe"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\ko\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 267416,
+      "lastWriteTicksUtc": 638908038580000000,
+      "sha256": "a5eac865982205ce0d1b94ae4cae4ec003b514829542140c91e67cf86312d5fc"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\pl\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 266896,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "ca9d25b7405908146f988c7fad48ded63e7f02df0e43bd1406803010428338be"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\pt-BR\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 255128,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "2a295a383e9076b24f47c1759e1c43176dfd876bc6444a661dee21170cde6b52"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\ru\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 344696,
+      "lastWriteTicksUtc": 638908036540000000,
+      "sha256": "f7d51f47b1eba12021161ee39a7d08d24df1dcd52c131d1d94ee2c7e432f4cb4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\browser-wasm\\nativeassets\\net9.0\\e_sqlite3.a",
+      "bytes": 1308854,
+      "lastWriteTicksUtc": 639189868860000000,
+      "sha256": "c64ae8d44dc3e1aa03aca4e79ccc501cbc3a3c490e8e2ea9e369367f68cf0f21"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-arm\\native\\libe_sqlite3.so",
+      "bytes": 982224,
+      "lastWriteTicksUtc": 639189869260000000,
+      "sha256": "43556c2f5075857bf57be1136d556733bdc27195884fbdde127cd976d1c25ad5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-arm64\\native\\libe_sqlite3.so",
+      "bytes": 1534296,
+      "lastWriteTicksUtc": 639189871380000000,
+      "sha256": "707fff6b18c1f083158e7a543c8d2545d5485f547ffd96db29679a95f52878d5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-armel\\native\\libe_sqlite3.so",
+      "bytes": 1375344,
+      "lastWriteTicksUtc": 639189869440000000,
+      "sha256": "3f4d9b9ca49bb3f100882e78ba85807398cee19b481bfd4c301a8f5f58d48540"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-mips64\\native\\libe_sqlite3.so",
+      "bytes": 1756544,
+      "lastWriteTicksUtc": 639189869640000000,
+      "sha256": "985884523e512414f3e50aa359f08dad3ce635e99405e7823de9b26a7db38d09"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-musl-arm\\native\\libe_sqlite3.so",
+      "bytes": 1322584,
+      "lastWriteTicksUtc": 639189870780000000,
+      "sha256": "7fec7057d16e8b5ae54fed0c42a0e6b85e40df0d57092ef20cd647a4e1c1e0ed"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-musl-arm64\\native\\libe_sqlite3.so",
+      "bytes": 1450704,
+      "lastWriteTicksUtc": 639189870580000000,
+      "sha256": "530e2f74f259fe04faa4b595336e671fab5eedbb6f4e94dad59494efb7b00c2a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-musl-riscv64\\native\\libe_sqlite3.so",
+      "bytes": 1015888,
+      "lastWriteTicksUtc": 639189871200000000,
+      "sha256": "d8e54eb7dc52ea0a7df9b78ac6feb85af429e7264613099df478825dea5805d4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-musl-s390x\\native\\libe_sqlite3.so",
+      "bytes": 1685752,
+      "lastWriteTicksUtc": 639189871000000000,
+      "sha256": "64260c0460ad6efa7dce9263bff7a4b64ad66172ccc580cb09181c845e1a3407"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-musl-x64\\native\\libe_sqlite3.so",
+      "bytes": 1445336,
+      "lastWriteTicksUtc": 639189870360000000,
+      "sha256": "647b7b5886526691aed58e0fcbb56dc1e6dea8b1f9f5390782f0c95269250db1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-ppc64le\\native\\libe_sqlite3.so",
+      "bytes": 1937408,
+      "lastWriteTicksUtc": 639189870000000000,
+      "sha256": "1ef00b5e3ac63e491f59ecf587680fc52ad844cea62e0a879a1315ef6bd10fc6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-riscv64\\native\\libe_sqlite3.so",
+      "bytes": 1291896,
+      "lastWriteTicksUtc": 639189870220000000,
+      "sha256": "6b390eecbc6f55c44d9ab8a774f1fe4283dfb33a72e6f29f4e0b173065e7e105"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-s390x\\native\\libe_sqlite3.so",
+      "bytes": 1655776,
+      "lastWriteTicksUtc": 639189869820000000,
+      "sha256": "dfd5ab35f6d61155a3c629d0bceff4d6e0f0f190983f3fb8f681fb34ec08c67e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-x64\\native\\libe_sqlite3.so",
+      "bytes": 1470784,
+      "lastWriteTicksUtc": 639189875980000000,
+      "sha256": "b0f5c48026fedcf9f05cf31c6fadf9e1e001ca59cd85aa68b8b6814e52c18a07"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\linux-x86\\native\\libe_sqlite3.so",
+      "bytes": 1547984,
+      "lastWriteTicksUtc": 639189876160000000,
+      "sha256": "fe8229e5baeaf21e721cf65626a6b07ec22d9b17d07bd624e7a77927174277f1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\maccatalyst-arm64\\native\\libe_sqlite3.dylib",
+      "bytes": 1695264,
+      "lastWriteTicksUtc": 639189869860000000,
+      "sha256": "8d63d80bc6caa754679d6fc89fd741a32c156f136c34759cc8fff8cd51468a93"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\maccatalyst-x64\\native\\libe_sqlite3.dylib",
+      "bytes": 1724352,
+      "lastWriteTicksUtc": 639189869740000000,
+      "sha256": "43d27adbc5ba40850bac42a12aea08314a22a43d3ce77cdc7a6cc47ecffb5746"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\osx-arm64\\native\\libe_sqlite3.dylib",
+      "bytes": 1696624,
+      "lastWriteTicksUtc": 639189868480000000,
+      "sha256": "09fe20a6c050912a7944b2f2f2981debe31679f7919f523c87251ae8cf0f2daa"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\osx-x64\\native\\libe_sqlite3.dylib",
+      "bytes": 1724472,
+      "lastWriteTicksUtc": 639189868340000000,
+      "sha256": "02344e1d0bcb5ed447ad9b79ed19e37a590fb1ece3eba1e63efbc35e36e47bdf"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\unix\\lib\\net9.0\\Microsoft.Data.SqlClient.dll",
+      "bytes": 2102944,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "4a95c42d14d8a83ca1007793648b6dae59cee957ea12470578f10c918f91d225"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\win\\lib\\net9.0\\Microsoft.Data.SqlClient.dll",
+      "bytes": 2167440,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "13011951ee100b419e0b494baecdbe1402be5cb487d72056014a83253afc1d6e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\win-arm64\\native\\e_sqlite3.dll",
+      "bytes": 1814528,
+      "lastWriteTicksUtc": 639189871380000000,
+      "sha256": "4177542756bd94f75b55fb74367e0cf34e66a88ffaf95755489af14c6ca2f792"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "bytes": 551976,
+      "lastWriteTicksUtc": 638725837940000000,
+      "sha256": "73b61c3381e32613f59bbe3af7f58871c8cd486e04a9c0e71409f6a1972d6f84"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\win-x64\\native\\e_sqlite3.dll",
+      "bytes": 1978880,
+      "lastWriteTicksUtc": 639189870900000000,
+      "sha256": "b7385d722c83fb52142a00477a726723745916d22a555711ee89834c1111fb2e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "bytes": 566832,
+      "lastWriteTicksUtc": 638725838160000000,
+      "sha256": "7e37c5bba3da06a955c122e3515b2980e2f1b8732ec0297f0a7e77e79b4de331"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\win-x86\\native\\e_sqlite3.dll",
+      "bytes": 1533952,
+      "lastWriteTicksUtc": 639189870060000000,
+      "sha256": "d13eb819d1353d98c684c88672868bbfcc6a52eb5987bdf2557ec02fabce4ea7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "bytes": 477736,
+      "lastWriteTicksUtc": 638725837840000000,
+      "sha256": "16efa76f220e23166a95873baaed43899191470c13848c944a679ff2bf5ac941"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\contract-access-projection.v1.schema.json",
+      "bytes": 4420,
+      "lastWriteTicksUtc": 639272232727508407,
+      "sha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\contract-access-projection.v2.schema.json",
+      "bytes": 4600,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "59621609f0d0199a45ac2a903b8f04b032377024bffe9617daf1f9d6374c3d5c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\decision.v1.schema.json",
+      "bytes": 8342,
+      "lastWriteTicksUtc": 639272232727609596,
+      "sha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\decision.v2.schema.json",
+      "bytes": 8421,
+      "lastWriteTicksUtc": 639272260396998668,
+      "sha256": "b91ff92751cadf414ad2cad9ccf07467e0a243af967d16c8464fdd1155205411"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\limits.v1.schema.json",
+      "bytes": 2967,
+      "lastWriteTicksUtc": 639272222438099957,
+      "sha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\limits.v2.schema.json",
+      "bytes": 3317,
+      "lastWriteTicksUtc": 639272260396958509,
+      "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\projection-event.v1.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272224994096820,
+      "sha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\projection-event.v2.schema.json",
+      "bytes": 1000,
+      "lastWriteTicksUtc": 639272260397018758,
+      "sha256": "fd941be3728c061b4fac2d6de61a1079feac5bee811ca86c9a356862d1d8a37c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\request-context.v1.schema.json",
+      "bytes": 5527,
+      "lastWriteTicksUtc": 639272222438119955,
+      "sha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Schemas\\request-context.v2.schema.json",
+      "bytes": 6087,
+      "lastWriteTicksUtc": 639272260396978587,
+      "sha256": "57a60e81499e1cb1790a648db66f1288262206f792fff9803534d60186809bfd"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\tr\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 250528,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "fc8df599a964558fc9587aeaa6c956e1d375944283907193660fa3e96ee38980"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\zh-Hans\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 225912,
+      "lastWriteTicksUtc": 638908036740000000,
+      "sha256": "d12450a0c88feaafbf3db907ba9e66e0735ecf43f9089a1b6b583675e561a571"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\zh-Hant\\Microsoft.Data.SqlClient.resources.dll",
+      "bytes": 229520,
+      "lastWriteTicksUtc": 638908036900000000,
+      "sha256": "6a045428a176c4a42518ef6918b93ba0ee4a126dd15b523cc123bb14cad55e21"
+    }
+  ],
+  "generatedObjSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+      "bytes": 200,
+      "lastWriteTicksUtc": 639272396102782902,
+      "sha256": "93d67476196ebfc80d1d7d8844b91146cfd678d105f5ce635eb900ca40610c9b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\apphost.exe",
+      "bytes": 162816,
+      "lastWriteTicksUtc": 639272491244779445,
+      "sha256": "add2b394ecf096d1bf419c707636fb9d9ded84e0449beaf32aae84709f916526"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.A.33211F4C.Up2Date",
+      "bytes": 0,
+      "lastWriteTicksUtc": 639272481958816663,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.AssemblyInfo.cs",
+      "bytes": 1055,
+      "lastWriteTicksUtc": 639272464746982774,
+      "sha256": "ef01558d3c917eebb71f94bd020d0dd4ee416b52cfc5194197675928986bcef4"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.AssemblyInfoInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272464746912804,
+      "sha256": "1ae589871ab5b22bb45bfd80711dcca6313a42bc81c07c35494d26f56ca8a026"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.assets.cache",
+      "bytes": 68311,
+      "lastWriteTicksUtc": 639272396081423265,
+      "sha256": "2bde771779bce9c354808bab048d371d28826883157a7cf8bb8821882d2bf1f5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.csproj.AssemblyReference.cache",
+      "bytes": 25580,
+      "lastWriteTicksUtc": 639272464714765205,
+      "sha256": "0b9bcb3b218ce5c51e776544669a5f3e17e403b83b3c937cad7c7bf520cb735d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.csproj.CoreCompileInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272464748544713,
+      "sha256": "161505dc88269141a3382b6a2388d5b7918899841fa9ee31ae8b202e306b1268"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.csproj.FileListAbsolute.txt",
+      "bytes": 26831,
+      "lastWriteTicksUtc": 639272396582486350,
+      "sha256": "f670392bc5edbbc07f77a531bf578cfe259e5d736d84f1cac0561824a6467871"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.dll",
+      "bytes": 1169408,
+      "lastWriteTicksUtc": 639272491240044659,
+      "sha256": "e131b39452abd874dfcbdac400d2929f356b9837a14dae0a3ee657eee937a02d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.GeneratedMSBuildEditorConfig.editorconfig",
+      "bytes": 5830,
+      "lastWriteTicksUtc": 639272396102765427,
+      "sha256": "4995ca9ef55d1de356ef13a34967263b9254591be1f295b94049256734a1bbc0"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.genruntimeconfig.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272396576283007,
+      "sha256": "e39c676a839986505a9d929ba8ff062f3f4815e124350c994ff4ca84c263d704"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.GlobalUsings.g.cs",
+      "bytes": 642,
+      "lastWriteTicksUtc": 639272396080215945,
+      "sha256": "dcdf55702e02f3cc88efc9a8ec2b6881891f8821df27db90157ba496ae9813a1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.MvcApplicationPartsAssemblyInfo.cache",
+      "bytes": 0,
+      "lastWriteTicksUtc": 639272396106718034,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.pdb",
+      "bytes": 283596,
+      "lastWriteTicksUtc": 639272491220803223,
+      "sha256": "59cd0801c4eac45d867431d04eca5e9b88fa548516e672575cc60c04681ecc32"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.RazorAssemblyInfo.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272396106775143,
+      "sha256": "f8c8a3e2e2fb599efc8641842f86c2050435b60e905330f4ce886f29a03a49e3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.RazorAssemblyInfo.cs",
+      "bytes": 694,
+      "lastWriteTicksUtc": 639272396106953214,
+      "sha256": "1dec7660fd203d95e2380bd5c4f52aed530592ae9968e54ad5c80e6f738ee79f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\Fanasa.AccessManagement.Web.sourcelink.json",
+      "bytes": 147,
+      "lastWriteTicksUtc": 639272464750448943,
+      "sha256": "de71c3a5494f457b8808abb6e61bbd82f7446c1606a5c67b5ce30674ebc2e8da"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\rbcswa.dswa.cache.json",
+      "bytes": 14854,
+      "lastWriteTicksUtc": 639272396545193185,
+      "sha256": "4bf9fd6b4b01dbf638201d6a0c564cccda44e30dc18efe5b77017b6adf9fa6a2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\rjimswa.dswa.cache.json",
+      "bytes": 983,
+      "lastWriteTicksUtc": 639272396543013688,
+      "sha256": "9fb5ad6110e58710550e10bb76563cdc217dd01fa12ae3b2c1e1a6b885ab6516"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\rjsmcshtml.dswa.cache.json",
+      "bytes": 2062,
+      "lastWriteTicksUtc": 639272491254238936,
+      "sha256": "ce8e418ad7bc567ae2a3e8a86bd11fd682b3e79a8c0d9cc8772eff858cb01aa2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\rjsmrazor.dswa.cache.json",
+      "bytes": 2062,
+      "lastWriteTicksUtc": 639272491252928530,
+      "sha256": "4f2d59ed82206521e6e789fd433a69e9fdfdf0436cd1420207dfb5fa9dbcfac1"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\rpswa.dswa.cache.json",
+      "bytes": 14642,
+      "lastWriteTicksUtc": 639272396099937503,
+      "sha256": "3645f91b3c308ae9e5b081dc4219e08789a8dce0810b7334d2b53ea8e3545f10"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\staticwebassets.build.endpoints.json",
+      "bytes": 50163,
+      "lastWriteTicksUtc": 639272396552643420,
+      "sha256": "4faff937a1b3afdff662eb5a0cf945f6248e0b70366b44d91f375844a1cffeaa"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\staticwebassets.build.json",
+      "bytes": 84226,
+      "lastWriteTicksUtc": 639272396551438802,
+      "sha256": "3a9e49effd60dbc47d02215c82f5f5ea2ae56deba5f7d59cb9fa4bde9f539f8d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\staticwebassets.build.json.cache",
+      "bytes": 44,
+      "lastWriteTicksUtc": 639272396551438802,
+      "sha256": "263d4fc3767d367676077aa9a29085b7d32176e9daf8bf63be17d3d19a486db5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\staticwebassets.development.json",
+      "bytes": 3802,
+      "lastWriteTicksUtc": 639272396554698794,
+      "sha256": "ef5ae2a85b706c8acaaaea22265eec7607b41a5d5f6d1527c91922901d1c548d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\swae.build.ex.cache",
+      "bytes": 0,
+      "lastWriteTicksUtc": 639272396551735023,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\102hva3mcr-{0}-sy32swbfg4-sy32swbfg4.gz",
+      "bytes": 1936,
+      "lastWriteTicksUtc": 639272396544758837,
+      "sha256": "299e52117fd82ae74e2c41a7cd051bf84592ab696157af58f9fedfdd600e3328"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\1tw48oa9tx-{0}-dqeswlkxsj-dqeswlkxsj.gz",
+      "bytes": 1762,
+      "lastWriteTicksUtc": 639272396544957240,
+      "sha256": "a0be14517ab011d590e3159c78c4fdccc63cb0cbeb7dc4bbb0df7c62117c8a5a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\5cd7wqxhnd-{0}-qanbm44isk-qanbm44isk.gz",
+      "bytes": 1683,
+      "lastWriteTicksUtc": 639272396544836607,
+      "sha256": "2307a16d8cdb32d18548b16d7430786895980b1516a5cf7de0849b64cfbf2a8e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\9mg5r6932g-{0}-vp9p1tkbjr-vp9p1tkbjr.gz",
+      "bytes": 4201,
+      "lastWriteTicksUtc": 639272396544799026,
+      "sha256": "34b067311673f49b3218d068d0d3b63ab27379a333c045b83c3c0463d264de58"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\ayu1dsn5r7-{0}-rvcick38fq-rvcick38fq.gz",
+      "bytes": 4154,
+      "lastWriteTicksUtc": 639272396544758837,
+      "sha256": "e9e68523bdd0f04e649da66146ab5ddd2e7c07a2e184614bc2ac77cf3e51429e"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\e5ef3oqs8d-{0}-jvyvqepn07-jvyvqepn07.gz",
+      "bytes": 2332,
+      "lastWriteTicksUtc": 639272396544799026,
+      "sha256": "8b1b0c45ef08a3b6456cc48cbe9f0ffef33021594a651e2499481184a003adf5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\fq8lw17c2k-{0}-mxz000v3mf-mxz000v3mf.gz",
+      "bytes": 4025,
+      "lastWriteTicksUtc": 639272396544819120,
+      "sha256": "1d222b9d6396dfdb5ed567e30ffdccfab552057188f8653bb5363c090d32bbcf"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\istx85quq9-{0}-lmp68uex9t-lmp68uex9t.gz",
+      "bytes": 1866,
+      "lastWriteTicksUtc": 639272396544896934,
+      "sha256": "a4c76282f82b0a8c5a248f43e9b7e138c9bf953e8a3ae411f122e68918413ed0"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\su6lm28t57-{0}-cngqi7l5ow-cngqi7l5ow.gz",
+      "bytes": 1374,
+      "lastWriteTicksUtc": 639272396544799026,
+      "sha256": "7c8ce2d2e8925e1b0d907df966b9307feee995dea09f909bbc67749d1de5ff12"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\wa7mm6twk1-{0}-jl4ughe8w3-jl4ughe8w3.gz",
+      "bytes": 1568,
+      "lastWriteTicksUtc": 639272396544778928,
+      "sha256": "14626bc85e24ed193a91d1c5f0e82efef6f7813cf56d0f76a65be6f5ddf7659d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\z120y4nc7r-{0}-k39obq7g1z-k39obq7g1z.gz",
+      "bytes": 515,
+      "lastWriteTicksUtc": 639272396544778928,
+      "sha256": "a7073af1b69190cc6326d691b09c69140f56d8c887b09a47ea1ddd533e6e3aec"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\compressed\\zqn5vrgw9b-{0}-djwxidytly-djwxidytly.gz",
+      "bytes": 817,
+      "lastWriteTicksUtc": 639272396544758837,
+      "sha256": "67f7fc5259aaafe496f5d1cbb923031a19144d1ceb0a6dbfc084d3150750aa62"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\ref\\Fanasa.AccessManagement.Web.dll",
+      "bytes": 241152,
+      "lastWriteTicksUtc": 639272491240064649,
+      "sha256": "2236d8b8f5202be270a425c83f3b39ffedd9b6f12c32d1be783c152a57b12283"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\debug\\refint\\Fanasa.AccessManagement.Web.dll",
+      "bytes": 241152,
+      "lastWriteTicksUtc": 639272491240064649,
+      "sha256": "2236d8b8f5202be270a425c83f3b39ffedd9b6f12c32d1be783c152a57b12283"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+      "bytes": 200,
+      "lastWriteTicksUtc": 639272395912193748,
+      "sha256": "93d67476196ebfc80d1d7d8844b91146cfd678d105f5ce635eb900ca40610c9b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.AssemblyInfo.cs",
+      "bytes": 1040,
+      "lastWriteTicksUtc": 639272463773116112,
+      "sha256": "e7085aa248ccca4be2131700f1a135433f9ebd58c1691dc709ea60c2c362990c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.AssemblyInfoInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272463769996211,
+      "sha256": "93f031d8da5e5ea3e36a40249fb85b8d23c12b032fc2470928373533ddc0b648"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.assets.cache",
+      "bytes": 236,
+      "lastWriteTicksUtc": 639272395904605637,
+      "sha256": "b77647a8598fccf4fd2a1582dcfd117bdabe1afae27b7c3e4d247537136e10a6"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.csproj.CoreCompileInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272395918541405,
+      "sha256": "b38d25bcfc4860435b68c93e4274c0846741d201e4877c575ceec3e995eca220"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.csproj.FileListAbsolute.txt",
+      "bytes": 2515,
+      "lastWriteTicksUtc": 639272396079088976,
+      "sha256": "7bdf149dcbd1639f6c4dd1f635e12db8ed84c7416aee4354c8508082c12b18a2"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.dll",
+      "bytes": 136704,
+      "lastWriteTicksUtc": 639272464618244323,
+      "sha256": "e17f6ccc1386333234d585324badd87e215b897a0e98cb81d2240450494acf58"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.GeneratedMSBuildEditorConfig.editorconfig",
+      "bytes": 921,
+      "lastWriteTicksUtc": 639272395911995214,
+      "sha256": "ef8e064f26b0a77c283240ad48ddf2ea4fc4494a48581a4e0711b3312484efab"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.GlobalUsings.g.cs",
+      "bytes": 239,
+      "lastWriteTicksUtc": 639272395904030702,
+      "sha256": "a3c6048bb4d922b1799a9977f84362a3787b68810cac67aa86ac3aa23295f227"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.pdb",
+      "bytes": 39816,
+      "lastWriteTicksUtc": 639272464588080054,
+      "sha256": "c61ef8dfbc4484fc595068d2cf216a0d56f61845b59c4a7efebff4285d577e62"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\Fanasa.ContractPolicy.sourcelink.json",
+      "bytes": 147,
+      "lastWriteTicksUtc": 639272463783602868,
+      "sha256": "de71c3a5494f457b8808abb6e61bbd82f7446c1606a5c67b5ce30674ebc2e8da"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\ref\\Fanasa.ContractPolicy.dll",
+      "bytes": 45568,
+      "lastWriteTicksUtc": 639272464618264314,
+      "sha256": "47acab573abdc2d31de62027d6124c8bba1d4e5f4a0472f50746c60a7183457f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\debug\\refint\\Fanasa.ContractPolicy.dll",
+      "bytes": 45568,
+      "lastWriteTicksUtc": 639272464618264314,
+      "sha256": "47acab573abdc2d31de62027d6124c8bba1d4e5f4a0472f50746c60a7183457f"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+      "bytes": 200,
+      "lastWriteTicksUtc": 639272396589047985,
+      "sha256": "93d67476196ebfc80d1d7d8844b91146cfd678d105f5ce635eb900ca40610c9b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\apphost.exe",
+      "bytes": 162816,
+      "lastWriteTicksUtc": 639272491856735235,
+      "sha256": "34dc975606f38c09a68cc2d56be898a704d6bacc2d52952bca6b203d0adad5f3"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.C.2BFCA0E5.Up2Date",
+      "bytes": 0,
+      "lastWriteTicksUtc": 639272491863030554,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.AssemblyInfo.cs",
+      "bytes": 1070,
+      "lastWriteTicksUtc": 639272482114509102,
+      "sha256": "121169edee08d778f0b33d0d880773d6ef60bbd727ff5969cd68626bdde35a14"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.AssemblyInfoInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272482113384359,
+      "sha256": "9a17a3ae43754d5fca1b738697d1b30fbbe542af734b600f4b687a0bd608511c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.assets.cache",
+      "bytes": 32350,
+      "lastWriteTicksUtc": 639272395878033696,
+      "sha256": "57a608334d38f2bd616b52e9c70cf6069d21cc75a69b413e57b222c9c8797f3a"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.csproj.AssemblyReference.cache",
+      "bytes": 23326,
+      "lastWriteTicksUtc": 639272491412115028,
+      "sha256": "c56382197f0ff5598977f3a2328e45d2c278bcbe02dd475e3ef0d0ec771afcd0"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.csproj.CoreCompileInputs.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272482115527932,
+      "sha256": "e7e42995f2402997a2ec7318d3139f14c937f3c256db3f6a694a1965abfa02f9"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.csproj.FileListAbsolute.txt",
+      "bytes": 14735,
+      "lastWriteTicksUtc": 639272396792883424,
+      "sha256": "b4123ae506e8e0ad09670128dbbfe00dbb54415a63978514b7cc60c9da957e3d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.dll",
+      "bytes": 166400,
+      "lastWriteTicksUtc": 639272491850603619,
+      "sha256": "152e2578f51c5d55b76a1a433b242068f1be6b296f35b5a1aa08a1d9bf7a21cb"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.GeneratedMSBuildEditorConfig.editorconfig",
+      "bytes": 943,
+      "lastWriteTicksUtc": 639272396589007813,
+      "sha256": "27d0d6130655dc2c3c1034953d2089836eaa4c718a81f67a81e66d8e4ec6b29d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.genruntimeconfig.cache",
+      "bytes": 66,
+      "lastWriteTicksUtc": 639272396792092367,
+      "sha256": "fc22cdecc4fec59742d14de690a4d11251741da10d01edb7112920a3add9407c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.GlobalUsings.g.cs",
+      "bytes": 239,
+      "lastWriteTicksUtc": 639272395871155693,
+      "sha256": "a3c6048bb4d922b1799a9977f84362a3787b68810cac67aa86ac3aa23295f227"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.pdb",
+      "bytes": 51520,
+      "lastWriteTicksUtc": 639272491846708537,
+      "sha256": "5049032569fdbde584607617077a2ba76ec1cb86b6d5461cb1b44eb51e8c6f13"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\Fanasa.ContractPolicy.Pcc.Tests.sourcelink.json",
+      "bytes": 147,
+      "lastWriteTicksUtc": 639272482116052252,
+      "sha256": "de71c3a5494f457b8808abb6e61bbd82f7446c1606a5c67b5ce30674ebc2e8da"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\ref\\Fanasa.ContractPolicy.Pcc.Tests.dll",
+      "bytes": 31232,
+      "lastWriteTicksUtc": 639272483705942591,
+      "sha256": "c13b37dbb788ebae8689c5ab7cea44036406311c523aeeb1a93ae3739c43cc9c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\debug\\refint\\Fanasa.ContractPolicy.Pcc.Tests.dll",
+      "bytes": 31232,
+      "lastWriteTicksUtc": 639272491850603619,
+      "sha256": "c13b37dbb788ebae8689c5ab7cea44036406311c523aeeb1a93ae3739c43cc9c"
+    }
+  ],
+  "preservedSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\gateway-connection.final.log",
+      "bytes": 8873,
+      "lastWriteTicksUtc": 639272486173956700,
+      "sha256": "fe49175f7c53527cbdc3b42c5ee4ef3ea854ef8f7635ebd42d857a5b1b873e6c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\gateway-connection.log",
+      "bytes": 1311,
+      "lastWriteTicksUtc": 639272472332136542,
+      "sha256": "05eff466c70d6fb36cb2e51677cd042a2ed6e3703fc8303b563a859ea3c13eab"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\gateway-connection.recheck.log",
+      "bytes": 8873,
+      "lastWriteTicksUtc": 639272493102757840,
+      "sha256": "fe49175f7c53527cbdc3b42c5ee4ef3ea854ef8f7635ebd42d857a5b1b873e6c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\gateway-final-execution.json",
+      "bytes": 3339,
+      "lastWriteTicksUtc": 639272486215949608,
+      "sha256": "73c3edf949bc58abd01d5c603b7e0f7865d6aac9af0de4adf24776b4ed16a345"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\gateway-recheck-execution.json",
+      "bytes": 4212,
+      "lastWriteTicksUtc": 639272493891645600,
+      "sha256": "5b5256686d608314c9d1e0817b608b877a4fdc41249d38eba6d2edbd97811842"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\gateway-recheck-source-start.json",
+      "bytes": 3202,
+      "lastWriteTicksUtc": 639272490144715888,
+      "sha256": "3b2c9c7bb582f014956c291f42f3d07dae40c0f6324f9096cc5a3936395da908"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\gateway-source-start.json",
+      "bytes": 3220,
+      "lastWriteTicksUtc": 639272479735870212,
+      "sha256": "1d081d80a253734fae88e8ab8592fd2976603c203c430e927ac6628b29d4804d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\verified-evidence.json",
+      "bytes": 3618,
+      "lastWriteTicksUtc": 639272401546618912,
+      "sha256": "2bf1dc5713d9d06726cbbc420d748092d1e7f915487c62aeca40a42d2b55cfab"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\verified.log",
+      "bytes": 7428,
+      "lastWriteTicksUtc": 639272399372874792,
+      "sha256": "d5310b4ec79df64a314e8541316dae701f61edfb0df6a060b32e3470e812e7e7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.dgspec.json",
+      "bytes": 66262,
+      "lastWriteTicksUtc": 639272395385953765,
+      "sha256": "9779c7576775c53e145c6d8bca1ecab6ec9139a971916c43b738cfd043f51968"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.props",
+      "bytes": 2572,
+      "lastWriteTicksUtc": 639272395384056918,
+      "sha256": "ac7ce9d9e6bbe4b4d253f4b637a16a2db547eb83d8ef7a6e4f710748a2710a9d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.targets",
+      "bytes": 1029,
+      "lastWriteTicksUtc": 639272395384097113,
+      "sha256": "8ab501e004c7d6a3385cfadaa5a9efe2015ef1f242aaf8e7c480c591b6b1ad8d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\project.assets.json",
+      "bytes": 220808,
+      "lastWriteTicksUtc": 639272395385361690,
+      "sha256": "f751a703544e74143a96f2d231735d4e8a40603dcca4b9cfce5903871b4d597b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\project.nuget.cache",
+      "bytes": 7968,
+      "lastWriteTicksUtc": 639272395385519678,
+      "sha256": "78eb44bd4ace39ba9ba2df085df20d1e745f3239a5ecfb547b5a7583d1a56890"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.dgspec.json",
+      "bytes": 31873,
+      "lastWriteTicksUtc": 639272395363950566,
+      "sha256": "47df499017804053e57d4010aefec569d70f995c6cc8cec74995a5973c966630"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.props",
+      "bytes": 1318,
+      "lastWriteTicksUtc": 639272395361717906,
+      "sha256": "37b19835965b8ef760bdcce22b46656d321f5112e1076616bd108ba90b7ff6e7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.targets",
+      "bytes": 150,
+      "lastWriteTicksUtc": 639272395361815685,
+      "sha256": "971cc9b535384849b5c661d776cd7a80833a416265e32e8968e06c367368b8b5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\project.assets.json",
+      "bytes": 30730,
+      "lastWriteTicksUtc": 639272395362172029,
+      "sha256": "a12d24a87105cd4e6e415c7700d9af4dfd8c937ffae2828a04fe203469fddb85"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\project.nuget.cache",
+      "bytes": 310,
+      "lastWriteTicksUtc": 639272395363692161,
+      "sha256": "261ccceb73843cc877bc5a3b6c8c9944899b8497fb163d2e7b19aa2ccef022c8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\Fanasa.ContractPolicy.Pcc.Tests.csproj.nuget.dgspec.json",
+      "bytes": 108833,
+      "lastWriteTicksUtc": 639272395382260258,
+      "sha256": "21f08b7509efdfa426ec52ffc06f05657d9efc9225ceab720c4978f73c9b6224"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\Fanasa.ContractPolicy.Pcc.Tests.csproj.nuget.g.props",
+      "bytes": 1691,
+      "lastWriteTicksUtc": 639272395379079236,
+      "sha256": "0462fcd1688b68b410dbdac73267cae044635d298cba5d0316f381c2d49683c8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\Fanasa.ContractPolicy.Pcc.Tests.csproj.nuget.g.targets",
+      "bytes": 523,
+      "lastWriteTicksUtc": 639272395379197165,
+      "sha256": "046d24e20c58d6a9bdfe6cc71b4c03c0f8a39bc040a1d633f92006d335e6e36c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\project.assets.json",
+      "bytes": 101399,
+      "lastWriteTicksUtc": 639272395381311557,
+      "sha256": "e1aa746b26ae43840bdb8882f7d02de78888256c71f82f9cff1f670e92373f14"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\project.nuget.cache",
+      "bytes": 5245,
+      "lastWriteTicksUtc": 639272395381449397,
+      "sha256": "b1b2e56c66a962fd7a1d9e4ecc48d4002e95924fd32bdb17143bdc9066ea2e32"
+    }
+  ],
+  "restoreAssetsSnapshot": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.dgspec.json",
+      "bytes": 66262,
+      "lastWriteTicksUtc": 639272395385953765,
+      "sha256": "9779c7576775c53e145c6d8bca1ecab6ec9139a971916c43b738cfd043f51968"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.props",
+      "bytes": 2572,
+      "lastWriteTicksUtc": 639272395384056918,
+      "sha256": "ac7ce9d9e6bbe4b4d253f4b637a16a2db547eb83d8ef7a6e4f710748a2710a9d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\Fanasa.AccessManagement.Web.csproj.nuget.g.targets",
+      "bytes": 1029,
+      "lastWriteTicksUtc": 639272395384097113,
+      "sha256": "8ab501e004c7d6a3385cfadaa5a9efe2015ef1f242aaf8e7c480c591b6b1ad8d"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\project.assets.json",
+      "bytes": 220808,
+      "lastWriteTicksUtc": 639272395385361690,
+      "sha256": "f751a703544e74143a96f2d231735d4e8a40603dcca4b9cfce5903871b4d597b"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.AccessManagement.Web\\project.nuget.cache",
+      "bytes": 7968,
+      "lastWriteTicksUtc": 639272395385519678,
+      "sha256": "78eb44bd4ace39ba9ba2df085df20d1e745f3239a5ecfb547b5a7583d1a56890"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.dgspec.json",
+      "bytes": 31873,
+      "lastWriteTicksUtc": 639272395363950566,
+      "sha256": "47df499017804053e57d4010aefec569d70f995c6cc8cec74995a5973c966630"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.props",
+      "bytes": 1318,
+      "lastWriteTicksUtc": 639272395361717906,
+      "sha256": "37b19835965b8ef760bdcce22b46656d321f5112e1076616bd108ba90b7ff6e7"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\Fanasa.ContractPolicy.csproj.nuget.g.targets",
+      "bytes": 150,
+      "lastWriteTicksUtc": 639272395361815685,
+      "sha256": "971cc9b535384849b5c661d776cd7a80833a416265e32e8968e06c367368b8b5"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\project.assets.json",
+      "bytes": 30730,
+      "lastWriteTicksUtc": 639272395362172029,
+      "sha256": "a12d24a87105cd4e6e415c7700d9af4dfd8c937ffae2828a04fe203469fddb85"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy\\project.nuget.cache",
+      "bytes": 310,
+      "lastWriteTicksUtc": 639272395363692161,
+      "sha256": "261ccceb73843cc877bc5a3b6c8c9944899b8497fb163d2e7b19aa2ccef022c8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\Fanasa.ContractPolicy.Pcc.Tests.csproj.nuget.dgspec.json",
+      "bytes": 108833,
+      "lastWriteTicksUtc": 639272395382260258,
+      "sha256": "21f08b7509efdfa426ec52ffc06f05657d9efc9225ceab720c4978f73c9b6224"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\Fanasa.ContractPolicy.Pcc.Tests.csproj.nuget.g.props",
+      "bytes": 1691,
+      "lastWriteTicksUtc": 639272395379079236,
+      "sha256": "0462fcd1688b68b410dbdac73267cae044635d298cba5d0316f381c2d49683c8"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\Fanasa.ContractPolicy.Pcc.Tests.csproj.nuget.g.targets",
+      "bytes": 523,
+      "lastWriteTicksUtc": 639272395379197165,
+      "sha256": "046d24e20c58d6a9bdfe6cc71b4c03c0f8a39bc040a1d633f92006d335e6e36c"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\project.assets.json",
+      "bytes": 101399,
+      "lastWriteTicksUtc": 639272395381311557,
+      "sha256": "e1aa746b26ae43840bdb8882f7d02de78888256c71f82f9cff1f670e92373f14"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj\\Fanasa.ContractPolicy.Pcc.Tests\\project.nuget.cache",
+      "bytes": 5245,
+      "lastWriteTicksUtc": 639272395381449397,
+      "sha256": "b1b2e56c66a962fd7a1d9e4ecc48d4002e95924fd32bdb17143bdc9066ea2e32"
+    }
+  ],
+  "targets": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin",
+      "kind": "generated_bin_tree",
+      "status": "deleted",
+      "removedFiles": 290,
+      "removedBytes": 137824485,
+      "afterExists": false,
+      "pathValidated": true,
+      "hashesStableBeforeDeletion": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj",
+      "kind": "generated_obj_files_only",
+      "status": "generated_files_deleted_restore_assets_retained",
+      "removedFiles": 72,
+      "removedBytes": 3216243,
+      "preservedFiles": 15,
+      "preservedBytes": 580711,
+      "exactFilePathsValidated": true,
+      "hashesStableBeforeDeletion": true
+    }
+  ],
+  "removedFiles": 362,
+  "removedBytes": 141040728,
+  "preservedFilesVerifiedUnchanged": true,
+  "otherBuildRootsOutsideScope": true
+}

@@ -1,0 +1,166 @@
+using System.Text.Json;
+using Microsoft.Data.Sqlite;
+
+namespace Fanasa.AccessManagement.Web.Persistence;
+
+public sealed record FabricOutbox(long Id, string Key, string Kind, string Payload, DateTimeOffset RecordedAt);
+public sealed record FabricOutboxEvidence(long Id, string Key, string Kind, string Payload, string RecordedAt);
+public sealed record FabricDocument(string Kind, string Key, string Json);
+
+/// <summary>SQLite local-volume transactions; nested domain commands share the same unit of work.</summary>
+public sealed class FabricDatabase : IDisposable
+{
+    private readonly string connectionString;
+    private readonly ThreadLocal<(SqliteConnection Connection, SqliteTransaction Transaction)?> context = new();
+    public bool IsInTransaction => context.Value.HasValue;
+    public FabricDatabase(string path)
+    {
+        path = Path.GetFullPath(path); Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        connectionString = new SqliteConnectionStringBuilder { DataSource = path, DefaultTimeout = 15, Pooling = false }.ToString();
+        using var connection = Open(); using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS fabric_documents(kind TEXT NOT NULL,key TEXT NOT NULL,json TEXT NOT NULL,PRIMARY KEY(kind,key)); CREATE TABLE IF NOT EXISTS fabric_outbox(id INTEGER PRIMARY KEY AUTOINCREMENT,key TEXT NOT NULL UNIQUE,kind TEXT NOT NULL,payload TEXT NOT NULL,recorded TEXT NOT NULL);";
+        command.ExecuteNonQuery();
+    }
+    private SqliteConnection Open()
+    {
+        var connection = new SqliteConnection(connectionString); connection.Open();
+        using var command = connection.CreateCommand(); command.CommandText = "PRAGMA foreign_keys=ON; PRAGMA synchronous=FULL;"; command.ExecuteNonQuery();
+        return connection;
+    }
+    public T Transaction<T>(Func<T> action)
+    {
+        if (context.Value is { } nested)
+        {
+            var savepoint = "fabric_" + Guid.NewGuid().ToString("N"); nested.Transaction.Save(savepoint);
+            try { var result = action(); nested.Transaction.Release(savepoint); return result; }
+            catch { nested.Transaction.Rollback(savepoint); nested.Transaction.Release(savepoint); throw; }
+        }
+        using var connection = Open(); using var transaction = connection.BeginTransaction(deferred: false);
+        context.Value = (connection, transaction);
+        try { var result = action(); transaction.Commit(); return result; }
+        finally { context.Value = null; }
+    }
+    /// <summary>A consistent SQLite read snapshot. It cannot run inside an uncommitted writer or perform writes.</summary>
+    public T ReadSnapshot<T>(Func<T> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        if (IsInTransaction) throw new InvalidOperationException("A read snapshot cannot inspect an ambient Fabric transaction.");
+        using var connection = Open();
+        using (var command = connection.CreateCommand())
+        { command.CommandText = "PRAGMA query_only=ON"; command.ExecuteNonQuery(); }
+        using var transaction = connection.BeginTransaction(deferred: true);
+        context.Value = (connection, transaction);
+        try { var result = action(); transaction.Commit(); return result; }
+        finally { context.Value = null; }
+    }
+    private T WithConnection<T>(Func<SqliteConnection, SqliteTransaction?, T> action)
+    {
+        if (context.Value is { } current) return action(current.Connection, current.Transaction);
+        using var connection = Open(); return action(connection, null);
+    }
+    public T? Read<T>(string kind, string key) => WithConnection((connection, transaction) =>
+    {
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT json FROM fabric_documents WHERE kind=$kind AND key=$key";
+        command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$key", key);
+        return command.ExecuteScalar() is string json ? JsonSerializer.Deserialize<T>(json) ?? throw new InvalidDataException("Invalid persisted document.") : default;
+    });
+    public T[] All<T>(string kind) => WithConnection((connection, transaction) =>
+    {
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT json FROM fabric_documents WHERE kind=$kind ORDER BY key"; command.Parameters.AddWithValue("$kind", kind);
+        using var reader = command.ExecuteReader(); var result = new List<T>();
+        while (reader.Read()) result.Add(JsonSerializer.Deserialize<T>(reader.GetString(0)) ?? throw new InvalidDataException());
+        return result.ToArray();
+    });
+    public FabricDocument? ReadDocument(string kind, string key) => WithConnection((connection, transaction) =>
+    {
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT json FROM fabric_documents WHERE kind=$kind AND key=$key";
+        command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$key", key);
+        return command.ExecuteScalar() is string json ? new FabricDocument(kind, key, json) : null;
+    });
+    /// <summary>Keyed raw evidence, so one malformed document does not abort a diagnostic scan.</summary>
+    public FabricDocument[] DocumentPage(string kind, string? after = null, int take = 100) => WithConnection((connection, transaction) =>
+    {
+        if (string.IsNullOrWhiteSpace(kind) || take is < 1 or > 100) throw new ArgumentException("Invalid document page query.");
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT key,json FROM fabric_documents WHERE kind=$kind AND ($after IS NULL OR key>$after COLLATE BINARY) ORDER BY key COLLATE BINARY LIMIT $take";
+        command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$after", (object?)after ?? DBNull.Value);
+        command.Parameters.AddWithValue("$take", take);
+        using var reader = command.ExecuteReader(); var result = new List<FabricDocument>();
+        while (reader.Read()) result.Add(new(kind, reader.GetString(0), reader.GetString(1)));
+        return result.ToArray();
+    });
+    public void Put<T>(string kind, string key, T value)
+    {
+        if (!context.Value.HasValue) throw new InvalidOperationException("Writes require a transaction.");
+        WithConnection((connection, transaction) =>
+        {
+            using var command = connection.CreateCommand(); command.Transaction = transaction;
+            command.CommandText = "INSERT INTO fabric_documents(kind,key,json) VALUES($kind,$key,$json) ON CONFLICT(kind,key) DO UPDATE SET json=excluded.json";
+            command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$key", key); command.Parameters.AddWithValue("$json", JsonSerializer.Serialize(value));
+            return command.ExecuteNonQuery();
+        });
+    }
+    public void Emit<T>(string key, string kind, T payload, DateTimeOffset recordedAt)
+    {
+        if (!context.Value.HasValue) throw new InvalidOperationException("Outbox writes require a transaction.");
+        WithConnection((connection, transaction) =>
+        {
+            using var command = connection.CreateCommand(); command.Transaction = transaction;
+            command.CommandText = "INSERT INTO fabric_outbox(key,kind,payload,recorded) VALUES($key,$kind,$payload,$recorded)";
+            command.Parameters.AddWithValue("$key", key); command.Parameters.AddWithValue("$kind", kind);
+            command.Parameters.AddWithValue("$payload", JsonSerializer.Serialize(payload)); command.Parameters.AddWithValue("$recorded", recordedAt.ToString("O"));
+            return command.ExecuteNonQuery();
+        });
+    }
+    public FabricOutbox[] Outbox(long after = 0, int take = 100) => WithConnection((connection, transaction) =>
+    {
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT id,key,kind,payload,recorded FROM fabric_outbox WHERE id>$after ORDER BY id LIMIT $take";
+        command.Parameters.AddWithValue("$after", after); command.Parameters.AddWithValue("$take", Math.Clamp(take, 1, 100));
+        using var reader = command.ExecuteReader(); var result = new List<FabricOutbox>();
+        while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), DateTimeOffset.Parse(reader.GetString(4), System.Globalization.CultureInfo.InvariantCulture)));
+        return result.ToArray();
+    });
+    /// <summary>Raw outbox evidence for diagnosis, including invalid persisted timestamps.</summary>
+    public FabricOutboxEvidence[] OutboxEvidence(long after = 0, int take = 100) => WithConnection((connection, transaction) =>
+    {
+        if (after < 0 || take is < 1 or > 100) throw new ArgumentException("Invalid outbox evidence query.");
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT id,key,kind,payload,recorded FROM fabric_outbox WHERE id>$after ORDER BY id LIMIT $take";
+        command.Parameters.AddWithValue("$after", after); command.Parameters.AddWithValue("$take", take);
+        using var reader = command.ExecuteReader(); var result = new List<FabricOutboxEvidence>();
+        while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4)));
+        return result.ToArray();
+    });
+    public FabricOutbox[] Audit(Guid tenant, string[] kinds, long before = long.MaxValue, int take = 30) => WithConnection((connection, transaction) =>
+    {
+        if (tenant == Guid.Empty || before <= 0 || take is < 1 or > 100 || kinds.Length > 20) throw new ArgumentException("Invalid audit query.");
+        if (kinds.Length == 0) return [];
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        var parameters = kinds.Select((_, i) => "$kind" + i).ToArray();
+        command.CommandText = "SELECT id,key,kind,payload,recorded FROM fabric_outbox WHERE id<$before AND kind IN (" + string.Join(",", parameters) + ") AND COALESCE(json_extract(payload,'$.TenantId'),json_extract(payload,'$.Result.TenantId'),CASE WHEN kind='TenantCreated' THEN json_extract(payload,'$.Result.Id') END)=$tenant ORDER BY id DESC LIMIT $take";
+        command.Parameters.AddWithValue("$tenant", tenant.ToString()); command.Parameters.AddWithValue("$before", before); command.Parameters.AddWithValue("$take", take);
+        for (var i = 0; i < kinds.Length; i++) command.Parameters.AddWithValue(parameters[i], kinds[i]);
+        using var reader = command.ExecuteReader(); var result = new List<FabricOutbox>();
+        while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), DateTimeOffset.Parse(reader.GetString(4), System.Globalization.CultureInfo.InvariantCulture)));
+        return result.ToArray();
+    });
+    public T[] TenantDocuments<T>(string kind, Guid tenant, int take = 100) => Documents<T>(kind, "json_extract(json,'$.TenantId')=$tenant", tenant.ToString(), null, take);
+    public T[] DueDocuments<T>(string kind, DateTimeOffset now, int take = 100) => Documents<T>(kind, "json_extract(json,'$.Status')='approved' AND julianday(json_extract(json,'$.Command.EffectiveAt'))<=julianday($now)", null, now.ToString("O"), take);
+    private T[] Documents<T>(string kind, string condition, string? tenant, string? now, int take) => WithConnection((connection, transaction) =>
+    {
+        if (take is < 1 or > 100) throw new ArgumentException("Invalid document limit.");
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT json FROM fabric_documents WHERE kind=$kind AND " + condition + " ORDER BY rowid DESC LIMIT $take";
+        command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$take", take);
+        if (tenant is not null) command.Parameters.AddWithValue("$tenant", tenant);
+        if (now is not null) command.Parameters.AddWithValue("$now", now);
+        using var reader = command.ExecuteReader(); var result = new List<T>();
+        while (reader.Read()) result.Add(JsonSerializer.Deserialize<T>(reader.GetString(0)) ?? throw new InvalidDataException());
+        return result.ToArray();
+    });
+    public void Dispose() => context.Dispose();
+}

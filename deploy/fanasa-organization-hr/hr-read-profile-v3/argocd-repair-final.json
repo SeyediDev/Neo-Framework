@@ -1,0 +1,252 @@
+{
+  "schemaVersion": "fanasa.hr-read.argocd-repair-final.v1",
+  "observedAtUtc": "2026-10-14T21:31:34.426691+00:00",
+  "status": "repair-verified",
+  "readOnly": true,
+  "repoServer": {
+    "name": "argocd-repo-server-d57f598b5-rtwjd",
+    "uid": "7b9abece-86ce-4b12-ae13-ed801e657c03",
+    "startedAt": "2026-10-14T21:25:52Z",
+    "ready": true,
+    "restarts": 0,
+    "livenessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/healthz?full=true",
+        "port": "metrics",
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 10,
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 5
+    },
+    "kubeletFailureEventsSinceCreation": 0,
+    "observedSecondsSinceFirstPositive": 217.484,
+    "minimumProbePeriodsObserved": 3,
+    "actualCompleteProbePeriodsObserved": 21,
+    "fullHealthProbe": {
+      "status": 200,
+      "body": "ok\n",
+      "seconds": 4.013
+    },
+    "serviceReadyAddresses": [
+      "10.42.0.201"
+    ]
+  },
+  "hrApplication": {
+    "uid": "9220d045-abfe-4f35-b0de-a8990e9b0cc8",
+    "sourceRevision": "597dab599177f98f7d260d00c72adb736614ad42",
+    "specSha256": "e9004c874e9cc189d860153a661fd67bc6365f1948479da594cd312111c1b1f2",
+    "health": "Healthy",
+    "sync": "Synced",
+    "operation": "Succeeded",
+    "remainingConditions": [
+      {
+        "type": "OrphanedResourceWarning",
+        "message": "Application has 1 orphaned resources"
+      }
+    ],
+    "pruneEnabled": false
+  },
+  "hrPodsPreserved": true,
+  "pvcPreserved": true,
+  "acceptedStateHashes": {
+    "/var/lib/fanasa-organization-hr/gitops/current.json": "3a515526e55c8514e5163949400d26f0a0891d12405cf73b59efd8ad6b84e8bf",
+    "/etc/fanasa-organization-hr/gitops-deployment.json": "9c34e71bfc647c9b2c54737e694ebed151ebb1b3683085997bf789bc318f86b9",
+    "/opt/fanasa-gateway/certs/organization-hr-development.prepared.conf": "3df3a9ebebd55264361bcee841c2284402f81a7b87d78eaf6717e7847c577545"
+  },
+  "otherApplications": [
+    {
+      "name": "app-697dcb4e6c15",
+      "health": "Healthy",
+      "sync": "Synced",
+      "conditions": [
+        {
+          "type": "OrphanedResourceWarning",
+          "message": "Application has 12 orphaned resources"
+        }
+      ]
+    },
+    {
+      "name": "app-be8fffb1a7bc",
+      "health": "Healthy",
+      "sync": "Synced",
+      "conditions": [
+        {
+          "type": "OrphanedResourceWarning",
+          "message": "Application has 12 orphaned resources"
+        }
+      ]
+    },
+    {
+      "name": "app-d0efbc1e222e",
+      "health": "Healthy",
+      "sync": "Synced",
+      "conditions": [
+        {
+          "type": "OrphanedResourceWarning",
+          "message": "Application has 12 orphaned resources"
+        }
+      ]
+    },
+    {
+      "name": "app-f063542cc2cc",
+      "health": "Healthy",
+      "sync": "Synced",
+      "conditions": [
+        {
+          "type": "OrphanedResourceWarning",
+          "message": "Application has 12 orphaned resources"
+        }
+      ]
+    },
+    {
+      "name": "demo-podinfo",
+      "health": "Healthy",
+      "sync": "Synced",
+      "conditions": []
+    }
+  ],
+  "orphanInspection": {
+    "projectPolicy": {
+      "warn": true
+    },
+    "topLevelInventory": [
+      {
+        "kind": "Deployment",
+        "name": "hr-development-hr-gateway",
+        "ownerReferences": [],
+        "trackingId": "fanasa-organization-hr-development:apps/Deployment:fanasa-organization-hr-development/hr-development-hr-gateway",
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "Deployment",
+        "name": "hr-development-organization-hr",
+        "ownerReferences": [],
+        "trackingId": "fanasa-organization-hr-development:apps/Deployment:fanasa-organization-hr-development/hr-development-organization-hr",
+        "applicationInstance": "hr-development",
+        "managedBy": "Helm"
+      },
+      {
+        "kind": "Service",
+        "name": "hr-development-hr-gateway",
+        "ownerReferences": [],
+        "trackingId": "fanasa-organization-hr-development:/Service:fanasa-organization-hr-development/hr-development-hr-gateway",
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "Service",
+        "name": "hr-development-organization-hr",
+        "ownerReferences": [],
+        "trackingId": "fanasa-organization-hr-development:/Service:fanasa-organization-hr-development/hr-development-organization-hr",
+        "applicationInstance": "hr-development",
+        "managedBy": "Helm"
+      },
+      {
+        "kind": "ConfigMap",
+        "name": "hr-development-hr-gateway",
+        "ownerReferences": [],
+        "trackingId": "fanasa-organization-hr-development:/ConfigMap:fanasa-organization-hr-development/hr-development-hr-gateway",
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "ConfigMap",
+        "name": "kube-root-ca.crt",
+        "ownerReferences": [],
+        "trackingId": null,
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "PersistentVolumeClaim",
+        "name": "organization-hr-retained-state",
+        "ownerReferences": [],
+        "trackingId": null,
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "NetworkPolicy",
+        "name": "development-default-deny",
+        "ownerReferences": [],
+        "trackingId": null,
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "NetworkPolicy",
+        "name": "hr-development-hr-gateway",
+        "ownerReferences": [],
+        "trackingId": "fanasa-organization-hr-development:networking.k8s.io/NetworkPolicy:fanasa-organization-hr-development/hr-development-hr-gateway",
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "NetworkPolicy",
+        "name": "hr-development-organization-hr",
+        "ownerReferences": [],
+        "trackingId": "fanasa-organization-hr-development:networking.k8s.io/NetworkPolicy:fanasa-organization-hr-development/hr-development-organization-hr",
+        "applicationInstance": "hr-development",
+        "managedBy": "Helm"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "default",
+        "ownerReferences": [],
+        "trackingId": null,
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "Secret",
+        "name": "hr-runtime-bbcad1d22988bb71266b",
+        "ownerReferences": [],
+        "trackingId": null,
+        "applicationInstance": null,
+        "managedBy": "fanasa-hr-gitops-reconciler"
+      },
+      {
+        "kind": "Secret",
+        "name": "organization-hr-registry-pull",
+        "ownerReferences": [],
+        "trackingId": null,
+        "applicationInstance": null,
+        "managedBy": null
+      },
+      {
+        "kind": "Secret",
+        "name": "organization-hr-upstream-tls",
+        "ownerReferences": [],
+        "trackingId": null,
+        "applicationInstance": null,
+        "managedBy": "fanasa-hr-tls-operator"
+      }
+    ],
+    "assessment": "The seven chart resources carry this application's exact tracking ID. Retained PVC, default-deny policy and pre-provisioned runtime/pull/TLS secrets remain external to chart tracking by design. The Kubernetes Application condition does not identify the single orphaned node, so no exact orphan identity is asserted. No pruning, deletion, ignore-rule or tracking-label mutation was performed."
+  },
+  "rollback": {
+    "executeOnlyIfFollowupMonitoringRequires": true,
+    "executed": false,
+    "effect": "Restore only previous liveness timeout5 to1; leaves fullhealth enabled",
+    "argv": [
+      "k3s",
+      "kubectl",
+      "patch",
+      "deployment",
+      "argocd-repo-server",
+      "-n",
+      "argocd",
+      "--type=json",
+      "-p",
+      "[{\"op\":\"test\",\"path\":\"/metadata/uid\",\"value\":\"cdcb2c5e-7d2e-4a45-aff1-b618c8bc0b98\"},{\"op\":\"test\",\"path\":\"/spec/template/spec/containers/0/name\",\"value\":\"repo-server\"},{\"op\":\"test\",\"path\":\"/spec/template/spec/containers/0/image\",\"value\":\"quay.io/argoproj/argocd:v3.5.3\"},{\"op\":\"test\",\"path\":\"/spec/template/spec/containers/0/livenessProbe/timeoutSeconds\",\"value\":5},{\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/livenessProbe/timeoutSeconds\",\"value\":1}]"
+    ]
+  },
+  "credentialsChanged": false,
+  "credentialsPrinted": false,
+  "unrelatedApplicationsMutated": false,
+  "persistentConfigurationFollowup": "The live fix changes only the existing repo-server deployment liveness timeout. Preserve timeoutSeconds=5 in the owning Argo installation values before a future Helm upgrade; this task did not mutate the shared installation's release values or credentials."
+}

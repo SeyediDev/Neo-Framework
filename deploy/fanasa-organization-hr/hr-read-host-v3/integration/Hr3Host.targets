@@ -1,0 +1,37 @@
+<Project>
+  <!-- Explicit source integration uses the host's single existing FabricDatabase. -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Fanasa.AccessManagement.Web' And '$(EnableHr3Host)' == 'true'">
+    <Hr3HostPackageRoot>$(MSBuildThisFileDirectory)../</Hr3HostPackageRoot>
+    <Hr3ProfileRoot Condition="'$(Hr3ProfileRoot)' == ''">$(Hr3HostPackageRoot)../hr-read-profile-v3</Hr3ProfileRoot>
+    <Hr3PdpRoot Condition="'$(Hr3PdpRoot)' == ''">$(Hr3HostPackageRoot)../hr-read-pdp-v3</Hr3PdpRoot>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'Fanasa.AccessManagement.Web' And '$(EnableHr3Host)' == 'true'">
+    <ProjectReference Remove="../../../../docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj" />
+    <ProjectReference Include="$(Hr3ProfileRoot)/contract-policy/src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj" />
+    <Compile Include="$(Hr3ProfileRoot)/src/*.cs" Link="Hr3Runtime/Profile/%(Filename)%(Extension)" />
+    <Compile Include="$(Hr3ProfileRoot)/http/*.cs" Link="Hr3Runtime/Http/%(Filename)%(Extension)" />
+    <Compile Include="$(Hr3ProfileRoot)/fabric/HrReadFabricAdapter.cs" Link="Hr3Runtime/Fabric/HrReadFabricAdapter.cs" />
+    <Compile Include="$(Hr3PdpRoot)/src/*.cs" Link="Hr3Runtime/Pdp/%(Filename)%(Extension)" />
+    <Compile Include="$(Hr3HostPackageRoot)/src/*.cs" Link="Hr3Runtime/Host/%(Filename)%(Extension)" />
+    <Compile Remove="../../../../docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyStore.cs" />
+    <Compile Include="$(Hr3HostPackageRoot)/compatibility/ContractPolicyStore.cs" Link="Hr3Runtime/Compatibility/ContractPolicyStore.cs" />
+    <Compile Remove="Program.cs" />
+    <Compile Include="$(Hr3HostPackageRoot)/compatibility/Program.Hr3.cs" Link="Hr3Runtime/Compatibility/Program.Hr3.cs" />
+    <InternalsVisibleTo Include="Fanasa.HrReadHost.Tests" />
+    <Content Include="$(Hr3ProfileRoot)/candidate/schemas/*.json" Link="Schemas/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(Hr3PdpRoot)/schemas/hr-read-pdp-*.schema.json" Link="Schemas/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="VerifyHr3OriginalHostSources" BeforeTargets="CoreCompile"
+          Condition="'$(MSBuildProjectName)' == 'Fanasa.AccessManagement.Web' And '$(EnableHr3Host)' == 'true'">
+    <GetFileHash Files="$(MSBuildProjectDirectory)/Program.cs" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="Hr3OriginalProgramHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(MSBuildProjectDirectory)/../../../../docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyStore.cs" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="Hr3OriginalStoreHash" />
+    </GetFileHash>
+    <Error Condition="'$(Hr3OriginalProgramHash)' != 'E0309216DCBE36F0238A39E7895A592967BC1D01E4BA541DB85F3B58600E02C2'"
+           Text="The original host Program changed. Review and regenerate the HR3 opt-in copy before building." />
+    <Error Condition="'$(Hr3OriginalStoreHash)' != 'F94BEE3D9F9D951B08B498BCC704E479BC39DADCAA2774DCE07C0BBFCA440A02'"
+           Text="The shared ContractPolicyStore changed. Review and regenerate the narrow HR3 coexistence copy before building." />
+  </Target>
+</Project>

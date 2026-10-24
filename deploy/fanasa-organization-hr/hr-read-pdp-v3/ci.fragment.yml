@@ -1,0 +1,7 @@
+# Optional source verification; explicitly include and declare verify-package stage.
+# No selected CI configuration, protected branch, deployment or activation is changed.
+hr_read_pdp_verify:
+  stage: verify-package
+  allow_failure: false
+  script:
+    - dotnet run --project deploy/fanasa-organization-hr/hr-read-pdp-v3/tests/Fanasa.HrReadPdp.Tests.csproj -c Release

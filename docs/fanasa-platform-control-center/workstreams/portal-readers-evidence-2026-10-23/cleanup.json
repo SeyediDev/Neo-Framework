@@ -1,0 +1,27 @@
+{
+  "targets": [
+    {
+      "bytes": 376213134.0,
+      "absentAfter": true,
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\usage-reader-20261015"
+    },
+    {
+      "bytes": 1081.0,
+      "absentAfter": true,
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\portal-central-readers-20261015-readonly.sh"
+    },
+    {
+      "bytes": 2155.0,
+      "absentAfter": true,
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\portal-central-readers-20261015-ssh.py"
+    },
+    {
+      "bytes": 727.0,
+      "absentAfter": true,
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\portal-central-readers-20261015-runtime.json"
+    }
+  ],
+  "totalBytes": 376217097.0,
+  "date": "2026-10-23",
+  "scope": "Only temporary build outputs and duplicate helpers owned by this reader task; source, durable evidence and audio preserved."
+}

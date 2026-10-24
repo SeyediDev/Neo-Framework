@@ -1,0 +1,231 @@
+{{- include "organization-hr.validate" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "organization-hr.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "organization-hr.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 2
+  progressDeadlineSeconds: 300
+  selector:
+    matchLabels:
+      {{- include "organization-hr.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "organization-hr.labels" . | nindent 8 }}
+      annotations:
+        fanasa.net/source-commit: {{ .Values.sourceCommit | quote }}
+        fanasa.net/release: {{ .Values.release | quote }}
+        fanasa.net/bundle-sha256: {{ .Values.bundleSha256 | quote }}
+        fanasa.net/configuration-sha256: {{ .Values.configurationSha256 | quote }}
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1654
+        runAsGroup: 1654
+        seccompProfile:
+          type: RuntimeDefault
+      {{- if .Values.image.existingPullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.existingPullSecret | quote }}
+      {{- end }}
+      initContainers:
+        - name: verify-retained-state
+          image: {{ include "organization-hr.web-image" . | quote }}
+          imagePullPolicy: IfNotPresent
+          command: [python3, /adapter/runtime_config.py, --config, /app/web/appsettings.Development.json, --expected-config-sha256, {{ .Values.configurationSha256 | quote }}]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          env:
+            - name: SSL_CERT_FILE
+              value: /tls/ca-bundle.crt
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+              ephemeral-storage: 160Mi
+          volumeMounts:
+            - name: persistent-state
+              mountPath: /state/web
+              subPath: {{ .Values.persistence.webSubPath | quote }}
+              readOnly: true
+            - name: persistent-state
+              mountPath: /state/workbench
+              subPath: {{ .Values.persistence.workbenchSubPath | quote }}
+              readOnly: true
+            - name: configuration
+              mountPath: /app/web/appsettings.Development.json
+              subPath: appsettings.Development.json
+              readOnly: true
+            - name: configuration
+              mountPath: /runtime-config
+              readOnly: true
+            - name: upstream-tls
+              mountPath: /tls
+              readOnly: true
+            - name: init-temporary
+              mountPath: /tmp
+      containers:
+        - name: web
+          image: {{ include "organization-hr.web-image" . | quote }}
+          imagePullPolicy: IfNotPresent
+          workingDir: /app/web
+          command: [dotnet, /app/web/Fanasa.AccessManagement.Web.dll]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          ports:
+            - name: hr-tls
+              containerPort: 5193
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: DOTNET_ENVIRONMENT
+              value: Development
+            - name: HOME
+              value: /tmp
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: SSL_CERT_FILE
+              value: /tls/ca-bundle.crt
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+          resources:
+            requests:
+              cpu: {{ printf "%dm" (int .Values.resources.web.cpuMillicores) | quote }}
+              memory: {{ printf "%dMi" (int .Values.resources.web.memoryMiB) | quote }}
+            limits:
+              cpu: {{ printf "%dm" (int .Values.resources.web.cpuMillicores) | quote }}
+              memory: {{ printf "%dMi" (int .Values.resources.web.memoryMiB) | quote }}
+              ephemeral-storage: 128Mi
+          startupProbe:
+            exec:
+              command: [python3, /adapter/runtime_config.py, --config, /app/web/appsettings.Development.json, --expected-config-sha256, {{ .Values.configurationSha256 | quote }}, --check-live]
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            exec:
+              command: [python3, /adapter/runtime_config.py, --config, /app/web/appsettings.Development.json, --expected-config-sha256, {{ .Values.configurationSha256 | quote }}, --check-live]
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 2
+          livenessProbe:
+            exec:
+              command: [python3, /adapter/health.py, web]
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: persistent-state
+              mountPath: /state/web
+              subPath: {{ .Values.persistence.webSubPath | quote }}
+            - name: configuration
+              mountPath: /app/web/appsettings.Development.json
+              subPath: appsettings.Development.json
+              readOnly: true
+            - name: configuration
+              mountPath: /runtime-config
+              readOnly: true
+            - name: upstream-tls
+              mountPath: /tls
+              readOnly: true
+            - name: web-temporary
+              mountPath: /tmp
+        - name: workbench
+          image: {{ include "organization-hr.workbench-image" . | quote }}
+          imagePullPolicy: IfNotPresent
+          workingDir: /app/workbench
+          command: [dotnet, /app/workbench/Fanasa.ContractPolicy.Workbench.dll]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          env:
+            - name: WORKBENCH_PORT
+              value: "4187"
+            - name: WORKBENCH_DATA_DIR
+              value: /state/workbench
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: DOTNET_ENVIRONMENT
+              value: Development
+            - name: HOME
+              value: /tmp
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+          resources:
+            requests:
+              cpu: {{ printf "%dm" (int .Values.resources.workbench.cpuMillicores) | quote }}
+              memory: {{ printf "%dMi" (int .Values.resources.workbench.memoryMiB) | quote }}
+            limits:
+              cpu: {{ printf "%dm" (int .Values.resources.workbench.cpuMillicores) | quote }}
+              memory: {{ printf "%dMi" (int .Values.resources.workbench.memoryMiB) | quote }}
+              ephemeral-storage: 128Mi
+          startupProbe:
+            exec:
+              command: [python3, /adapter/health.py, workbench]
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            exec:
+              command: [python3, /adapter/health.py, workbench]
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 2
+          volumeMounts:
+            - name: persistent-state
+              mountPath: /state/workbench
+              subPath: {{ .Values.persistence.workbenchSubPath | quote }}
+            - name: workbench-temporary
+              mountPath: /tmp
+      volumes:
+        - name: persistent-state
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | quote }}
+        - name: configuration
+          secret:
+            secretName: {{ .Values.configuration.existingSecret | quote }}
+            defaultMode: 0444
+            items:
+              - key: {{ .Values.configuration.key | quote }}
+                path: appsettings.Development.json
+              - key: {{ .Values.configuration.metadataKey | quote }}
+                path: deployment.json
+        - name: upstream-tls
+          secret:
+            secretName: {{ .Values.tls.existingSecret | quote }}
+            defaultMode: 0444
+        - name: web-temporary
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: init-temporary
+          emptyDir:
+            sizeLimit: 128Mi
+        - name: workbench-temporary
+          emptyDir:
+            sizeLimit: 64Mi

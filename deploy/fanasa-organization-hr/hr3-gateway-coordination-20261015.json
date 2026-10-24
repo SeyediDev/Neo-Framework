@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "fanasa.hr3.gateway-coordination/1",
+  "localInspectionOnly": true,
+  "testsReexecuted": false,
+  "remoteCommandsExecuted": false,
+  "immutablePackagesChanged": false,
+  "profileManifestSha256": "9875088ffe6e3efc9553b0ca42873fa52b8a05d23d8101acd084c69e16b82329",
+  "pdpManifestSha256": "4679302e5a4c409337a00a2cf8784c88a8b62d0a0799fcf37368c2460ed2c414",
+  "gatewayRoot": "E:/SJVS/Projects/NeoCluster/fanasa-platform-workstreams/hr-apisix-integration",
+  "evidence": [
+    {"path": "evidence/native-configuration-smoke-hr3-20261014T234014Z-c363c2d0.json", "sha256": "66c1a97ae7583893507528cba81be75724728f2160ee7799f4a85487ccbce4b7", "reportedPassed": true, "reportedChecks": 35},
+    {"path": "native-smoke-hr3/launch-20261014T234014Z-c363c2d0.json", "sha256": "a9b71e8f13f42f3aa76aeb1a810e731cedeb56cf48fa4e3737541d7dfc37e1a5", "reportedSourceStable": true},
+    {"path": "hr3-pdp-interop/hr3-pdp-interop-verification.json", "sha256": "4d18834c9a0c9ebde9c412e2a7c33c6298f85307f8ed99326793f1ec35c16c82", "reportedPassed": true, "reportedChecks": 105, "positiveChains": 8},
+    {"path": "evidence/hr3-pdp-bridge-independent-review.json", "sha256": "dedaf1355573f2a32809b63008b1fb7b2eff4ada90d26f74a1378e9ef4b4cc2b", "reportedPassed": true, "reportedChecks": 94, "noRerun": true},
+    {"path": "evidence/identity-preflight-refresh-20261014T214504Z.json", "sha256": "6b22f90f81e30ab41854c6c9f1b8c54897966c67c0bbf3f3982e5a8c0de24686", "consumerMappingReadyAtObservation": false}
+  ],
+  "localReadOnlyAudit": {
+    "definiteHashOrProvenanceMismatchFound": false,
+    "ownerFilesVerified": 111,
+    "launchInputsVerified": 19,
+    "directCurrentInputPaths": 16,
+    "archiveInputNamesResolvedToFrozenBridgeBuild": 3,
+    "bridgeBeforeAfterMapsEqual": true,
+    "bridgeHashGroupsVerified": {
+      "authoredSources": 6,
+      "luaSources": 3,
+      "ownerSourceCopies": 111,
+      "luaRuntimeFiles": 2,
+      "buildArtifacts": 67,
+      "vectors": 2,
+      "executionOutputs": 4
+    },
+    "bridgeReportedChecksAllPassed": 105,
+    "nativeReportedChecksAllPassed": 35,
+    "reexecuted": false
+  },
+  "liveConsumerTenantId": null,
+  "officialHr3GrantDelivered": false,
+  "officialHr3PublicationDelivered": false,
+  "livePdpRegistration": false,
+  "liveHrReceiverRegistration": false,
+  "operationalCollectorDelivered": false,
+  "operationalAcceptance": false,
+  "publication": {
+    "completeSourceUploadByThisChat": false,
+    "gitlabBranchCreatedByThisChat": false,
+    "status": "awaiting-prior-explicit-transfer-approval; automatic approval rejection remains in effect",
+    "gatewayTestEvidenceDoesNotAuthorizePublication": true
+  }
+}

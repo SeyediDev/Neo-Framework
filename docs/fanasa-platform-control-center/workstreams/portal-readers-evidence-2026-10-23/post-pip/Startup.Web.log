@@ -1,0 +1,16 @@
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[58]
+      Creating key {88da7695-1064-4984-b0b8-cf4902120f8e} with creation date 2026-10-23 13:19:55Z, activation date 2026-10-23 13:19:55Z, and expiration date 2027-01-21 13:19:55Z.
+warn: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[35]
+      No XML encryptor configured. Key {88da7695-1064-4984-b0b8-cf4902120f8e} may be persisted to storage in unencrypted form.
+info: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[39]
+      Writing data to file 'E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\startup-smoke\keys\key-88da7695-1064-4984-b0b8-cf4902120f8e.xml'.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:61618
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\startup-smoke\content
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:61618/health/live - - -

@@ -1,0 +1,183 @@
+{
+  "packageId": "fanasa.contract-policy",
+  "packageVersion": "2.0.0",
+  "profileId": "fanasa.contract-policy/2",
+  "createdDate": "2026-10-10",
+  "dateTimezone": "Asia/Tehran",
+  "mode": "offline-reference",
+  "syntheticFixtures": true,
+  "historicalPackage": {
+    "manifest": "manifest.v1.json",
+    "preservedSchemasAndFixtures": true,
+    "unchangedRegressionFile": "tests/contract-policy.test.cjs",
+    "historicalManifestContainsPreContinuationSourceHash": true
+  },
+  "pilot": {
+    "productId": "organization-fabric",
+    "action": "organization.unit.save",
+    "audience": "fanasa-organization-fabric-api",
+    "ownerTenantId": "11111111-1111-4111-8111-111111111111",
+    "consumerTenantId": "22222222-2222-4222-8222-222222222222"
+  },
+  "schemas": {
+    "projection": "schemas/contract-access-projection.v2.schema.json",
+    "limits": "schemas/limits.v2.schema.json",
+    "decision": "schemas/decision.v2.schema.json",
+    "normalizedEvent": "schemas/projection-event.v2.schema.json",
+    "trustedSampleContext": "schemas/request-context.v2.schema.json"
+  },
+  "generatedOutput": {
+    "command": "node sample/generate-integration-fixture.cjs",
+    "persistedBy": "workspace-file-tool",
+    "verificationCommand": "node sample/generate-integration-fixture.cjs --check",
+    "schemaVersion": "2.0.0",
+    "decisionPath": "fixtures/integration-decision.v2.json",
+    "decision": "Permit",
+    "requestId": "g-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "configRevision": 1,
+    "sha256": "17eebeb459c6c58d3ed5d82af64b15c55eb1cde8b8664e27e40c26fffca75ac3"
+  },
+  "externalInput": {
+    "file": "../../integration/fixture-binding.v1.json",
+    "sha256": "4db84427c46041d209b1f965ea694b907e1c24f02a7dcfbcb5301bd47978966c"
+  },
+  "obligations": [
+    "urn:fanasa:obligation:admit-allocation:1",
+    "urn:fanasa:obligation:resource-tenant:1"
+  ],
+  "validation": {
+    "nodeVersion": "24.12.0",
+    "command": "node --test --experimental-test-isolation=none --test-reporter=tap tests/contract-policy.test.cjs tests/integration-policy.test.cjs",
+    "tests": 171,
+    "pass": 171,
+    "fail": 0,
+    "exitCode": 0,
+    "historicalRegressionTests": 145,
+    "newIntegrationTests": 26
+  },
+  "crossPackageEvidence": "Gateway/Accounting checks and coordinating INTEGRATION-REPORT.md consume this actual output; policy suite alone does not prove the shared boundary.",
+  "conformanceClaim": false,
+  "runtimeWired": false,
+  "sha256": [
+    {
+      "file": "EVIDENCE.md",
+      "sha256": "2eb67d355c7560fabbaed8897545d09f5761f84f84b323a8d5fdcbf21a5505ad"
+    },
+    {
+      "file": "fixtures/context.v1.json",
+      "sha256": "672a88b7e02c62f0f8b58dcc98dcb1699c4d804426b8c1758bd5c63520e80955"
+    },
+    {
+      "file": "fixtures/golden-decisions.v1.json",
+      "sha256": "e0688f0e20b10190d4c42f81030e6601d81384efe60f6b8a6107d8341eaf30dd"
+    },
+    {
+      "file": "fixtures/integration-context.v2.json",
+      "sha256": "e342d4a6566be9fd519ffdfb811db723a06f6ba48b613b5b5eac89fb6fe35341"
+    },
+    {
+      "file": "fixtures/integration-decision.v2.json",
+      "sha256": "17eebeb459c6c58d3ed5d82af64b15c55eb1cde8b8664e27e40c26fffca75ac3"
+    },
+    {
+      "file": "fixtures/integration-projection-event.v2.json",
+      "sha256": "8f6aaa063e069c70b337a9978c1a150898b5b8015dfca45b1362ba60301325c6"
+    },
+    {
+      "file": "fixtures/integration-projection.v2.json",
+      "sha256": "de5eb67aa592fcee7fa2448ec39e4448483ac88d954dd5386fa9fb61463e3291"
+    },
+    {
+      "file": "fixtures/projection-event.v1.json",
+      "sha256": "d34759be5b1adc9ae4e6ca5a4a3205552976ef830f7c172406e668589bb1889d"
+    },
+    {
+      "file": "fixtures/projection.v1.json",
+      "sha256": "3d92552fa06b0a414bfa4823ee6c7e6cda463c97a0de35b0559f77cc97f39b96"
+    },
+    {
+      "file": "INTEGRATION-EVIDENCE.md",
+      "sha256": "f453da3f67fb45d59e86b2cf40b43a1e4ef0a51c1bb8359d67e260ca8558284d"
+    },
+    {
+      "file": "manifest.v1.json",
+      "sha256": "5db7cfb33a7e9e477c18c08f7b589b7e22e547f8f443ffefd3c79884b8e8b106"
+    },
+    {
+      "file": "README.md",
+      "sha256": "484a92fe56215ac4fce5c282078940d06035997165676297d87acc7410168a35"
+    },
+    {
+      "file": "sample/contract-policy.cjs",
+      "sha256": "8a1fd808ebd82c35c260a34ee6951bebbe8599e451d97adcde1f7d583bd78bae"
+    },
+    {
+      "file": "sample/generate-integration-fixture.cjs",
+      "sha256": "266ca88ff6b5c406f1171b3626a7657e148fd4dec8de4d07dc14cde827f02748"
+    },
+    {
+      "file": "sample/run-fixture.cjs",
+      "sha256": "f85ddce7fcab9ad752d7d5ec1400b57e56b052645c96f880fa3954aca0fc28cb"
+    },
+    {
+      "file": "sample/schema-validator.cjs",
+      "sha256": "6b69d3d1586d2021b68448fff2e159826725fd7234a8b55779b60c5142f1c6f1"
+    },
+    {
+      "file": "schemas/contract-access-projection.v1.schema.json",
+      "sha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "file": "schemas/contract-access-projection.v2.schema.json",
+      "sha256": "59621609f0d0199a45ac2a903b8f04b032377024bffe9617daf1f9d6374c3d5c"
+    },
+    {
+      "file": "schemas/decision.v1.schema.json",
+      "sha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "file": "schemas/decision.v2.schema.json",
+      "sha256": "b91ff92751cadf414ad2cad9ccf07467e0a243af967d16c8464fdd1155205411"
+    },
+    {
+      "file": "schemas/limits.v1.schema.json",
+      "sha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "file": "schemas/limits.v2.schema.json",
+      "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "file": "schemas/projection-event.v1.schema.json",
+      "sha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "file": "schemas/projection-event.v2.schema.json",
+      "sha256": "fd941be3728c061b4fac2d6de61a1079feac5bee811ca86c9a356862d1d8a37c"
+    },
+    {
+      "file": "schemas/request-context.v1.schema.json",
+      "sha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "file": "schemas/request-context.v2.schema.json",
+      "sha256": "57a60e81499e1cb1790a648db66f1288262206f792fff9803534d60186809bfd"
+    },
+    {
+      "file": "SOURCE-AND-WIRING.md",
+      "sha256": "23e988a158edd143bec087ccc6419f2798904c27f34aeb25229a39cbc91b85fb"
+    },
+    {
+      "file": "TASK.md",
+      "sha256": "acbaa2c626990b5e219a27994f230f5a59437e8398ca9b10122d507fcd670b3e"
+    },
+    {
+      "file": "tests/contract-policy.test.cjs",
+      "sha256": "e86926013cd4817a341eb72f70d990127fa98ac78c4532a6f1e124d5b4bf2efb"
+    },
+    {
+      "file": "tests/integration-policy.test.cjs",
+      "sha256": "9eac5436176ae41629f2ffcae972830f33cd7f01c233f3e1ffd3e1214591bc33"
+    }
+  ]
+}

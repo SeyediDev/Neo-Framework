@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "1.0.0",
+  "cases": [
+    {
+      "name": "permit",
+      "expected": {
+        "schemaVersion": "1.0.0",
+        "profileId": "fanasa.contract-policy/1",
+        "requestId": "sample-request-1",
+        "decision": "Permit",
+        "reasonCode": "all-conditions-satisfied",
+        "evaluatedAt": "2026-10-10T10:00:00.000Z",
+        "validUntil": "2026-10-10T10:00:45.000Z",
+        "policyReferences": [{ "policyId": "sample-club-report-read", "policyVersion": 3 }],
+        "projectionReference": { "contractId": "sample-contract-club", "contractVersion": 7, "subscriptionId": "sample-subscription-b" },
+        "allocationReference": { "allocationId": "sample-allocation-club-b", "canonicalScope": "tenant=tenant-b;products=club;environments=development;groups=reporting" },
+        "obligations": [
+          {
+            "id": "urn:fanasa:obligation:admit-allocation:1",
+            "fulfillOn": "Permit",
+            "parameters": {
+              "allocationId": "sample-allocation-club-b",
+              "scope": { "consumerTenantId": "tenant-b", "productIds": ["club"], "environments": ["development"], "operationGroups": ["reporting"] },
+              "canonicalScope": "tenant=tenant-b;products=club;environments=development;groups=reporting",
+              "meter": "api.request.admitted",
+              "unit": "request",
+              "rate": { "algorithm": "token-bucket", "requestsPerSecond": 120, "burstCapacity": 240 },
+              "quota": { "algorithm": "fixed-calendar-utc", "period": "month", "requests": 100000 }
+            }
+          },
+          {
+            "id": "urn:fanasa:obligation:resource-tenant:1",
+            "fulfillOn": "Permit",
+            "parameters": { "consumerTenantId": "tenant-b", "productId": "club", "environment": "development", "action": "report.read" }
+          }
+        ]
+      }
+    },
+    {
+      "name": "deny",
+      "expected": {
+        "schemaVersion": "1.0.0",
+        "profileId": "fanasa.contract-policy/1",
+        "requestId": "sample-request-1",
+        "decision": "Deny",
+        "reasonCode": "membership-denied",
+        "evaluatedAt": "2026-10-10T10:00:00.000Z",
+        "validUntil": null,
+        "policyReferences": [{ "policyId": "sample-club-report-read", "policyVersion": 3 }],
+        "projectionReference": { "contractId": "sample-contract-club", "contractVersion": 7, "subscriptionId": "sample-subscription-b" },
+        "allocationReference": { "allocationId": "sample-allocation-club-b", "canonicalScope": "tenant=tenant-b;products=club;environments=development;groups=reporting" },
+        "obligations": []
+      }
+    },
+    {
+      "name": "not-applicable",
+      "expected": {
+        "schemaVersion": "1.0.0",
+        "profileId": "fanasa.contract-policy/1",
+        "requestId": "sample-request-1",
+        "decision": "NotApplicable",
+        "reasonCode": "target-mismatch",
+        "evaluatedAt": "2026-10-10T10:00:00.000Z",
+        "validUntil": null,
+        "policyReferences": [{ "policyId": "sample-club-report-read", "policyVersion": 3 }],
+        "projectionReference": { "contractId": "sample-contract-club", "contractVersion": 7, "subscriptionId": "sample-subscription-b" },
+        "allocationReference": { "allocationId": "sample-allocation-club-b", "canonicalScope": "tenant=tenant-b;products=club;environments=development;groups=reporting" },
+        "obligations": []
+      }
+    },
+    {
+      "name": "indeterminate",
+      "expected": {
+        "schemaVersion": "1.0.0",
+        "profileId": "fanasa.contract-policy/1",
+        "requestId": "sample-request-1",
+        "decision": "Indeterminate",
+        "reasonCode": "missing-or-invalid-attribute",
+        "evaluatedAt": "2026-10-10T10:00:00.000Z",
+        "validUntil": null,
+        "policyReferences": [{ "policyId": "sample-club-report-read", "policyVersion": 3 }],
+        "projectionReference": { "contractId": "sample-contract-club", "contractVersion": 7, "subscriptionId": "sample-subscription-b" },
+        "allocationReference": { "allocationId": "sample-allocation-club-b", "canonicalScope": "tenant=tenant-b;products=club;environments=development;groups=reporting" },
+        "obligations": []
+      }
+    }
+  ]
+}

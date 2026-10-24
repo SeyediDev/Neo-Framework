@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "fanasa.hr-read.pdp.verification/1",
+  "observedAtUtc": "2026-10-14T22:58:22Z",
+  "exitCode": 0,
+  "assertions": 341,
+  "sdk": "10.0.401",
+  "configuration": "Debug",
+  "command": "dotnet run --project .build/hr-read-pdp-candidate-20261015/tests/Fanasa.HrReadPdp.Tests.csproj --no-restore --property:HrReadProfileRoot=E:/SJVS/Projects/Neo/deploy/fanasa-organization-hr/hr-read-profile-v3 --property:NuGetAudit=false --property:UseSharedCompilation=false --disable-build-servers",
+  "scope": [
+    "Strict UTF-8 closed request parser and canonical request identity/tuple/target/time binding",
+    "Published request schema and emitted real Permit/Deny response schema consistency",
+    "Separate named Gateway/subject authentication, native feature/certificate fixtures and retained proof",
+    "Actual locally RSA-signed JWT handlers using fixed local issuer metadata and keys",
+    "Isolated real SQLite Fabric snapshots, scoped policy/allocation/role correlation and hostile persisted JSON",
+    "Complete HTTP parser/authentication/evaluator/SQLite response path using explicit authentication and certificate fixtures",
+    "Two independent fresh source snapshots, committed revocation, shortened evidence lease and deadline rejection",
+    "No mutation of the entire synthetic Fabric documents/outbox/ledger/replay state",
+    "Whole endpoint cancellation budget, blocked asynchronous operations and send-attempt timeout handling",
+    "Cancellation and transport failure propagation without replacement responses"
+  ],
+  "limitations": [
+    "No live TLS, CA-chain, online revocation, Keycloak introspection, APISIX, provisioning or deployment acceptance",
+    "No new host endpoint registration, central identity/delegation, grant, contract, allocation or policy publication",
+    "Permit obligations remain unfulfilled and admissionConfirmed is false; no quota debit, nonce or fulfillment receipt",
+    "Five seconds is a cancellation/deadline budget; synchronous SQLite/host work is not forcibly preempted",
+    "Existing Fabric API allocates document strings before the parsing size bound; no total-memory ceiling",
+    "NuGetAudit disabled for the restricted cached local build; no dependency audit claimed"
+  ],
+  "operationalAcceptance": false
+}

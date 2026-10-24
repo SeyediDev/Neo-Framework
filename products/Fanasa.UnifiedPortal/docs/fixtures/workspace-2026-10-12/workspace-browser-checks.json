@@ -1,0 +1,87 @@
+{
+  "verifiedAtUtc": "2026-10-12T13:44:09.915Z",
+  "browser": "155.0.8059.40",
+  "origin": "http://127.0.0.1:5204",
+  "scope": "Disposable synthetic cookie preview in isolated headless contexts. The connected case overrides only the bootstrap JSON on the synthetic host; it does not verify production authentication, central request APIs, accounting or grants.",
+  "passed": true,
+  "checks": [
+    {
+      "name": "anonymous home and protected workspace use the synthetic cookie bootstrap",
+      "passed": true
+    },
+    {
+      "name": "consumer sees two organizations and no admin controls or admin authorization",
+      "passed": true
+    },
+    {
+      "name": "catalog search, center filter and no-results state are functional",
+      "passed": true
+    },
+    {
+      "name": "plan details preserve a large exact decimal and native modal focus",
+      "passed": true
+    },
+    {
+      "name": "new request has a timeline and survives reload without a backend write",
+      "passed": true
+    },
+    {
+      "name": "organization switching isolates requests and usage and restores organization A",
+      "passed": true
+    },
+    {
+      "name": "current usage amounts remain exact and unavailable previous period is explicit",
+      "passed": true
+    },
+    {
+      "name": "publication form creates one scoped pending history and persists after reload",
+      "passed": true
+    },
+    {
+      "name": "RTL tab keyboard behavior and layouts at 1440, 390 and 320 pixels remain usable",
+      "passed": true
+    },
+    {
+      "name": "explicit admin cookie has an isolated scope and can approve or reject own sample items",
+      "passed": true
+    },
+    {
+      "name": "denied subject and tampered tenant expose no stale scoped data or enabled mutations",
+      "passed": true
+    },
+    {
+      "name": "connected bootstrap UI simulation ignores saved preview drafts and disables mutations",
+      "passed": true
+    },
+    {
+      "name": "failed session persistence warns visibly and keeps current changes until reload",
+      "passed": true
+    },
+    {
+      "name": "all browser traffic stayed on the preview origin without backend mutations or page errors",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "workspace-desktop-1440.png",
+    "workspace-plan-exact-desktop.png",
+    "workspace-request-timeline.png",
+    "workspace-usage-desktop.png",
+    "workspace-publication-desktop.png",
+    "workspace-catalog-1440.png",
+    "workspace-plan-exact-1440.png",
+    "workspace-catalog-390.png",
+    "workspace-plan-exact-390.png",
+    "workspace-catalog-320.png",
+    "workspace-plan-exact-320.png",
+    "workspace-admin-review.png",
+    "workspace-denied.png",
+    "workspace-tampered-tenant.png",
+    "workspace-connected-bootstrap-simulation.png",
+    "workspace-storage-warning.png"
+  ],
+  "blockedRequests": [],
+  "mutationRequests": [],
+  "pageErrors": [],
+  "failure": null
+}

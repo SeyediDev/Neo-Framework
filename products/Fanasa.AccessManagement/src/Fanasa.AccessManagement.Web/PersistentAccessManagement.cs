@@ -96,7 +96,9 @@ public sealed class PersistentAccessManagement : IAccessManagement
         Label(request.Key, 80); Label(request.DisplayName);
         if (GetClients(productId).Any(x => x.Key == request.Key)) throw new InvalidOperationException("Client key already exists.");
         var redirects = request.RedirectUris ?? [];
-        if (redirects.Any(x => !Uri.TryCreate(x, UriKind.Absolute, out var uri) || uri.Scheme != "https" || !string.IsNullOrEmpty(uri.UserInfo))) throw new ArgumentException("Exact HTTPS redirect URLs are required.");
+        if (redirects.Any(x => (!Uri.TryCreate(x, UriKind.Absolute, out var uri) || uri.Scheme != "https" || !string.IsNullOrEmpty(uri.UserInfo))
+            && !Fanasa.AccessManagement.Web.MobileCatalog.MobileCatalogAuthorization.AllowsAndroidRedirect(request, x)))
+            throw new ArgumentException("Exact HTTPS redirect URLs or the dedicated Android public-client callback are required.");
         var item = new ProductClient(Guid.NewGuid(), productId, request.Key.Trim(), request.DisplayName.Trim(), request.ClientType, redirects, request.AllowedScopes ?? [], true);
         return Save("client", item.Id, item);
     });

@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["targetNamespace", "applicationId", "tenantId", "sourceCommit", "release", "bundleSha256", "configurationSha256", "image", "persistence", "configuration", "tls", "network", "resources"],
+  "properties": {
+    "gatewayRelay": {
+      "type": "object", "additionalProperties": false,
+      "required": ["enabled", "nodeSourceCidr"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "nodeSourceCidr": { "anyOf": [{ "const": "" }, { "type": "string", "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])/32$" }] }
+      }
+    },
+    "targetNamespace": { "const": "fanasa-organization-hr-development" },
+    "applicationId": { "$ref": "#/definitions/uuid" },
+    "tenantId": { "$ref": "#/definitions/uuid" },
+    "sourceCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "release": { "type": "string", "pattern": "^hr-development-[a-f0-9]{12}-[a-f0-9]{12}$" },
+    "bundleSha256": { "$ref": "#/definitions/sha256" },
+    "configurationSha256": { "$ref": "#/definitions/sha256" },
+    "image": {
+      "type": "object", "additionalProperties": false,
+      "required": ["web", "workbench", "existingPullSecret"],
+      "properties": {
+        "web": { "$ref": "#/definitions/image" },
+        "workbench": { "$ref": "#/definitions/image" },
+        "existingPullSecret": { "anyOf": [{ "const": "" }, { "$ref": "#/definitions/name" }] }
+      }
+    },
+    "persistence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["existingClaim", "webSubPath", "workbenchSubPath"],
+      "properties": {
+        "existingClaim": { "$ref": "#/definitions/name" },
+        "webSubPath": { "$ref": "#/definitions/subPath" },
+        "workbenchSubPath": { "$ref": "#/definitions/subPath" }
+      }
+    },
+    "configuration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["existingSecret", "key", "metadataKey"],
+      "properties": {
+        "existingSecret": { "$ref": "#/definitions/name" },
+        "key": { "$ref": "#/definitions/secretKey" },
+        "metadataKey": { "$ref": "#/definitions/secretKey" }
+      }
+    },
+    "tls": {
+      "type": "object", "additionalProperties": false,
+      "required": ["existingSecret"],
+      "properties": { "existingSecret": { "$ref": "#/definitions/name" } }
+    },
+    "network": {
+      "type": "object", "additionalProperties": false,
+      "required": ["gateway", "dns", "identity"],
+      "properties": {
+        "gateway": { "$ref": "#/definitions/peer" },
+        "dns": { "$ref": "#/definitions/peer" },
+        "identity": {
+          "type": "object", "additionalProperties": false,
+          "required": ["cidr"],
+          "properties": { "cidr": { "type": "string", "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])/32$" } }
+        }
+      }
+    },
+    "resources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["web", "workbench"],
+      "properties": {
+        "web": { "$ref": "#/definitions/resources" },
+        "workbench": { "$ref": "#/definitions/resources" }
+      }
+    }
+  },
+  "definitions": {
+    "image": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository", "digest"],
+      "properties": {
+        "repository": { "type": "string", "maxLength": 180, "pattern": "^[a-z0-9][a-z0-9.-]*(?::[0-9]{1,5})?/[a-z0-9]+(?:[._-][a-z0-9]+)*(?:/[a-z0-9]+(?:[._-][a-z0-9]+)*)*$" },
+        "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    },
+    "name": { "type": "string", "maxLength": 63, "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$" },
+    "uuid": { "type": "string", "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$", "not": { "const": "00000000-0000-0000-0000-000000000000" } },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "subPath": { "type": "string", "maxLength": 63, "pattern": "^[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?$" },
+    "secretKey": { "type": "string", "maxLength": 100, "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$" },
+    "peer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["namespace", "podLabels"],
+      "properties": {
+        "namespace": { "$ref": "#/definitions/name" },
+        "podLabels": {
+          "type": "object", "minProperties": 1, "maxProperties": 8,
+          "propertyNames": { "maxLength": 253, "pattern": "^(?:[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?/)?[A-Za-z0-9](?:[A-Za-z0-9_.-]{0,61}[A-Za-z0-9])?$" },
+          "additionalProperties": { "type": "string", "maxLength": 63, "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9_.-]{0,61}[A-Za-z0-9])?$" }
+        }
+      }
+    },
+    "resources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cpuMillicores", "memoryMiB"],
+      "properties": {
+        "cpuMillicores": { "type": "integer", "minimum": 50, "maximum": 500 },
+        "memoryMiB": { "type": "integer", "minimum": 128, "maximum": 512 }
+      }
+    }
+  }
+}

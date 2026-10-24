@@ -1,0 +1,118 @@
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: missing Fabric account remains unknown rather than zero
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: persisted empty Fabric account displays a known zero
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: legacy costs retain unknown quantity and meter metadata
+PASS Portal usage adapter: product key is the fallback when no approved display name is passed
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: real committed report maps frozen meter metadata and approved names
+PASS Portal usage adapter: changed current tariff does not recalculate displayed historical cost
+PASS Portal usage adapter: approved lookup cannot manufacture a service catalog or additional rows
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: legacy and measured rows with the same meter remain distinct
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: real USD ledger display preserves exact money above JavaScript integer precision
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: bounded report displays no partial financial result
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: corrupt Fabric account clears financial and display data
+PASS Portal usage adapter: absent trusted envelope clears financial and display data
+PASS Portal usage adapter: foreign envelope subject clears financial and display data
+PASS Portal usage adapter: case-only envelope subject mismatch clears financial and display data
+PASS Portal usage adapter: foreign consumer envelope clears financial and display data
+PASS Portal usage adapter: different lower period boundary clears financial and display data
+PASS Portal usage adapter: different upper period boundary clears financial and display data
+PASS Portal usage adapter: non-UTC envelope lower boundary clears financial and display data
+PASS Portal usage adapter: non-UTC envelope upper boundary clears financial and display data
+PASS Portal usage adapter: null typed report clears financial and display data
+PASS Portal usage adapter: rejected envelope cannot replace the requested display scope
+PASS Portal usage adapter: display preserves exact requested period with a short generated label
+PASS Portal usage adapter: nonmidnight period label preserves exact fractional UTC boundaries
+PASS Portal usage adapter: unknown status clears financial and display data
+PASS Portal usage adapter: case-only status clears financial and display data
+PASS Portal usage adapter: unsupported basis clears financial and display data
+PASS Portal usage adapter: missing currency clears financial and display data
+PASS Portal usage adapter: non-UTC as-of time clears financial and display data
+PASS Portal usage adapter: unsupported currency clears financial and display data
+PASS Portal usage adapter: missing ready total clears financial and display data
+PASS Portal usage adapter: negative total clears financial and display data
+PASS Portal usage adapter: exponent total clears financial and display data
+PASS Portal usage adapter: inexact total precision clears financial and display data
+PASS Portal usage adapter: total differs from item sum clears financial and display data
+PASS Portal usage adapter: null item collection clears financial and display data
+PASS Portal usage adapter: null item row clears financial and display data
+PASS Portal usage adapter: negative item amount clears financial and display data
+PASS Portal usage adapter: exponent item amount clears financial and display data
+PASS Portal usage adapter: inexact item precision clears financial and display data
+PASS Portal usage adapter: empty product identity clears financial and display data
+PASS Portal usage adapter: empty meter identity clears financial and display data
+PASS Portal usage adapter: zero charge count clears financial and display data
+PASS Portal usage adapter: negative charge count clears financial and display data
+PASS Portal usage adapter: excessive charge count clears financial and display data
+PASS Portal usage adapter: aggregate charge count exceeds bound clears financial and display data
+PASS Portal usage adapter: duplicate group clears financial and display data
+PASS Portal usage adapter: legacy version without unit or quantity clears financial and display data
+PASS Portal usage adapter: legacy unit without version or quantity clears financial and display data
+PASS Portal usage adapter: legacy quantity without version or unit clears financial and display data
+PASS Portal usage adapter: zero measured quantity clears financial and display data
+PASS Portal usage adapter: negative measured quantity clears financial and display data
+PASS Portal usage adapter: exponent measured quantity clears financial and display data
+PASS Portal usage adapter: inexact measured quantity clears financial and display data
+PASS Portal usage adapter: sum that would silently drop cents clears financial and display data
+PASS Portal usage adapter: large exactly representable sum remains ready across groups
+PASS Portal usage adapter: notRecorded keeps its meaning without financial or internal error data
+PASS Portal usage adapter: notRecorded cannot conceal an unexpected financial payload clears financial and display data
+PASS Portal usage adapter: incomplete keeps its meaning without financial or internal error data
+PASS Portal usage adapter: incomplete cannot conceal an unexpected financial payload clears financial and display data
+PASS Portal usage adapter: unavailable keeps its meaning without financial or internal error data
+PASS Portal usage adapter: unavailable cannot conceal an unexpected financial payload clears financial and display data
+PASS Portal usage adapter: a known positive quantity with zero posted cost is a valid usage row
+PASS Portal usage adapter: IRR fractional minor units clears financial and display data
+PASS Portal usage adapter: numeric JSON financial token cannot enter typed adapter contract
+PASS Portal usage adapter: empty expected subject rejected
+PASS Portal usage adapter: blank expected subject rejected
+PASS Portal usage adapter: null expected subject rejected
+PASS Portal usage adapter: empty consumer rejected
+PASS Portal usage adapter: empty display period rejected
+PASS Portal usage adapter: reversed display period rejected
+PASS Portal usage adapter: non-UTC requested lower boundary rejected
+PASS Portal usage adapter: non-UTC requested upper boundary rejected
+PASS Portal usage adapter: display period exceeding 366 days rejected
+PASS Portal usage adapter: not-recorded exposes only display contract fields
+PASS Portal usage adapter: not-recorded excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: ready-empty exposes only display contract fields
+PASS Portal usage adapter: ready-empty excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: ready-empty money serializes as a string
+PASS Portal usage adapter: ready-legacy exposes only display contract fields
+PASS Portal usage adapter: ready-legacy excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: ready-legacy money serializes as a string
+PASS Portal usage adapter: usage item excludes operational fields
+PASS Portal usage adapter: usage item amount is text and unknown quantity remains JSON null
+PASS Portal usage adapter: ready-measured exposes only display contract fields
+PASS Portal usage adapter: ready-measured excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: ready-measured money serializes as a string
+PASS Portal usage adapter: usage item excludes operational fields
+PASS Portal usage adapter: usage item amount is text and unknown quantity remains JSON null
+PASS Portal usage adapter: ready-mixed exposes only display contract fields
+PASS Portal usage adapter: ready-mixed excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: ready-mixed money serializes as a string
+PASS Portal usage adapter: usage item excludes operational fields
+PASS Portal usage adapter: usage item amount is text and unknown quantity remains JSON null
+PASS Portal usage adapter: usage item excludes operational fields
+PASS Portal usage adapter: usage item amount is text and unknown quantity remains JSON null
+PASS Portal usage adapter: large-usd exposes only display contract fields
+PASS Portal usage adapter: large-usd excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: large-usd money serializes as a string
+PASS Portal usage adapter: usage item excludes operational fields
+PASS Portal usage adapter: usage item amount is text and unknown quantity remains JSON null
+PASS Portal usage adapter: incomplete exposes only display contract fields
+PASS Portal usage adapter: incomplete excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: unavailable exposes only display contract fields
+PASS Portal usage adapter: unavailable excludes subject, raw keys, actors, errors and quota
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: caller-approved text remains data and default serialization escapes script delimiters
+PASS Portal usage adapter: Fabric report to display mapping changes no documents or outbox
+PASS Portal usage adapter: invalid approved label falls back to the valid product key
+Exported checked synthetic display fixtures to E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\adapter-fixtures
+PASS Portal usage adapter: 116 checks

@@ -1,0 +1,15 @@
+{
+  "archiveSha256": "a8ad2b872200ff1eacd3631b2ec37a5653e9148c4e07b30ae804288021671f46",
+  "runtimeSourceDrift": false,
+  "documentationDrift": {
+    "native/README.md": {
+      "archiveSha256": "7a7915c6fe3f2b028473a9424dd65b9c8d9a02fbedce73a51bf69440fb046c9d",
+      "currentSha256": "fe0298601cf6dd13b2874a1c151df58ce71ce26919e90319dc48394dcf29f563"
+    },
+    "README.md": {
+      "archiveSha256": "3beda23e99a86743e4392ab9b62f6164560ed59f0772b4a2e09b97d36b849880",
+      "currentSha256": "9285e47d74a37e11d656540d010e004f0ecb3637d82f8aad3319966dc6b173f3"
+    }
+  },
+  "executedPackage": "immutable accepted 24-entry handoff"
+}

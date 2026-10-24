@@ -1,0 +1,14 @@
+{
+  "Organization": {
+    "HrApi": {
+      "Enabled": false,
+      "Authority": "https://identity.example.invalid/realms/fanasa",
+      "Audience": "replace-with-registered-organization-product-audience",
+      "ClientId": "replace-with-real-hr-service-client",
+      "ServiceSubject": "replace-with-real-keycloak-service-subject-uuid",
+      "ReadScope": "organization.hr.read",
+      "WriteScope": "organization.hr.write",
+      "GatewayCertificateSha256": "replace-with-64-hex-sha256-of-gateway-client-certificate"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "fanasa.vps-task-model-inventory.v1",
+  "readOnly": true,
+  "passed": true,
+  "model": {
+    "path": "/opt/fanasa-transcription/model/model.bin",
+    "bytes": 1617884929,
+    "sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da"
+  }
+}

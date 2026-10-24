@@ -1,5 +1,7 @@
 # معماری مرکز راهبری پلتفرم فن‌آسا
 
+مرجع طراحی کامل پلتفرم در ۱۰ اکتبر ۲۰۲۶، [سند نهایی معماری](/E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/ARCHITECTURE.md) و [برنامه رشد و توسعه](/E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/GROWTH-AND-DEVELOPMENT-PLAN.md) است. این فایل، مدل و تاریخچهٔ معماری محصول میزبان را نگه می‌دارد؛ وضعیت پیاده‌سازی، طراحی مقصد و پذیرش زنده در سند مرجع تفکیک شده‌اند.
+
 تصمیم به‌روز ۲۰۲۶-۱۰-۰۶: ماژول ساختار سازمانی و اکانتینگ مصرفی/پس‌پرداخت داخل
 همین محصول با مرز مستقل اضافه شده‌اند؛ جزئیات و محدودیت‌های فعلی در
 [IDENTITY-ORGANIZATION.md](IDENTITY-ORGANIZATION.md) ثبت شده‌اند.

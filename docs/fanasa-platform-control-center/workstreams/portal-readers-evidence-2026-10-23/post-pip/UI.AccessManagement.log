@@ -1,0 +1,310 @@
+TAP version 13
+# Subtest: architecture selection, future actions, filters and unknown deep links
+ok 1 - architecture selection, future actions, filters and unknown deep links
+  ---
+  duration_ms: 9.182
+  type: 'test'
+  ...
+# Subtest: reference architecture contains planes, contract mapping and safe policy disclosures
+ok 2 - reference architecture contains planes, contract mapping and safe policy disclosures
+  ---
+  duration_ms: 1.8631
+  type: 'test'
+  ...
+# Subtest: catalog exposes missing references, revision and independent publisher; filters remain functional
+ok 3 - catalog exposes missing references, revision and independent publisher; filters remain functional
+  ---
+  duration_ms: 139.6933
+  type: 'test'
+  ...
+# Subtest: copy creates a new draft command, leaves published content intact, and preserves CSRF/revision
+ok 4 - copy creates a new draft command, leaves published content intact, and preserves CSRF/revision
+  ---
+  duration_ms: 15.6894
+  type: 'test'
+  ...
+# Subtest: publishing uses expected revision and exact policy ID with independent reviewer
+ok 5 - publishing uses expected revision and exact policy ID with independent reviewer
+  ---
+  duration_ms: 12.391
+  type: 'test'
+  ...
+# Subtest: member-window prevents condition-free drafts and never sends caller role assertions
+ok 6 - member-window prevents condition-free drafts and never sends caller role assertions
+  ---
+  duration_ms: 10.9695
+  type: 'test'
+  ...
+# Subtest: server result keeps obligations separate from advice and Permit separate from enforcement; changing input invalidates it
+ok 7 - server result keeps obligations separate from advice and Permit separate from enforcement; changing input invalidates it
+  ---
+  duration_ms: 10.5699
+  type: 'test'
+  ...
+# Subtest: server Indeterminate reason is shown without inventing evaluation traces or usable permission
+ok 8 - server Indeterminate reason is shown without inventing evaluation traces or usable permission
+  ---
+  duration_ms: 9.7867
+  type: 'test'
+  ...
+# Subtest: late response cannot present a previous request as the changed request decision
+ok 9 - late response cannot present a previous request as the changed request decision
+  ---
+  duration_ms: 6.5778
+  type: 'test'
+  ...
+# Subtest: markup preserves profile scope, operational boundaries and authenticated workbench navigation
+ok 10 - markup preserves profile scope, operational boundaries and authenticated workbench navigation
+  ---
+  duration_ms: 2.0158
+  type: 'test'
+  ...
+# Subtest: mandatory time guard uses saved calendar, fixed Deny, no hidden role or hours and explicit runtime flag
+ok 11 - mandatory time guard uses saved calendar, fixed Deny, no hidden role or hours and explicit runtime flag
+  ---
+  duration_ms: 9.0956
+  type: 'test'
+  ...
+# Subtest: member calendar is a valid condition, data window cannot retain non-holiday mode, and guard requires reference
+ok 12 - member calendar is a valid condition, data window cannot retain non-holiday mode, and guard requires reference
+  ---
+  duration_ms: 8.6929
+  type: 'test'
+  ...
+# Subtest: draft inclusion is explicit and never changes simulated enforcement
+ok 13 - draft inclusion is explicit and never changes simulated enforcement
+  ---
+  duration_ms: 8.3519
+  type: 'test'
+  ...
+# Subtest: template policies are read-only while draft simulation remains available
+ok 14 - template policies are read-only while draft simulation remains available
+  ---
+  duration_ms: 5.7832
+  type: 'test'
+  ...
+# Subtest: decision renders calendar evaluation from server including unknown coverage and exact local time
+ok 15 - decision renders calendar evaluation from server including unknown coverage and exact local time
+  ---
+  duration_ms: 6.4618
+  type: 'test'
+  ...
+# Subtest: calendar read shows persisted source, coverage and exceptions without granting access
+ok 16 - calendar read shows persisted source, coverage and exceptions without granting access
+  ---
+  duration_ms: 80.4837
+  type: 'test'
+  ...
+# Subtest: calendar save sends exact revision, CSRF, weekly minutes and closed exception without stale windows
+ok 17 - calendar save sends exact revision, CSRF, weekly minutes and closed exception without stale windows
+  ---
+  duration_ms: 16.75
+  type: 'test'
+  ...
+# Subtest: calendar editor preserves midnight endpoint and rejects equal or malformed windows
+ok 18 - calendar editor preserves midnight endpoint and rejects equal or malformed windows
+  ---
+  duration_ms: 12.3054
+  type: 'test'
+  ...
+# Subtest: preview uses server result, keeps calendar permission separate and data windows disable day-only mode
+ok 19 - preview uses server result, keeps calendar permission separate and data windows disable day-only mode
+  ---
+  duration_ms: 7.1238
+  type: 'test'
+  ...
+# Subtest: changed preview input discards a late result
+ok 20 - changed preview input discards a late result
+  ---
+  duration_ms: 6.3012
+  type: 'test'
+  ...
+# Subtest: template calendar snapshot uses dedicated read endpoint and no edit controls
+ok 21 - template calendar snapshot uses dedicated read endpoint and no edit controls
+  ---
+  duration_ms: 4.0594
+  type: 'test'
+  ...
+# Subtest: template creation is explicit, antiforgery protected and links target exact marked tenant
+ok 22 - template creation is explicit, antiforgery protected and links target exact marked tenant
+  ---
+  duration_ms: 8.0008
+  type: 'test'
+  ...
+# Subtest: template scenario mismatch displays actual server decision and keeps draft simulation explicit
+ok 23 - template scenario mismatch displays actual server decision and keeps draft simulation explicit
+  ---
+  duration_ms: 6.9849
+  type: 'test'
+  ...
+# Subtest: PIP policy selects tenant source and typed attribute, requires fresh evidence and clears role assertions
+ok 24 - PIP policy selects tenant source and typed attribute, requires fresh evidence and clears role assertions
+  ---
+  duration_ms: 96.6629
+  type: 'test'
+  ...
+# Subtest: PIP fields do not leak into another template and incomplete PIP drafts are rejected
+ok 25 - PIP fields do not leak into another template and incomplete PIP drafts are rejected
+  ---
+  duration_ms: 12.5855
+  type: 'test'
+  ...
+# Subtest: PIP decision shows evidence freshness without rendering attribute values
+ok 26 - PIP decision shows evidence freshness without rendering attribute values
+  ---
+  duration_ms: 9.1295
+  type: 'test'
+  ...
+# Subtest: source form submits explicit disabled source, typed mapping, tenant scope and CSRF
+ok 27 - source form submits explicit disabled source, typed mapping, tenant scope and CSRF
+  ---
+  duration_ms: 25.285
+  type: 'test'
+  ...
+# Subtest: duplicate mappings, secret-bearing URL and polling without identities fail before mutation
+ok 28 - duplicate mappings, secret-bearing URL and polling without identities fail before mutation
+  ---
+  duration_ms: 15.2359
+  type: 'test'
+  ...
+# Subtest: sync requires a reason and sends only the entered subject to the exact source
+ok 29 - sync requires a reason and sends only the entered subject to the exact source
+  ---
+  duration_ms: 12.5127
+  type: 'test'
+  ...
+# Subtest: freshness check is subject-scoped and shows expiry instead of treating previous success as freshness
+ok 30 - freshness check is subject-scoped and shows expiry instead of treating previous success as freshness
+  ---
+  duration_ms: 61.2774
+  type: 'test'
+  ...
+# Subtest: template UI keeps ordinary mutation controls absent and educational example explicit
+ok 31 - template UI keeps ordinary mutation controls absent and educational example explicit
+  ---
+  duration_ms: 7.1532
+  type: 'test'
+  ...
+# Subtest: older run-history response cannot overwrite a newly selected source
+ok 32 - older run-history response cannot overwrite a newly selected source
+  ---
+  duration_ms: 8.0329
+  type: 'test'
+  ...
+# Subtest: source names are rendered as text and markup explains deployment binding and ownership
+ok 33 - source names are rendered as text and markup explains deployment binding and ownership
+  ---
+  duration_ms: 7.7042
+  type: 'test'
+  ...
+# Subtest: navigation retains every route, filters admin links, and marks exact active page
+ok 34 - navigation retains every route, filters admin links, and marks exact active page
+  ---
+  duration_ms: 5.0246
+  type: 'test'
+  ...
+# Subtest: mobile disclosure initially closes, desktop opens, resize restores accessibility
+ok 35 - mobile disclosure initially closes, desktop opens, resize restores accessibility
+  ---
+  duration_ms: 4.6322
+  type: 'test'
+  ...
+# Subtest: architecture exposes dated delivery boundaries and the real developer roadmap route
+ok 36 - architecture exposes dated delivery boundaries and the real developer roadmap route
+  ---
+  duration_ms: 1.4471
+  type: 'test'
+  ...
+# Subtest: wire decimal amounts and receipt amounts retain every digit
+ok 37 - wire decimal amounts and receipt amounts retain every digit
+  ---
+  duration_ms: 9.4684
+  type: 'test'
+  ...
+# Subtest: amount parser preserves escaped text and escaped property names
+ok 38 - amount parser preserves escaped text and escaped property names
+  ---
+  duration_ms: 4.6096
+  type: 'test'
+  ...
+# Subtest: decimal exponents expand without floating point arithmetic
+ok 39 - decimal exponents expand without floating point arithmetic
+  ---
+  duration_ms: 1.3928
+  type: 'test'
+  ...
+# Subtest: reason is explicit and bounded before a request can be created
+ok 40 - reason is explicit and bounded before a request can be created
+  ---
+  duration_ms: 0.8262
+  type: 'test'
+  ...
+# Subtest: only the exact pending operation in a fresh complete verified report is actionable
+ok 41 - only the exact pending operation in a fresh complete verified report is actionable
+  ---
+  duration_ms: 2.1909
+  type: 'test'
+  ...
+# Subtest: recovery command carries an immutable reviewed identity and trimmed reason
+ok 42 - recovery command carries an immutable reviewed identity and trimmed reason
+  ---
+  duration_ms: 2.695
+  type: 'test'
+  ...
+# Subtest: double submission is refused while the first request is in flight
+ok 43 - double submission is refused while the first request is in flight
+  ---
+  duration_ms: 1.2245
+  type: 'test'
+  ...
+# Subtest: timeout retry keeps exactly the same command and request UUID
+ok 44 - timeout retry keeps exactly the same command and request UUID
+  ---
+  duration_ms: 0.8106
+  type: 'test'
+  ...
+# Subtest: unknown outcome locks organization, operation, fingerprint and reason
+ok 45 - unknown outcome locks organization, operation, fingerprint and reason
+  ---
+  duration_ms: 0.9906
+  type: 'test'
+  ...
+# Subtest: a mismatched or malformed acknowledgement leaves the outcome unknown
+ok 46 - a mismatched or malformed acknowledgement leaves the outcome unknown
+  ---
+  duration_ms: 1.6018
+  type: 'test'
+  ...
+# Subtest: a known pending receipt allows a later deliberate attempt with a fresh UUID
+ok 47 - a known pending receipt allows a later deliberate attempt with a fresh UUID
+  ---
+  duration_ms: 0.5705
+  type: 'test'
+  ...
+# Subtest: known rejection clears command but requires the caller to refresh evidence
+ok 48 - known rejection clears command but requires the caller to refresh evidence
+  ---
+  duration_ms: 0.8065
+  type: 'test'
+  ...
+# Subtest: network and server failure cannot justify creating a new request
+ok 49 - network and server failure cannot justify creating a new request
+  ---
+  duration_ms: 0.5854
+  type: 'test'
+  ...
+# Subtest: saved unresolved command resumes after reload without a new UUID or automatic submission
+ok 50 - saved unresolved command resumes after reload without a new UUID or automatic submission
+  ---
+  duration_ms: 2.9378
+  type: 'test'
+  ...
+1..50
+# tests 50
+# suites 0
+# pass 50
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2429.3469

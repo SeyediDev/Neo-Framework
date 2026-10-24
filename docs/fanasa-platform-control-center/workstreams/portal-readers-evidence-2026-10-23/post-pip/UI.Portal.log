@@ -1,0 +1,304 @@
+TAP version 13
+# Subtest: refresh is no-store and removes stale links while retaining the verified selection
+ok 1 - refresh is no-store and removes stale links while retaining the verified selection
+  ---
+  duration_ms: 79.4648
+  type: 'test'
+  ...
+# Subtest: a hung request reaches a bounded error and retry controls recover
+ok 2 - a hung request reaches a bounded error and retry controls recover
+  ---
+  duration_ms: 4.9974
+  type: 'test'
+  ...
+# Subtest: the deadline also aborts a stalled body after successful response headers
+ok 3 - the deadline also aborts a stalled body after successful response headers
+  ---
+  duration_ms: 6.2007
+  type: 'test'
+  ...
+# Subtest: a body that resolves after abort is never rendered
+ok 4 - a body that resolves after abort is never rendered
+  ---
+  duration_ms: 3.2094
+  type: 'test'
+  ...
+# Subtest: an old request cannot clear the busy state or overwrite a newer response
+ok 5 - an old request cannot clear the busy state or overwrite a newer response
+  ---
+  duration_ms: 7.7498
+  type: 'test'
+  ...
+# Subtest: network failure is retryable, is not a successful zero, and clears its deadline
+ok 6 - network failure is retryable, is not a successful zero, and clears its deadline
+  ---
+  duration_ms: 4.9553
+  type: 'test'
+  ...
+# Subtest: a login HTML redirect is not parsed or displayed as a successful empty catalog
+ok 7 - a login HTML redirect is not parsed or displayed as a successful empty catalog
+  ---
+  duration_ms: 4.2022
+  type: 'test'
+  ...
+# Subtest: an expired session retains the server sign-in state without showing old links
+ok 8 - an expired session retains the server sign-in state without showing old links
+  ---
+  duration_ms: 2.6514
+  type: 'test'
+  ...
+# Subtest: center search normalizes Arabic letters, half-spaces and Latin casing
+ok 9 - center search normalizes Arabic letters, half-spaces and Latin casing
+  ---
+  duration_ms: 6.8202
+  type: 'test'
+  ...
+# Subtest: center state filters combine with search and update pressed/empty states
+ok 10 - center state filters combine with search and update pressed/empty states
+  ---
+  duration_ms: 6.7869
+  type: 'test'
+  ...
+# Subtest: Persian search ignores diacritics, tatweel and repeated spaces with terms in any order
+ok 11 - Persian search ignores diacritics, tatweel and repeated spaces with terms in any order
+  ---
+  duration_ms: 3.8292
+  type: 'test'
+  ...
+# Subtest: clear search restores matching centers without discarding the chosen category
+ok 12 - clear search restores matching centers without discarding the chosen category
+  ---
+  duration_ms: 3.1355
+  type: 'test'
+  ...
+# Subtest: empty results recovery clears both query and category, restores count and search focus
+ok 13 - empty results recovery clears both query and category, restores count and search focus
+  ---
+  duration_ms: 3.7496
+  type: 'test'
+  ...
+# Subtest: Escape clears only the query and does not consume unrelated keys or an empty Escape
+ok 14 - Escape clears only the query and does not consume unrelated keys or an empty Escape
+  ---
+  duration_ms: 4.5806
+  type: 'test'
+  ...
+# Subtest: search count and summary refresh when catalog metadata changes
+ok 15 - search count and summary refresh when catalog metadata changes
+  ---
+  duration_ms: 4.137
+  type: 'test'
+  ...
+# Subtest: anonymous visitors can search and reset without a signed-in organization form
+ok 16 - anonymous visitors can search and reset without a signed-in organization form
+  ---
+  duration_ms: 4.3243
+  type: 'test'
+  ...
+# Subtest: workspace refresh on the home alias retains center search, filter and unrelated URL state
+ok 17 - workspace refresh on the home alias retains center search, filter and unrelated URL state
+  ---
+  duration_ms: 6.2334
+  type: 'test'
+  ...
+# Subtest: unsafe product URLs are text-only and catalog names are rendered as text
+ok 18 - unsafe product URLs are text-only and catalog names are rendered as text
+  ---
+  duration_ms: 4.0087
+  type: 'test'
+  ...
+# Subtest: no grant keeps service description, details and acquisition link, never launch
+ok 19 - no grant keeps service description, details and acquisition link, never launch
+  ---
+  duration_ms: 7.9981
+  type: 'test'
+  ...
+# Subtest: only explicitly allowed state may show a safe launch link
+ok 20 - only explicitly allowed state may show a safe launch link
+  ---
+  duration_ms: 5.5604
+  type: 'test'
+  ...
+# Subtest: tenant switch removes old launch immediately and error cannot restore it
+ok 21 - tenant switch removes old launch immediately and error cannot restore it
+  ---
+  duration_ms: 2.9084
+  type: 'test'
+  ...
+# Subtest: render escapes metadata as text, rejects unsafe links and updates center search
+ok 22 - render escapes metadata as text, rejects unsafe links and updates center search
+  ---
+  duration_ms: 3.0729
+  type: 'test'
+  ...
+# Subtest: a discovery outage is unknown, not a successful empty center catalog
+ok 23 - a discovery outage is unknown, not a successful empty center catalog
+  ---
+  duration_ms: 4.0504
+  type: 'test'
+  ...
+# Subtest: authenticated catalog refresh reuses workspace request and does not double-fetch grants
+ok 24 - authenticated catalog refresh reuses workspace request and does not double-fetch grants
+  ---
+  duration_ms: 2.6515
+  type: 'test'
+  ...
+# Subtest: anonymous refresh is no-store on home alias, bounded and retryable
+ok 25 - anonymous refresh is no-store on home alias, bounded and retryable
+  ---
+  duration_ms: 4.2102
+  type: 'test'
+  ...
+# Subtest: organization refresh clears old access first and uses a bounded no-store same-origin snapshot
+ok 26 - organization refresh clears old access first and uses a bounded no-store same-origin snapshot
+  ---
+  duration_ms: 83.7094
+  type: 'test'
+  ...
+# Subtest: new organization cancels old request and old completion cannot release current busy state
+ok 27 - new organization cancels old request and old completion cannot release current busy state
+  ---
+  duration_ms: 2.3403
+  type: 'test'
+  ...
+# Subtest: timeout clears its timer, enables retry and never treats a failure as an empty success
+ok 28 - timeout clears its timer, enables retry and never treats a failure as an empty success
+  ---
+  duration_ms: 2.0658
+  type: 'test'
+  ...
+# Subtest: login HTML, malformed JSON, invalid envelopes and network errors cannot restore stale access
+ok 29 - login HTML, malformed JSON, invalid envelopes and network errors cannot restore stale access
+  ---
+  duration_ms: 5.8694
+  type: 'test'
+  ...
+# Subtest: a late response body from the old organization cannot overwrite a new snapshot
+ok 30 - a late response body from the old organization cannot overwrite a new snapshot
+  ---
+  duration_ms: 3.2329
+  type: 'test'
+  ...
+# Subtest: streamed and declared oversized snapshots fail closed and release retry controls
+ok 31 - streamed and declared oversized snapshots fail closed and release retry controls
+  ---
+  duration_ms: 27.185
+  type: 'test'
+  ...
+# Subtest: published descriptions never grant entry and only approved safe actions are offered
+ok 32 - published descriptions never grant entry and only approved safe actions are offered
+  ---
+  duration_ms: 6.2372
+  type: 'test'
+  ...
+# Subtest: published catalog search normalizes Persian marks, spacing and word order
+ok 33 - published catalog search normalizes Persian marks, spacing and word order
+  ---
+  duration_ms: 2.1884
+  type: 'test'
+  ...
+# Subtest: money tokens preserve lexical precision, fractions and quantities
+ok 34 - money tokens preserve lexical precision, fractions and quantities
+  ---
+  duration_ms: 3.1355
+  type: 'test'
+  ...
+# Subtest: invalid and already rounded money is rejected
+ok 35 - invalid and already rounded money is rejected
+  ---
+  duration_ms: 1.0052
+  type: 'test'
+  ...
+# Subtest: launch destinations permit only absolute credential-free web URLs
+ok 36 - launch destinations permit only absolute credential-free web URLs
+  ---
+  duration_ms: 1.1413
+  type: 'test'
+  ...
+# Subtest: session scope requires verified identity and a nonempty organization UUID
+ok 37 - session scope requires verified identity and a nonempty organization UUID
+  ---
+  duration_ms: 1.6675
+  type: 'test'
+  ...
+# Subtest: production never mutates preview state or accesses preview storage
+ok 38 - production never mutates preview state or accesses preview storage
+  ---
+  duration_ms: 3.5404
+  type: 'test'
+  ...
+# Subtest: request validates current offer, plan and bounded reason
+ok 39 - request validates current offer, plan and bounded reason
+  ---
+  duration_ms: 1.4455
+  type: 'test'
+  ...
+# Subtest: a failed catalog or missing organization remains read-only in preview
+ok 40 - a failed catalog or missing organization remains read-only in preview
+  ---
+  duration_ms: 1.6444
+  type: 'test'
+  ...
+# Subtest: request ID replay is stable and changed payload is rejected
+ok 41 - request ID replay is stable and changed payload is rejected
+  ---
+  duration_ms: 3.0396
+  type: 'test'
+  ...
+# Subtest: stored draft state stays isolated by user and organization
+ok 42 - stored draft state stays isolated by user and organization
+  ---
+  duration_ms: 1.1866
+  type: 'test'
+  ...
+# Subtest: foreign seed rows and poisoned storage are discarded
+ok 43 - foreign seed rows and poisoned storage are discarded
+  ---
+  duration_ms: 1.299
+  type: 'test'
+  ...
+# Subtest: review requires admin and only transitions pending requests once
+ok 44 - review requires admin and only transitions pending requests once
+  ---
+  duration_ms: 1.9083
+  type: 'test'
+  ...
+# Subtest: supplier proposal validates identity, official center and safe canonical URL
+ok 45 - supplier proposal validates identity, official center and safe canonical URL
+  ---
+  duration_ms: 1.3313
+  type: 'test'
+  ...
+# Subtest: publication replay and review never create products or tariffs
+ok 46 - publication replay and review never create products or tariffs
+  ---
+  duration_ms: 1.2159
+  type: 'test'
+  ...
+# Subtest: storage failure gives an honest warning and retains current page state
+ok 47 - storage failure gives an honest warning and retains current page state
+  ---
+  duration_ms: 0.9182
+  type: 'test'
+  ...
+# Subtest: snapshots are copies and reset restores only current scoped seed
+ok 48 - snapshots are copies and reset restores only current scoped seed
+  ---
+  duration_ms: 1.6636
+  type: 'test'
+  ...
+# Subtest: catalog search normalizes Persian and Arabic variants with center filter
+ok 49 - catalog search normalizes Persian and Arabic variants with center filter
+  ---
+  duration_ms: 1.0146
+  type: 'test'
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1452.2421

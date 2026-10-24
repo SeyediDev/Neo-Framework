@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "fanasa.hr-read.argocd-repair-diagnosis.v1",
+  "beforeObservedAtUtc": "2026-10-14T21:18:23.317649+00:00",
+  "cause": "Kubelet terminated the shared repo-server after repeated full gRPC liveness health check timeouts; not OOM or HR repository authentication.",
+  "before": {
+    "deploymentUid": "cdcb2c5e-7d2e-4a45-aff1-b618c8bc0b98",
+    "deploymentGeneration": 2,
+    "podName": "argocd-repo-server-6c88b6d9b5-8npq4",
+    "podUid": "9ef28639-e390-4c51-8abc-5f18d9c16192",
+    "restartCount": 118,
+    "lastTermination": {
+      "exitCode": 0,
+      "reason": "Completed",
+      "startedAt": "2026-10-14T21:14:22Z",
+      "finishedAt": "2026-10-14T21:15:02Z"
+    },
+    "livenessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/healthz?full=true",
+        "port": "metrics",
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 10,
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 1
+    },
+    "lastEventCauses": [
+      "Liveness probe failed: context deadline exceeded",
+      "Container repo-server failed liveness probe, will be restarted"
+    ],
+    "healthLogs": {
+      "selfGrpcChecksCancelledAfterSeconds": [
+        2.00357742,
+        2.002906121
+      ],
+      "successfulGenerateManifestRpcObserved": true,
+      "gracefulSigtermAndCleanShutdown": true
+    },
+    "image": "quay.io/argoproj/argocd:v3.5.3",
+    "resources": {
+      "limits": {
+        "cpu": "500m",
+        "memory": "512Mi"
+      },
+      "requests": {
+        "cpu": "50m",
+        "memory": "128Mi"
+      }
+    },
+    "hrApplication": {
+      "health": "Healthy",
+      "sync": "Unknown",
+      "operation": "Succeeded",
+      "targetRevision": "597dab599177f98f7d260d00c72adb736614ad42",
+      "comparisonError": "Repository-server gRPC service 10.43.50.81:8081 connection refused"
+    },
+    "repositoryCredentialSource": {
+      "name": "organization-hr-development-repository",
+      "labels": {
+        "argocd.argoproj.io/secret-type": "repository",
+        "fanasa.net/credential-scope": "read-only",
+        "fanasa.net/project-id": "2"
+      },
+      "valuesRead": false
+    }
+  },
+  "repair": {
+    "onlyChangedPath": "/spec/template/spec/containers/0/livenessProbe/timeoutSeconds",
+    "before": 1,
+    "after": 5,
+    "uidAndResourceVersionCasGuarded": true,
+    "fullHealthRetained": true,
+    "credentialsChanged": false
+  },
+  "sharedImpact": "One rolling replacement of the existing shared Argo repo-server; HR workload and application spec not changed.",
+  "officialPinnedReferences": [
+    "https://github.com/argoproj/argo-cd/blob/v3.5.3/manifests/base/repo-server/argocd-repo-server-deployment.yaml",
+    "https://github.com/argoproj/argo-cd/blob/v3.5.3/cmd/argocd-repo-server/commands/argocd_repo_server.go"
+  ],
+  "localEvidenceCaptureLimitation": "Remote repair completed successfully. The first local Python attempt to save its captured result was denied by filesystem policy. The mutation was not retried; an independent read-only observation was saved with apply_patch. The previous sanitized spec in that observation is explicitly reconstructed by reversing the sole verified delta, rather than represented as an independently persisted pre-change backup.",
+  "credentialsPrinted": false
+}

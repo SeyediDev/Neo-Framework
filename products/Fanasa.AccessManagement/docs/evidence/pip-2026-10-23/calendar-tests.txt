@@ -1,0 +1,63 @@
+PASS missing calendar state is empty
+PASS minute boundary denies immediately before opening
+PASS opening boundary is inclusive
+PASS subminute instant before closing allowed
+PASS closing boundary is exclusive
+PASS UTC instant resolves using tenant timezone
+PASS non-holiday does not restrict hours
+PASS closed weekday denies non-holiday
+PASS holiday overrides weekly opening
+PASS holiday denies whole-day policy
+PASS expired coverage fails closed
+PASS not-yet-valid coverage fails closed
+PASS cross-tenant identifier does not resolve
+PASS missing calendar fails closed
+PASS evaluation returns actual offset
+PASS overnight starts on originating day
+PASS overnight continuation uses preceding day
+PASS overnight end excluded
+PASS overnight continuation does not redefine next working day
+PASS destination holiday blocks night continuation at midnight
+PASS date opening replaces inherited night hours
+PASS date opening supplies own schedule
+PASS override end excluded
+PASS date exception may originate overnight shift
+PASS calendar cannot inherit an origin outside coverage
+PASS Saturday overnight crosses week boundary
+PASS data availability uses precise evaluator
+PASS data window cannot classify a working day
+PASS unknown mode fails closed
+PASS disabled calendar fails closed
+PASS both instants in repeated DST hour follow schedule
+PASS DST fold retains distinct offsets
+PASS DST fold closing instant excluded
+PASS spring gap uses first existing instant in window
+PASS spring DST end excluded
+PASS stale writer rejected
+PASS case-insensitive code uniqueness enforced
+PASS update cannot adopt absent identifier
+PASS Windows zone name rejected by IANA contract
+PASS unknown timezone rejected
+PASS invalid weekday rejected
+PASS invalid minute rejected
+PASS equal boundaries cannot imply all-day
+PASS weekly overlap rejected
+PASS overnight next-day overlap rejected
+PASS week-boundary overlap rejected
+PASS duplicate date exceptions rejected
+PASS closed exception cannot contain hours
+PASS open exception requires hours
+PASS uncovered exception rejected
+PASS reversed coverage rejected
+PASS rejected writes leave revision and audit intact
+PASS adjacent windows have no gap
+PASS full-day interval ends at midnight
+PASS CAS admits exactly one concurrent writer
+PASS historical snapshot preserved
+PASS state survives store restart
+PASS preview does not write audit events
+PASS calendar changes available in tenant audit
+PASS persisted cross-tenant binding corruption fails closed
+PASS persisted null collection fails closed
+PASS tenant deactivation invalidates calendar
+62 calendar checks passed.

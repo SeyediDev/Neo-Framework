@@ -1,0 +1,79 @@
+PASS guest sees published description/request but no launch
+PASS no grant keeps catalog service visible without launch
+PASS verified cross-owner consumer can launch
+PASS projection does not leak internal product fields
+PASS Forbidden cannot reuse launch grants
+PASS Unavailable cannot reuse launch grants
+PASS NotConfigured cannot reuse launch grants
+PASS SignInRequired cannot reuse launch grants
+PASS unselected consumer never launches
+PASS matching name/key alone is not a grant
+PASS mismatched central identity cannot launch
+PASS unpublished services hidden even when permitted
+PASS fourteen official centers use the real cloud audience
+PASS all action URLs reject unsafe schemes/credentials
+PASS adapter only exposes explicitly published metadata
+PASS adapter uses limited service credentials
+PASS v1 published-services route does not submit a guessed viewer or tenant
+PASS unapproved/invalid path stays disconnected: 
+PASS unapproved/invalid path stays disconnected: //evil.test/api
+PASS unapproved/invalid path stays disconnected: /api/platform/../products
+PASS unapproved/invalid path stays disconnected: /api/platform/%2e%2e/products
+PASS unapproved/invalid path stays disconnected: /api/platform/catalog?subject=other
+PASS invalid configuration makes no network calls
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS valid empty published catalog is distinct from outage
+PASS discovery read denial does not expose metadata
+PASS rejected scope is configuration error
+PASS transport sanitizes metadata links
+PASS unknown capability center fails closed
+PASS oversized metadata response is rejected, not silently truncated
+PASS HTML sign-in response is not a successful JSON catalog
+PASS token transport I/O failure becomes unavailable without exposing a response
+PASS interrupted catalog body discards all partial metadata
+PASS discovery stream outage preserves the independently verified workspace instead of failing the page
+PASS caller cancellation propagates
+PASS page joins metadata with its verified workspace and does not cache grants
+PASS AJAX workspace products expose only the five browser card fields
+PASS limited AJAX cards retain verified product identity and launch URL
+PASS full AJAX response omits registry internals and arbitrary product attributes
+PASS unsafe registry launch URL is removed from the server AJAX contract
+PASS mismatched consumer envelope never enables catalog launch
+PASS tampered tenant retains metadata but not launch
+PASS anonymous page does not expose private organization grants
+PASS local HTTP: server-rendered granted service has launch
+PASS local HTTP: server-rendered ungranted service has request, no launch
+PASS local HTTP: cloud service has the official center mount
+PASS local HTTP: authenticated HTTP workspace returns only no-store browser card fields
+PASS local HTTP: real loopback HTTP serialization excludes private product metadata while preserving authorized launch
+PASS local HTTP: anonymous HTTP projection has no private organizations and is no-store
+PASS local HTTP: anonymous AJAX sees both published services without any launch URL
+PASS local HTTP: tampered consumer cannot get a launch URL over HTTP
+PASS local HTTP: catalog script is actually served
+PASS redirect HTTP: control reproduces default 307 POST credential replay to a second loopback origin
+PASS redirect HTTP: 307 cross-origin token redirect fails closed for discovery and workspace; no secret replay
+PASS redirect HTTP: 307 cross-origin discovery redirect cannot supply catalog metadata
+PASS redirect HTTP: 307 cross-origin membership redirect does not forward the subject or query products
+PASS redirect HTTP: 307 cross-origin product redirect preserves verified membership but never launch permission
+PASS redirect HTTP: 307 same-origin token redirect fails closed for discovery and workspace; no secret replay
+PASS redirect HTTP: 307 same-origin discovery redirect cannot supply catalog metadata
+PASS redirect HTTP: 307 same-origin membership redirect does not forward the subject or query products
+PASS redirect HTTP: 307 same-origin product redirect preserves verified membership but never launch permission
+PASS redirect HTTP: 308 cross-origin token redirect fails closed for discovery and workspace; no secret replay
+PASS redirect HTTP: 308 cross-origin discovery redirect cannot supply catalog metadata
+PASS redirect HTTP: 308 cross-origin membership redirect does not forward the subject or query products
+PASS redirect HTTP: 308 cross-origin product redirect preserves verified membership but never launch permission
+PASS redirect HTTP: 308 same-origin token redirect fails closed for discovery and workspace; no secret replay
+PASS redirect HTTP: 308 same-origin discovery redirect cannot supply catalog metadata
+PASS redirect HTTP: 308 same-origin membership redirect does not forward the subject or query products
+PASS redirect HTTP: 308 same-origin product redirect preserves verified membership but never launch permission
+PASS redirect HTTP: production registrations never send credentials or viewer queries to either redirect target
+PASS redirect HTTP: ordinary direct JSON responses still produce catalog and verified grants
+PASS redirect HTTP: platform-control-token keeps its existing timeout
+PASS redirect HTTP: platform-control-catalog keeps its existing timeout
+PASS redirect HTTP: platform-control-discovery keeps its existing timeout
+78 service-discovery checks passed; API transport is stubbed, not deployed central acceptance.

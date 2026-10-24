@@ -1,0 +1,521 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Fanasa Organization HR Integration",
+    "version": "1.0.0",
+    "description": "Development HR API contract. Runtime access requires the configured service client, live tenant grants and the private Gateway mTLS connection. Publishing this contract alone does not activate an identity or pipeline."
+  },
+  "servers": [
+    {
+      "url": "https://api.fanasa.net.local/development/organization-hr/v1",
+      "description": "Development Gateway; activation status is shown in the authenticated OrganizationHr page."
+    },
+    {
+      "url": "https://{gatewayHost}/api/organization-hr/v1",
+      "description": "Prepared APISIX HR profile without URI rewrite; disabled until owner bindings and native acceptance are complete.",
+      "variables": {
+        "gatewayHost": {
+          "default": "gateway.example.invalid",
+          "description": "Replace only with the verified profile host."
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/tenants/{tenantId}/chart": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/TenantId"
+        }
+      ],
+      "get": {
+        "operationId": "readOrganizationChart",
+        "security": [
+          {
+            "hrOAuth": [
+              "organization.hr.read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current committed chart.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgState"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/tenants/{tenantId}/history/{revision}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/TenantId"
+        },
+        {
+          "name": "revision",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "maximum": 9223372036854775807
+          }
+        }
+      ],
+      "get": {
+        "operationId": "readOrganizationChartRevision",
+        "security": [
+          {
+            "hrOAuth": [
+              "organization.hr.read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historical committed chart snapshot.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgState"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "400": {
+            "description": "Revision must be positive."
+          },
+          "404": {
+            "description": "Revision not found."
+          }
+        }
+      }
+    },
+    "/tenants/{tenantId}/commands": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/TenantId"
+        }
+      ],
+      "post": {
+        "operationId": "executeOrganizationHrCommand",
+        "description": "Single chart operation. Idempotency-Key must equal requestId. Logical command retries return the original receipt revision; conflicting payloads are rejected. Organizational roles do not create software roles or grants. appointment.transfer and bulk replacement are unavailable. Metered unit.save cannot bypass admission.",
+        "security": [
+          {
+            "hrOAuth": [
+              "organization.hr.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CanonicalUuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrgCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Committed or exactly retried chart snapshot.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgState"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid command, JSON or idempotency header."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Referenced unit, position or appointment not found."
+          },
+          "409": {
+            "description": "Revision or idempotency conflict."
+          },
+          "413": {
+            "description": "Command body exceeds 65536 bytes."
+          },
+          "415": {
+            "description": "application/json required; charset if present must be utf-8; Content-Encoding must be absent."
+          },
+          "429": {
+            "description": "Gateway request limit exceeded; retry the same operation with backoff."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "hrOAuth": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://sso.fanasa.net.local/realms/fanasa/protocol/openid-connect/token",
+            "scopes": {
+              "organization.hr.read": "Read an explicitly authorized tenant chart.",
+              "organization.hr.write": "Modify an explicitly authorized tenant chart."
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "TenantId": {
+        "name": "tenantId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Missing or invalid signed service access token."
+      },
+      "Forbidden": {
+        "description": "Gateway trust, client, scope, service subject or current tenant authorization denied."
+      }
+    },
+    "schemas": {
+      "CanonicalUuid": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "not": { "const": "00000000-0000-0000-0000-000000000000" }
+      },
+      "CommandTimestamp": {
+        "type": ["string", "null"],
+        "format": "date-time",
+        "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,7})?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+        "description": "Explicit Z or offset; uppercase T/Z; optional 1-7 fractional digits. Calendar and offset validity are also checked."
+      },
+      "OrgCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "expectedRevision",
+          "operation",
+          "reason",
+          "requestId"
+        ],
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "maximum": 9223372036854775807
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "role.save",
+              "unit.save",
+              "unit.archive",
+              "position.save",
+              "position.archive",
+              "appointment.add",
+              "appointment.end"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200
+          },
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 80
+          },
+          "parentId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "department",
+              "division",
+              "team",
+              "branch",
+              null
+            ]
+          },
+          "unitId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0
+          },
+          "positionId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "subject": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/CanonicalUuid" },
+              { "type": "null" }
+            ],
+            "description": "Existing active tenant member subject, distinct from the configured HR service subject for appointment.add."
+          },
+          "from": {
+            "$ref": "#/components/schemas/CommandTimestamp"
+          },
+          "to": {
+            "$ref": "#/components/schemas/CommandTimestamp"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "roleId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "requestId": {
+            "$ref": "#/components/schemas/CanonicalUuid"
+          }
+        }
+      },
+      "OrgState": {
+        "type": "object",
+        "required": [
+          "tenantId",
+          "revision",
+          "units",
+          "positions",
+          "appointments",
+          "changes"
+        ],
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "uuid"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "active": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "unitId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "capacity": {
+                  "type": "integer"
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "roleId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "appointments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "positionId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "subject": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "to": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "roles": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "revision": {
+                  "type": "integer"
+                },
+                "actor": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "recordedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "operation": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

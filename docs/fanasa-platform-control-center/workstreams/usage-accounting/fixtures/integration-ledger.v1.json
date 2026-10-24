@@ -1,0 +1,33 @@
+{
+  "Synthetic": true,
+  "DebitCount": 1,
+  "Total": 12,
+  "Currency": "IRR",
+  "Charged": {
+    "Disposition": "charged",
+    "ChargeId": "f922ab53-b7c0-c072-3470-c190b8dc7e60",
+    "Amount": 12
+  },
+  "Charges": [
+    {
+      "Id": "f922ab53-b7c0-c072-3470-c190b8dc7e60",
+      "Key": "measured:v1:04694a5032b0db19d6dedfecad2ecf984ce5138ca7bdb4f7eab7a971e0aa8975",
+      "Kind": "usage",
+      "ProductKey": "organization-fabric",
+      "Metric": "organization.change",
+      "Quantity": 1,
+      "Amount": 12,
+      "At": "2026-10-10T08:00:00+00:00",
+      "Actor": "33333333-3333-4333-8333-333333333333",
+      "Reference": "fixture://organization/55555555-5555-4555-8555-555555555555",
+      "InvoiceId": null,
+      "UnitPrice": 12
+    }
+  ],
+  "OwnerOutstanding": 0,
+  "BackendExecutions": 1,
+  "Receipts": 2,
+  "UsageRecords": 1,
+  "ChargedOutboxRecords": 1,
+  "BillableBoundary": "organization-unit-committed/v1"
+}

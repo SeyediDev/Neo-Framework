@@ -1,0 +1,238 @@
+{
+  "manifestVersion": "3.0.0",
+  "recordedOn": "2026-10-12",
+  "deliveryId": "xacml-guided-db-20261012-04",
+  "deployedToVps": true,
+  "environment": "development",
+  "productionConnected": false,
+  "apiProtection": "SSO cookie + PlatformAdmin + CSRF",
+  "storage": "SQLite",
+  "databaseSchemaVersion": 1,
+  "coreEngineCopiesMatch": true,
+  "nativeEngineSha256": "e4c51e133c9948e140b6f48a015cb99e6c831292ca1c354459bc527cf7748fc1",
+  "releaseManifestSha256": "ef700593bf66e4ce27efa28de4fb059357d978d6119a05c226a2f10ec9052797",
+  "archiveSha256": "21a0564284c9e3e31d458d437b890e0a74f19917d2f37851fef99264cd8c4f8b",
+  "verification": {
+    "nativeCompleteSuite": 15,
+    "nativeFinalAffectedSuite": 8,
+    "nativeUniqueGroups": 18,
+    "typedMaintenanceProbeChecks": 4,
+    "proxyBoundary": 23,
+    "workbenchBrowser": 37,
+    "nativeBuildWarnings": 0,
+    "nativeBuildErrors": 0,
+    "vpsPreflight": "passed on independent clone",
+    "vpsSourceStatePreserved": true,
+    "vpsActualServiceRestart": "passed",
+    "vpsHealthy": true,
+    "vpsReadinessChecks": 15,
+    "vpsStateSha256": "85bead3b564a512640438cb881f0cb0b9c027a042e94e7ec3882b8594cf50ab2",
+    "authenticatedLiveConfigurationValidation": "passed",
+    "desktopAndMobileVisualReview": "passed"
+  },
+  "previousRelease": "xacml-workbench-20261012-03",
+  "stateBackupRetained": true,
+  "url": "https://platform.fanasa.net.local/PolicyWorkbench#workbench",
+  "files": [
+    {
+      "path": "deploy/fanasa-access-management/prepare-xacml-release.ps1",
+      "sha256": "377868b142b54cec532cb5f2f82b0792c03e72426df2fa4813ea751b5f5e2a81"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/Directory.Packages.props",
+      "sha256": "1d7fab59ab429ae77e7f338342e47d2261f6a2586d77fa2e0f487a4bd6cbaffd"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/README.md",
+      "sha256": "bc30ed5965c27340578f26111c35dae839e5a51e0ecf8ca32cd57c10f16fc6ed"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/EVIDENCE-GUIDED-DATABASE-2026-10-12.md",
+      "sha256": "cfad508b136059ff54836e50605894c3e18107c2f09e57f44ad36927f8205ad0"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/index.html",
+      "sha256": "f05ced17e26ea669a290c91d7dafd59668b11f0792b62b29be3117648c3c3130"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/app.js",
+      "sha256": "73f6063b51768f9a27e5622b761ee2b8c9fa8061850d491088270c4e00905db1"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/styles.css",
+      "sha256": "fd25f4e767f16c3a5e5de3866410bd67b59e987cf22d3c7f70c6640b978f8097"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/workbench.js",
+      "sha256": "0e1f6c59ef7b15bd268a4e26582eeaedc1722e904af52b6d2026e3957f1ed667"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/workbench.css",
+      "sha256": "4d78893a1722d846103eda864eef5ab7b64557dce6a76682634231ad95378c39"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/serve.cjs",
+      "sha256": "8468503a980c0afdc236f4902b371ddcab52b105fb5ced687e7f0d845a37db8c"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/qa.cjs",
+      "sha256": "add59f78468623359c754b8166233a70dbdfdfebc1906fdd337d485c59479cb7"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/qa-workbench.cjs",
+      "sha256": "8c6f7a655282845c7ef9343b798397a4333ca6b571b0eb5055da27d8c804d683"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/Fanasa.ContractPolicy.Workbench.csproj",
+      "sha256": "4f352624bd55f7e00a2865c97446251f1b65fef32a60e79b494f1174e6c4c36b"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/Models.cs",
+      "sha256": "d92b7edc20025a086b62e8ce243d4ec269bfb0f653319f4a9778f7b74e497a5c"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/Program.cs",
+      "sha256": "8ed74e20479d780ff6901486a00ef485176981c13d6628a46591b81f178d2075"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/WorkbenchStore.cs",
+      "sha256": "4f6bc89a38becd90665d71b1091c45afe656dee15ebef607472f10f02be8a6fb"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/WorkbenchDatabase.cs",
+      "sha256": "a02de5b8635fd30c594238413b9b17e71faa291a1df99950aaff359a72d27d13"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/WorkbenchIntegrity.cs",
+      "sha256": "657e1532bd2c363ce5d69b73b55d7ab9fc1438c1d98b5464d52611d56153c32d"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/WorkbenchEvaluation.cs",
+      "sha256": "bceacfa69177bc7945c269254166ad780e5b8564795c3b5f876159cb41e86898"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/WorkbenchGuidance.cs",
+      "sha256": "d1ec84e18c49e42f021180b973af86b938adbcc668cd7cd3eba7bf4eebe031e8"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/README.md",
+      "sha256": "c9c07263be7d15903b595c95934dfe2d7a459313bbb2c0c1f6f9549654e5fba8"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/EVIDENCE.md",
+      "sha256": "24ecc9ddebc64735384bbf3740ee1d9f76ff0933442c2c8ece258992aa5f7ace"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/Fixtures/integration-context.v2.json",
+      "sha256": "e342d4a6566be9fd519ffdfb811db723a06f6ba48b613b5b5eac89fb6fe35341"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/Fixtures/integration-projection.v2.json",
+      "sha256": "de5eb67aa592fcee7fa2448ec39e4448483ac88d954dd5386fa9fb61463e3291"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/workbench.test.mjs",
+      "sha256": "4cfab82967efcfc3ead3c68e5fa726fa00ea957e746c1934172bdd7395ebeeba"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/runtime-integrity.test.mjs",
+      "sha256": "ba8aa62deea0b73873daa53254cc5e98f090949cbf4fb5e850040fe31703a456"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/tests/DatabaseFreshness.Probe/Program.cs",
+      "sha256": "bb2a5bac4538268fe8ff3709b0bae2d4e2aec20bc29b84a802f4e1ff4d18a9bd"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/server/tests/DatabaseFreshness.Probe/DatabaseFreshness.Probe.csproj",
+      "sha256": "4a0a42a2b69b2a31f04c42ed08ed7b820e98e28ad087264292474b8de83e9c9c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Program.cs",
+      "sha256": "e0309216dcbe36f0238a39e7895a592967bc1d01e4ba541db85f3b58600e02c2"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj",
+      "sha256": "7f5ed7b1778c922e79da657e97bba01fcd8fe55dfc656eb2a6cd5f81805d650c"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/WorkbenchApi.cs",
+      "sha256": "3b6c2945dfc78e4241a54ad489b5258bfad73941f35fc766673d74771fac30ee"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/PolicyWorkbench.cshtml",
+      "sha256": "9b369217892d59541d5fb28d275de939e9aa9bcc87a5c5f1c029d064a2695a9e"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/PolicyWorkbench.cshtml.cs",
+      "sha256": "d195ed96e79dfbf1ba92bf5abaa915f4208e43895cce12860fc4d01a90ea43df"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/docs/GOVERNANCE-XACML.md",
+      "sha256": "f9d53f15ae03372c5560463c1b746042bf28a21598d752c99c5ad593e94c2a47"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/tests/Workbench.Boundary.Tests/Program.cs",
+      "sha256": "5fb55758e38d3d85c809ac4f25c184ae1e463cb22ad11aef0e0787410c321edd"
+    },
+    {
+      "path": ".build/workbench-runtime-integrity-final-20261012.tap",
+      "sha256": "55d487ba3ba1436cfae07efdc88ee768efdbb41191eb8066507025495f523b3d"
+    },
+    {
+      "path": ".build/workbench-runtime-freshness-final-20261012.tap",
+      "sha256": "462d795597e5bf21f8839b5b389016d3cad6075b7541c48418bed8e762a53984"
+    },
+    {
+      "path": ".build/vps-guided-verification-20261012.log",
+      "sha256": "400c236da2bc756e7d1519776b556a8ba776589fe564ff61a23c2a7fba2807d3"
+    },
+    {
+      "path": ".build/vps-guided-deploy.sh",
+      "sha256": "105a4794156ac3eb3768bfd7bc26d0d90724fbfd5f042c770e9c877bcac76844"
+    },
+    {
+      "path": ".build/vps-guided-preflight.sh",
+      "sha256": "69a2bbb4bd433f31141a494ba885cd05ed6e6273d5153dc85951206122ef35ba"
+    },
+    {
+      "path": ".build/vps-guided-verify.sh",
+      "sha256": "83a32e892cfb095c6a4e52b81dd3297bfa900795d307e6fc34c722fe195a90e5"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/qa-workbench-results.json",
+      "sha256": "7ab007bb632911d354fdb3316811528c6366a478997a2cb7baedb82cf7d0ba22"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-desktop-policy.png",
+      "sha256": "fd54330815c79b1add7e61cbb8812247f7bf94284964eaa167ee56af94acc03e"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-desktop-audit.png",
+      "sha256": "89c3330402a648fc4e2ff2a0bd980927e65eeceb4ef7ae88465ee206e5424beb"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-desktop-decision.png",
+      "sha256": "27305669f5ec9c5b8b7fa2fc288a3fe214a89c5196635012b4be7ac7599b2021"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-desktop-execution.png",
+      "sha256": "161190e7b8c483f9228d95f9288a8e3ce9b549f00ec6ee731ff77b8b50d7c862"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-mobile-policy.png",
+      "sha256": "ef9eb708d11bde35f67adf4ec6131496c9a04aa836f0d5c7d5ef00c84183808c"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-mobile-request.png",
+      "sha256": "79be2dda5aff1e4eee82c44e3332e141edd7bb46abd5b5b06eda81b53bca70d3"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-mobile-guide.png",
+      "sha256": "850a66fd16442985a64afbccb7c6b274618a9f8889c7c27aaedd6e041631b2ad"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/ui/evidence/workbench-vps-guided-validation.jpg",
+      "sha256": "e0c633075e24aee0d0edbb24a5264975aedf29e6c700ec59ccfca97716622841"
+    }
+  ]
+}

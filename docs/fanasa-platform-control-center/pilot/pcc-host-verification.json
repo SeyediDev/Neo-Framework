@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0",
+  "workdir": "E:/SJVS/Projects/Neo",
+  "command": "dotnet run --disable-build-servers --artifacts-path .build/pcc-host-repair --project docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Pcc.Tests/Fanasa.ContractPolicy.Pcc.Tests.csproj --no-restore -p:UseSharedCompilation=false -p:BuildInParallel=false --verbosity minimal *> .build/pcc-host-repair/verified.log",
+  "exitCode": 0,
+  "passed": 114,
+  "failed": 0,
+  "logPath": ".build/pcc-host-repair/verified.log",
+  "logSha256": "d5310b4ec79df64a314e8541316dae701f61edfb0df6a060b32e3470e812e7e7",
+  "beforeAfterSourceStable": true,
+  "sourceHashes": [
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyHost.cs",
+      "beforeSha256": "f391432bd182f0024bfb1870c7533059cf8b8cd27deb6a67b6ef1c717c5e4b63",
+      "afterSha256": "f391432bd182f0024bfb1870c7533059cf8b8cd27deb6a67b6ef1c717c5e4b63"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyApi.cs",
+      "beforeSha256": "5842999f69b43c4e3316c38ca83bcb46bfe75db98cc76fa5a7b7d70dec115c0d",
+      "afterSha256": "5842999f69b43c4e3316c38ca83bcb46bfe75db98cc76fa5a7b7d70dec115c0d"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicySecurity.cs",
+      "beforeSha256": "c1f1265578c49db87601019dd7a315c57d14e88b9e553df82eeec4a0356a5daa",
+      "afterSha256": "c1f1265578c49db87601019dd7a315c57d14e88b9e553df82eeec4a0356a5daa"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyStore.cs",
+      "beforeSha256": "db056a11a0a2e4fbd342d113bd9978e599bc6f989e776c2ee3331a784c3de471",
+      "afterSha256": "db056a11a0a2e4fbd342d113bd9978e599bc6f989e776c2ee3331a784c3de471"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Pcc.Tests/Program.cs",
+      "beforeSha256": "990d9adcf37142d55fced8a6fcda35614e96fb9a61df7b084c00dfdf92661193",
+      "afterSha256": "990d9adcf37142d55fced8a6fcda35614e96fb9a61df7b084c00dfdf92661193"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs",
+      "beforeSha256": "be06c166e6daa4e676936e82cc0e70475c333ea44b41b9ac0b6fa0001944e238",
+      "afterSha256": "be06c166e6daa4e676936e82cc0e70475c333ea44b41b9ac0b6fa0001944e238"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj",
+      "beforeSha256": "d0d0bfdbcf037f7e05f6dcfc2975d2e1c73d7ca27bd0bd6308bb587445e4ebae",
+      "afterSha256": "d0d0bfdbcf037f7e05f6dcfc2975d2e1c73d7ca27bd0bd6308bb587445e4ebae"
+    },
+    {
+      "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Program.cs",
+      "beforeSha256": "0989f31f992121930442c99e3dbf013621f007d843863c08c27cf77cf4d54d77",
+      "afterSha256": "0989f31f992121930442c99e3dbf013621f007d843863c08c27cf77cf4d54d77"
+    }
+  ],
+  "limitation": "This run uses the current PCC host components, real Kestrel/JWT validation and temporary SQLite with synthetic identities, RSA keys, contracts, allocations and obligation executors. It does not prove a real signed commercial contract/rate/amendment, live product/client/grant bindings, a configured Gateway obligation executor, or real Gate 3 readiness. Hash stability records the before/after observations for this completed run."
+}

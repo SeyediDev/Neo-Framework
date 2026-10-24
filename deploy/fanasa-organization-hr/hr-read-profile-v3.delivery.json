@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "fanasa.hr-read.delivery-status.v1",
+  "recordedAtUtc": "2026-10-14T22:14:06Z",
+  "sourcePackage": "hr-read-profile-v3/SOURCE-PACKAGE.json",
+  "sourcePackageSha256": "9875088ffe6e3efc9553b0ca42873fa52b8a05d23d8101acd084c69e16b82329",
+  "localSourceFiles": 80,
+  "byteVerified": true,
+  "tests": {
+    "coreAndFabricAssertions": 314,
+    "httpEnvelopeAndLoopbackAssertions": 185,
+    "legacyRegressionPassed": 344,
+    "failed": 0
+  },
+  "reviewPublication": {
+    "status": "awaiting-explicit-upload-approval",
+    "project": "javadsayedi/organization-hr-api",
+    "branch": "codex/hr-read-profile-v3",
+    "createOnly": true,
+    "protectedDevelopExpected": "597dab599177f98f7d260d00c72adb736614ad42",
+    "uploadPerformed": false,
+    "branchCreated": false,
+    "reason": "Automatic approval review rejected uploading this sensitive HR source payload to the VPS as a GitLab intermediary without specific approval."
+  },
+  "operationalBindingReady": false,
+  "operationalAcceptance": false,
+  "currentHrPanelUrl": "https://platform.fanasa.net.local/OrganizationHr",
+  "acceptedPipelineUrl": "https://gitlab.fanasa.net.local/javadsayedi/organization-hr-api/-/pipelines/10",
+  "remainingOperationalInputs": [
+    "Accepted HR3 Gateway sender with witness lifetime at most five seconds",
+    "Trusted key/pin sources and authenticated unique introspection consumer mapping",
+    "Authoritative HR3 contract/allocation/grant and current host guards/store/PDP integration",
+    "Live mTLS/introspection/provisioning/observation acceptance before cutover"
+  ],
+  "argocdLivenessRepair": "Verified live timeout five seconds; source persistence remains a documented proposal due to installation-values mismatch."
+}

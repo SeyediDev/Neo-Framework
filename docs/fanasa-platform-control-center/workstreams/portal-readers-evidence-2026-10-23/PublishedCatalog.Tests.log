@@ -1,0 +1,66 @@
+PASS anonymous catalog denied
+PASS admin cookie cannot replace reader bearer
+PASS anonymous publication denied
+PASS missing administrator publication returns 204
+PASS missing publication has no response content
+PASS member publication denied
+PASS reader bearer cannot read administrator publication
+PASS reader bearer cannot publish
+PASS publication requires antiforgery
+PASS registration and malicious Attributes do not publish products
+PASS reader identity denied: wrong-client
+PASS reader identity denied: wrong-scope
+PASS reader identity denied: duplicate-client
+PASS reader identity denied: missing-sub
+PASS reader identity denied: missing-exp
+PASS reader identity denied: expired
+PASS reader identity denied: duplicate-exp
+PASS reader identity denied: future-nbf
+PASS reader identity denied: conflicting-client-id
+PASS reader identity denied: inactive-token
+PASS delegation query rejected
+PASS missing configuration fails closed
+PASS live client deactivation takes effect
+PASS live registered scope required
+PASS unsafe link denied: javascript:alert(1)
+PASS unsafe link denied: http://platform.fanasa.net.local/service
+PASS unsafe link denied: https://public.example/service
+PASS unsafe link denied: https://user:secret@platform.fanasa.net.local/service
+PASS unsafe link denied: https://platform.fanasa.net.local:8443/service
+PASS unsafe link denied: https://platform.fanasa.net.local.evil.example/service
+PASS unsafe link denied: https://platform.fanasa.net.local/service#fragment
+PASS empty public description denied
+PASS public description bounded
+PASS publication reason required
+PASS unknown central product denied
+PASS rejected requests leave no publication audit
+PASS administrator explicitly publishes
+PASS catalog response is no-store
+PASS published metadata references same central product
+PASS transport exposes only approved public fields
+PASS unestablished official links remain null
+PASS private registry metadata excluded
+PASS publication grants no product access
+PASS stale revision cannot overwrite publication
+PASS publication records authenticated actor
+PASS publication audit emitted exactly once
+PASS publication survives database reopen
+PASS explicit approved host links accepted
+PASS audit failure returns sanitized outage
+PASS audit failure rolls back publication change
+PASS administrator explicitly withdraws publication
+PASS withdrawn publication disappears immediately
+PASS withdrawal remains durable administrator evidence
+PASS publication changes and withdrawal have atomic audit
+PASS publish lifecycle fixture with an approved official link
+PASS administrator can inspect publication after owner deactivation
+PASS administrator can withdraw publication after owner deactivation
+PASS withdrawal preserves identity and clears public links
+PASS withdrawn inactive-owner publication stays hidden after owner restoration
+PASS republish lifecycle fixture before official host retirement
+PASS retired official host fails closed while publication is active
+PASS administrator can inspect publication after official host retirement
+PASS administrator can withdraw publication after official host retirement
+PASS retired host cannot leave the withdrawn catalog unavailable
+PASS lifecycle withdrawals retain one atomic audit per change
+65 checks passed

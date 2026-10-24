@@ -3,6 +3,7 @@ using System.Text.Json;
 using Fanasa.AccessManagement.Web.Application.Access;
 using Fanasa.AccessManagement.Web.Persistence;
 using Fanasa.AccessManagement.Web.Accounting;
+using Fanasa.AccessManagement.Web.Metering;
 using Fanasa.AccessManagement.Web.Security;
 
 namespace Fanasa.AccessManagement.Web.Organization;
@@ -32,13 +33,26 @@ public sealed class OrganizationStore
     private readonly bool requireSubscription;
     private readonly FabricDatabase? database;
     private readonly AccountingStore? accounting;
-    public OrganizationStore(string directory, IAccessManagement access, bool requireSubscription = false, FabricDatabase? database = null, AccountingStore? accounting = null)
+    private readonly OrganizationUsageMetering? metering;
+    private readonly MeasuredUsageStore? measuredUsage;
+    private readonly ContractPolicies.IContractPolicyGatewayCommitGuard? gatewayCommitGuard;
+    private readonly TemporalAccessGate? temporalAccess;
+    public OrganizationStore(string directory, IAccessManagement access, bool requireSubscription = false, FabricDatabase? database = null,
+        AccountingStore? accounting = null, OrganizationUsageMetering? metering = null, MeasuredUsageStore? measuredUsage = null,
+        ContractPolicies.IContractPolicyGatewayCommitGuard? gatewayCommitGuard = null, TemporalAccessGate? temporalAccess = null)
     {
         this.directory = Path.GetFullPath(directory);
         this.access = access;
         this.requireSubscription = requireSubscription;
         this.database = database; this.accounting = accounting;
+        if (temporalAccess is not null && database is null) throw new ArgumentException("Temporal commit checks require the shared transactional database.");
         if (accounting is not null && (database is null || !ReferenceEquals(database, accounting.Database))) throw new ArgumentException("Organization metering requires the shared transactional database.");
+        if (measuredUsage is not null && (database is null || !ReferenceEquals(database, measuredUsage.Database))) throw new ArgumentException("Measured organization usage requires the shared transactional database.");
+        if (metering?.Enabled == true && measuredUsage is null || measuredUsage is not null && metering is null) throw new ArgumentException("Organization usage metering requires its measured usage store and context resolver together.");
+        if (accounting is not null && metering?.Enabled == true) throw new ArgumentException("Legacy organization metering and measured organization usage cannot both be enabled.");
+        this.metering = metering; this.measuredUsage = measuredUsage;
+        this.gatewayCommitGuard = gatewayCommitGuard;
+        this.temporalAccess = temporalAccess;
         Directory.CreateDirectory(this.directory);
     }
     public OrgState Read(Guid tenant)
@@ -52,14 +66,36 @@ public sealed class OrganizationStore
                 ?? throw new InvalidDataException("Invalid organization data.") : new(tenant, 0, [], [], [], []);
         }
     }
-    public OrgState Execute(Guid tenant, OrgCommand command, string actor)
-        => database is null ? ExecuteCore(tenant, command, actor) : database.Transaction(() => ExecuteCore(tenant, command, actor));
-    private OrgState ExecuteCore(Guid tenant, OrgCommand command, string actor)
+    public OrgState Execute(Guid tenant, OrgCommand command, string actor, ClaimsPrincipal? principal = null)
+    {
+        OrgState ExecuteChecked()
+        {
+            void RequireTimeAccess()
+            {
+                if (temporalAccess?.IsEnabled(tenant) == true && (principal?.Identity?.IsAuthenticated != true
+                    || OrgAuthorization.Subject(principal) != actor || !temporalAccess.Allows(tenant, actor, "organization.write")))
+                    throw new UnauthorizedAccessException("محدودیت زمانی سازمان اجازهٔ ثبت این تغییر را نمی‌دهد.");
+            }
+            RequireTimeAccess();
+            var guarded = metering?.Enabled == true && command.Operation == "unit.save";
+            if (guarded) gatewayCommitGuard?.ValidateCommit(tenant, actor, command, principal);
+            var result = ExecuteCore(tenant, command, actor, principal);
+            if (guarded) gatewayCommitGuard?.ValidateCommit(tenant, actor, command, principal);
+            RequireTimeAccess();
+            return result;
+        }
+        return database is null ? ExecuteChecked() : database.Transaction(ExecuteChecked);
+    }
+    private OrgState ExecuteCore(Guid tenant, OrgCommand command, string actor, ClaimsPrincipal? principal)
     {
         lock (gate)
         {
             var state = Read(tenant);
             if (command.RequestId is not null && (string.IsNullOrWhiteSpace(command.RequestId) || command.RequestId.Length > 100)) throw new ArgumentException("شناسه درخواست معتبر نیست.");
+            var measuredUnitSave = metering?.Enabled == true && command.Operation == "unit.save";
+            // Fresh authorization applies even to receipts. Pricing is resolved only
+            // after the receipt check, so retries preserve the original charge.
+            if (measuredUnitSave) metering!.ValidateInvocation(tenant, command, actor, principal);
             var fingerprint = JsonSerializer.Serialize(command with { ExpectedRevision = 0 });
             if (database is not null && command.RequestId is not null && database.Read<OrgReceipt>("organization.receipt", $"{tenant}:{command.RequestId}") is { } receipt)
             {
@@ -69,6 +105,7 @@ public sealed class OrganizationStore
             if (state.Revision != command.ExpectedRevision) throw new InvalidOperationException("ساختار تغییر کرده است؛ دوباره بارگذاری کنید.");
             if (string.IsNullOrWhiteSpace(actor) || string.IsNullOrWhiteSpace(command.Reason) || command.Reason.Length > 1000)
                 throw new ArgumentException("دلیل تغییر و شناسه عامل الزامی است.");
+            var usageAdmission = measuredUnitSave ? metering!.Admit(tenant, command, actor, principal!, fingerprint) : null;
             var units = state.Units.ToList(); var positions = state.Positions.ToList(); var appointments = state.Appointments.ToList();
             var roles = (state.Roles ?? []).ToList();
             switch (command.Operation)
@@ -146,10 +183,15 @@ public sealed class OrganizationStore
                     break;
                 default: throw new ArgumentException("عملیات ناشناخته است.");
             }
-            var change = new OrgChange(Guid.NewGuid(), state.Revision + 1, actor, command.Reason.Trim(), DateTimeOffset.UtcNow, command.Operation);
+            var change = new OrgChange(Guid.NewGuid(), state.Revision + 1, actor, command.Reason.Trim(),
+                measuredUnitSave ? metering!.GetUtcNow() : DateTimeOffset.UtcNow, command.Operation);
             var result = new OrgState(tenant, state.Revision + 1, units.ToArray(), positions.ToArray(), appointments.ToArray(), [..state.Changes, change], roles.ToArray());
             if (database is not null)
             {
+                // Only unit.save is billable in the new profile. Usage, its charge,
+                // domain/history, receipt and outbox commit in this outer transaction.
+                if (usageAdmission is not null)
+                    measuredUsage!.Accept(metering!.CreateCompleted(usageAdmission, result));
                 if (accounting is not null)
                 {
                     var account = accounting.Read(tenant).Account;

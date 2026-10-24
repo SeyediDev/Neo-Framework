@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "fanasa.gateway-private-image-upload.v1",
+  "passed": true,
+  "uploadCompleted": true,
+  "archiveScope": {
+    "exactImageCount": 3,
+    "exactRepoTagsVerified": true,
+    "ociNamesVerified": true,
+    "manifestConfigBlobHashesVerified": true,
+    "configPlatformDiffIdsVerified": true,
+    "safeTarMembersVerified": true,
+    "layerCountIncludingShared": 22
+  },
+  "preflight": {
+    "schemaVersion": "fanasa.gateway-image-delivery.v1",
+    "passed": true,
+    "stage": "prepare",
+    "existingDockerOnly": true,
+    "registryConfigurationChanged": false,
+    "trustChanged": false,
+    "sequentialImport": true,
+    "images": [
+      {
+        "reference": "python:3.12.10-slim-bookworm",
+        "alreadyVerified": false
+      },
+      {
+        "reference": "redis:7.4.6-bookworm",
+        "alreadyVerified": false
+      },
+      {
+        "reference": "apache/apisix:3.14.1-debian",
+        "alreadyVerified": false
+      }
+    ],
+    "remoteDirectory": "/var/tmp/fanasa-gateway-images-20261010t141456z-4f51d40a",
+    "memoryAvailableBytes": 1835077632
+  },
+  "import": {
+    "schemaVersion": "fanasa.gateway-image-delivery.v1",
+    "passed": true,
+    "stage": "import",
+    "existingDockerOnly": true,
+    "registryConfigurationChanged": false,
+    "trustChanged": false,
+    "sequentialImport": true,
+    "images": [
+      {
+        "reference": "python:3.12.10-slim-bookworm",
+        "archiveSha256": "ca1bc7fc668c5a9157bc991801e5bc30b4c7908df2d861a43a4bb9e3ecdbecc0",
+        "archiveBytes": 209377280,
+        "manifestDigest": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+        "imageId": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+        "os": "linux",
+        "architecture": "amd64",
+        "rootfsDiffIds": [
+          "sha256:ace34d1d784c01e3f9d156687089e8f58f786e23ccd097bdbbf337d6d28b3783",
+          "sha256:edf2e8d9a6f19eeb93e6adb712ccda0d8e687effd6a79400f258d957f40321a1",
+          "sha256:4a0992abe543a127be2561cc40cd50315516bfbf9d6169f06f3f8d30166fa6ab",
+          "sha256:de0b11a690a6e81271e41db48dea18fc39104f7ba2034e2ecf6971586f66021b"
+        ],
+        "alreadyVerified": false
+      },
+      {
+        "reference": "redis:7.4.6-bookworm",
+        "archiveSha256": "ca1bc7fc668c5a9157bc991801e5bc30b4c7908df2d861a43a4bb9e3ecdbecc0",
+        "archiveBytes": 209377280,
+        "manifestDigest": "sha256:6a11fed904cf317684ebb75bfe987d4f777c605d6f4e98d1bf3066db6c58f0c1",
+        "imageId": "sha256:6a11fed904cf317684ebb75bfe987d4f777c605d6f4e98d1bf3066db6c58f0c1",
+        "os": "linux",
+        "architecture": "amd64",
+        "rootfsDiffIds": [
+          "sha256:d6d0586ce8024205fd00d811876170571638957b5095d7e9dd1d015345c8d069",
+          "sha256:6fcfc553909845fa81f41be1abb58230fcf0b37836b5299e36e68cbab3060d46",
+          "sha256:67ddf0db316b5d32081a38aad068f8cc592cf2e958eb607d43d1f2cd8978de5a",
+          "sha256:6f5ff7f211593b65be17a83b7b62245eed142c30c7f850c1ef53735692f28a53",
+          "sha256:c064b08fd97d88fba9a5f20a8ef569a5b16c46bdef0f9e78f617bed2bb74e296",
+          "sha256:28731d7170a205024ddaed63d3ef39c926c99c2b00356421177ea6d7757833c4",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:0e2b13b72cd35d3bf53f128797c3547bbff9f348d187b3bda86a856ac9754e32"
+        ],
+        "alreadyVerified": false
+      },
+      {
+        "reference": "apache/apisix:3.14.1-debian",
+        "archiveSha256": "ca1bc7fc668c5a9157bc991801e5bc30b4c7908df2d861a43a4bb9e3ecdbecc0",
+        "archiveBytes": 209377280,
+        "manifestDigest": "sha256:4674c13b9be69447f97e84fa476a0c65e8cd2d8262ffa8c7d6a7330224ff06ff",
+        "imageId": "sha256:4674c13b9be69447f97e84fa476a0c65e8cd2d8262ffa8c7d6a7330224ff06ff",
+        "os": "linux",
+        "architecture": "amd64",
+        "rootfsDiffIds": [
+          "sha256:a90c6d363f64891ca4c1bf6a00776b28e2818b4dbcd386fc95e36241efac6aab",
+          "sha256:c019f563be9ebe8f17aa7eaa2402e07b6ce3ba91566f8ef4a61f7eab1b235b74",
+          "sha256:9d92332a5ec659193bb6e752893db245621cb291ba44e76c3fd814bb7946b711",
+          "sha256:f1858aafe13def0087c26793c1f23d846cd390d3d89db1c47d548f3a5b6b7e78",
+          "sha256:11c00a788549208346778f0b4a778be52836d27d4fbe33cc915b04cb2963a935",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:fc178c315bc0fb43a6652d75b79fe28ce0426b6bcbc0cf01a040771b6cecf734",
+          "sha256:4d1d13c82d8e443c97a86a0fb2ecfe521b6ff627099add666c67059cfb3b344c",
+          "sha256:6dc5d3a7ede53612083400b20e8c6309ec823a1f42f77f6c4ee336d195d3891a",
+          "sha256:921a04692a022e5bfe5d98c1f723773f59b40b1650aeeb359ee5738e280b414e"
+        ],
+        "alreadyVerified": false
+      }
+    ],
+    "loadSeconds": 19.992,
+    "remoteDirectory": "/var/tmp/fanasa-gateway-images-20261010t141456z-4f51d40a",
+    "memoryAvailableBytes": 2049916928
+  }
+}

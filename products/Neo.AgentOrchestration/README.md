@@ -109,6 +109,11 @@ OrchestrationApi:BaseUrl supports HTTPS, or loopback HTTP for local development.
 
 ## Optional work-provider direction
 
+The optional [private GitLab Kanban display](tools/gitlab-display/README.md) now
+provides a one-way, scoped API-to-Issues mirror, durable mappings, private-content
+allowlisting and a hardened Linux timer. This does not implement the full
+bidirectional provider contract or enable agent execution from GitLab.
+
 The explicit [native runtime installer and panel readiness connection](docs/AGENT-RUNTIME-INSTALL.md)
 now cover pinned non-root Hermes/OpenCode/Codex installation images and scoped,
 fresh authenticated liveness observations. This is separate from the disabled

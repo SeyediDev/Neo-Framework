@@ -1,0 +1,1578 @@
+{
+  "schemaVersion": "fanasa.hr-read.argocd-repair-observation.v1",
+  "observedAtUtc": "2026-10-14T21:27:56.943189+00:00",
+  "readOnly": true,
+  "deployment": {
+    "uid": "cdcb2c5e-7d2e-4a45-aff1-b618c8bc0b98",
+    "generation": 3,
+    "specSha256": "c25ef9c5aa39c31f4a97ac22d85c1648c280cc84fb0c4c7829699d06206633a2",
+    "sanitizedSpec": {
+      "progressDeadlineSeconds": 600,
+      "replicas": 1,
+      "revisionHistoryLimit": 3,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/instance": "argocd",
+          "app.kubernetes.io/name": "argocd-repo-server"
+        }
+      },
+      "strategy": {
+        "rollingUpdate": {
+          "maxSurge": "25%",
+          "maxUnavailable": "25%"
+        },
+        "type": "RollingUpdate"
+      },
+      "template": {
+        "metadata": {
+          "annotations": {
+            "checksum/cm": "cbe45a83b45ca7ce39188782de74a95c9925f9c6880ebcec2750449a5c4979ea",
+            "checksum/cmd-params": "6c9cb851053d64535cbf9958b67194aecbad6753d94613a10c6762a67ada7c4c"
+          },
+          "creationTimestamp": null,
+          "labels": {
+            "app.kubernetes.io/component": "repo-server",
+            "app.kubernetes.io/instance": "argocd",
+            "app.kubernetes.io/managed-by": "Helm",
+            "app.kubernetes.io/name": "argocd-repo-server",
+            "app.kubernetes.io/part-of": "argocd",
+            "app.kubernetes.io/version": "v3.5.3",
+            "helm.sh/chart": "argo-cd-10.9.6"
+          }
+        },
+        "spec": {
+          "affinity": {
+            "podAntiAffinity": {
+              "preferredDuringSchedulingIgnoredDuringExecution": [
+                {
+                  "podAffinityTerm": {
+                    "labelSelector": {
+                      "matchLabels": {
+                        "app.kubernetes.io/name": "argocd-repo-server"
+                      }
+                    },
+                    "topologyKey": "kubernetes.io/hostname"
+                  },
+                  "weight": 100
+                }
+              ]
+            }
+          },
+          "automountServiceAccountToken": true,
+          "containers": [
+            {
+              "args": [
+                "/usr/local/bin/argocd-repo-server",
+                "--port=8081",
+                "--metrics-port=8084"
+              ],
+              "env": [
+                {
+                  "name": "GRPC_ENABLE_TXT_SERVICE_CONFIG",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.grpc.enable.txt.service.config",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_NAME",
+                  "value": "[literal value omitted]"
+                },
+                {
+                  "name": "ARGOCD_RECONCILIATION_TIMEOUT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "timeout.reconciliation",
+                      "name": "argocd-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LOGFORMAT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.log.format",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LOGLEVEL",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.log.level",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_LOG_FORMAT_TIMESTAMP",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "log.format.timestamp",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_PARALLELISM_LIMIT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.parallelism.limit",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LISTEN_ADDRESS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.listen.address",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LISTEN_METRICS_ADDRESS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.metrics.listen.address",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_DISABLE_TLS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.disable.tls",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_TLS_MIN_VERSION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.tls.minversion",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_TLS_MAX_VERSION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.tls.maxversion",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_TLS_CIPHERS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.tls.ciphers",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_CACHE_EXPIRATION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.repo.cache.expiration",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_SERVER",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "redis.server",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_COMPRESSION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "redis.compression",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDISDB",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "redis.db",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_USERNAME",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "redis-username",
+                      "name": "argocd-redis",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_PASSWORD",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "auth",
+                      "name": "argocd-redis",
+                      "optional": false
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_SENTINEL_USERNAME",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "redis-sentinel-username",
+                      "name": "argocd-redis",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_SENTINEL_PASSWORD",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "redis-sentinel-password",
+                      "name": "argocd-redis",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_DEFAULT_CACHE_EXPIRATION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.default.cache.expiration",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_ADDRESS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.address",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_INSECURE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.insecure",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_HEADERS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.headers",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_ATTRS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.attrs",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_MAX_COMBINED_DIRECTORY_MANIFESTS_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.max.combined.directory.manifests.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_PLUGIN_TAR_EXCLUSIONS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.plugin.tar.exclusions",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_PLUGIN_USE_MANIFEST_GENERATE_PATHS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.plugin.use.manifest.generate.paths",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_ALLOW_OUT_OF_BOUNDS_SYMLINKS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.allow.oob.symlinks",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_STREAMED_MANIFEST_MAX_TAR_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.streamed.manifest.max.tar.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_STREAMED_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.streamed.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_HELM_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.helm.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_DISABLE_HELM_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.disable.helm.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GIT_MODULES_ENABLED",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.enable.git.submodule",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GIT_LS_REMOTE_PARALLELISM_LIMIT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.git.lsremote.parallelism.limit",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GIT_REQUEST_TIMEOUT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.git.request.timeout",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OCI_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.oci.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_DISABLE_OCI_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.disable.oci.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OCI_LAYER_MEDIA_TYPES",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.oci.layer.media.types",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REVISION_CACHE_LOCK_TIMEOUT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.revision.cache.lock.timeout",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_ENABLE_BUILTIN_GIT_CONFIG",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.enable.builtin.git.config",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GRPC_MAX_SIZE_MB",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.grpc.max.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_INCLUDE_HIDDEN_DIRECTORIES",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.include.hidden.directories",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "HELM_CACHE_HOME",
+                  "value": "[literal value omitted]"
+                },
+                {
+                  "name": "HELM_CONFIG_HOME",
+                  "value": "[literal value omitted]"
+                },
+                {
+                  "name": "HELM_DATA_HOME",
+                  "value": "[literal value omitted]"
+                }
+              ],
+              "image": "quay.io/argoproj/argocd:v3.5.3",
+              "imagePullPolicy": "IfNotPresent",
+              "livenessProbe": {
+                "failureThreshold": 3,
+                "httpGet": {
+                  "path": "/healthz?full=true",
+                  "port": "metrics",
+                  "scheme": "HTTP"
+                },
+                "initialDelaySeconds": 10,
+                "periodSeconds": 10,
+                "successThreshold": 1,
+                "timeoutSeconds": 5
+              },
+              "name": "repo-server",
+              "ports": [
+                {
+                  "containerPort": 8081,
+                  "name": "repo-server",
+                  "protocol": "TCP"
+                },
+                {
+                  "containerPort": 8084,
+                  "name": "metrics",
+                  "protocol": "TCP"
+                }
+              ],
+              "readinessProbe": {
+                "failureThreshold": 3,
+                "httpGet": {
+                  "path": "/healthz",
+                  "port": "metrics",
+                  "scheme": "HTTP"
+                },
+                "initialDelaySeconds": 10,
+                "periodSeconds": 10,
+                "successThreshold": 1,
+                "timeoutSeconds": 1
+              },
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "512Mi"
+                },
+                "requests": {
+                  "cpu": "50m",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "volumeMounts": [
+                {
+                  "mountPath": "/app/config/ssh",
+                  "name": "ssh-known-hosts"
+                },
+                {
+                  "mountPath": "/app/config/tls",
+                  "name": "tls-certs"
+                },
+                {
+                  "mountPath": "/app/config/gpg/source",
+                  "name": "gpg-keys"
+                },
+                {
+                  "mountPath": "/app/config/gpg/keys",
+                  "name": "gpg-keyring"
+                },
+                {
+                  "mountPath": "/app/config/reposerver/tls",
+                  "name": "argocd-repo-server-tls"
+                },
+                {
+                  "mountPath": "/helm-working-dir",
+                  "name": "helm-working-dir"
+                },
+                {
+                  "mountPath": "/home/argocd/cmp-server/plugins",
+                  "name": "plugins"
+                },
+                {
+                  "mountPath": "/tmp",
+                  "name": "tmp"
+                }
+              ]
+            }
+          ],
+          "dnsPolicy": "ClusterFirst",
+          "initContainers": [
+            {
+              "args": [
+                "/bin/cp --update=none /usr/local/bin/argocd /var/run/argocd/argocd && /bin/ln -sf /var/run/argocd/argocd /var/run/argocd/argocd-cmp-server"
+              ],
+              "command": [
+                "sh",
+                "-c"
+              ],
+              "image": "quay.io/argoproj/argocd:v3.5.3",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "copyutil",
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "512Mi"
+                },
+                "requests": {
+                  "cpu": "50m",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/run/argocd",
+                  "name": "var-files"
+                }
+              ]
+            }
+          ],
+          "nodeSelector": {
+            "kubernetes.io/os": "linux"
+          },
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "securityContext": {},
+          "serviceAccount": "argocd-repo-server",
+          "serviceAccountName": "argocd-repo-server",
+          "terminationGracePeriodSeconds": 30,
+          "volumes": [
+            {
+              "emptyDir": {},
+              "name": "helm-working-dir"
+            },
+            {
+              "emptyDir": {},
+              "name": "plugins"
+            },
+            {
+              "emptyDir": {},
+              "name": "var-files"
+            },
+            {
+              "emptyDir": {},
+              "name": "tmp"
+            },
+            {
+              "configMap": {
+                "defaultMode": 420,
+                "name": "argocd-ssh-known-hosts-cm"
+              },
+              "name": "ssh-known-hosts"
+            },
+            {
+              "configMap": {
+                "defaultMode": 420,
+                "name": "argocd-tls-certs-cm",
+                "optional": true
+              },
+              "name": "tls-certs"
+            },
+            {
+              "configMap": {
+                "defaultMode": 420,
+                "name": "argocd-gpg-keys-cm"
+              },
+              "name": "gpg-keys"
+            },
+            {
+              "emptyDir": {},
+              "name": "gpg-keyring"
+            },
+            {
+              "name": "argocd-repo-server-tls",
+              "secret": {
+                "defaultMode": 420,
+                "items": [
+                  {
+                    "key": "tls.crt",
+                    "path": "tls.crt"
+                  },
+                  {
+                    "key": "tls.key",
+                    "path": "tls.key"
+                  },
+                  {
+                    "key": "ca.crt",
+                    "path": "ca.crt"
+                  }
+                ],
+                "optional": true,
+                "secretName": "argocd-repo-server-tls"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "priorSanitizedSpecReconstructedFromSoleVerifiedDelta": {
+      "progressDeadlineSeconds": 600,
+      "replicas": 1,
+      "revisionHistoryLimit": 3,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/instance": "argocd",
+          "app.kubernetes.io/name": "argocd-repo-server"
+        }
+      },
+      "strategy": {
+        "rollingUpdate": {
+          "maxSurge": "25%",
+          "maxUnavailable": "25%"
+        },
+        "type": "RollingUpdate"
+      },
+      "template": {
+        "metadata": {
+          "annotations": {
+            "checksum/cm": "cbe45a83b45ca7ce39188782de74a95c9925f9c6880ebcec2750449a5c4979ea",
+            "checksum/cmd-params": "6c9cb851053d64535cbf9958b67194aecbad6753d94613a10c6762a67ada7c4c"
+          },
+          "creationTimestamp": null,
+          "labels": {
+            "app.kubernetes.io/component": "repo-server",
+            "app.kubernetes.io/instance": "argocd",
+            "app.kubernetes.io/managed-by": "Helm",
+            "app.kubernetes.io/name": "argocd-repo-server",
+            "app.kubernetes.io/part-of": "argocd",
+            "app.kubernetes.io/version": "v3.5.3",
+            "helm.sh/chart": "argo-cd-10.9.6"
+          }
+        },
+        "spec": {
+          "affinity": {
+            "podAntiAffinity": {
+              "preferredDuringSchedulingIgnoredDuringExecution": [
+                {
+                  "podAffinityTerm": {
+                    "labelSelector": {
+                      "matchLabels": {
+                        "app.kubernetes.io/name": "argocd-repo-server"
+                      }
+                    },
+                    "topologyKey": "kubernetes.io/hostname"
+                  },
+                  "weight": 100
+                }
+              ]
+            }
+          },
+          "automountServiceAccountToken": true,
+          "containers": [
+            {
+              "args": [
+                "/usr/local/bin/argocd-repo-server",
+                "--port=8081",
+                "--metrics-port=8084"
+              ],
+              "env": [
+                {
+                  "name": "GRPC_ENABLE_TXT_SERVICE_CONFIG",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.grpc.enable.txt.service.config",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_NAME",
+                  "value": "[literal value omitted]"
+                },
+                {
+                  "name": "ARGOCD_RECONCILIATION_TIMEOUT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "timeout.reconciliation",
+                      "name": "argocd-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LOGFORMAT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.log.format",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LOGLEVEL",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.log.level",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_LOG_FORMAT_TIMESTAMP",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "log.format.timestamp",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_PARALLELISM_LIMIT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.parallelism.limit",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LISTEN_ADDRESS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.listen.address",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_LISTEN_METRICS_ADDRESS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.metrics.listen.address",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_DISABLE_TLS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.disable.tls",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_TLS_MIN_VERSION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.tls.minversion",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_TLS_MAX_VERSION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.tls.maxversion",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_TLS_CIPHERS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.tls.ciphers",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_CACHE_EXPIRATION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.repo.cache.expiration",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_SERVER",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "redis.server",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_COMPRESSION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "redis.compression",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDISDB",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "redis.db",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_USERNAME",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "redis-username",
+                      "name": "argocd-redis",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_PASSWORD",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "auth",
+                      "name": "argocd-redis",
+                      "optional": false
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_SENTINEL_USERNAME",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "redis-sentinel-username",
+                      "name": "argocd-redis",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_SENTINEL_PASSWORD",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "redis-sentinel-password",
+                      "name": "argocd-redis",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_DEFAULT_CACHE_EXPIRATION",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.default.cache.expiration",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_ADDRESS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.address",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_INSECURE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.insecure",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_HEADERS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.headers",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OTLP_ATTRS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "otlp.attrs",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_MAX_COMBINED_DIRECTORY_MANIFESTS_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.max.combined.directory.manifests.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_PLUGIN_TAR_EXCLUSIONS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.plugin.tar.exclusions",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_PLUGIN_USE_MANIFEST_GENERATE_PATHS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.plugin.use.manifest.generate.paths",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_ALLOW_OUT_OF_BOUNDS_SYMLINKS",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.allow.oob.symlinks",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_STREAMED_MANIFEST_MAX_TAR_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.streamed.manifest.max.tar.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_STREAMED_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.streamed.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_HELM_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.helm.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_DISABLE_HELM_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.disable.helm.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GIT_MODULES_ENABLED",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.enable.git.submodule",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GIT_LS_REMOTE_PARALLELISM_LIMIT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.git.lsremote.parallelism.limit",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GIT_REQUEST_TIMEOUT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.git.request.timeout",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OCI_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.oci.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_DISABLE_OCI_MANIFEST_MAX_EXTRACTED_SIZE",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.disable.oci.manifest.max.extracted.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_OCI_LAYER_MEDIA_TYPES",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.oci.layer.media.types",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REVISION_CACHE_LOCK_TIMEOUT",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.revision.cache.lock.timeout",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_ENABLE_BUILTIN_GIT_CONFIG",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.enable.builtin.git.config",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_GRPC_MAX_SIZE_MB",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.grpc.max.size",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "ARGOCD_REPO_SERVER_INCLUDE_HIDDEN_DIRECTORIES",
+                  "valueFrom": {
+                    "configMapKeyRef": {
+                      "key": "reposerver.include.hidden.directories",
+                      "name": "argocd-cmd-params-cm",
+                      "optional": true
+                    }
+                  }
+                },
+                {
+                  "name": "HELM_CACHE_HOME",
+                  "value": "[literal value omitted]"
+                },
+                {
+                  "name": "HELM_CONFIG_HOME",
+                  "value": "[literal value omitted]"
+                },
+                {
+                  "name": "HELM_DATA_HOME",
+                  "value": "[literal value omitted]"
+                }
+              ],
+              "image": "quay.io/argoproj/argocd:v3.5.3",
+              "imagePullPolicy": "IfNotPresent",
+              "livenessProbe": {
+                "failureThreshold": 3,
+                "httpGet": {
+                  "path": "/healthz?full=true",
+                  "port": "metrics",
+                  "scheme": "HTTP"
+                },
+                "initialDelaySeconds": 10,
+                "periodSeconds": 10,
+                "successThreshold": 1,
+                "timeoutSeconds": 1
+              },
+              "name": "repo-server",
+              "ports": [
+                {
+                  "containerPort": 8081,
+                  "name": "repo-server",
+                  "protocol": "TCP"
+                },
+                {
+                  "containerPort": 8084,
+                  "name": "metrics",
+                  "protocol": "TCP"
+                }
+              ],
+              "readinessProbe": {
+                "failureThreshold": 3,
+                "httpGet": {
+                  "path": "/healthz",
+                  "port": "metrics",
+                  "scheme": "HTTP"
+                },
+                "initialDelaySeconds": 10,
+                "periodSeconds": 10,
+                "successThreshold": 1,
+                "timeoutSeconds": 1
+              },
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "512Mi"
+                },
+                "requests": {
+                  "cpu": "50m",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "volumeMounts": [
+                {
+                  "mountPath": "/app/config/ssh",
+                  "name": "ssh-known-hosts"
+                },
+                {
+                  "mountPath": "/app/config/tls",
+                  "name": "tls-certs"
+                },
+                {
+                  "mountPath": "/app/config/gpg/source",
+                  "name": "gpg-keys"
+                },
+                {
+                  "mountPath": "/app/config/gpg/keys",
+                  "name": "gpg-keyring"
+                },
+                {
+                  "mountPath": "/app/config/reposerver/tls",
+                  "name": "argocd-repo-server-tls"
+                },
+                {
+                  "mountPath": "/helm-working-dir",
+                  "name": "helm-working-dir"
+                },
+                {
+                  "mountPath": "/home/argocd/cmp-server/plugins",
+                  "name": "plugins"
+                },
+                {
+                  "mountPath": "/tmp",
+                  "name": "tmp"
+                }
+              ]
+            }
+          ],
+          "dnsPolicy": "ClusterFirst",
+          "initContainers": [
+            {
+              "args": [
+                "/bin/cp --update=none /usr/local/bin/argocd /var/run/argocd/argocd && /bin/ln -sf /var/run/argocd/argocd /var/run/argocd/argocd-cmp-server"
+              ],
+              "command": [
+                "sh",
+                "-c"
+              ],
+              "image": "quay.io/argoproj/argocd:v3.5.3",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "copyutil",
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "512Mi"
+                },
+                "requests": {
+                  "cpu": "50m",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/run/argocd",
+                  "name": "var-files"
+                }
+              ]
+            }
+          ],
+          "nodeSelector": {
+            "kubernetes.io/os": "linux"
+          },
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "securityContext": {},
+          "serviceAccount": "argocd-repo-server",
+          "serviceAccountName": "argocd-repo-server",
+          "terminationGracePeriodSeconds": 30,
+          "volumes": [
+            {
+              "emptyDir": {},
+              "name": "helm-working-dir"
+            },
+            {
+              "emptyDir": {},
+              "name": "plugins"
+            },
+            {
+              "emptyDir": {},
+              "name": "var-files"
+            },
+            {
+              "emptyDir": {},
+              "name": "tmp"
+            },
+            {
+              "configMap": {
+                "defaultMode": 420,
+                "name": "argocd-ssh-known-hosts-cm"
+              },
+              "name": "ssh-known-hosts"
+            },
+            {
+              "configMap": {
+                "defaultMode": 420,
+                "name": "argocd-tls-certs-cm",
+                "optional": true
+              },
+              "name": "tls-certs"
+            },
+            {
+              "configMap": {
+                "defaultMode": 420,
+                "name": "argocd-gpg-keys-cm"
+              },
+              "name": "gpg-keys"
+            },
+            {
+              "emptyDir": {},
+              "name": "gpg-keyring"
+            },
+            {
+              "name": "argocd-repo-server-tls",
+              "secret": {
+                "defaultMode": 420,
+                "items": [
+                  {
+                    "key": "tls.crt",
+                    "path": "tls.crt"
+                  },
+                  {
+                    "key": "tls.key",
+                    "path": "tls.key"
+                  },
+                  {
+                    "key": "ca.crt",
+                    "path": "ca.crt"
+                  }
+                ],
+                "optional": true,
+                "secretName": "argocd-repo-server-tls"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "repoPods": [
+    {
+      "name": "argocd-repo-server-d57f598b5-rtwjd",
+      "uid": "7b9abece-86ce-4b12-ae13-ed801e657c03",
+      "phase": "Running",
+      "containers": [
+        {
+          "name": "repo-server",
+          "ready": true,
+          "restarts": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-14T21:25:52Z"
+            }
+          },
+          "lastState": {}
+        }
+      ]
+    }
+  ],
+  "serviceEndpointReadyAddresses": [
+    "10.42.0.201"
+  ],
+  "probes": [
+    {
+      "pod": "argocd-repo-server-d57f598b5-rtwjd",
+      "path": "/healthz",
+      "status": 200,
+      "body": "ok\n",
+      "seconds": 0.003
+    },
+    {
+      "pod": "argocd-repo-server-d57f598b5-rtwjd",
+      "path": "/healthz?full=true",
+      "status": 200,
+      "body": "ok\n",
+      "seconds": 4.011
+    }
+  ],
+  "application": {
+    "uid": "9220d045-abfe-4f35-b0de-a8990e9b0cc8",
+    "specSha256": "e9004c874e9cc189d860153a661fd67bc6365f1948479da594cd312111c1b1f2",
+    "sourceRevision": "597dab599177f98f7d260d00c72adb736614ad42",
+    "health": "Healthy",
+    "sync": "Synced",
+    "operation": "Succeeded",
+    "conditions": [
+      {
+        "type": "OrphanedResourceWarning",
+        "message": "Application has 1 orphaned resources"
+      }
+    ],
+    "prune": false
+  },
+  "hrPods": [
+    {
+      "uid": "1498acb5-6a68-422e-a8cd-e4a6fd662cad",
+      "name": "hr-development-hr-gateway-5f689dc49d-r2bgt",
+      "ready": true
+    },
+    {
+      "uid": "a780d93f-2d61-497f-998c-3bff92d7671d",
+      "name": "hr-development-organization-hr-8857bcb6c-rmffh",
+      "ready": true
+    }
+  ],
+  "pvc": {
+    "uid": "12698725-d049-4989-bb91-b2e90c4712f4",
+    "phase": "Bound"
+  },
+  "acceptedStateHashes": {
+    "/var/lib/fanasa-organization-hr/gitops/current.json": "3a515526e55c8514e5163949400d26f0a0891d12405cf73b59efd8ad6b84e8bf",
+    "/etc/fanasa-organization-hr/gitops-deployment.json": "9c34e71bfc647c9b2c54737e694ebed151ebb1b3683085997bf789bc318f86b9",
+    "/opt/fanasa-gateway/certs/organization-hr-development.prepared.conf": "3df3a9ebebd55264361bcee841c2284402f81a7b87d78eaf6717e7847c577545"
+  },
+  "otherApplications": [
+    {
+      "name": "app-697dcb4e6c15",
+      "health": "Healthy",
+      "sync": "Synced"
+    },
+    {
+      "name": "app-be8fffb1a7bc",
+      "health": "Healthy",
+      "sync": "Synced"
+    },
+    {
+      "name": "app-d0efbc1e222e",
+      "health": "Healthy",
+      "sync": "Unknown"
+    },
+    {
+      "name": "app-f063542cc2cc",
+      "health": "Healthy",
+      "sync": "Synced"
+    },
+    {
+      "name": "demo-podinfo",
+      "health": "Healthy",
+      "sync": "Synced"
+    }
+  ],
+  "credentialsChanged": false,
+  "credentialsPrinted": false
+}

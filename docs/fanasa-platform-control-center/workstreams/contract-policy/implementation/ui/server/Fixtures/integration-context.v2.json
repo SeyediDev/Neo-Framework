@@ -1,0 +1,52 @@
+{
+  "requestId": "g-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "subject": {
+    "subjectId": "33333333-3333-4333-8333-333333333333",
+    "authenticationValid": true,
+    "clientAuthorized": true,
+    "audience": "fanasa-organization-fabric-api",
+    "scopes": [
+      "organization.unit.save"
+    ]
+  },
+  "resource": {
+    "productId": "organization-fabric",
+    "consumerTenantId": "22222222-2222-4222-8222-222222222222",
+    "environment": "development",
+    "operationGroup": "organization"
+  },
+  "action": "organization.unit.save",
+  "environment": {
+    "now": "2026-10-10T06:29:59.000Z",
+    "zone": "ir-private-1"
+  },
+  "tenant": {
+    "tenantId": "22222222-2222-4222-8222-222222222222",
+    "active": true
+  },
+  "membership": {
+    "subjectId": "33333333-3333-4333-8333-333333333333",
+    "tenantId": "22222222-2222-4222-8222-222222222222",
+    "active": true,
+    "validFrom": "2026-10-01T00:00:00.000Z",
+    "validTo": "2026-11-01T00:00:00.000Z"
+  },
+  "grant": {
+    "grantId": "fixture-grant-1",
+    "subjectId": "33333333-3333-4333-8333-333333333333",
+    "consumerTenantId": "22222222-2222-4222-8222-222222222222",
+    "productId": "organization-fabric",
+    "role": "ApiInvoker",
+    "actions": [
+      "organization.unit.save"
+    ],
+    "active": true,
+    "validFrom": "2026-10-01T00:00:00.000Z",
+    "validTo": "2026-11-01T00:00:00.000Z"
+  },
+  "evidence": {
+    "validUntil": "2026-10-10T06:30:59.000Z",
+    "contractVersion": 7,
+    "policyVersion": 3
+  }
+}

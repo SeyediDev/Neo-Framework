@@ -1,0 +1,12 @@
+Verified 2026-10-10, .NET SDK 10.0.401: 62 behavioral checks passed (exit code 0).
+Reproduce: powershell -File docs/fanasa-platform-control-center/workstreams/usage-accounting/sample/run.ps1
+Executed final build/run after pending-alias and reconciliation fixes; cached packages, NuGetAudit=false because network audit is unavailable.
+Build outputs: sample/.artifacts/; run outputs: sample/results/verified-final/ (both ignored by git).
+Full executed checks: sample/results/verified-final/test-output.txt
+Ledger artifact: sample/results/verified-final/ledger.json
+Main account: two existing-ledger usage entries, 12 + 18 = 30 IRR; outstanding30, availableCredit9970, wallet0, unexplainedDifference0; live tariff18 unchanged.
+Coverage: event/operation/pending payload conflicts; pending aliases; commit/ack fault injection; durable sink duplicate; unknown-outcome status reconciliation; credit pending; closed period; pending-retention race; UTC/timeline/duplicate-name rejection.
+Actual recovery: offline FabricRecovery backup at18 IRR, restore/replay to30 IRR, two outbox entries and stable charge identities; newer sink retains two unique receipts.
+Bounds: PROPOSED snapshot-aware append into existing BillingAccount, not installed API; fixture-only historical resolver/backend/sink; modeled exception crashes/restarts, not abrupt process kills or a newly tested producer precommit integration.
+Production gap: move narrow append into AccountingStore.ExecuteMeasuredUsage; existing Execute("usage") ignores historical command price/amount and uses live tariff plus registration clock.
+No live product metering, settlement, payout, owner/platform revenue split, new production database or broker is activated.

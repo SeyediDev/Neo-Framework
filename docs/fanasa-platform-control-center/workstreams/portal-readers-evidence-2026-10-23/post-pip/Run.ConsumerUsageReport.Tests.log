@@ -1,0 +1,146 @@
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: absent accounting is not a manufactured zero account
+PASS consumer usage report: report retains consumer, UTC period, as-of time and ledger basis
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: an explicitly persisted empty ledger is a ready zero
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: different consumers never share accounting totals
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: half-open occurrence period includes delayed posts and uses registration time for legacy rows
+PASS consumer usage report: legacy costs do not invent a known unit, version or quantity
+PASS consumer usage report: credits, payments, receipts and pending evidence do not become usage costs
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: USD totals beyond JavaScript integer precision remain exact decimal text
+PASS consumer usage report: serialized financial quantities remain string tokens
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: committed frozen evidence supplies quantity, unit and historical cost with different posting and commit clocks
+PASS consumer usage report: current tariffs cannot recalculate historical posted charges
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: legacy unknown units remain separate from measured units in the same product and meter
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: same-group sum that cannot preserve the posted cent fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: report total across products that cannot preserve the posted cent fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: report total across meters that cannot preserve the posted cent fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: large exactly representable same-group sum retains every posted cent
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: large exactly representable total across groups retains each posted amount
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: malformed JSON fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: null document fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: duplicate account property fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: cross-consumer account fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: null ledger fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: null ledger row fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: negative revision fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: unsupported currency fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: negative usage amount fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: zero usage quantity fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: duplicate charge identity fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: duplicate usage key fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: duplicate nested ledger property fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: unrepresentable raw amount fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: unrepresentable raw quantity fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: exponent raw amount fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: unknown ledger kind fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: fraction outside currency scale fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: overflowing posted sum fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: copied organization row fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: malformed organization revision fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: proper consumer-bound organization charge key remains readable
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: legacy null unit price does not invent a tariff or reject a posted cost
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: unstable charge ID fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong product fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong meter fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong quantity fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong posted amount fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong frozen unit price fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong actor fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong evidence reference fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong occurrence time fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: unexpected invoice fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: missing operation fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: pending operation fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: committed operation error fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong operation fingerprint fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong operation amount fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: inexact operation amount fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: wrong operation key fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: null commit time fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: invalid operation timeline fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: malformed event fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: duplicate event property fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: cross-consumer event fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: currency mismatch fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: invalid binding outside requested period fails closed without totals or rows
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: scan limit does not expose a plausible partial total
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: inclusive row bound returns complete totals when every row is scanned
+PASS consumer usage report: invalid scan bound 0
+PASS consumer usage report: invalid scan bound 10001
+PASS consumer usage report: empty consumer rejected
+PASS consumer usage report: empty half-open period rejected
+PASS consumer usage report: reversed period rejected
+PASS consumer usage report: period exceeding 366 days rejected
+PASS consumer usage report: non-UTC lower bound rejected
+PASS consumer usage report: non-UTC upper bound rejected
+PASS consumer usage report: 366-day UTC period is within the contract
+PASS consumer usage report: report cannot inspect an ambient uncommitted writer
+PASS consumer usage report: rejected writer read clears its transaction and changes no persisted state
+PASS consumer usage report: Fabric read snapshot enforces query-only writes
+PASS consumer usage report: query-only rejection leaves documents and outbox unchanged
+PASS consumer usage report: report read leaves all persisted documents and outbox unchanged
+PASS consumer usage report: oversized accounting document has no partial financial result
+PASS consumer usage report: 145 checks

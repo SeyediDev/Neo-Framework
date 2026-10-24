@@ -1,0 +1,8 @@
+tests/.artifacts/
+tests/bin/
+tests/obj/
+tests/results/
+portal-adapter/tests/.artifacts/
+portal-adapter/tests/bin/
+portal-adapter/tests/obj/
+portal-adapter/tests/results/

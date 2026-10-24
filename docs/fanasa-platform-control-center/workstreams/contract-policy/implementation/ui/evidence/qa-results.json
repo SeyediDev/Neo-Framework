@@ -1,0 +1,201 @@
+{
+  "started": "2026-10-11T06:26:41.756Z",
+  "completed": "2026-10-11T06:27:24.292Z",
+  "browserVersion": "Chrome/155.0.8059.40",
+  "viewport": "1440 × 1100 / 390 × 844",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Persian RTL and six contracts",
+      "passed": true
+    },
+    {
+      "name": "Local font and official logo load",
+      "passed": true
+    },
+    {
+      "name": "Desktop has no page overflow",
+      "passed": true
+    },
+    {
+      "name": "Search matches tenant and contract names",
+      "passed": true
+    },
+    {
+      "name": "Combined filters show an empty state",
+      "passed": true
+    },
+    {
+      "name": "Clear filters restores six records",
+      "passed": true
+    },
+    {
+      "name": "Lifecycle filter selects suspended contract",
+      "passed": true
+    },
+    {
+      "name": "Gateway observation is a separate filter",
+      "passed": true
+    },
+    {
+      "name": "Drawer opens with focus and tenant details",
+      "passed": true
+    },
+    {
+      "name": "RTL tab keyboard changes tab and panel",
+      "passed": true
+    },
+    {
+      "name": "Limits are explicitly not remaining counters",
+      "passed": true
+    },
+    {
+      "name": "End key selects history tab",
+      "passed": true
+    },
+    {
+      "name": "Home key restores rights tab",
+      "passed": true
+    },
+    {
+      "name": "Publication dialog focuses the reason",
+      "passed": true
+    },
+    {
+      "name": "Reason is required before publication",
+      "passed": true
+    },
+    {
+      "name": "Revision conflict does not publish policy",
+      "passed": true
+    },
+    {
+      "name": "Retry applies local publication and escapes reason",
+      "passed": true
+    },
+    {
+      "name": "Drawer restores focus to its row button",
+      "passed": true
+    },
+    {
+      "name": "Actual sample download preserves independent revisions and pending observation",
+      "passed": true
+    },
+    {
+      "name": "New policy without a matching accepted contract binding is Indeterminate",
+      "passed": true
+    },
+    {
+      "name": "Local retirement changes policy status",
+      "passed": true
+    },
+    {
+      "name": "Retired policy produces Deny without executing",
+      "passed": true
+    },
+    {
+      "name": "Reset returns initial sample and view",
+      "passed": true
+    },
+    {
+      "name": "Permit lists obligations as still needed for execution",
+      "passed": true
+    },
+    {
+      "name": "Role without direct grant is Deny",
+      "passed": true
+    },
+    {
+      "name": "Contract without assigned role is Deny",
+      "passed": true
+    },
+    {
+      "name": "Missing fresh evidence is Indeterminate",
+      "passed": true
+    },
+    {
+      "name": "Product outside target is NotApplicable",
+      "passed": true
+    },
+    {
+      "name": "Inactive membership is Deny",
+      "passed": true
+    },
+    {
+      "name": "Suspended contract is Deny",
+      "passed": true
+    },
+    {
+      "name": "Expired window is Deny while stored lifecycle stays Active",
+      "passed": true
+    },
+    {
+      "name": "Future window is Deny while stored lifecycle stays Active",
+      "passed": true
+    },
+    {
+      "name": "Pending Gateway observation remains separate from Permit obligations",
+      "passed": true
+    },
+    {
+      "name": "Evaluation creates only a labeled local event",
+      "passed": true
+    },
+    {
+      "name": "Architecture node explains resource tenant boundary",
+      "passed": true
+    },
+    {
+      "name": "Mobile architecture has no page overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile menu opens and moves focus inside navigation",
+      "passed": true
+    },
+    {
+      "name": "Escape closes mobile menu and restores focus",
+      "passed": true
+    },
+    {
+      "name": "Mobile navigation selects view and closes menu",
+      "passed": true
+    },
+    {
+      "name": "Mobile contracts have no page overflow",
+      "passed": true
+    },
+    {
+      "name": "Closed mobile sidebar is removed from keyboard navigation",
+      "passed": true
+    },
+    {
+      "name": "Mobile drawer fits viewport",
+      "passed": true
+    },
+    {
+      "name": "Escape closes drawer and restores focus on mobile",
+      "passed": true
+    },
+    {
+      "name": "Mobile decision view has no page overflow",
+      "passed": true
+    },
+    {
+      "name": "Demo notice remains visible on every view",
+      "passed": true
+    },
+    {
+      "name": "No browser persistence is created",
+      "passed": true
+    },
+    {
+      "name": "Reload preserves navigation but resets sample state",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "failure": null
+}

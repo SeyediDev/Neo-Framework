@@ -19,7 +19,8 @@ public sealed class AccountingApi(AccountingStore store) : ControllerBase
     public IActionResult Execute(Guid tenantId, BillingCommand command)
     {
         if (!Allows(tenantId, command.Operation == "usage" ? "billing.meter" : "billing.write")) return Forbid();
-        if (command.Key?.StartsWith("organization:", StringComparison.Ordinal) == true || command.Key?.StartsWith("zarinpal:", StringComparison.Ordinal) == true) return BadRequest(new { error = "کلید داخلی از API قابل ثبت نیست." });
+        if (command.Key?.StartsWith("organization:", StringComparison.Ordinal) == true || command.Key?.StartsWith("zarinpal:", StringComparison.Ordinal) == true
+            || command.Key?.StartsWith("measured:", StringComparison.Ordinal) == true) return BadRequest(new { error = "کلید داخلی از API قابل ثبت نیست." });
         try { return Ok(store.Execute(tenantId, command, OrgAuthorization.Subject(User))); }
         catch (UnauthorizedAccessException) { return Forbid(); }
         catch (KeyNotFoundException) { return NotFound(); }

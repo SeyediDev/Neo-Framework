@@ -1,0 +1,7 @@
+{
+  "source": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/pcc/ContractPolicyStore.cs",
+  "sourceSha256": "f94bee3d9f9d951b08b498bcc704e479bc39dadcaa2774dce07c0bbfca440a02",
+  "copySha256": "94c5cd7f6643d6646f812575fef5d4d1dd0658f2aead8731632ce2442a713c90",
+  "intent": "Find validates all stored HR3 and v2 states; selects legacy v2 only; existing readers and writers retain v2-only validation."
+}
+

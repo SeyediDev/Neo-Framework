@@ -12,6 +12,7 @@ public sealed class AuditModel(IAccessManagement access, FabricDatabase database
 {
     private static readonly (string Kind, string Permission, string Title)[] Catalog = [
         ("OrganizationChanged", "organization.read", "تغییر ساختار سازمانی"),
+        ("OrganizationCalendarChanged", "organization.read", "تغییر تقویم و پنجرهٔ زمانی سازمان"),
         ("AccountingChanged", "billing.read", "تغییر حساب"),
         ("PaymentApplied", "billing.read", "اعمال پرداخت تأییدشده"),
         ("PaymentReviewed", "billing.read", "بررسی وضعیت پرداخت"),

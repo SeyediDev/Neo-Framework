@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "fanasa.native-host-inventory.v1",
+  "observedAtUtc": "2026-10-10T13:50:38.956092+00:00",
+  "readOnly": true,
+  "maximumCommandBudgetSeconds": 90,
+  "cpuCount": 4,
+  "loadAverage": [
+    0.31201171875,
+    0.60693359375,
+    0.8671875
+  ],
+  "memory": {
+    "MemTotalBytes": 8326406144,
+    "MemAvailableBytes": 1755877376,
+    "SwapTotalBytes": 8589930496,
+    "SwapFreeBytes": 5859958784,
+    "status": "available"
+  },
+  "rootDisk": {
+    "status": "available",
+    "totalBytes": 192022720512,
+    "availableBytes": 114723258368
+  },
+  "listeners": {
+    "tcpListeningPorts": [
+      22,
+      80,
+      443,
+      4180,
+      5190,
+      5191,
+      6443,
+      6444,
+      9000,
+      9443,
+      10010,
+      10248,
+      10249,
+      10250,
+      10256,
+      10257,
+      10258,
+      10259,
+      14173,
+      14333,
+      18080,
+      18081,
+      18110,
+      18111
+    ],
+    "udpBoundPorts": [
+      8472
+    ],
+    "status": "available"
+  },
+  "versions": {
+    "k3s": {
+      "status": "available",
+      "version": "v1.33.13+k3s2"
+    },
+    "docker": {
+      "status": "available",
+      "client": "29.6.1",
+      "engine": "29.6.1",
+      "clientApi": "1.55",
+      "engineApi": "1.55",
+      "engineMinimumApi": "1.40"
+    },
+    "compose": {
+      "status": "available",
+      "version": "5.3.1"
+    }
+  },
+  "composeFeatureProbe": {
+    "supported": true,
+    "status": "supported",
+    "scope": "stdin compose config only; resource caps, internal network, no ports, build reset"
+  },
+  "dockerStorageDisk": {
+    "status": "available",
+    "totalBytes": 192022720512,
+    "availableBytes": 114723258368
+  },
+  "k3sNodes": {
+    "status": "available",
+    "items": [
+      {
+        "name": "entekhab-vm-01",
+        "ready": "True"
+      }
+    ]
+  },
+  "selectedDeployments": {
+    "status": "available",
+    "selection": [
+      "developer",
+      "gitlab",
+      "runner",
+      "registry",
+      "apisix",
+      "otel",
+      "collector"
+    ],
+    "items": [
+      {
+        "namespace": "fanasa-developer",
+        "name": "developer-portal",
+        "desired": 1,
+        "ready": 1,
+        "updated": 1,
+        "available": 1,
+        "images": [
+          "fanasa/developer-portal:0.2.11"
+        ]
+      }
+    ]
+  },
+  "tenantQuotas": {
+    "namespace": "tenant-fanasa",
+    "status": "available",
+    "items": [
+      {
+        "name": "developer-budget",
+        "hard": {
+          "redacted": "8",
+          "limits.cpu": "4",
+          "limits.memory": "3Gi",
+          "persistentvolumeclaims": "12",
+          "pods": "12",
+          "requests.cpu": "2",
+          "requests.memory": "1536Mi",
+          "requests.storage": "12Gi",
+          "services": "12",
+          "services.loadbalancers": "0",
+          "services.nodeports": "0"
+        },
+        "used": {
+          "redacted": "0",
+          "limits.cpu": "1900m",
+          "limits.memory": "2Gi",
+          "persistentvolumeclaims": "12",
+          "pods": "10",
+          "requests.cpu": "350m",
+          "requests.memory": "640Mi",
+          "requests.storage": "12Gi",
+          "services": "10",
+          "services.loadbalancers": "0",
+          "services.nodeports": "0"
+        }
+      }
+    ]
+  },
+  "k3sService": "active",
+  "existingDaemonUnits": {
+    "docker": "active",
+    "containerd": "active"
+  },
+  "preflightGates": {
+    "memoryAtLeast2GiBAvailable": false,
+    "rootDiskAtLeast4GiBAvailable": true,
+    "dockerStorageAtLeast4GiBAvailable": true,
+    "existingDockerEngineAvailable": true,
+    "existingComposeFeaturesAvailable": true,
+    "existingK3sNodesReady": true,
+    "selectedDeploymentsReady": true,
+    "existingK3sServiceActive": true
+  },
+  "eligibleForBoundedNativeRun": false,
+  "inventoryLimit": "Snapshot of selected deployments and numeric host ports only; not a complete service-health, capacity, or software inventory. Kubernetes quotas do not cap Docker fixtures."
+}

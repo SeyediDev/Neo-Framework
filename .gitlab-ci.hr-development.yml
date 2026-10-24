@@ -1,0 +1,76 @@
+# Select this path in the private organization-hr project's CI/CD configuration.
+# The dedicated protected runner has no host socket, deployment credential or runtime state mount in jobs.
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop" && $CI_COMMIT_REF_PROTECTED == "true" && ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web")'
+    - when: never
+
+stages:
+  - validate-host
+  - verify-package
+
+default:
+  image: fanasa/hr-build:10-node24
+  tags:
+    - fanasa-hr-development
+  interruptible: false
+  timeout: 60 minutes
+
+variables:
+  GIT_STRATEGY: clone
+  GIT_DEPTH: "1"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  DOTNET_PROCESSOR_COUNT: "1"
+  NUGET_PACKAGES: "$CI_PROJECT_DIR/.nuget/packages"
+  DOTNET_CLI_HOME: "$CI_PROJECT_DIR/.dotnet"
+  MSBUILDDISABLENODEREUSE: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
+
+hr3_validate_host:
+  stage: validate-host
+  resource_group: organization-hr-development-build
+  script:
+    - ulimit -c 0
+    - test "$(git rev-parse HEAD)" = "$CI_COMMIT_SHA"
+    - test "$CI_COMMIT_BRANCH" = develop
+    - test "$CI_COMMIT_REF_PROTECTED" = true
+    # The sealed verifier checks package/dependency bytes AND exact actual-host inputs.
+    # Host drift fails here; this job never refreshes source pins or enables HR3 runtime.
+    - python3 deploy/fanasa-organization-hr/ci.py validate-hr3 --source-commit "$CI_COMMIT_SHA" --output .artifacts/hr3-validation
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - .artifacts/hr3-validation/*.log
+      - .artifacts/hr3-validation/hr3-validation.json
+
+hr_verify_package:
+  stage: verify-package
+  resource_group: organization-hr-development-build
+  script:
+    # Intentional fail-closed startup tests abort on Linux; retain exception logs,
+    # while preventing core files from modifying the exact source checkout.
+    - ulimit -c 0
+    - test "$(git rev-parse HEAD)" = "$CI_COMMIT_SHA"
+    - test "$CI_COMMIT_BRANCH" = develop
+    - test "$CI_COMMIT_REF_PROTECTED" = true
+    - python3 deploy/fanasa-organization-hr/ci.py source --source-commit "$CI_COMMIT_SHA" > source-identity.json
+    - python3 -m unittest discover -s deploy/fanasa-organization-hr/tests -p 'test_*.py'
+    - python3 deploy/fanasa-organization-hr/ci.py verify --source-commit "$CI_COMMIT_SHA"
+    - python3 deploy/fanasa-organization-hr/ci.py package --source-commit "$CI_COMMIT_SHA"
+    - python3 deploy/fanasa-organization-hr/verify_bundle.py --archive .artifacts/hr-development/*.tar.gz --receipt .artifacts/hr-development/release.json
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - source-identity.json
+      - .artifacts/hr-development/*.log
+      - .artifacts/hr-development/*.tar.gz
+      - .artifacts/hr-development/release.json
+      - .artifacts/hr-development/release.sha256
+      - .artifacts/hr-development/verification.json
+  # The independent root-owned CD timer selects only a successful build of the current
+  # protected develop commit. It reads these artifacts through GitLab's authenticated
+  # API, verifies the fixed source/project/runner and activates the bounded service pair.
+  # This source job cannot invoke root, SSH, Docker, runtime credentials or the CD helper.

@@ -1,0 +1,32 @@
+{
+  "clientId": "fanasa-mobile-android",
+  "name": "Fanasa Unified Portal Android",
+  "protocol": "openid-connect",
+  "enabled": true,
+  "publicClient": true,
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": false,
+  "directAccessGrantsEnabled": false,
+  "serviceAccountsEnabled": false,
+  "fullScopeAllowed": false,
+  "redirectUris": ["net.fanasa.portal.mobile:/oauth2redirect"],
+  "webOrigins": [],
+  "attributes": {
+    "pkce.code.challenge.method": "S256",
+    "post.logout.redirect.uris": "net.fanasa.portal.mobile:/logout"
+  },
+  "defaultClientScopes": ["profile"],
+  "optionalClientScopes": ["platform.catalog.self"],
+  "protocolMappers": [
+    {
+      "name": "mobile-catalog-api-audience",
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-audience-mapper",
+      "config": {
+        "included.client.audience": "fanasa-access-management-web",
+        "access.token.claim": "true",
+        "id.token.claim": "false"
+      }
+    }
+  ]
+}

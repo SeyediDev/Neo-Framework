@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "fanasa.organization-hr.runtime-readonly.v1",
+  "observedAtUtc": "2026-10-13T06:24:25.897078Z",
+  "mutations": false,
+  "source": "Read-only Keycloak PostgreSQL queries, SQLite mode=ro/query_only, systemd public settings, container nginx -T, CA-validated HTTP GET",
+  "release": {
+    "id": "hr-development-8f12512ead33-7cd37c93a9b4",
+    "gitRevision": "8f12512ead3304160af4c8f5ddad3562db3ba0af",
+    "sourceSnapshotSha256": "7cd37c93a9b4d11842b31882bcdac79d1cc185d43ff5a34ee558c6e85dc04aa3"
+  },
+  "identity": {
+    "humanAccountFound": true,
+    "humanTenantId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "humanTenantKey": "fanasa-internal",
+    "hrClientId": "fanasa-organization-hr-development",
+    "serviceSubject": "3d9236ba-409d-4326-ac47-a8e4c746a2ca",
+    "serviceTenantId": "7398590f-2d87-41ce-beda-19fb8e2a45fd",
+    "serviceTenantKey": "hr-development",
+    "serviceGrants": [
+      "organization.read",
+      "organization.write"
+    ],
+    "grantExpiresAtUtc": "2026-10-19T14:35:12.5338158Z",
+    "serviceAuthorizedForHumanTenant": false,
+    "authority": "https://sso.fanasa.net.local/realms/fanasa",
+    "audience": "fanasa-organization-fabric",
+    "scopes": [
+      "organization.hr.read",
+      "organization.hr.write"
+    ]
+  },
+  "topology": {
+    "gateway": "Existing Nginx 1.28 development ingress; not APISIX HR profile",
+    "publicBaseUrl": "https://api.fanasa.net.local/development/organization-hr/v1",
+    "internalPrefix": "/api/organization-hr/v1",
+    "rewrite": "Explicit three route/method allowlist with same tenant/revision",
+    "authorization": "Private auth_request to gateway-access; original Bearer; independently checked again by backend",
+    "upstreamTls": "CA and server hostname verification + actual pinned Gateway client certificate",
+    "bodyLimitBytes": 65536,
+    "requestLimiter": "Existing development limit_req with burst 10"
+  },
+  "probes": [
+    {
+      "request": "GET public development chart with existing HR service read scope",
+      "status": 200,
+      "chart": {
+        "revision": 1,
+        "units": 0,
+        "positions": 0,
+        "appointments": 0,
+        "roles": 1
+      }
+    },
+    {
+      "request": "GET private HTTPS upstream without Gateway client certificate",
+      "status": 403
+    },
+    {
+      "request": "GET /api/organization-hr/v1/... on public development host",
+      "status": 404
+    }
+  ],
+  "connection": {
+    "physicalGatewayAddress": "loopback",
+    "verifiedHostAndSni": "api.fanasa.net.local",
+    "caVerification": true,
+    "hostnameVerification": true,
+    "hostnameDnsSucceeded": false,
+    "note": "Initial hostname-local DNS lookup failed; subsequent HTTPS connection selected loopback while preserving TLS hostname/SNI/Host. Desktop/external DNS reachability not tested."
+  },
+  "limits": [
+    "No live write/replay/revocation probes performed.",
+    "Local 171-check evidence concerns local build and synthetic fixtures; not automatically attributed to this remote release.",
+    "Metadata-reported CI/runtime counts are not included in these independent probe counts.",
+    "No account/client/grant mutation; no cross-tenant service permission inferred from human email.",
+    "APISIX native HR acceptance and owner allocation/consumer-claim bindings remain separate."
+  ]
+}

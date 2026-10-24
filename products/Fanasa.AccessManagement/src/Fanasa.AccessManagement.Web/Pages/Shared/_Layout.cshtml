@@ -1,3 +1,15 @@
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+    var admin = User.HasClaim("permission", "platform.admin");
+    var navigation = new[]
+    {
+        (Title: "پلتفرم و مسیر توسعه", Links: new[] { (Page: "/Index", Label: "نمای کلی", Admin: false), (Page: "/Architecture", Label: "معماری و وضعیت تحویل", Admin: false) }),
+        (Title: "محصول و عرضه", Links: new[] { (Page: "/Centers", Label: "۱۴ مرکز قابلیت", Admin: false), (Page: "/Products", Label: "کاتالوگ محصولات", Admin: false), (Page: "/Platform", Label: "ثبت سامانه و دسترسی توسعه", Admin: false) }),
+        (Title: "سازمان و دسترسی", Links: new[] { (Page: "/Tenants", Label: "تننت‌ها و سازمان‌ها", Admin: false), (Page: "/Users", Label: "کاربران و عضویت‌ها", Admin: false), (Page: "/Roles", Label: "نقش‌ها و مجوزها", Admin: false), (Page: "/Organization", Label: "استودیو ساختار سازمانی", Admin: false), (Page: "/OrganizationHr", Label: "API منابع انسانی · توسعه", Admin: true), (Page: "/Governance", Label: "گردش هویت و الگوهای دسترسی", Admin: false) }),
+        (Title: "اشتراک و حسابداری", Links: new[] { (Page: "/Tenancy", Label: "عضویت و اشتراک SaaS", Admin: false), (Page: "/Billing", Label: "مصرف و پرداخت", Admin: false), (Page: "/Accounting", Label: "اکانتینگ و صورتحساب", Admin: false) }),
+        (Title: "عملیات و پیگیری", Links: new[] { (Page: "/UsageAccounting", Label: "تطبیق مصرف و بازیابی", Admin: true), (Page: "/Audit", Label: "گزارش رویدادها", Admin: false) })
+    };
+}
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -6,26 +18,29 @@
     <title>@ViewData["Title"] · مرکز راهبری پلتفرم فن‌آسا</title>
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/access-enhancements.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/platform-navigation.css" asp-append-version="true" />
 </head>
 <body>
     <aside class="sidebar">
         <a class="brand" asp-page="/Index"><img src="~/fanasa-horizontal-fa.svg" alt="فن‌آسا" width="172" height="60" style="object-fit:contain;background:white;padding:10px;border-radius:10px;width:192px;height:80px" /></a>
         <div class="workspace-label">مرکز راهبری پلتفرم فن‌آسا</div>
-        <nav class="nav" aria-label="ناوبری اصلی">
-            <a asp-page="/Index">نمای کلی</a>
-            <a asp-page="/Centers">۱۴ مرکز قابلیت</a>
-            <a asp-page="/Products">کاتالوگ محصولات</a>
-            <a asp-page="/Platform">ثبت سامانه و دسترسی توسعه</a>
-            <a asp-page="/Tenants">تننت‌ها و سازمان‌ها</a>
-            <a asp-page="/Users">کاربران و عضویت‌ها</a>
-            <a asp-page="/Roles">نقش‌ها و مجوزها</a>
-            <a asp-page="/Organization">استودیو ساختار سازمانی</a>
-            <a asp-page="/Tenancy">عضویت و اشتراک SaaS</a>
-            <a asp-page="/Governance">گردش هویت و الگوهای دسترسی</a>
-            <a asp-page="/Billing">مصرف و پرداخت</a>
-            <a asp-page="/Accounting">اکانتینگ و صورتحساب</a>
-            <a asp-page="/Audit">گزارش رویدادها</a>
-        </nav>
+        <details class="platform-menu" open>
+            <summary>منوی راهبری</summary>
+            <nav class="nav platform-nav" aria-label="ناوبری اصلی">
+                @foreach (var group in navigation)
+                {
+                    var links = group.Links.Where(link => !link.Admin || admin).ToArray();
+                    if (links.Length == 0) { continue; }
+                    <details class="platform-nav-group" open="@(links.Any(link => link.Page == currentPage) ? "open" : null)">
+                        <summary>@group.Title</summary>
+                        @foreach (var link in links)
+                        {
+                            <a asp-page="@link.Page" aria-current="@(link.Page == currentPage ? "page" : null)">@link.Label</a>
+                        }
+                    </details>
+                }
+            </nav>
+        </details>
         <div class="sidebar-footer"><span class="status-dot"></span> هویت مرکزی فعال</div>
     </aside>
     <main class="shell">
@@ -35,6 +50,7 @@
         </header>
         <section class="content">@RenderBody()</section>
     </main>
+    <script src="~/js/platform-navigation.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

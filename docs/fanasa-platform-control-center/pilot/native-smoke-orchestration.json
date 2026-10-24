@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "fanasa.gateway-native-smoke-orchestration.v1",
+  "passed": false,
+  "scope": "isolated single-gateway synthetic smoke",
+  "fullAcceptanceExecuted": false,
+  "deployed": false,
+  "sharedWiringApplied": false,
+  "cleanupAttempted": false,
+  "cleanupSucceeded": false,
+  "volumesPreserved": true,
+  "failedPhase": "prerequisites",
+  "failure": "compose_required_features_unavailable",
+  "errorClass": "SmokeAbort",
+  "commands": [
+    {
+      "stage": "docker-version",
+      "exitCode": 0,
+      "elapsedSeconds": 0.036
+    },
+    {
+      "stage": "compose-version",
+      "exitCode": 0,
+      "elapsedSeconds": 0.075
+    },
+    {
+      "stage": "docker-storage",
+      "exitCode": 0,
+      "elapsedSeconds": 0.096
+    },
+    {
+      "stage": "compose-feature-probe",
+      "exitCode": 0,
+      "elapsedSeconds": 0.104
+    }
+  ]
+}

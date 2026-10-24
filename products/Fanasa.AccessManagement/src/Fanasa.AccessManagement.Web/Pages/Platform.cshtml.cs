@@ -19,8 +19,10 @@ public sealed class PlatformModel(PlatformRegistry registry) : PageModel
     public void OnGet() => Load();
     private void Load()
     {
-        Products = registry.Products(IsAdmin ? null : User.FindFirstValue("sub") ?? User.FindFirstValue(ClaimTypes.NameIdentifier));
-        Tenants = registry.Tenants(IsAdmin ? null : User.FindFirstValue("sub") ?? User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var subject = User.FindFirstValue("sub") ?? User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        Products = IsAdmin ? registry.Products() : registry.Products(subject)
+            .Select(x => DeveloperProjectRegistration.ForSubject(x, subject, registry)).ToArray();
+        Tenants = registry.Tenants(IsAdmin ? null : subject);
         if (IsAdmin) Grants = registry.Grants();
     }
     public IActionResult OnPost(string operation)

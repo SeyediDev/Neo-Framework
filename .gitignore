@@ -70,5 +70,14 @@ TestResults/
 node_modules/
 products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/App_Data/
 
+# Local build, publication and interpreter output
+/.build/
+/artifacts/
+/products/Fanasa.AccessManagement/.publish/
+/products/Fanasa.AccessManagement/.publish.zip
+__pycache__/
+*.py[cod]
+*.crdownload
+
 
 

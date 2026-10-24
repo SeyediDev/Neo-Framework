@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Fanasa.AccessManagement.Web.Api;
 
 [ApiController, Authorize, Route("api/tenancy/tenants/{tenantId:guid}")]
-public sealed class TenantAdministrationApi(PersistentAccessManagement access) : ControllerBase
+public sealed class TenantAdministrationApi(PersistentAccessManagement access, TemplateOrganizationStore? examples = null) : ControllerBase
 {
     private bool Allows(Guid tenant, bool write) => User.Identity?.IsAuthenticated == true &&
         (User.HasClaim("permission", "platform.admin") || TenantAuthorization.Allows(User, tenant, write ? "tenancy.manage" : "tenancy.read"));
@@ -53,6 +53,7 @@ public sealed class TenantAdministrationApi(PersistentAccessManagement access) :
     private IActionResult Execute(Guid tenant, Func<object> action)
     {
         if (!Allows(tenant, true)) return Forbid();
+        if (TemplateOrganizationWriteGuard.Reject(examples, tenant) is { } readOnly) return readOnly;
         try { return Ok(action()); }
         catch (KeyNotFoundException) { return NotFound(); }
         catch (UnauthorizedAccessException) { return Forbid(); }

@@ -1,0 +1,172 @@
+PASS: complete synthetic HTTPS service configuration is accepted
+PASS: matching live clientAuth TLS certificate is accepted
+PASS: different actual TLS peer certificate is rejected
+PASS: serverAuth-only certificate cannot impersonate Gateway
+PASS: incomplete or plaintext service configuration is rejected
+PASS: anonymous HTTP status (actual 401)
+PASS: anonymous leaves chart/history/receipts/outbox unchanged
+PASS: valid browser cookie alone HTTP status (actual 401)
+PASS: valid browser cookie alone leaves chart/history/receipts/outbox unchanged
+PASS: invalid signing key HTTP status (actual 401)
+PASS: invalid signing key leaves chart/history/receipts/outbox unchanged
+PASS: wrong issuer HTTP status (actual 401)
+PASS: wrong issuer leaves chart/history/receipts/outbox unchanged
+PASS: wrong audience HTTP status (actual 401)
+PASS: wrong audience leaves chart/history/receipts/outbox unchanged
+PASS: expired JWT HTTP status (actual 401)
+PASS: expired JWT leaves chart/history/receipts/outbox unchanged
+PASS: missing-exp signed JWT HTTP status (actual 401)
+PASS: missing-exp signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: array-exp signed JWT HTTP status (actual 401)
+PASS: array-exp signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: noncanonical-exp signed JWT HTTP status (actual 401)
+PASS: noncanonical-exp signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: future-nbf signed JWT HTTP status (actual 401)
+PASS: future-nbf signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: array-sub signed JWT HTTP status (actual 401)
+PASS: array-sub signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: missing-azp signed JWT HTTP status (actual 401)
+PASS: missing-azp signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: array-azp signed JWT HTTP status (actual 401)
+PASS: array-azp signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: array-client_id signed JWT HTTP status (actual 401)
+PASS: array-client_id signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: duplicate-property signed JWT HTTP status (actual 401)
+PASS: duplicate-property signed JWT leaves chart/history/receipts/outbox unchanged
+PASS: valid token without actual Gateway TLS certificate HTTP status (actual 403)
+PASS: valid token without actual Gateway TLS certificate leaves chart/history/receipts/outbox unchanged
+PASS: forged Gateway and permission headers without TLS certificate HTTP status (actual 403)
+PASS: forged Gateway and permission headers without TLS certificate leaves chart/history/receipts/outbox unchanged
+PASS: wrong service subject HTTP status (actual 403)
+PASS: wrong service subject leaves chart/history/receipts/outbox unchanged
+PASS: wrong client HTTP status (actual 403)
+PASS: wrong client leaves chart/history/receipts/outbox unchanged
+PASS: missing write scope HTTP status (actual 403)
+PASS: missing write scope leaves chart/history/receipts/outbox unchanged
+PASS: read scope cannot write HTTP status (actual 403)
+PASS: read scope cannot write leaves chart/history/receipts/outbox unchanged
+PASS: conflicting client_id HTTP status (actual 403)
+PASS: conflicting client_id leaves chart/history/receipts/outbox unchanged
+PASS: inactive signed identity HTTP status (actual 403)
+PASS: inactive signed identity leaves chart/history/receipts/outbox unchanged
+PASS: other tenant HTTP status (actual 403)
+PASS: other tenant leaves chart/history/receipts/outbox unchanged
+PASS: authorized service reads a real empty tenant chart over TLS
+PASS: write scope cannot read
+PASS: Gateway auth read/synthetic.organization.hr.read/peer=True returns 204
+PASS: Gateway auth subrequest never changes durable records
+PASS: Gateway auth write/synthetic.organization.hr.write/peer=True returns 204
+PASS: Gateway auth subrequest never changes durable records
+PASS: Gateway auth write/synthetic.organization.hr.read/peer=True returns 403
+PASS: Gateway auth subrequest never changes durable records
+PASS: Gateway auth read/synthetic.organization.hr.read/peer=False returns 403
+PASS: Gateway auth subrequest never changes durable records
+PASS: Gateway auth unknown/synthetic.organization.hr.read/peer=True returns 400
+PASS: Gateway auth subrequest never changes durable records
+PASS: non-pinned client certificate fails the TLS handshake
+PASS: revoked durable grant HTTP status (actual 403)
+PASS: revoked durable grant leaves chart/history/receipts/outbox unchanged
+PASS: inactive central client HTTP status (actual 403)
+PASS: inactive central client leaves chart/history/receipts/outbox unchanged
+PASS: write scope removed from central client HTTP status (actual 403)
+PASS: write scope removed from central client leaves chart/history/receipts/outbox unchanged
+PASS: inactive durable tenant HTTP status (actual 403)
+PASS: inactive durable tenant leaves chart/history/receipts/outbox unchanged
+PASS: offboarded service membership HTTP status (actual 403)
+PASS: offboarded service membership leaves chart/history/receipts/outbox unchanged
+PASS: reactivation does not resurrect revoked grants HTTP status (actual 403)
+PASS: reactivation does not resurrect revoked grants leaves chart/history/receipts/outbox unchanged
+PASS: suspended product subscription HTTP status (actual 403)
+PASS: suspended product subscription leaves chart/history/receipts/outbox unchanged
+PASS: missing Idempotency-Key HTTP status (actual 400)
+PASS: missing Idempotency-Key leaves chart/history/receipts/outbox unchanged
+PASS: unsupported content type HTTP status (actual 415)
+PASS: unsupported content type leaves chart/history/receipts/outbox unchanged
+PASS: unsupported content encoding HTTP status (actual 415)
+PASS: unsupported content encoding leaves chart/history/receipts/outbox unchanged
+PASS: unknown JSON field HTTP status (actual 400)
+PASS: unknown JSON field leaves chart/history/receipts/outbox unchanged
+PASS: duplicate JSON field HTTP status (actual 400)
+PASS: duplicate JSON field leaves chart/history/receipts/outbox unchanged
+PASS: oversized body HTTP status (actual 413)
+PASS: oversized body leaves chart/history/receipts/outbox unchanged
+PASS: unsupported operation HTTP status (actual 400)
+PASS: unsupported operation leaves chart/history/receipts/outbox unchanged
+PASS: timestamp without UTC or offset HTTP status (actual 400)
+PASS: timestamp without UTC or offset leaves chart/history/receipts/outbox unchanged
+PASS: strict JSON/timestamp schema HTTP status (actual 400)
+PASS: strict JSON/timestamp schema leaves chart/history/receipts/outbox unchanged
+PASS: strict JSON/timestamp schema HTTP status (actual 400)
+PASS: strict JSON/timestamp schema leaves chart/history/receipts/outbox unchanged
+PASS: strict JSON/timestamp schema HTTP status (actual 400)
+PASS: strict JSON/timestamp schema leaves chart/history/receipts/outbox unchanged
+PASS: strict JSON/timestamp schema HTTP status (actual 400)
+PASS: strict JSON/timestamp schema leaves chart/history/receipts/outbox unchanged
+PASS: strict JSON/timestamp schema HTTP status (actual 400)
+PASS: strict JSON/timestamp schema leaves chart/history/receipts/outbox unchanged
+PASS: strict JSON/timestamp schema HTTP status (actual 400)
+PASS: strict JSON/timestamp schema leaves chart/history/receipts/outbox unchanged
+PASS: strict JSON/timestamp schema HTTP status (actual 400)
+PASS: strict JSON/timestamp schema leaves chart/history/receipts/outbox unchanged
+PASS: invalid UUID requestId HTTP status (actual 400)
+PASS: invalid UUID requestId leaves chart/history/receipts/outbox unchanged
+PASS: uppercase requestId HTTP status (actual 400)
+PASS: uppercase requestId leaves chart/history/receipts/outbox unchanged
+PASS: zero requestId HTTP status (actual 400)
+PASS: zero requestId leaves chart/history/receipts/outbox unchanged
+PASS: mismatched or repeated idempotency header fails without mutation
+PASS: mismatched or repeated idempotency header fails without mutation
+PASS: transfer not admitted HTTP status (actual 400)
+PASS: transfer not admitted leaves chart/history/receipts/outbox unchanged
+PASS: bulk replacement not admitted HTTP status (actual 400)
+PASS: bulk replacement not admitted leaves chart/history/receipts/outbox unchanged
+PASS: capacity bounds HTTP status (actual 400)
+PASS: capacity bounds leaves chart/history/receipts/outbox unchanged
+PASS: valid HR unit command commits one chart revision
+PASS: exact request replay returns original result without duplicate effect or outbox
+PASS: changed payload under same request identity HTTP status (actual 409)
+PASS: changed payload under same request identity leaves chart/history/receipts/outbox unchanged
+PASS: stale expected revision HTTP status (actual 409)
+PASS: stale expected revision leaves chart/history/receipts/outbox unchanged
+PASS: organization role creates no software role; audit actor uses verified service subject
+PASS: service identity cannot receive HR appointment HTTP status (actual 400)
+PASS: service identity cannot receive HR appointment leaves chart/history/receipts/outbox unchanged
+PASS: unregistered appointment subject HTTP status (actual 400)
+PASS: unregistered appointment subject leaves chart/history/receipts/outbox unchanged
+PASS: appointment uses existing active human tenant membership
+PASS: appointment creates no software grants
+PASS: overlapping appointment HTTP status (actual 400)
+PASS: overlapping appointment leaves chart/history/receipts/outbox unchanged
+PASS: archive unit with active position HTTP status (actual 400)
+PASS: archive unit with active position leaves chart/history/receipts/outbox unchanged
+PASS: archive position with active appointment HTTP status (actual 400)
+PASS: archive position with active appointment leaves chart/history/receipts/outbox unchanged
+PASS: valid archive sequence preserves records and ends active entities
+PASS: historic revision remains immutable after later HR commands
+PASS: nonpositive/missing history cannot change durable records
+PASS: nonpositive/missing history cannot change durable records
+PASS: independent database connection sees durable chart and exactly seven command receipts
+PASS: reopened store replays persisted historical receipt without another effect
+PASS: revoked grant blocks exact historic receipt replay HTTP status (actual 403)
+PASS: revoked grant blocks exact historic receipt replay leaves chart/history/receipts/outbox unchanged
+PASS: token expiry enters Store inside Fabric with live authorization
+PASS: token expiry crosses actual deadline during Store processing
+PASS: token expiry is denied by the post-Execute boundary
+PASS: token expiry rolls back chart/history/receipt/outbox
+PASS: token expiry leaves no ghost receipt; same request commits once
+PASS: token recovered request replays once
+PASS: grant expiry enters Store inside Fabric with live authorization
+PASS: grant expiry crosses actual deadline during Store processing
+PASS: grant expiry is denied by the post-Execute boundary
+PASS: grant expiry rolls back chart/history/receipt/outbox
+PASS: grant expiry leaves no ghost receipt; same request commits once
+PASS: grant recovered request replays once
+PASS: disabled HR service authentication fails closed
+PASS: misconfigured HR service authentication fails closed
+PASS: named HR endpoint preserves independent human HTTP listener
+PASS: HR route on human listener denies TLS bypass
+PASS: missing-listener rejects enabled upstream before startup
+PASS: http-listener rejects enabled upstream before startup
+PASS: invalid-pin rejects enabled upstream before startup
+PASS: enabled measured unit.save profile cannot be bypassed through HR command route
+171 synthetic HR TLS/JWT/HTTP checks passed.

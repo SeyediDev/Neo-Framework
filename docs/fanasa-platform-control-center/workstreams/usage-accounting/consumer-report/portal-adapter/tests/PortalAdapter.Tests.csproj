@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <DefaultItemExcludes>$(DefaultItemExcludes);.artifacts/**;obj/**;bin/**</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Compile Include="../WorkspaceUsageReportAdapter.cs" Link="WorkspaceUsageReportAdapter.cs" />
+    <ProjectReference Include="../../../../../../../products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj" />
+  </ItemGroup>
+</Project>

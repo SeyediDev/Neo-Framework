@@ -1,0 +1,160 @@
+{
+  "description": "Source bytes pinned before isolated v3 edits; no runtime deployment or provisioned business identities.",
+  "files": [
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractEventAdapter.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractEventAdapter.cs",
+      "sourceSha256": "084a359c425c12eca3594adb903e695f7ddfa56195515648bda4e85ac333c6c5"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractJson.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractJson.cs",
+      "sourceSha256": "504123a104c9de47cd4898268a54dd0ca75b5e3b29930c8a3159385262321c41"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractPolicyEvaluator.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractPolicyEvaluator.cs",
+      "sourceSha256": "b2c788f71854139ebf7ac358f2ae552e1be9f6e552fae4ea139fb2fa2b2cf167"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractPolicyModule.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractPolicyModule.cs",
+      "sourceSha256": "5f527b30a4d2dc797619ab4970b7cf503a367701f6081ddbe06772e063b9ae91"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractPolicyPep.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractPolicyPep.cs",
+      "sourceSha256": "00f8f00b8eb54af0b34422a7be99df58e7c4eb4b01b7688ea4878d166d5084a4"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractProjectionProjector.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractProjectionProjector.cs",
+      "sourceSha256": "c35823a5f1811a139f66f4d80ede0d5204b9503ffc0476c25b309c4142d44a3f"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractProjectionValidator.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractProjectionValidator.cs",
+      "sourceSha256": "31cd44f4f47998991962ab92e7633ef6b2f71259fa4b692e91ebe523651deab3"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/ContractSchemaValidator.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/ContractSchemaValidator.cs",
+      "sourceSha256": "b5b288c3b6eb0223900c6f700c48049a40377876daa34e01fb2e77376ad48799"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj",
+      "sourceSha256": "bb399621b6456870ab9c6b7d20f8439b61b29d1b6aa68cc74aa316655e2765d0"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/Models.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/Models.cs",
+      "sourceSha256": "ba0520b667fdc812a911c6ce232cebb35dc1c3b9c4b78e0a1bba88168534c549"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/src/Fanasa.ContractPolicy/TrustedAccessSnapshotProvider.cs",
+      "candidate": "contract-policy/src/Fanasa.ContractPolicy/TrustedAccessSnapshotProvider.cs",
+      "sourceSha256": "2e2d86f0150ae452880e7fca95432a9baf5aabe7ede23d6fd6609d9597ed2f33"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/contract-access-projection.v1.schema.json",
+      "candidate": "candidate/schemas/contract-access-projection.v1.schema.json",
+      "sourceSha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/contract-access-projection.v2.schema.json",
+      "candidate": "candidate/schemas/contract-access-projection.v2.schema.json",
+      "sourceSha256": "59621609f0d0199a45ac2a903b8f04b032377024bffe9617daf1f9d6374c3d5c"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/decision.v1.schema.json",
+      "candidate": "candidate/schemas/decision.v1.schema.json",
+      "sourceSha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/decision.v2.schema.json",
+      "candidate": "candidate/schemas/decision.v2.schema.json",
+      "sourceSha256": "b91ff92751cadf414ad2cad9ccf07467e0a243af967d16c8464fdd1155205411"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/limits.v1.schema.json",
+      "candidate": "candidate/schemas/limits.v1.schema.json",
+      "sourceSha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/limits.v2.schema.json",
+      "candidate": "candidate/schemas/limits.v2.schema.json",
+      "sourceSha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/projection-event.v1.schema.json",
+      "candidate": "candidate/schemas/projection-event.v1.schema.json",
+      "sourceSha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/projection-event.v2.schema.json",
+      "candidate": "candidate/schemas/projection-event.v2.schema.json",
+      "sourceSha256": "fd941be3728c061b4fac2d6de61a1079feac5bee811ca86c9a356862d1d8a37c"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/request-context.v1.schema.json",
+      "candidate": "candidate/schemas/request-context.v1.schema.json",
+      "sourceSha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/schemas/request-context.v2.schema.json",
+      "candidate": "candidate/schemas/request-context.v2.schema.json",
+      "sourceSha256": "57a60e81499e1cb1790a648db66f1288262206f792fff9803534d60186809bfd"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Tests/AdapterTests.cs",
+      "candidate": "contract-policy/tests/OriginalRegression/AdapterTests.cs",
+      "sourceSha256": "237ae3d5be9fbb6150b6f5e7e532a3aea9ad1f549d7a9049082b0e210c3f6eb7"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Tests/Program.cs",
+      "candidate": "contract-policy/tests/OriginalRegression/Program.cs",
+      "sourceSha256": "271113eeea5f57789a6889116d268dffaa5c61710bd43adc3a2cfed3c798920a"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/context.v1.json",
+      "candidate": "contract-policy/fixtures/context.v1.json",
+      "sourceSha256": "672a88b7e02c62f0f8b58dcc98dcb1699c4d804426b8c1758bd5c63520e80955"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/golden-decisions.v1.json",
+      "candidate": "contract-policy/fixtures/golden-decisions.v1.json",
+      "sourceSha256": "e0688f0e20b10190d4c42f81030e6601d81384efe60f6b8a6107d8341eaf30dd"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/integration-context.v2.json",
+      "candidate": "contract-policy/fixtures/integration-context.v2.json",
+      "sourceSha256": "e342d4a6566be9fd519ffdfb811db723a06f6ba48b613b5b5eac89fb6fe35341"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/integration-decision.v2.json",
+      "candidate": "contract-policy/fixtures/integration-decision.v2.json",
+      "sourceSha256": "17eebeb459c6c58d3ed5d82af64b15c55eb1cde8b8664e27e40c26fffca75ac3"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/integration-projection-event.v2.json",
+      "candidate": "contract-policy/fixtures/integration-projection-event.v2.json",
+      "sourceSha256": "8f6aaa063e069c70b337a9978c1a150898b5b8015dfca45b1362ba60301325c6"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/integration-projection.v2.json",
+      "candidate": "contract-policy/fixtures/integration-projection.v2.json",
+      "sourceSha256": "de5eb67aa592fcee7fa2448ec39e4448483ac88d954dd5386fa9fb61463e3291"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/projection-event.v1.json",
+      "candidate": "contract-policy/fixtures/projection-event.v1.json",
+      "sourceSha256": "d34759be5b1adc9ae4e6ca5a4a3205552976ef830f7c172406e668589bb1889d"
+    },
+    {
+      "source": "E:/SJVS/Projects/Neo/docs/fanasa-platform-control-center/workstreams/contract-policy/fixtures/projection.v1.json",
+      "candidate": "contract-policy/fixtures/projection.v1.json",
+      "sourceSha256": "3d92552fa06b0a414bfa4823ee6c7e6cda463c97a0de35b0559f77cc97f39b96"
+    }
+  ]
+}

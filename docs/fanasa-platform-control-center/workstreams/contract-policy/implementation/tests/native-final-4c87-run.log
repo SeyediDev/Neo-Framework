@@ -1,0 +1,345 @@
+PASS v1 complete golden DTO: permit
+PASS v1 complete golden DTO: deny
+PASS v1 complete golden DTO: not-applicable
+PASS v1 complete golden DTO: indeterminate
+PASS v2 complete integration golden DTO
+PASS typed evaluator agrees with JSON evaluator
+PASS strict JSON helpers roundtrip both versioned projections
+PASS Safe integral JSON lexical form: 7.0
+PASS Safe integral JSON lexical form: 7e0
+PASS nullable independent allocation revision accepts integral JSON lexical form
+PASS long JSON converter preserves only finite safe integral values
+PASS required constructor parameters cannot silently default
+PASS Strict JSON rejects duplicate
+PASS Strict JSON rejects escaped duplicate
+PASS Strict JSON rejects nested duplicate
+PASS Strict JSON rejects comment
+PASS Strict JSON rejects trailing comma
+PASS Strict JSON rejects deep nesting
+PASS Strict JSON rejects node budget
+PASS strict JSON accepts separate object keys without conflating case
+PASS Externally parsed lazy duplicate schema boundary: minimal schema version duplicate
+PASS Externally parsed lazy duplicate projection boundary: minimal schema version duplicate
+PASS Externally parsed lazy duplicate evaluator boundary: minimal schema version duplicate
+PASS Externally parsed lazy duplicate PEP boundary: minimal schema version duplicate
+PASS Externally parsed lazy duplicate schema boundary: complete projection schema version duplicate
+PASS Externally parsed lazy duplicate projection boundary: complete projection schema version duplicate
+PASS Externally parsed lazy duplicate evaluator boundary: complete projection schema version duplicate
+PASS Externally parsed lazy duplicate PEP boundary: complete projection schema version duplicate
+PASS Externally parsed lazy duplicate schema boundary: complete projection contract ID duplicate
+PASS Externally parsed lazy duplicate projection boundary: complete projection contract ID duplicate
+PASS Externally parsed lazy duplicate evaluator boundary: complete projection contract ID duplicate
+PASS Externally parsed lazy duplicate PEP boundary: complete projection contract ID duplicate
+PASS Externally parsed lazy duplicate context boundary: environment
+PASS Externally parsed lazy duplicate context boundary: resource
+PASS Externally parsed lazy duplicate context boundary: requestId
+PASS Externally parsed lazy duplicate context boundary: nested product ID
+PASS Externally parsed lazy duplicate context boundary: nested zone
+PASS PEP rejects a complete lazy duplicate decision without mutating it
+PASS Canonical UTC: 2026-10-10T10:00:00.000Z
+PASS Canonical UTC: 2024-02-29T23:59:59.999Z
+PASS Canonical UTC: 2026-02-29T10:00:00.000Z
+PASS Canonical UTC: 2026-02-30T10:00:00.000Z
+PASS Canonical UTC: 2026-10-10T24:00:00.000Z
+PASS Canonical UTC: 2026-10-10T10:60:00.000Z
+PASS Canonical UTC: 2026-10-10T10:00:60.000Z
+PASS Canonical UTC: 2026-10-10T10:00:00Z
+PASS Canonical UTC: 2026-10-10T10:00:00.000+00:00
+PASS Canonical UTC: 2026-10-10t10:00:00.000z
+PASS Schema bootstrap rejects unknown assertion
+PASS Schema bootstrap rejects unknown assertion in unused branch
+PASS Schema bootstrap rejects cyclic reference
+PASS Schema bootstrap rejects remote reference
+PASS Schema bootstrap rejects escaping local reference
+PASS Schema bootstrap rejects missing reference
+PASS Schema bootstrap rejects duplicate schema property
+PASS Schema bootstrap rejects unsupported format
+PASS schema local sibling and $defs references enforce all constraints
+PASS schema contains counts structurally matching elements
+PASS schema safe numeric boundary and unknown filenames fail closed
+PASS AND condition: authentication
+PASS AND condition: OAuth client
+PASS AND condition: audience
+PASS AND condition: OAuth scope
+PASS AND condition: tenant inactive
+PASS AND condition: tenant identity
+PASS AND condition: resource tenant
+PASS AND condition: membership inactive
+PASS AND condition: membership principal
+PASS AND condition: membership tenant
+PASS AND condition: membership not yet valid
+PASS AND condition: membership expiry inclusive
+PASS AND condition: contract suspended
+PASS AND condition: contract ended
+PASS AND condition: contract not yet valid
+PASS AND condition: contract not yet effective
+PASS AND condition: contract expiry inclusive
+PASS AND condition: feature entitlement
+PASS AND condition: eligible role
+PASS AND condition: unsupported action
+PASS AND condition: grant inactive
+PASS AND condition: grant principal
+PASS AND condition: grant tenant
+PASS AND condition: grant product
+PASS AND condition: grant action
+PASS AND condition: grant role
+PASS AND condition: grant not yet valid
+PASS AND condition: grant expiry inclusive
+PASS AND condition: environment
+PASS AND condition: operation group
+PASS AND condition: zone
+PASS Fail closed: authentication missing
+PASS Fail closed: tenant missing
+PASS Fail closed: membership missing
+PASS Fail closed: grant missing
+PASS Fail closed: evidence missing
+PASS Fail closed: resource product missing
+PASS Fail closed: zone missing
+PASS Fail closed: subject delimiter
+PASS Fail closed: zone delimiter
+PASS Fail closed: string boolean
+PASS Fail closed: unknown context property
+PASS Fail closed: invalid time
+PASS Fail closed: impossible date
+PASS Fail closed: invalid membership date
+PASS Fail closed: invalid grant date
+PASS Fail closed: expired evidence
+PASS Fail closed: evidence expiry inclusive
+PASS Fail closed: stale contract evidence
+PASS Fail closed: stale policy evidence
+PASS explicit Deny takes precedence over missing membership only for matching target
+PASS validity windows include their start
+PASS Permit lifetime: contract
+PASS Permit lifetime: membership
+PASS Permit lifetime: grant
+PASS Permit lifetime: evidence
+PASS Permit lifetime: v1 ceiling
+PASS PEP: none fulfilled
+PASS PEP: admission only
+PASS PEP: resource only
+PASS PEP: both fulfilled
+PASS PEP: last millisecond
+PASS PEP: at expiry
+PASS PEP: after expiry
+PASS PEP: before evaluation
+PASS PEP: invalid clock
+PASS PEP: missing clock
+PASS PEP: missing fulfillment collection
+PASS PEP malformed DTO: unknown obligation
+PASS PEP malformed DTO: missing resource
+PASS PEP malformed DTO: duplicate admission
+PASS PEP malformed DTO: duplicate resource
+PASS PEP malformed DTO: wrong fulfillment
+PASS PEP malformed DTO: unknown schema
+PASS PEP malformed DTO: unknown profile
+PASS PEP malformed DTO: missing projection reference
+PASS PEP malformed DTO: missing policy reference
+PASS PEP malformed DTO: missing deadline
+PASS PEP malformed DTO: TTL exceeded
+PASS PEP malformed DTO: unknown field
+PASS PEP malformed DTO: allocation substitution
+PASS PEP malformed DTO: canonical scope forgery
+PASS PEP malformed DTO: resource tenant substitution
+PASS PEP malformed DTO: resource product substitution
+PASS PEP malformed DTO: resource environment substitution
+PASS PEP malformed DTO: unsupported resource action
+PASS PEP malformed DTO: invalid rate
+PASS PEP invalid shape: null
+PASS PEP invalid shape: {}
+PASS PEP invalid shape: {"decision":"Permit"}
+PASS Decision schema cardinality: unknown obligation
+PASS Decision schema cardinality: missing resource
+PASS Decision schema cardinality: duplicate admission
+PASS Decision schema cardinality: duplicate resource
+PASS Decision schema rejects duplicate admissions with different values
+PASS Projection fail closed: unknown field
+PASS Projection fail closed: unsupported schema
+PASS Projection fail closed: tenant substitution
+PASS Projection fail closed: product substitution
+PASS Projection fail closed: scope forgery
+PASS Projection fail closed: unsorted products
+PASS Projection fail closed: duplicate product
+PASS Projection fail closed: platform role
+PASS Projection fail closed: unsupported feature
+PASS Projection fail closed: unsupported policy action
+PASS Projection fail closed: negative seats
+PASS Projection fail closed: zero rate
+PASS Projection fail closed: zero burst
+PASS Projection fail closed: fractional burst
+PASS Projection fail closed: negative quota
+PASS Projection fail closed: unsafe contract version
+PASS Projection fail closed: invalid date
+PASS Projection fail closed: empty validity interval
+PASS Projection fail closed: nonterminal effective at expiry
+PASS Projection invalid shape: null
+PASS Projection invalid shape: {}
+PASS Projection invalid shape: []
+PASS Projection invalid shape: "projection"
+PASS Club template rejects another product using Club audience
+PASS canonical scope sorts dimensions without mutating input
+PASS terminal newline in identifiers and UTC month cannot bypass anchors
+PASS ordinary schema substring patterns still accept a matching substring
+PASS Canonical scope rejects: missing tenant
+PASS Canonical scope rejects: null tenant
+PASS Canonical scope rejects: tenant delimiter
+PASS Canonical scope rejects: list delimiter
+PASS Canonical scope rejects: uppercase product
+PASS Canonical scope rejects: duplicate product
+PASS Canonical scope rejects: empty environment
+PASS Canonical scope rejects: missing dimension
+PASS counter identity ignores contract, policy, price and limit configuration amendments
+PASS projector applies first snapshot and recognizes exact and reordered replay
+PASS v2 event fingerprint matches independently computed Node reference
+PASS projector remembers event and aggregate conflicts including equivalent snapshot IDs
+PASS stale snapshots cannot undo suspension and stale replay is remembered
+PASS newer immediate suspension supersedes future activation
+PASS snapshot gaps apply and Ended cannot resume
+PASS terminal snapshot at contract expiry applies and remains terminal
+PASS Projector rejects: producer body substitution
+PASS Projector rejects: missing event ID
+PASS Projector rejects: missing correlation ID
+PASS Projector rejects: invalid timestamp
+PASS Projector rejects: event schema mismatch
+PASS Projector rejects: aggregate version mismatch
+PASS Projector rejects: invalid quota
+PASS Projector rejects: contract identity
+PASS Projector rejects: owner identity
+PASS Projector rejects: subscription identity
+PASS Projector rejects: allocation identity
+PASS Projector rejects: scope expansion
+PASS projector authenticates producer independently from body
+PASS v1 valid amendment preserves counter identity
+PASS v2 preserves literal uppercase UUID principal without broadening product keys
+PASS v2 authority gate: wrong audience
+PASS v2 authority gate: wrong consumer
+PASS v2 authority gate: wrong membership principal
+PASS v2 authority gate: inactive grant
+PASS v2 authority gate: unsupported action
+PASS v2 authority gate: grant missing
+PASS v2 authority gate: stale policy evidence
+PASS v2 explicit Deny overrides missing membership
+PASS v2 configRevision invalid: missing
+PASS v2 configRevision invalid: 0
+PASS v2 configRevision invalid: -1
+PASS v2 configRevision invalid: 1.5
+PASS v2 configRevision invalid: 1
+PASS v2 configRevision invalid: 9007199254740992
+PASS v2 contract and policy versions are independent of configRevision
+PASS v2 config revisions conflict, advance and reject regression without identity reset
+PASS v2 lower aggregate and lower config revision is stale and replay is remembered
+PASS v2 suspend and resume preserve allocation and revision
+PASS schema migration requires explicit handling
+PASS v2 quota zero remains mandatory deny-all admission limit
+PASS v2 PEP rejects: missing resource
+PASS v2 PEP rejects: wrong consumer
+PASS v2 PEP rejects: missing config revision
+PASS v2 PEP rejects: unsupported calendar period
+PASS v2 PEP rejects: multiple policies
+PASS v2 PEP rejects: TTL exceeded
+PASS v2 TTL ceiling and evidence expiry are bounded
+PASS evaluation and projection do not mutate caller inputs
+PASS shared bootstrap services remain deterministic under concurrent calls
+PASS adapter PIP synthetic reader produces the complete integration golden decision
+PASS adapter PIP server clock supplies evaluation time and cannot extend observed freshness
+PASS adapter PIP formats server time as canonical UTC
+PASS adapter PIP retains full clock precision before formatting a preceding observation
+PASS adapter PIP rejects an observation even one tick in the future
+PASS adapter PIP rejects age expiry using full precision
+PASS adapter PIP configured maximum age can shorten the profile ceiling
+PASS adapter PIP source evidence can shorten both freshness bounds
+PASS adapter PIP rejects expired authentication: 2026-10-10T06:29:58.999Z
+PASS adapter PIP rejects expired authentication: 2026-10-10T06:29:59.000Z
+PASS adapter PIP authentication expiry bounds evidence, PDP Permit and PEP consumption
+PASS adapter PIP source cannot extend the retained authentication deadline
+PASS adapter PIP rechecks authentication expiry after awaited source lookup
+PASS adapter PIP compares authentication expiry with full submillisecond server time
+PASS adapter PIP rejects stale snapshot: too old
+PASS adapter PIP rejects stale snapshot: at profile age boundary
+PASS adapter PIP rejects stale snapshot: observed in the future
+PASS adapter PIP rejects stale snapshot: source evidence already expired
+PASS adapter PIP rejects stale snapshot: source evidence expires at server now
+PASS adapter PIP expires a reused source snapshot instead of falling back to earlier Permit
+PASS adapter PIP returns no context when the synthetic reader has no snapshot
+PASS adapter PIP source exception fails closed
+PASS adapter PIP correlates all authority rows: contract evidence version
+PASS adapter PIP correlates all authority rows: policy evidence version
+PASS adapter PIP correlates all authority rows: tenant consumer
+PASS adapter PIP correlates all authority rows: membership subject
+PASS adapter PIP correlates all authority rows: membership consumer
+PASS adapter PIP correlates all authority rows: grant subject
+PASS adapter PIP correlates all authority rows: grant consumer
+PASS adapter PIP correlates all authority rows: grant product
+PASS adapter PIP correlates the requested consumer with the returned projection
+PASS adapter PIP correlates the requested product with the returned projection
+PASS adapter PIP rejects an invalid source projection
+PASS adapter PIP rejects missing authority rows
+PASS adapter PIP rejects an oversized authority graph without throwing
+PASS adapter PIP rejects invalid trusted query before source lookup: missing query
+PASS adapter PIP rejects invalid trusted query before source lookup: authentication false
+PASS adapter PIP rejects invalid trusted query before source lookup: client authorization false
+PASS adapter PIP rejects invalid trusted query before source lookup: invalid request identifier
+PASS adapter PIP rejects invalid trusted query before source lookup: invalid zone identifier
+PASS adapter PIP rejects invalid trusted query before source lookup: missing authenticated subject
+PASS adapter PIP rejects invalid trusted query before source lookup: missing authentication expiry
+PASS adapter PIP rejects invalid trusted query before source lookup: malformed authentication expiry
+PASS adapter PIP rejects invalid trusted query before source lookup: noncanonical authentication expiry
+PASS adapter PIP rejects invalid trusted query before source lookup: impossible authentication expiry date
+PASS adapter PIP preserves negative authority for PDP: inactive tenant
+PASS adapter PIP preserves negative authority for PDP: inactive membership
+PASS adapter PIP preserves negative authority for PDP: inactive grant
+PASS adapter PIP preserves negative authority for PDP: uneligible administrator grant
+PASS adapter PIP preserves negative authority for PDP: empty explicit action grant
+PASS adapter PIP preserves wrong audience for the PDP identity gate
+PASS adapter PIP cannot fabricate a platform administrator role from product eligibility
+PASS adapter PIP propagates caller cancellation
+PASS adapter PIP propagates cancellation during source lookup
+PASS adapter PIP source receives an independent query and returned graphs are independent
+PASS adapter producer adapter accepts the complete envelope then recognizes replay
+PASS adapter producer adapter accepts an expected audience among multiple claims
+PASS adapter producer adapter accepts a matching optional client_id
+PASS adapter producer adapter permits unrelated unauthenticated Fabric identity
+PASS adapter producer adapter rejects untrusted credential binding: no principal
+PASS adapter producer adapter rejects untrusted credential binding: unauthenticated identity
+PASS adapter producer adapter rejects untrusted credential binding: wrong issuer
+PASS adapter producer adapter rejects untrusted credential binding: wrong OAuth client
+PASS adapter producer adapter rejects untrusted credential binding: wrong audience
+PASS adapter producer adapter rejects untrusted credential binding: wrong scope
+PASS adapter producer adapter rejects untrusted credential binding: scope substring
+PASS adapter producer adapter rejects untrusted credential binding: scope tab delimiter
+PASS adapter producer adapter rejects untrusted credential binding: duplicate issuer
+PASS adapter producer adapter rejects untrusted credential binding: duplicate authorized party
+PASS adapter producer adapter rejects untrusted credential binding: duplicate scope
+PASS adapter producer adapter rejects untrusted credential binding: conflicting client_id
+PASS adapter producer adapter cannot borrow iss from unauthenticated identity
+PASS adapter producer adapter cannot borrow azp from unauthenticated identity
+PASS adapter producer adapter cannot borrow aud from unauthenticated identity
+PASS adapter producer adapter cannot borrow scope from unauthenticated identity
+PASS adapter producer adapter rejects two authenticated identities
+PASS adapter producer adapter requires exact case for claim type iss
+PASS adapter producer adapter requires exact case for claim type azp
+PASS adapter producer adapter requires exact case for claim type aud
+PASS adapter producer adapter requires exact case for claim type scope
+PASS adapter producer adapter rejects a principal with only uppercase security claim types
+PASS adapter producer adapter cannot use uppercase SCOPE to supply missing producer permission
+PASS adapter producer adapter constructor rejects untrusted issuer binding: http://fixture.identity.invalid/realms/fanasa
+PASS adapter producer adapter constructor rejects untrusted issuer binding: file:///realms/fanasa
+PASS adapter producer adapter constructor rejects untrusted issuer binding: https://fixture.identity.invalid/realms/other
+PASS adapter producer adapter constructor rejects untrusted issuer binding: https://fixture.identity.invalid/realms/fanasa?admin=true
+PASS adapter producer adapter constructor rejects untrusted issuer binding: https://fixture.identity.invalid/realms/fanasa#fragment
+PASS adapter producer adapter constructor rejects untrusted issuer binding: https://user@fixture.identity.invalid/realms/fanasa
+PASS adapter producer body cannot authorize an unauthenticated sender
+PASS adapter authorized token cannot rename the producer in the body
+PASS adapter producer adapter rejects malformed bounded payload: missing
+PASS adapter producer adapter rejects malformed bounded payload: empty
+PASS adapter producer adapter rejects malformed bounded payload: whitespace
+PASS adapter producer adapter rejects malformed bounded payload: invalid JSON
+PASS adapter producer adapter rejects malformed bounded payload: null JSON
+PASS adapter producer adapter rejects malformed bounded payload: partial envelope
+PASS adapter producer adapter rejects malformed bounded payload: duplicate version
+PASS adapter producer adapter rejects malformed bounded payload: unknown envelope field
+PASS adapter producer adapter rejects malformed bounded payload: unsupported schema
+PASS adapter producer adapter rejects malformed bounded payload: over payload bound
+PASS adapter producer adapter accepts payload exactly at character bound
+PASS adapter producer adapter preserves conflicting event ID rejection
+PASS adapter producer adapter applies newer suspension and remembers stale older allocation
+Contract policy .NET: 344 passed, 0 failed.

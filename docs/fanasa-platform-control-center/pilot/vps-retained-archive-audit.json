@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "fanasa.vps-retained-audio-archive-audit.v1",
+  "readOnly": true,
+  "passed": true,
+  "archives": [
+    {
+      "path": "/var/lib/fanasa-transcription/recording-03/review03-first7-20261009-2045.tar",
+      "bytes": 92160,
+      "memberCount": 17,
+      "audioMembers": [],
+      "preserved": true
+    },
+    {
+      "path": "/var/lib/fanasa-transcription/review-final-03-06-20261010.tar",
+      "bytes": 1228800,
+      "memberCount": 101,
+      "audioMembers": [],
+      "preserved": true
+    }
+  ]
+}

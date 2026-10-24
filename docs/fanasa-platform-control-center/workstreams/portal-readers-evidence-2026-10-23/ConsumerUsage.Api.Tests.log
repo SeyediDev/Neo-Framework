@@ -1,0 +1,107 @@
+PASS consumer usage API: anonymous HTTP status (actual 401)
+PASS consumer usage API: anonymous leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid signature HTTP status (actual 401)
+PASS consumer usage API: invalid signature leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: wrong issuer HTTP status (actual 401)
+PASS consumer usage API: wrong issuer leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: wrong audience HTTP status (actual 401)
+PASS consumer usage API: wrong audience leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: expired bearer HTTP status (actual 401)
+PASS consumer usage API: expired bearer leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: synthetic administrator cookie established
+PASS consumer usage API: administrator cookie without bearer HTTP status (actual 401)
+PASS consumer usage API: administrator cookie without bearer leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: service token without human session HTTP status (actual 403)
+PASS consumer usage API: service token without human session leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: service token without human session response is no-store
+PASS consumer usage API: explicit client credentials HTTP status (actual 403)
+PASS consumer usage API: explicit client credentials leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: explicit client credentials response is no-store
+PASS consumer usage API: wrong Portal client HTTP status (actual 403)
+PASS consumer usage API: wrong Portal client leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: wrong Portal client response is no-store
+PASS consumer usage API: catalog-only scope HTTP status (actual 403)
+PASS consumer usage API: catalog-only scope leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: catalog-only scope response is no-store
+PASS consumer usage API: conflicting client_id HTTP status (actual 403)
+PASS consumer usage API: conflicting client_id leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: conflicting client_id response is no-store
+PASS consumer usage API: inactive token HTTP status (actual 403)
+PASS consumer usage API: inactive token leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: inactive token response is no-store
+PASS consumer usage API: cross-consumer request HTTP status (actual 403)
+PASS consumer usage API: cross-consumer request leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: cross-consumer request response is no-store
+PASS consumer usage API: forged subject header HTTP status (actual 400)
+PASS consumer usage API: forged subject header leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: forged subject header response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: invalid/unsupported period input HTTP status (actual 400)
+PASS consumer usage API: invalid/unsupported period input leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid/unsupported period input response is no-store
+PASS consumer usage API: expired durable billing grant HTTP status (actual 403)
+PASS consumer usage API: expired durable billing grant leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: expired durable billing grant response is no-store
+PASS consumer usage API: forged token billing grant and admin role HTTP status (actual 403)
+PASS consumer usage API: forged token billing grant and admin role leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: forged token billing grant and admin role response is no-store
+PASS consumer usage API: inactive membership HTTP status (actual 403)
+PASS consumer usage API: inactive membership leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: inactive membership response is no-store
+PASS consumer usage API: inactive consumer HTTP status (actual 403)
+PASS consumer usage API: inactive consumer leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: inactive consumer response is no-store
+PASS consumer usage API: inactive Portal product owner HTTP status (actual 403)
+PASS consumer usage API: inactive Portal product owner leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: inactive Portal product owner response is no-store
+PASS consumer usage API: inactive registered Portal client HTTP status (actual 403)
+PASS consumer usage API: inactive registered Portal client leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: inactive registered Portal client response is no-store
+PASS consumer usage API: registered scope revoked HTTP status (actual 403)
+PASS consumer usage API: registered scope revoked leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: registered scope revoked response is no-store
+PASS consumer usage API: ambiguous registered Portal client HTTP status (actual 403)
+PASS consumer usage API: ambiguous registered Portal client leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: ambiguous registered Portal client response is no-store
+PASS consumer usage API: invalid registered scope collection HTTP status (actual 403)
+PASS consumer usage API: invalid registered scope collection leaves every Fabric document and outbox row unchanged
+PASS consumer usage API: invalid registered scope collection response is no-store
+PASS consumer usage API: authorized empty recorded account returns 200
+PASS consumer usage API: ready response is no-store
+PASS consumer usage API: envelope binds the validated human subject
+PASS consumer usage API: ready response binds consumer and posted-ledger basis
+PASS consumer usage API: persisted empty ledger returns an exact string zero
+PASS consumer usage API: transport omits internal diagnostics and ledger fields
+PASS consumer usage API: successful report leaves Fabric unchanged
+PASS consumer usage API: absent account is a valid report response
+PASS consumer usage API: missing accounting never becomes a manufactured zero
+PASS consumer usage API: absent report leaves Fabric unchanged
+PASS consumer usage API: guard denies access lost after projection before returning
+PASS consumer usage API: post-read authorization denial leaves Fabric unchanged
+PASS consumer usage API: authoritative storage corruption is sanitized 503
+PASS consumer usage API: storage failure response is no-store
+PASS consumer usage API: storage failure exposes no diagnostics or partial finance
+PASS consumer usage API: storage failure leaves Fabric unchanged
+PASS consumer usage API: default-disabled endpoint fails closed as 503 for authenticated caller
+PASS consumer usage API: disabled endpoint leaves Fabric unchanged
+PASS consumer usage API: 106 checks

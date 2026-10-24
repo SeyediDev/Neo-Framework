@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fanasa:hr-read:pdp:common:1",
+  "title": "HR read PDP transport definitions v1",
+  "$comment": "Structural constraints only. The strict wire parser also enforces UTF-8, duplicate rejection, canonical JSON number spelling, Int64 history revisions, byte/depth limits and equality to the configured route and tuple. Authentication, current central authority and freshness require the named runtime boundaries.",
+  "$defs": {
+    "id": {
+      "type": "string", "minLength": 1, "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+    },
+    "uuid": {
+      "type": "string", "minLength": 36, "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "not": { "const": "00000000-0000-0000-0000-000000000000" }
+    },
+    "nullableUuid": {
+      "oneOf": [{ "$ref": "#/$defs/uuid" }, { "type": "null" }]
+    },
+    "version": {
+      "type": "integer", "minimum": 1, "maximum": 9007199254740991
+    },
+    "epochSeconds": {
+      "type": "number", "exclusiveMinimum": 0, "maximum": 253402300799,
+      "description": "UTC Unix seconds. Request timestamps require plain canonical decimal JSON with at most seven fractional digits; the runtime rejects exponents, negative zero and trailing fractional zero spellings."
+    },
+    "tokenExpiresAt": {
+      "type": "integer", "minimum": 1, "maximum": 253402300799,
+      "description": "Signed subject-token exp in whole UTC Unix seconds; independently matched to the authenticated subject token."
+    },
+    "epochMilliseconds": {
+      "type": "integer", "minimum": 0, "maximum": 253402300799999
+    },
+    "requestId": {
+      "type": "string", "minLength": 34, "maxLength": 34, "pattern": "^g-[0-9a-f]{32}$"
+    },
+    "tokenSha256": {
+      "type": "string", "minLength": 64, "maxLength": 64, "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase SHA-256 of the exact compact subject token bytes, excluding the Bearer prefix. This is not a raw token or an authentication proof."
+    },
+    "chartTarget": {
+      "type": "string",
+      "pattern": "^/api/organization-hr/v1/tenants/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/chart$"
+    },
+    "historyTarget": {
+      "type": "string",
+      "pattern": "^/api/organization-hr/v1/tenants/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/history/[1-9][0-9]{0,18}$",
+      "description": "Runtime additionally enforces a positive Int64 revision at most 9223372036854775807 and an exact canonical nonzero consumer UUID."
+    },
+    "rawTarget": {
+      "type": "string", "maxLength": 8192,
+      "oneOf": [{ "$ref": "#/$defs/chartTarget" }, { "$ref": "#/$defs/historyTarget" }],
+      "description": "Exact GET RawTarget. No query, fragment, URL escaping, normalization, trailing slash or alternate casing. Its tenant must equal consumerTenantId at runtime."
+    },
+    "action": {
+      "enum": ["organization.hr.chart.read", "organization.hr.history.read"]
+    },
+    "ownership": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "owner", "registeredProductId"],
+      "properties": {
+        "kind": { "enum": ["Platform", "Tenant"] },
+        "owner": { "oneOf": [{ "const": "platform" }, { "$ref": "#/$defs/uuid" }] },
+        "registeredProductId": { "$ref": "#/$defs/uuid" }
+      },
+      "allOf": [{
+        "if": { "properties": { "kind": { "const": "Platform" } } },
+        "then": { "properties": { "owner": { "const": "platform" } } },
+        "else": { "properties": { "owner": { "$ref": "#/$defs/uuid" } } }
+      }],
+      "description": "Exact current central-registration ownership. Platform ownership has no owning tenant. Tenant ownership requires ownerTenantId equal to owner; runtime correlates that equality and registered product ID."
+    },
+    "allocationScope": {
+      "type": "string", "maxLength": 13000,
+      "pattern": "^tenant=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12};products=organization-fabric;environments=[a-z][a-z0-9.-]{0,63};groups=organization[.]hr[.]read$",
+      "description": "Single consumer, organization-fabric product, configured environment and exclusive HR read group. Runtime equality to the configured tuple is required."
+    },
+    "routeActionCorrelation": {
+      "if": { "properties": { "action": { "const": "organization.hr.chart.read" } } },
+      "then": { "properties": { "rawTarget": { "$ref": "#/$defs/chartTarget" } } },
+      "else": { "properties": { "rawTarget": { "$ref": "#/$defs/historyTarget" } } }
+    },
+    "ownershipCorrelation": {
+      "if": { "properties": { "ownership": { "properties": { "kind": { "const": "Platform" } } } } },
+      "then": { "properties": { "ownerTenantId": { "type": "null" } } },
+      "else": { "properties": { "ownerTenantId": { "$ref": "#/$defs/uuid" } } }
+    }
+  }
+}

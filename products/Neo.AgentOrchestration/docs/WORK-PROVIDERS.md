@@ -1,13 +1,36 @@
 # Optional work providers and coexistence
 
 Approved product direction, 2026-09-27. This is an architecture decision and
-acceptance contract, **not an implemented external integration**. Native Neo work
+acceptance contract for the full multi-provider lifecycle, not a claim of full
+bidirectional integration. The limited one-way GitLab display described below is
+implemented separately. Native Neo work
 management continues. No GitHub-only pivot, legacy cleanup or data cutover is
 authorized by this decision alone. Subsequent cutover approval and the current
 Neo API operational board are documented in COEXISTENCE.md and AGENTS.md.
 WorkManagement is retained legacy data, not the current coordination source.
 
 ## Independent choices
+
+### Implemented GitLab display scope
+
+The opt-in [GitLab display adapter](../tools/gitlab-display/README.md) reads the
+authorized scoped API, never task SQL, and maintains confidential Issues in one
+private repository project. It preserves native authority, claims, workflows,
+timers and private context. A non-root Linux timer refreshes the display every
+two minutes after each completed cycle; it is not a live websocket board embed.
+Five active label lists plus GitLab's Closed list represent the seven native
+statuses. Done/Cancelled remain distinct labels within Closed. Source links,
+sanitized titles, parent links and aggregate budgets/usage are published, not
+free-form descriptions, chats, prompts, logs or owner identities.
+
+Connection-scoped SQLite mappings and signed markers conservatively reconcile
+uncertain creates; absent receipts do not trigger blind duplicates. Unmanaged
+notes/labels are preserved. GitLab edits do not mutate native work or dispatch
+agents, and managed status is restored on subsequent sync. This does not fulfill
+the later two-way inbox/outbox/conflict/UI contract below. Setup still requires
+explicit private membership, exact existing-issuer SSO, separate scoped source
+and project-bot credentials, canonical routing/DNS and real live acceptance.
+Nothing is installed or dispatched automatically by API startup or migration.
 
 Keep three capabilities separate:
 

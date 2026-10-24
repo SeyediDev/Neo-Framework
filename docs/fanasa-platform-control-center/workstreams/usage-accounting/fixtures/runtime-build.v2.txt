@@ -1,0 +1,9 @@
+  Fanasa.ContractPolicy -> E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\src\Fanasa.ContractPolicy\bin\Release\net10.0\Fanasa.ContractPolicy.dll
+  Fanasa.AccessManagement.Web -> E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\bin\Release\net10.0\Fanasa.AccessManagement.Web.dll
+  Organization.Tests -> E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\tests\Organization.Tests\bin\Release\net10.0\Organization.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:06:05.34

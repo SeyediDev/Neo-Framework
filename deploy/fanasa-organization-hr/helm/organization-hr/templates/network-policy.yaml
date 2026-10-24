@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "organization-hr.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "organization-hr.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "organization-hr.selector" . | nindent 6 }}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.network.gateway.namespace | quote }}
+          podSelector:
+            matchLabels:
+              {{- toYaml .Values.network.gateway.podLabels | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: 5193
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.network.dns.namespace | quote }}
+          podSelector:
+            matchLabels:
+              {{- toYaml .Values.network.dns.podLabels | nindent 14 }}
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.network.identity.cidr | quote }}
+      ports:
+        - protocol: TCP
+          port: 443

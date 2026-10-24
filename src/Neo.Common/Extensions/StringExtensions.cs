@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -6,7 +7,7 @@ namespace Neo.Common.Extensions;
 
 public static partial class StringExtensions
 {
-    [GeneratedRegex("(?<!^)([A-Z])")]
+    [GeneratedRegex("(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])")]
     private static partial Regex KebabCaseRegex();
 
     public static string ToKebabCase(this string input)
@@ -16,8 +17,8 @@ public static partial class StringExtensions
             return input;
         }
 
-        string kebab = KebabCaseRegex().Replace(input, "-$1");
-        return kebab.ToLower();
+        string kebab = KebabCaseRegex().Replace(input, "-");
+        return kebab.ToLowerInvariant();
     }
 
     public static string ToPascalCase(this string name, bool lower)
@@ -140,19 +141,21 @@ public static partial class StringExtensions
             switch (value)
             {
                 case double d:
-                    outVal = (int)d;
+                    outVal = checked((int)d);
                     break;
                 case int d:
                     outVal = d;
                     break;
                 case long d:
-                    outVal = (int)d;
+                    outVal = checked((int)d);
                     break;
                 case string d:
                 default:
                     {
-                        double temp = Convert.ToDouble(value);
-                        outVal = Convert.ToInt32(temp);
+                        decimal temp = value is string text
+                            ? decimal.Parse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture)
+                            : Convert.ToDecimal(value);
+                        outVal = checked((int)temp);
                         break;
                     }
             }
@@ -172,7 +175,7 @@ public static partial class StringExtensions
             switch (value)
             {
                 case double d:
-                    outVal = Convert.ToInt64(d);
+                    outVal = checked((long)d);
                     break;
                 case int d:
                     outVal = d;
@@ -183,8 +186,10 @@ public static partial class StringExtensions
                 case string d:
                 default:
                     {
-                        double temp = Convert.ToDouble(value);
-                        outVal = Convert.ToInt32(temp);
+                        decimal temp = value is string text
+                            ? decimal.Parse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture)
+                            : Convert.ToDecimal(value);
+                        outVal = checked((long)temp);
                         break;
                     }
             }

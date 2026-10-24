@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "fanasa.gateway-native-smoke-orchestration.v1",
+  "passed": false,
+  "scope": "isolated single-gateway synthetic smoke",
+  "fullAcceptanceExecuted": false,
+  "deployed": false,
+  "sharedWiringApplied": false,
+  "cleanupAttempted": true,
+  "cleanupSucceeded": true,
+  "volumesPreserved": true,
+  "prerequisites": {
+    "memoryAvailableBytes": 1822982144,
+    "scratchAvailableBytes": 114739372032,
+    "dockerAvailableBytes": 114739372032,
+    "composeVersion": "5.3.1",
+    "dockerEngineVersion": "29.6.1",
+    "existingNodesReady": true,
+    "selectedDeploymentCount": 1,
+    "selectedDeploymentsReady": true,
+    "existingK3sActive": true
+  },
+  "project": "fanasa-gateway-smoke-20261010t134209z-c08fa7be",
+  "evidenceDirectory": "/var/tmp/fanasa-gateway-smoke-20261010t134209z-c08fa7be/evidence",
+  "archiveSha256": "a8ad2b872200ff1eacd3631b2ec37a5653e9148c4e07b30ae804288021671f46",
+  "manifestPayloadSha256": "13dce2708b8ebd98d0423d6d9afdc5f946761ab599bf13529d1ac37d12a89f06",
+  "manifestEntryCount": 24,
+  "validatedResources": {
+    "activeMemoryCapBytesIncludingRunner": 671088640,
+    "activeCpuCapIncludingRunner": 0.55,
+    "certsMemoryCapBytes": 67108864,
+    "certsCpuCap": 0.2,
+    "servicesValidated": 10,
+    "publishedPorts": 0,
+    "internalNetworksOnly": true,
+    "buildDisabled": true
+  },
+  "sourceSha256": {
+    "adapters/pep.lua": "abee6b0932da93530cbfe681a21670b00aa5f49ffd1c997353c637e7b89f121d",
+    "apisix/apisix.yaml": "72c6ee3d7ca50d758ff188d1bf2bddcedee28a8534ea6088a6686ac573f325ba",
+    "apisix/config.yaml": "ff081ce2fa581860cdf685a4d103df780be7fe2f44c1248dcbc8960154ececa3",
+    "apisix/plugins/fanasa-pep.lua": "ca7eb8ee7a8a1779b21e69f05182672a0b999c6900ffece3e845b1ae609fd785",
+    "EVIDENCE.md": "f91b004284e71a5cdd42d1faf84d63054446a46497cdcc039beacc2625e0641b",
+    "limiter/admit.lua": "bb5d6913e308ae5c2ae44ecd0d44e5bc68e6179fe1cc00dc86cd1975490a7dc0",
+    "native/apisix-boot.sh": "bcc6cdc30d8968bc6525f35905b6cd4f6148ec7da7e8278ede406abb64ebc7c7",
+    "native/BOUNDARY-REVIEW.md": "d87bb4f67b56a0d5ba5e13408d1d0135cf3ab84a6d9395fdf4d6d51e295e803f",
+    "native/certs.sh": "ace2d0b68800bc5cceeab4c0089653d4ed8157499883706985899e7160ed6b0f",
+    "native/compose.yaml": "8e57fa1be6258104d641988ae7926fb1ca7c7f5ff0976b5c37d36fe4083eb844",
+    "native/Dockerfile": "137893b3554d24c113f68ac9af08f8a848fbe1a5e2b463a2bad1f5e2855c2e6d",
+    "native/fixture.py": "03b8d09386870f0045269d40ce05ff4a5cc841288dbd46358379f6db3f4b31f3",
+    "native/generated/apisix.yaml": "dd9e976fc1a5a37a9f8f32614d33ade3b0b4e1a287775ed9d037d94e35e8d5ee",
+    "native/generated/config.yaml": "e914725890335f2817feb12e1d0c1d212ca26f2e4a945bef96574086a752cc93",
+    "native/generated/gateway.env": "1f35e5db02f0e8c5c6a22cfdab080999ab9bcaeb203301b481f5f7e8d07ffee2",
+    "native/generated/redis.acl": "682a8d378ff8a074ff2add300a7ef3b2850b75ef1a1151ebef162b634ffc06da",
+    "native/generated/redis.conf": "44e2dc18767a9d394dd3a0d4082ccf2be44df1bd86e5f738ddc5672248dca73d",
+    "native/generated/settings.json": "5a22fea6acfeb87b386c6a2193c60ca52144e25de087c40e3874d749359677f9",
+    "native/prepare.py": "59ebe2a65eb647e718bb1e695fb95418eea93a77f60c992af5e6f3b26fc83cda",
+    "native/README.md": "7a7915c6fe3f2b028473a9424dd65b9c8d9a02fbedce73a51bf69440fb046c9d",
+    "native/run.py": "528c1f42d3dfa126c5a62d43638ff7708d4d3c9df8da592699eff68ea174b1f4",
+    "native-harness-local-verification.json": "34de6bf242c2dbb59702969ff317239399fe207955a7acb4eca0107c0525eb60",
+    "native-harness-local-verification.log": "bcc395e00f59dcb709ef5ec8e608ada545a9ec22f1d1e6d2c67134ffd285b498",
+    "README.md": "3beda23e99a86743e4392ab9b62f6164560ed59f0772b4a2e09b97d36b849880"
+  },
+  "controlsSha256": {
+    "compose.smoke.yaml": "b90a9b922299e3025b76661f8cb53ca88863ce1b98b791e83b300009838eb856",
+    "compose.resources.yaml": "0e4110f4af7705e73bad5051559f76df9cb674b938a01a23394d2ef940e0027b",
+    "native-single-gateway-smoke.py": "326d4f888021b93e68020378651c32ee72b0fca2cdc4329e57a1bcf348e8b4d2"
+  },
+  "failedPhase": "serial-image-pull",
+  "failure": "command_nonzero_exit",
+  "errorClass": "SmokeAbort",
+  "failedCommandExitCode": 1,
+  "containers": [],
+  "commands": [
+    {
+      "stage": "docker-version",
+      "exitCode": 0,
+      "elapsedSeconds": 0.038
+    },
+    {
+      "stage": "compose-version",
+      "exitCode": 0,
+      "elapsedSeconds": 0.061
+    },
+    {
+      "stage": "docker-storage",
+      "exitCode": 0,
+      "elapsedSeconds": 0.088
+    },
+    {
+      "stage": "compose-feature-probe",
+      "exitCode": 0,
+      "elapsedSeconds": 0.101
+    },
+    {
+      "stage": "existing-node-health",
+      "exitCode": 0,
+      "elapsedSeconds": 0.343
+    },
+    {
+      "stage": "existing-deployment-health",
+      "exitCode": 0,
+      "elapsedSeconds": 0.304
+    },
+    {
+      "stage": "existing-k3s-service",
+      "exitCode": 0,
+      "elapsedSeconds": 0.008
+    },
+    {
+      "stage": "project-collision-container",
+      "exitCode": 0,
+      "elapsedSeconds": 0.021
+    },
+    {
+      "stage": "project-collision-network",
+      "exitCode": 0,
+      "elapsedSeconds": 0.022
+    },
+    {
+      "stage": "project-collision-volume",
+      "exitCode": 0,
+      "elapsedSeconds": 0.022
+    },
+    {
+      "stage": "merged-compose-model",
+      "exitCode": 0,
+      "elapsedSeconds": 0.13
+    },
+    {
+      "stage": "pull-certs",
+      "exitCode": 1,
+      "elapsedSeconds": 20.214
+    },
+    {
+      "stage": "container-evidence-list",
+      "exitCode": 0,
+      "elapsedSeconds": 0.034
+    },
+    {
+      "stage": "exact-project-cleanup",
+      "exitCode": 0,
+      "elapsedSeconds": 0.144
+    }
+  ]
+}

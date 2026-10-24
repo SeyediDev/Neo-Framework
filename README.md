@@ -11,6 +11,11 @@ Neo is a C# framework for applications organized around **Clean Architecture, CQ
 
 Created and maintained by [Javad Seyedi](https://github.com/SeyediDev).
 
+Local security migration, 2026-10-15: the legacy Keycloak mobile-only token API
+now fails closed, and administrative user creation no longer assigns a shared
+password. This source correction is not deployed and does not revoke historical
+credentials. [Consumer migration, tests and remaining rollout requirements](docs/security/KEYCLOAK-CREDENTIAL-MIGRATION.md).
+
 ## Why Neo?
 
 - **A consistent feature structure.** Separate domain rules, application requests, storage implementations and HTTP delivery.

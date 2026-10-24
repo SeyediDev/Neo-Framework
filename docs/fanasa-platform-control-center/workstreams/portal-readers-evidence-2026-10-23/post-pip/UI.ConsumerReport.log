@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: ready report renders cost, period, meter version, unit and charge count
+ok 1 - ready report renders cost, period, meter version, unit and charge count
+  ---
+  duration_ms: 32.4435
+  type: 'test'
+  ...
+# Subtest: large money and small quantities retain every supplied digit in real rendered text
+ok 2 - large money and small quantities retain every supplied digit in real rendered text
+  ---
+  duration_ms: 1.9542
+  type: 'test'
+  ...
+# Subtest: amount formatter rejects already rounded numbers and inexact decimal precision
+ok 3 - amount formatter rejects already rounded numbers and inexact decimal precision
+  ---
+  duration_ms: 1.7069
+  type: 'test'
+  ...
+# Subtest: explicit empty ready report shows zero cost, without a table or unknown amount
+ok 4 - explicit empty ready report shows zero cost, without a table or unknown amount
+  ---
+  duration_ms: 3.6861
+  type: 'test'
+  ...
+# Subtest: unrecorded report shows unknown cost rather than a successful zero
+ok 5 - unrecorded report shows unknown cost rather than a successful zero
+  ---
+  duration_ms: 1.2631
+  type: 'test'
+  ...
+# Subtest: every failed state clears the previous organization rows and cost
+ok 6 - every failed state clears the previous organization rows and cost
+  ---
+  duration_ms: 4.551
+  type: 'test'
+  ...
+# Subtest: organization change, missing scope and malformed identifiers erase previous values
+ok 7 - organization change, missing scope and malformed identifiers erase previous values
+  ---
+  duration_ms: 4.4523
+  type: 'test'
+  ...
+# Subtest: organization identifiers compare case-insensitively without loosening the UUID boundary
+ok 8 - organization identifiers compare case-insensitively without loosening the UUID boundary
+  ---
+  duration_ms: 1.0505
+  type: 'test'
+  ...
+# Subtest: service count counts distinct products while preserving each meter group
+ok 9 - service count counts distinct products while preserving each meter group
+  ---
+  duration_ms: 2.4518
+  type: 'test'
+  ...
+# Subtest: legacy row keeps quantity unknown and never manufactures a quota or wallet
+ok 10 - legacy row keeps quantity unknown and never manufactures a quota or wallet
+  ---
+  duration_ms: 2.1996
+  type: 'test'
+  ...
+# Subtest: legacy and measured rows for one meter stay separate
+ok 11 - legacy and measured rows for one meter stay separate
+  ---
+  duration_ms: 2.3733
+  type: 'test'
+  ...
+# Subtest: mixed null metadata and zero measured quantities fail without partial rows
+ok 12 - mixed null metadata and zero measured quantities fail without partial rows
+  ---
+  duration_ms: 1.8235
+  type: 'test'
+  ...
+# Subtest: unknown state, foreign basis and financial values in failed reports are rejected
+ok 13 - unknown state, foreign basis and financial values in failed reports are rejected
+  ---
+  duration_ms: 1.1549
+  type: 'test'
+  ...
+# Subtest: invalid money or mismatched totals never display a successful financial summary
+ok 14 - invalid money or mismatched totals never display a successful financial summary
+  ---
+  duration_ms: 1.1783
+  type: 'test'
+  ...
+# Subtest: exact fractional totals are validated using decimal arithmetic
+ok 15 - exact fractional totals are validated using decimal arithmetic
+  ---
+  duration_ms: 1.5054
+  type: 'test'
+  ...
+# Subtest: money obeys retained currency precision without discarding trailing zeros
+ok 16 - money obeys retained currency precision without discarding trailing zeros
+  ---
+  duration_ms: 1.6046
+  type: 'test'
+  ...
+# Subtest: submillisecond period boundaries compare exactly and retain source time strings
+ok 17 - submillisecond period boundaries compare exactly and retain source time strings
+  ---
+  duration_ms: 1.1443
+  type: 'test'
+  ...
+# Subtest: duplicates, invalid counts and malformed row collections are rejected
+ok 18 - duplicates, invalid counts and malformed row collections are rejected
+  ---
+  duration_ms: 2.5041
+  type: 'test'
+  ...
+# Subtest: invalid or non-UTC times, empty labels and invalid periods fail closed
+ok 19 - invalid or non-UTC times, empty labels and invalid periods fail closed
+  ---
+  duration_ms: 1.1078
+  type: 'test'
+  ...
+# Subtest: untrusted labels are literal text and never become HTML, links or script elements
+ok 20 - untrusted labels are literal text and never become HTML, links or script elements
+  ---
+  duration_ms: 1.2785
+  type: 'test'
+  ...
+# Subtest: ready and failed states remain live, RTL and keyboard-scroll accessible
+ok 21 - ready and failed states remain live, RTL and keyboard-scroll accessible
+  ---
+  duration_ms: 2.7792
+  type: 'test'
+  ...
+# Subtest: malformed object access also clears previous values
+ok 22 - malformed object access also clears previous values
+  ---
+  duration_ms: 1.2882
+  type: 'test'
+  ...
+# Subtest: browser export renders without touching network, storage or actions
+ok 23 - browser export renders without touching network, storage or actions
+  ---
+  duration_ms: 7.8962
+  type: 'test'
+  ...
+# Subtest: fresh Fabric report and C\# mapper outputs render with the same amount, scope and state
+ok 24 - fresh Fabric report and C\# mapper outputs render with the same amount, scope and state
+  ---
+  duration_ms: 12.6355
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 574.1479

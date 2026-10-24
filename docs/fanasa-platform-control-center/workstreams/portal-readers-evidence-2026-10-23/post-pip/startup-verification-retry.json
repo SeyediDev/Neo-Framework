@@ -1,0 +1,109 @@
+{
+  "scope": "actual Web process with synthetic settings and fresh local state",
+  "checks": [
+    {
+      "path": "/health/live",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "passed": true,
+      "body": {
+        "status": "Healthy"
+      }
+    },
+    {
+      "path": "/api/platform/published-services",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/platform/application-tenants?subject=ffffffff-ffff-4fff-bfff-ffffffffffff",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "passed": true
+    }
+  ],
+  "webDllSha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695",
+  "contentRoot": "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\startup-smoke-retry\\content",
+  "configuration": {
+    "Authentication": {
+      "Authority": "https://127.0.0.1:1/realms/fanasa",
+      "ClientId": "synthetic-local-startup",
+      "ClientSecret": ""
+    },
+    "Fabric": {
+      "DataDirectory": "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\startup-smoke-retry\\fabric",
+      "DataProtectionKeysPath": "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\startup-smoke-retry\\keys",
+      "ImportLegacyOnStartup": false
+    },
+    "Platform": {
+      "RegistryPath": "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\startup-smoke-retry\\platform\\platform-registry.db",
+      "ConsumerCatalog": {
+        "Enabled": false
+      }
+    },
+    "Organization": {
+      "DataDirectory": "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\startup-smoke-retry\\organization",
+      "RequireSubscription": true,
+      "HrApi": {
+        "Enabled": false
+      },
+      "Bearer": {
+        "Enabled": false
+      },
+      "TemporalAccess": {
+        "Enabled": false
+      },
+      "MeterChanges": false
+    },
+    "Accounting": {
+      "DataDirectory": "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\startup-smoke-retry\\accounting"
+    },
+    "Pip": {
+      "Transport": {
+        "Bindings": []
+      },
+      "Secrets": {}
+    },
+    "UsageMetering": {
+      "Organization": {
+        "Enabled": false
+      },
+      "Outbox": {
+        "Enabled": false
+      }
+    },
+    "Payments": {
+      "Zarinpal": {
+        "Enabled": false
+      }
+    },
+    "ContractPolicy": {
+      "Organization": {
+        "Enabled": false
+      },
+      "Producer": {
+        "Enabled": false
+      },
+      "GatewayRequest": {
+        "Enabled": false
+      },
+      "GatewayContext": {
+        "Enabled": false
+      },
+      "GatewayDecision": {
+        "Enabled": false
+      }
+    },
+    "ConsumerUsageReport": {
+      "Enabled": false
+    },
+    "AllowedHosts": "127.0.0.1;localhost"
+  },
+  "liveIdentityOrGatewayTested": false,
+  "externalConnectionMonitoringPerformed": false,
+  "allPassed": true,
+  "processStopped": true,
+  "processExitCodeAfterTermination": 1,
+  "logSha256": "aef2f5113aa0ccdafa14d50ade2122af2ba5a3e7dc8ed0d434a58b48a7637757"
+}

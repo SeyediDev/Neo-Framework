@@ -1,0 +1,23 @@
+{
+  "readOnly": true,
+  "sourceSha256": "e171de8a0cb467b68c32a04e5d69c6a317d38575d23f44db76b58a2f31ecf4db",
+  "sourceEqualsHelmUserValues": false,
+  "differentPathsOnly": [
+    {
+      "path": "/configs/cm/url",
+      "sourceType": "str",
+      "releaseType": "str"
+    },
+    {
+      "path": "/global/domain",
+      "sourceType": "str",
+      "releaseType": "str"
+    }
+  ],
+  "repoServerSourceEqualsHelm": true,
+  "sourceMutationExecuted": false,
+  "helmUpgradeExecuted": false,
+  "pinnedChart": "argo-cd-10.9.6",
+  "provenanceLimit": "The checked-in and remote source files match, and the repoServer subtree matches the Helm release. Full source/release equality fails at two unrelated URL/domain settings. No source mutation was executed.",
+  "validationLimit": "Pinned chart values and Deployment template were inspected successfully. Whole-chart render diff was not run after full source/release equality precondition failed."
+}

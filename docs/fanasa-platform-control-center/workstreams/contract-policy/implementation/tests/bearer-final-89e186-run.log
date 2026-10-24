@@ -1,0 +1,79 @@
+PASS: anonymous HTTP status (actual 401)
+PASS: anonymous leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: valid cookie alone HTTP status (actual 401)
+PASS: valid cookie alone leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: invalid signature HTTP status (actual 401)
+PASS: invalid signature leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: wrong issuer HTTP status (actual 401)
+PASS: wrong issuer leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: wrong audience HTTP status (actual 401)
+PASS: wrong audience leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: expired JWT HTTP status (actual 401)
+PASS: expired JWT leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: missing-exp signed JWT is denied
+PASS: missing-exp leaves all business/financial records unchanged
+PASS: duplicate-exp signed JWT is denied
+PASS: duplicate-exp leaves all business/financial records unchanged
+PASS: noncanonical-exp signed JWT is denied
+PASS: noncanonical-exp leaves all business/financial records unchanged
+PASS: future-nbf signed JWT is denied
+PASS: future-nbf leaves all business/financial records unchanged
+PASS: inactive JWT HTTP status (actual 403)
+PASS: inactive JWT leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: unauthorized client HTTP status (actual 403)
+PASS: unauthorized client leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: missing scope HTTP status (actual 403)
+PASS: missing scope leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: conflicting client_id HTTP status (actual 403)
+PASS: conflicting client_id leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: tenant A actor targeting B HTTP status (actual 403)
+PASS: tenant A actor targeting B leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: forged tenant/permission claims and headers without durable grant HTTP status (actual 403)
+PASS: forged tenant/permission claims and headers without durable grant leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: unsupported operation HTTP status (actual 400)
+PASS: unsupported operation leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: missing request identity HTTP status (actual 400)
+PASS: missing request identity leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: revoked durable grant HTTP status (actual 403)
+PASS: revoked durable grant leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: inactive membership HTTP status (actual 403)
+PASS: inactive membership leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: inactive tenant HTTP status (actual 403)
+PASS: inactive tenant leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: inactive registered client HTTP status (actual 403)
+PASS: inactive registered client leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: scope removed from registered client HTTP status (actual 403)
+PASS: scope removed from registered client leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: suspended product subscription HTTP status (actual 403)
+PASS: suspended product subscription leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: expired product entitlement HTTP status (actual 403)
+PASS: expired product entitlement leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: trusted synthetic admission denial HTTP status (actual 403)
+PASS: trusted synthetic admission denial leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: grant revoked during admission HTTP status (actual 403)
+PASS: grant revoked during admission leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: token expires while awaiting synthetic admission HTTP status (actual 403)
+PASS: token expires while awaiting synthetic admission leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: expiry test enters admission with a live JWT and returns after its signed deadline
+PASS: trusted synthetic admission and durable grant execute HTTP unit.save
+PASS: one real organization mutation commits
+PASS: synthetic configured rate produces one transactional usage/debit/outbox
+PASS: exact repeated HTTP receipt executes and charges once
+PASS: changed payload under same receipt HTTP status (actual 409)
+PASS: changed payload under same receipt leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: revoked grant blocks exact receipt replay HTTP status (actual 403)
+PASS: revoked grant blocks exact receipt replay leaves organization/history/receipts/usage/ledger/outbox unchanged
+PASS: default-disabled fails closed over HTTP
+PASS: default-disabled leaves all business/financial records unchanged
+PASS: default-disabled anonymous request rejects without a 500 or mutation
+PASS: no-admission fails closed over HTTP
+PASS: no-admission leaves all business/financial records unchanged
+PASS: no-admission anonymous request rejects without a 500 or mutation
+PASS: metering-disabled fails closed over HTTP
+PASS: metering-disabled leaves all business/financial records unchanged
+PASS: metering-disabled anonymous request rejects without a 500 or mutation
+PASS: no-bearer-settings fails closed over HTTP
+PASS: no-bearer-settings leaves all business/financial records unchanged
+PASS: no-bearer-settings anonymous request rejects without a 500 or mutation
+77 synthetic Bearer HTTP checks passed.
+

@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fanasa:contract-policy:projection:2.0.0",
+  "title": "ContractAccessProjection v2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "profileId",
+    "contractId",
+    "contractVersion",
+    "ownerTenantId",
+    "consumerTenantId",
+    "productId",
+    "offerId",
+    "subscriptionId",
+    "status",
+    "validFrom",
+    "validTo",
+    "effectiveAt",
+    "featureEntitlements",
+    "eligibleRoles",
+    "seats",
+    "limits",
+    "zoneConstraints",
+    "pricingReference",
+    "policy"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0.0"
+    },
+    "profileId": {
+      "const": "fanasa.contract-policy/2"
+    },
+    "contractId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+    },
+    "contractVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "ownerTenantId": {
+      "type": "string",
+      "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+    },
+    "consumerTenantId": {
+      "type": "string",
+      "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+    },
+    "productId": {
+      "const": "organization-fabric",
+      "description": "Synthetic common operation fixture only; real registry and audience binding remains a runtime acceptance requirement."
+    },
+    "offerId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+    },
+    "subscriptionId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+    },
+    "status": {
+      "enum": [
+        "Active",
+        "Suspended",
+        "Ended"
+      ]
+    },
+    "validFrom": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validTo": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "effectiveAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "featureEntitlements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+      },
+      "minItems": 0,
+      "maxItems": 64,
+      "uniqueItems": true
+    },
+    "eligibleRoles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9.-]{0,63}$"
+      },
+      "minItems": 0,
+      "maxItems": 64,
+      "uniqueItems": true
+    },
+    "seats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maximum",
+        "unit",
+        "scope"
+      ],
+      "properties": {
+        "maximum": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "unit": {
+          "const": "active-membership"
+        },
+        "scope": {
+          "const": "consumer-product-subscription"
+        }
+      }
+    },
+    "limits": {
+      "$ref": "limits.v2.schema.json"
+    },
+    "zoneConstraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+      },
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true
+    },
+    "pricingReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "priceId",
+        "priceVersion"
+      ],
+      "properties": {
+        "priceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+        },
+        "priceVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyId",
+        "policyVersion",
+        "templateId",
+        "combiningAlgorithm",
+        "explicitDenyActions"
+      ],
+      "properties": {
+        "policyId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+        },
+        "policyVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "templateId": {
+          "const": "organization-unit-save/1"
+        },
+        "combiningAlgorithm": {
+          "const": "deny-overrides"
+        },
+        "explicitDenyActions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "fanasa.hr3.actual-host-delivery/1",
+  "observedAtUtc": "2026-10-15T10:54:51.295Z",
+  "package": "hr-read-host-v3-r2",
+  "sourcePackageSha256": "47f8a53225132f1c889a31ddb3b7e1557f450b84c56f91b2cc022f8005d03ee5",
+  "localBuildSucceeded": true,
+  "localAssertionsPassed": 823,
+  "operationalAcceptance": false,
+  "pipelineExecuted": false,
+  "newServerDeployment": false,
+  "sourceTransfer": "blocked-pending-explicit-user-approval-after-prior-automatic-review-rejection",
+  "remaining": [
+    "Sensitive source upload approval",
+    "Real native mTLS and system CA trust",
+    "Keycloak introspection credential and independent consumer mapper",
+    "Real business-source publication authority and valid live records",
+    "Explicit HR3 chart/history receiver replacement and admission/collector acceptance"
+  ],
+  "previouslyObservedRelease": "hr-development-597dab599177-b841fabc1c3c",
+  "previouslyObservedPipeline": "https://gitlab.fanasa.net.local/javadsayedi/organization-hr-api/-/pipelines/10",
+  "baselinePackageSha256": "7df189c3b92afbeb437bac09a1a9414c78aa8392f987422a331605ac23ea3ebd",
+  "localSourceRevalidation": true,
+  "hostInputs": 96,
+  "hostInputChanges": 3,
+  "pipelineDefinitionUpdatedLocally": true,
+  "localCiUnitTests": {
+    "passed": 29,
+    "failed": 0,
+    "exitCode": 0,
+    "hr3GateTests": 8,
+    "command": "python -m unittest discover -s deploy/fanasa-organization-hr/tests -p 'test_*.py' -v",
+    "elapsedSeconds": 14.147,
+    "livePipelineExecution": false,
+    "hostProcessSimulatedInPythonGateTests": true,
+    "separateActualDotnetAssertionsPassed": 823
+  },
+  "readonlyServerObservation": "hr3-live-readonly-20261015.json",
+  "liveApplicationHealth": "Healthy",
+  "liveApplicationSync": "Synced",
+  "existingReleaseWarning": "OrphanedResourceWarning; no HR3 operational acceptance inferred."
+}

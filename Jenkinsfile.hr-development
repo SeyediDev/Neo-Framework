@@ -1,0 +1,51 @@
+// External GitHub source uses Jenkins. Configure as a develop-only Pipeline-from-SCM job.
+// This agent has .NET10, Node24, Python3 and no deployment/cluster/signing credentials.
+pipeline {
+    agent { label 'fanasa-hr-build' }
+    options {
+        skipDefaultCheckout(true)
+        disableConcurrentBuilds()
+        timeout(time: 60, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage('Exact development checkout') {
+            steps {
+                checkout scm
+                sh '''set -eu
+                    test "$(git rev-parse HEAD)" = "$GIT_COMMIT"
+                    test "$(git rev-parse refs/remotes/origin/develop)" = "$GIT_COMMIT"
+                    test "$(git remote get-url origin)" = 'https://github.com/SeyediDev/Neo-Framework.git'
+                    python3 deploy/fanasa-organization-hr/ci.py source --source-commit "$GIT_COMMIT" > source-identity.json
+                '''
+            }
+        }
+        stage('Build and required integration suites') {
+            steps {
+                sh 'python3 deploy/fanasa-organization-hr/ci.py verify --source-commit "$GIT_COMMIT"'
+            }
+        }
+        stage('Immutable release') {
+            steps {
+                sh '''set -eu
+                    python3 deploy/fanasa-organization-hr/ci.py package --source-commit "$GIT_COMMIT"
+                    python3 deploy/fanasa-organization-hr/verify_bundle.py --archive .artifacts/hr-development/*.tar.gz --receipt .artifacts/hr-development/release.json
+                '''
+                archiveArtifacts artifacts: '.artifacts/hr-development/*.tar.gz,.artifacts/hr-development/release.json,.artifacts/hr-development/release.sha256,.artifacts/hr-development/verification.json,source-identity.json', fingerprint: true
+            }
+        }
+        stage('Trusted development deployment') {
+            steps {
+                // Operator-installed downstream job independently verifies this build's recorded artifact.
+                build job: 'fanasa-organization-hr-development-deploy', wait: true, propagate: true,
+                    parameters: [string(name: 'UPSTREAM_BUILD_NUMBER', value: env.BUILD_NUMBER)]
+            }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: '.artifacts/hr-development/*.log,.artifacts/hr-development/verification.json', allowEmptyArchive: true
+        }
+    }
+}

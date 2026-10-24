@@ -1,0 +1,118 @@
+{
+  "date": "2026-10-23",
+  "scope": "local synthetic reader fixtures",
+  "passed": {
+    "consumerCatalog": 223,
+    "publishedCatalog": 65,
+    "usageApi": 106,
+    "canonicalReport": 145,
+    "portalAdapter": 116,
+    "portalTransport": 342
+  },
+  "total": 997,
+  "deployedThisTurn": false,
+  "integrationBuild": "failed: concurrent PIP CS1061 in PipContracts.cs:8; see Web-final.build.log",
+  "fullStartupTested": false,
+  "monitoredSourceCount": 16,
+  "changedSources": [
+    "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs"
+  ],
+  "readerSourcesStable": true,
+  "sourceMonitoringLimit": "Selected16 files; not the full compilation inventory. Concurrent PIP hosting changes are outside reader fixture coverage.",
+  "recordedAtUtc": "2026-10-23T12:12:16.9174085+00:00",
+  "runsHaveExitCodeZero": true,
+  "logs": [
+    {
+      "file": "ConsumerApplicationCatalog.Tests.log",
+      "bytes": 19219,
+      "sha256": "735128d632d02fd8ff389f3b86f40d22f8ee90dfc23ea192ec9021321c0281f9"
+    },
+    {
+      "file": "ConsumerUsage.Api.Tests.log",
+      "bytes": 9045,
+      "sha256": "50fc534caafac246d6d15a70a255a5d5a5b91ac0e0c85c6a6028ef57252b3a56"
+    },
+    {
+      "file": "ConsumerUsageReport.Tests.build.log",
+      "bytes": 232,
+      "sha256": "f1728c2780a192a91c0cba56bbd3075539f3cc994ca0ed8df0a63c175205f2de"
+    },
+    {
+      "file": "ConsumerUsageReport.Tests.log",
+      "bytes": 13090,
+      "sha256": "6d059f93d28b3dc529c1ff50dc8e7f9fff81c38395f5aa8e2914305cd69eac2d"
+    },
+    {
+      "file": "ConsumerUsageReport.Tests.restore.log",
+      "bytes": 251,
+      "sha256": "055666d37a44e11a0753c88aa08731f0cd2e6461fdb87502042f5937801450d4"
+    },
+    {
+      "file": "PortalAdapter.Tests.build.log",
+      "bytes": 214,
+      "sha256": "9b055aa245a45bbea2c9e7da5c81600ac8d9862e042f3e93f56bb76baae8e6a7"
+    },
+    {
+      "file": "PortalAdapter.Tests.log",
+      "bytes": 10005,
+      "sha256": "ff9e037de39adcce2c5212bd616c6a5fce49df4e49e688ac0fdeebf4084d57bb"
+    },
+    {
+      "file": "PortalAdapter.Tests.restore.log",
+      "bytes": 262,
+      "sha256": "e61d9effb23b9f43bdbe26bce9ebdec19aabb843ae98d2e840ea0827244d130e"
+    },
+    {
+      "file": "PortalTransport.Tests.build.log",
+      "bytes": 220,
+      "sha256": "935bdea4f413450898f32e8cee0e687c967d1c6191c85140e2609898aef3ac8f"
+    },
+    {
+      "file": "PortalTransport.Tests.log",
+      "bytes": 2284,
+      "sha256": "5a32e19533bece3f306da6330cf73f8498246b85825ca4e16be6a70e1b050e09"
+    },
+    {
+      "file": "PortalTransport.Tests.restore.log",
+      "bytes": 217,
+      "sha256": "ad7741bc801a0b0113cae80c67f8761b88dfcc0791ee710b55fcf974f94f9a91"
+    },
+    {
+      "file": "PublishedCatalog.Tests.log",
+      "bytes": 3345,
+      "sha256": "54244011f26f7b0f0323c7384b44d72ca7dd6dde2ad28854a5089fe106419a63"
+    },
+    {
+      "file": "Web-final.build.log",
+      "bytes": 1219,
+      "sha256": "64998916322e0713d2e20470bf4e1f00f816038686cf9e1a69159d8cb4797c03"
+    }
+  ],
+  "testAssemblyHashes": [
+    {
+      "path": ".build/usage-reader-20261015/bin/ConsumerApplicationCatalog.Tests/release/ConsumerApplicationCatalog.Tests.dll",
+      "sha256": "1b7d87d568928e926848088c35c0b7b8946873e6c22126eefd22bf4aaf4ac6e0"
+    },
+    {
+      "path": ".build/usage-reader-20261015/bin/PublishedCatalog.Tests/release/PublishedCatalog.Tests.dll",
+      "sha256": "189d0e5f7a9fd7e467ad035de54575a36603ad62db41aa05d73f5ee00fa507ff"
+    },
+    {
+      "path": ".build/usage-reader-20261015/bin/ConsumerUsage.Api.Tests/release/ConsumerUsage.Api.Tests.dll",
+      "sha256": "a99349fca91d536305f8180169dbd806340c79466459a8560cfc325441f10e55"
+    },
+    {
+      "path": ".build/usage-reader-20261015/bin/ConsumerUsageReport.Tests/release/ConsumerUsageReport.Tests.dll",
+      "sha256": "afdf77755bd9e27dfaf70c459b5a60f45997157b5958db8ebc0c4b1dd2c0b084"
+    },
+    {
+      "path": ".build/usage-reader-20261015/bin/PortalAdapter.Tests/release/PortalAdapter.Tests.dll",
+      "sha256": "fe6e2ce26df2fc96f7b1cee637085d8f174eadd038753c7d03942dcea43532db"
+    },
+    {
+      "path": ".build/usage-reader-20261015/bin/PortalTransport.Tests/release/PortalTransport.Tests.dll",
+      "sha256": "96be4bf5f31e322b245907bfe6cf3f09b347f113fd84e253faf131e0906f1229"
+    }
+  ],
+  "nugetAuditDisabledForLocalRunOnly": true
+}

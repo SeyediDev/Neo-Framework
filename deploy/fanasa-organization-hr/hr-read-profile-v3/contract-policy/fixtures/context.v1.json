@@ -1,0 +1,52 @@
+{
+  "requestId": "sample-request-1",
+  "subject": {
+    "subjectId": "sample-subject-b",
+    "authenticationValid": true,
+    "clientAuthorized": true,
+    "audience": "fanasa-club-api",
+    "scopes": [
+      "report.read"
+    ]
+  },
+  "resource": {
+    "productId": "club",
+    "consumerTenantId": "tenant-b",
+    "environment": "development",
+    "operationGroup": "reporting"
+  },
+  "action": "report.read",
+  "environment": {
+    "now": "2026-10-10T10:00:00.000Z",
+    "zone": "ir-private-1"
+  },
+  "tenant": {
+    "tenantId": "tenant-b",
+    "active": true
+  },
+  "membership": {
+    "subjectId": "sample-subject-b",
+    "tenantId": "tenant-b",
+    "active": true,
+    "validFrom": "2026-10-01T00:00:00.000Z",
+    "validTo": "2026-11-01T00:00:00.000Z"
+  },
+  "grant": {
+    "grantId": "sample-grant-1",
+    "subjectId": "sample-subject-b",
+    "consumerTenantId": "tenant-b",
+    "productId": "club",
+    "role": "ApiInvoker",
+    "actions": [
+      "report.read"
+    ],
+    "active": true,
+    "validFrom": "2026-10-01T00:00:00.000Z",
+    "validTo": "2026-11-01T00:00:00.000Z"
+  },
+  "evidence": {
+    "validUntil": "2026-10-10T10:00:45.000Z",
+    "contractVersion": 7,
+    "policyVersion": 3
+  }
+}

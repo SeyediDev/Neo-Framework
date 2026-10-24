@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "fanasa.hr3.readonly-live-metadata/1",
+  "observedAtUtc": "2026-10-15T10:40:27.852620+00:00",
+  "readOnly": true,
+  "application": {
+    "name": "fanasa-organization-hr-development",
+    "uid": "9220d045-abfe-4f35-b0de-a8990e9b0cc8",
+    "health": "Healthy",
+    "sync": "Synced",
+    "operation": "Succeeded",
+    "targetRevision": "597dab599177f98f7d260d00c72adb736614ad42",
+    "observedRevision": "597dab599177f98f7d260d00c72adb736614ad42",
+    "conditions": [
+      {
+        "type": "OrphanedResourceWarning",
+        "messageSha256": "9ba1daa448ee16e279fe8b3ba7db7fabe1175ab23ecb36f2cc73c6c8c5911d2b"
+      }
+    ]
+  },
+  "pods": [
+    {
+      "name": "hr-development-hr-gateway-5f689dc49d-r2bgt",
+      "uid": "1498acb5-6a68-422e-a8cd-e4a6fd662cad",
+      "phase": "Running",
+      "containers": [
+        {
+          "name": "tls-passthrough",
+          "ready": true,
+          "restarts": 0,
+          "image": "sha256:11e2b68afdc452793add0dbf4524b0156615dcd036d9031233692e72bedbac49"
+        }
+      ]
+    },
+    {
+      "name": "hr-development-organization-hr-8857bcb6c-rmffh",
+      "uid": "a780d93f-2d61-497f-998c-3bff92d7671d",
+      "phase": "Running",
+      "containers": [
+        {
+          "name": "web",
+          "ready": true,
+          "restarts": 0,
+          "image": "sha256:11e2b68afdc452793add0dbf4524b0156615dcd036d9031233692e72bedbac49"
+        },
+        {
+          "name": "workbench",
+          "ready": true,
+          "restarts": 0,
+          "image": "sha256:48796da1fd0a6907ea5816f9d813933b1e8dc05af58b5d42b6f8ba7bf52b6f00"
+        }
+      ]
+    }
+  ],
+  "storage": {
+    "claimUid": "12698725-d049-4989-bb91-b2e90c4712f4",
+    "phase": "Bound",
+    "pvUid": "aa04ceab-97b0-479f-a4e6-a6280051d6aa",
+    "claimRefUid": "12698725-d049-4989-bb91-b2e90c4712f4",
+    "reclaimPolicy": "Retain"
+  },
+  "acceptedMetadata": {
+    "sourceCommit": "597dab599177f98f7d260d00c72adb736614ad42",
+    "release": "hr-development-597dab599177-b841fabc1c3c",
+    "status": "accepted"
+  },
+  "deploymentMetadata": {
+    "acceptedAt": "2026-10-14T18:01:57.718431+00:00",
+    "pipelineId": 10,
+    "gatewayAccepted": true
+  },
+  "markerSha256": {
+    "current": "3a515526e55c8514e5163949400d26f0a0891d12405cf73b59efd8ad6b84e8bf",
+    "proof": "9c34e71bfc647c9b2c54737e694ebed151ebb1b3683085997bf789bc318f86b9"
+  },
+  "sourceTransfer": false,
+  "runtimeMutation": false,
+  "secretsRead": false,
+  "liveHr3Acceptance": false
+}

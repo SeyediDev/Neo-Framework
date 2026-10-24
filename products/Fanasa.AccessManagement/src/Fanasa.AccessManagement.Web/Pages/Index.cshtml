@@ -1,5 +1,6 @@
 @page
 @using System.Security.Claims
+<a class="button secondary" asp-page="/Architecture" style="display:inline-block;margin-bottom:20px">معماری پلتفرم · نقشه ارتباطات و سند معماری ↗</a>
 @{ ViewData["Title"] = "نمای کلی"; var subject = User.FindFirstValue("sub") ?? "—"; }
 <div class="intro"><div><p class="eyebrow">Fanasa Platform Control Center</p><h2>راهبری سامانه‌ها، هویت و دسترسی فن‌آسا</h2><p class="muted">احراز هویت توسط Keycloak انجام می‌شود؛ این مرکز Tenant، سامانه، محصول، کلاینت، نقش و مجوزهای پلتفرم را مدیریت می‌کند.</p></div><a class="button primary" asp-page="/Tenants">مشاهده تننت‌ها</a></div>
 <div class="metrics"><div class="metric"><span>سازمان‌های فعال</span><strong>—</strong><small>از سرویس دسترسی</small></div><div class="metric"><span>اعضای دارای دسترسی</span><strong>—</strong><small>بدون کپی کاربر در این سامانه</small></div><div class="metric"><span>محصول‌های متصل</span><strong>—</strong><small>بر اساس grantهای معتبر</small></div><div class="metric accent"><span>وضعیت هویت</span><strong>فعال</strong><small>subject: @subject[..Math.Min(subject.Length, 12)]</small></div></div>

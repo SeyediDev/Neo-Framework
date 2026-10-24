@@ -1,0 +1,9 @@
+# Include explicitly from the HR project's selected CI config after adding this source directory.
+# This file is NOT automatically included by the current protected source597 pipeline.
+hr_read_profile_verify:
+  stage: verify-package
+  allow_failure: false
+  script:
+    - dotnet run --project deploy/fanasa-organization-hr/hr-read-profile-v3/tests/Fanasa.HrReadCandidate.Tests.csproj -c Release
+    - dotnet run --project deploy/fanasa-organization-hr/hr-read-profile-v3/http-tests/Fanasa.HrReadCandidate.Http.Tests.csproj -c Release
+    - dotnet run --project deploy/fanasa-organization-hr/hr-read-profile-v3/contract-policy/tests/OriginalRegression/OriginalRegression.csproj -c Release

@@ -1,0 +1,16 @@
+{
+  "recordedDate": "2026-10-10",
+  "scope": "Read-only source evidence for the proposed fixture; no production/source changes made by this workstream.",
+  "runtime": {
+    "dotnet": "10.0.401",
+    "python": "3.12"
+  },
+  "sha256": {
+    "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Accounting.cs": "b920ceaaad77bdb71d9ca0be67e739524a4f938de31a76a2928ef5b9f50dc865",
+    "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PersistentAccessManagement.cs": "2549176574b7a64302cb8d161070549ae400a55a75c4042e7aba391630a2ecaf",
+    "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricDatabase.cs": "136f278ea06169fadc6a6b1106dee3e599f9c5ae5ded29ede6e46a5d50d33368",
+    "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs": "8ecd8488b4c191b16e701bf46cf5d4dd16d395f412b72757310a66f83154c665",
+    "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationFabric.cs": "0249a619c1a3a7233054ff4fd9d9c6a7a9dbdf0995eff00a4546e2d63de95655",
+    "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricRecovery.cs": "bf57eeed71e8ef17110208e1aefc16c41366d76c6c727fa744494c51c3b66eb1"
+  }
+}

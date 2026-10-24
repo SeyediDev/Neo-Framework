@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh Fanasa work-board display in GitLab every two minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitInactiveSec=2min
+RandomizedDelaySec=5s
+Persistent=true
+Unit=fanasa-work-gitlab.service
+
+[Install]
+WantedBy=timers.target

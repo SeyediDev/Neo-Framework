@@ -1,0 +1,733 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fanasa Portal Central Readers",
+    "version": "1.0.0",
+    "description": "Local implementation contract. The 2026-10-15 handoff records deployment separately. Catalog publication never grants product access; usage reading never posts financial effects. Authenticated controller responses use Cache-Control: no-store; the existing bearer challenge can return 401 before the controller without this explicit header. Synthetic HTTP fixtures do not exercise all production claims-transformation failures. Consumer application discovery is separately opt-in and only reads existing historical offer/grant metadata."
+  },
+  "servers": [
+    {
+      "url": "https://platform.fanasa.net.local",
+      "description": "Target central origin; new reader endpoints were not deployed in the recorded probe."
+    }
+  ],
+  "paths": {
+    "/api/platform/published-services": {
+      "get": {
+        "operationId": "readPublishedServices",
+        "description": "Exact configured Portal service client with validated central-audience bearer and existing platform.catalog scope. Reads explicitly audited publications only; no subject/tenant query.",
+        "security": [
+          {
+            "PlatformBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published metadata only; Cache-Control: no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PublishedService"
+                  },
+                  "maxItems": 2000
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported query input."
+          },
+          "401": {
+            "description": "Missing or invalid bearer."
+          },
+          "403": {
+            "description": "Client, scope or live registration denied."
+          },
+          "503": {
+            "description": "Disabled/unconfigured reader or storage unavailable."
+          }
+        }
+      }
+    },
+    "/api/accounting/v1/consumers/{consumerTenantId}/usage-report": {
+      "get": {
+        "operationId": "readConsumerUsageReport",
+        "description": "Configured Portal human credential, signed human session and API audience; live consumer membership and billing.read. Server fixed 10000-row/8MiB limits, no caller maxRows. UTC half-open period shorter than 366 days. The owning Portal tenant and unique registered client must be active. Authorization is rechecked inside and after the read snapshot. No subject/header delegation.",
+        "security": [
+          {
+            "PlatformBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consumerTenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "One value only. UTC with explicit Z or +00:00. Unknown or duplicate query parameters are rejected."
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "One value only. UTC with explicit Z or +00:00. Unknown or duplicate query parameters are rejected."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Read-only recorded usage, Cache-Control: no-store. Non-ready reports contain no financial rows, amount or currency.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "subject",
+                    "report"
+                  ],
+                  "properties": {
+                    "subject": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Validated server-side human subject; omit from browser Bootstrap."
+                    },
+                    "report": {
+                      "$ref": "#/components/schemas/ConsumerUsageReport"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid period or unsupported/duplicate query input."
+          },
+          "401": {
+            "description": "Missing or invalid central bearer."
+          },
+          "403": {
+            "description": "Wrong client, service token, inactive consumer/membership or missing/expired billing.read."
+          },
+          "503": {
+            "description": "Disabled/unconfigured reader or sanitized storage failure."
+          }
+        }
+      }
+    },
+    "/api/platform/service-publications/{productId}": {
+      "get": {
+        "operationId": "readServicePublication",
+        "description": "Administrator publication record; absent record returns HTTP 204 without content. Historical HTTPS links remain inspectable after their host is retired from the current allowlist.",
+        "security": [
+          {
+            "PlatformAdminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Existing administrator publication; no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServicePublication"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing administrator cookie."
+          },
+          "403": {
+            "description": "PlatformAdmin required."
+          },
+          "503": {
+            "description": "Publication storage unavailable."
+          },
+          "204": {
+            "description": "No publication record exists; empty response body."
+          }
+        }
+      },
+      "put": {
+        "operationId": "saveServicePublication",
+        "description": "Explicitly publish or withdraw with expectedRevision and a required reason. Publishing requires a currently registered product with an active owner and official center, a bounded nonempty description, and approved HTTPS443 links. Withdrawal requires an existing publication, preserves its identity and description, clears links, and remains possible after owner deactivation or official host retirement. The metadata arguments are ignored for withdrawal. Same-Fabric atomic audit/outbox; product registry is a separate store. Registration itself grants neither publication nor access.",
+        "security": [
+          {
+            "PlatformAdminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Maximum request body16384bytes.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicePublicationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Saved publication and audit; no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServicePublication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid metadata or antiforgery token."
+          },
+          "401": {
+            "description": "Missing administrator cookie."
+          },
+          "403": {
+            "description": "PlatformAdmin required."
+          },
+          "404": {
+            "description": "Publishing: unknown central product. Withdrawing: no prior publication."
+          },
+          "409": {
+            "description": "Publication revision changed."
+          },
+          "413": {
+            "description": "Request body exceeds16384bytes."
+          },
+          "503": {
+            "description": "Publication storage unavailable."
+          }
+        }
+      }
+    },
+    "/api/platform/application-tenants": {
+      "get": {
+        "operationId": "readConsumerApplicationTenants",
+        "description": "Opt-in Platform:ConsumerCatalog:Enabled (default false). Exact configured, registered service client and platform.catalog. Lists active Fabric memberships, independently of developer permissions. No financial or product access grant.",
+        "security": [
+          {
+            "PlatformBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subject",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Exactly one canonical lowercase nonempty UUID. Trusted server-side service delegation only; never supplied as proof of human identity by a browser."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Read-only compatibility projection; Cache-Control: no-store; at most 2000 rows and 2MiB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 2000,
+                  "items": {
+                    "$ref": "#/components/schemas/ConsumerApplicationTenant"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing, duplicate, noncanonical or unsupported query/header input."
+          },
+          "401": {
+            "description": "Missing or invalid central bearer; administrator cookie is insufficient."
+          },
+          "403": {
+            "description": "Wrong client/scope/type, inactive registration, consumer or membership."
+          },
+          "503": {
+            "description": "Consumer reader disabled/unconfigured, historical schema absent or candidate metadata/storage invalid. No schema, grant or offer is created."
+          }
+        }
+      }
+    },
+    "/api/platform/products": {
+      "get": {
+        "operationId": "readConsumerApplications",
+        "description": "Consumer compatibility branch with tenant query, platform.catalog scope or configured Portal client; no developer fallback. Exact registered service client/platform.catalog, active consumer membership and existing historical application offer plus explicit product/tenant/subject grant are required. Product must carry persisted publishAsApplication/origin/tenancyMode metadata; Attributes/public publication/developer grant are insufficient. Dedicated is owner-only; SaaS can use another producer tenant. Linked subscriptions must be active, current and seat-sufficient; legacy absent/null subscriptionId stays optional. Fabric and registry have separate point-in-time read snapshots; no distributed revocation guarantee. Without consumer indicators or tenant, the pre-existing developer branch still requires PlatformService with fanasa-developer-service/platform.registry and returns the existing developer DTO (outside this consumer response schema). All mutation/membership/authorize operations retain PlatformService.",
+        "security": [
+          {
+            "PlatformBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subject",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Exactly one canonical lowercase nonempty UUID. Trusted server-side service delegation only; never supplied as proof of human identity by a browser."
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Required in the consumer branch: exactly one canonical lowercase selected consumer UUID. Omitted only for the pre-existing developer branch."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Read-only compatibility projection; Cache-Control: no-store; at most 2000 rows and 2MiB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 2000,
+                  "items": {
+                    "$ref": "#/components/schemas/ConsumerApplication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing, duplicate, noncanonical or unsupported query/header input."
+          },
+          "401": {
+            "description": "Missing or invalid central bearer; administrator cookie is insufficient."
+          },
+          "403": {
+            "description": "Wrong client/scope/type, inactive registration, consumer or membership."
+          },
+          "503": {
+            "description": "Consumer reader disabled/unconfigured, historical schema absent or candidate metadata/storage invalid. No schema, grant or offer is created."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "PlatformBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Keycloak central issuer and fanasa-access-management-web audience. Catalog uses the configured service client/platform.catalog. Finance requires the separately configured Portal human client/scope and live billing.read."
+      },
+      "PlatformAdminCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "fanasa.access.session",
+        "description": "Existing authenticated PlatformAdmin session. No bearer bypass. PUT also requires X-CSRF-TOKEN and its paired antiforgery cookie."
+      }
+    },
+    "schemas": {
+      "PublishedService": {
+        "type": "object",
+        "required": [
+          "productId",
+          "key",
+          "displayName",
+          "center",
+          "description",
+          "published"
+        ],
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "key": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "center": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "detailsUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "requestAccessUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "published": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        }
+      },
+      "UsageItem": {
+        "type": "object",
+        "required": [
+          "productKey",
+          "meterId",
+          "meterVersion",
+          "unit",
+          "quantity",
+          "amount",
+          "chargeCount"
+        ],
+        "properties": {
+          "productKey": {
+            "type": "string"
+          },
+          "meterId": {
+            "type": "string"
+          },
+          "meterVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "unit": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "string",
+            "description": "Exact decimal string, never a JSON number."
+          },
+          "chargeCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000
+          }
+        }
+      },
+      "ConsumerUsageReport": {
+        "type": "object",
+        "required": [
+          "consumerTenantId",
+          "from",
+          "to",
+          "asOf",
+          "status",
+          "basis",
+          "currency",
+          "totalAmount",
+          "items"
+        ],
+        "properties": {
+          "consumerTenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "from": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC, inclusive boundary."
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC, exclusive boundary."
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "notRecorded",
+              "incomplete",
+              "unavailable"
+            ]
+          },
+          "basis": {
+            "type": "string",
+            "enum": [
+              "posted-ledger"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "IRR",
+              "USD",
+              "EUR",
+              null
+            ]
+          },
+          "totalAmount": {
+            "type": "string",
+            "nullable": true,
+            "description": "Exact decimal string; null unless ready."
+          },
+          "items": {
+            "type": "array",
+            "maxItems": 10000,
+            "items": {
+              "$ref": "#/components/schemas/UsageItem"
+            }
+          }
+        }
+      },
+      "ServicePublication": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "key": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "center": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1600
+          },
+          "detailsUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "requestAccessUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "actor": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "productId",
+          "key",
+          "displayName",
+          "center",
+          "description",
+          "detailsUrl",
+          "requestAccessUrl",
+          "published",
+          "revision",
+          "actor",
+          "reason",
+          "recordedAt"
+        ]
+      },
+      "ServicePublicationCommand": {
+        "type": "object",
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "0 to create; then the current revision. A stale revision returns409."
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "description": "Required string by MVC transport. When published=true: trimmed bounded nonempty plain text of at most1600 characters. Ignored during withdrawal, which preserves the prior description."
+          },
+          "detailsUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "requestAccessUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "expectedRevision",
+          "published",
+          "description",
+          "reason"
+        ]
+      },
+      "ConsumerApplicationTenant": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "namespace"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          }
+        }
+      },
+      "ConsumerApplication": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "displayName",
+          "audience",
+          "center",
+          "url",
+          "repository",
+          "tenantId",
+          "owner",
+          "attributes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "key": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "audience": {
+            "type": "string"
+          },
+          "center": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "repository": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              null
+            ],
+            "description": "Private repository metadata is omitted; always null."
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Producer/owner tenant, which may differ from the selected consumer for SaaS."
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              ""
+            ],
+            "description": "Private owner metadata is omitted; compatibility field is empty."
+          },
+          "attributes": {
+            "type": "object",
+            "nullable": true,
+            "enum": [
+              null
+            ],
+            "description": "Private registry attributes are omitted; always null."
+          }
+        }
+      }
+    }
+  }
+}

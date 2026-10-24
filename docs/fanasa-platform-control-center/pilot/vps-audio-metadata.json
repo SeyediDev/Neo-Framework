@@ -1,0 +1,572 @@
+{
+  "schemaVersion": "fanasa.vps-audio-metadata.v1",
+  "readOnly": true,
+  "passed": true,
+  "records": [
+    {
+      "relativePath": "batch-02/chunks/4a205df4fa0251db/source.json",
+      "metadata": {
+        "source_name": "01-recording-05.mp3",
+        "source_sha256": "4a205df4fa0251dbdb4cb7385180eed1c0292b45c07231c296e6e3f600c8148f"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0001.complete.json",
+      "metadata": {
+        "audio_sha256": "25b0deb8cebd4ad6050f862870cc37cb08f88b72427d3e95dcd7388940e5223a",
+        "transcript_sha256": "0fc5c261b586acd59e55cc787ce0cec1d86daf6d3cc5ae960e5cd92fcf91634f",
+        "completed_at": "2026-10-09T13:09:03.268680+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0002.complete.json",
+      "metadata": {
+        "audio_sha256": "21086cc5c2d8c030da70fbb8e4ca94ef5c712ea47b3356d5eca34494e812a196",
+        "transcript_sha256": "4e50d02f4ab8365d463aaddd237eb3dfd1134112ab9b72ed2620ae27910f6462",
+        "completed_at": "2026-10-09T13:32:04.090194+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0003.complete.json",
+      "metadata": {
+        "audio_sha256": "4f38df5a91237cdbee161b5a3b3e4cd149ab4bf0513803672daa21f866a53327",
+        "transcript_sha256": "9427adcd4f31e9ef09eac051e8846e69ed4a7b17aee2855c44e78601585b7aed",
+        "completed_at": "2026-10-09T13:48:42.787202+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0004.complete.json",
+      "metadata": {
+        "audio_sha256": "f9323af57d388e5f0f281f0bbd5c133f3861047a5daa70d34af7accf5f3fdffe",
+        "transcript_sha256": "9643a8c8d6f71ebccfff4f37972d90ef7069a69f148d15dff51c6c1cad309be5",
+        "completed_at": "2026-10-09T14:10:49.498715+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0005.complete.json",
+      "metadata": {
+        "audio_sha256": "70dd91a8dd62e7f1eac456b57dc424c9bbefd25b3bae5b59ae3eddc1a9c62131",
+        "transcript_sha256": "59ffa8e417f7690e040972bfb2620786a6344cd84886aa0bd2aca708db260414",
+        "completed_at": "2026-10-09T14:33:19.425937+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0006.complete.json",
+      "metadata": {
+        "audio_sha256": "9f20e35cc2cdef0dd4ad762e4dbbcf7cc6856abfda61faf24170267ad7f89f1e",
+        "transcript_sha256": "eee96213ef7accabd548e880d38586da2b9a893d114d35de7ccf85b7921836fa",
+        "completed_at": "2026-10-09T14:51:34.646856+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0007.complete.json",
+      "metadata": {
+        "audio_sha256": "83baca711ce55dbb244618eb422713fe5bd5d187b2657a36fd601200fd9e138a",
+        "transcript_sha256": "5c396bc7a540d0366651506085a00726fc47cab64768295d3ede9d20e8623bbd",
+        "completed_at": "2026-10-09T15:13:40.525679+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0008.complete.json",
+      "metadata": {
+        "audio_sha256": "6fe6c9dea799b4c15118a9ca8737ae7bf32d993dc13794876dd581e8548550ef",
+        "transcript_sha256": "b5f54b132bef9b78b923ec850c4da43d22f75a43004f095f29d627fce3721ddc",
+        "completed_at": "2026-10-09T15:33:38.363497+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0009.complete.json",
+      "metadata": {
+        "audio_sha256": "068db07554ae4492cfbe3d7510bce7143a034c25ecd724bdff95519cbf9204e1",
+        "transcript_sha256": "142d0c80173ad945607930b7c22ef9f36683c799fe00e38fc4c137b037ded63f",
+        "completed_at": "2026-10-09T15:54:21.983507+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0010.complete.json",
+      "metadata": {
+        "audio_sha256": "de190ee57372ce555a6a644d64e41da41442d4ed6b90caabf6bfd4d00753597f",
+        "transcript_sha256": "1747232cb98531be44a5e83d559b0323c9e157f9ea8f4e6955d6503730cfaf15",
+        "completed_at": "2026-10-09T16:15:44.180608+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0011.complete.json",
+      "metadata": {
+        "audio_sha256": "91b29bb7ca034bd8e79fdabfdc89c3db938e51a79274237abfae847da351b0ff",
+        "transcript_sha256": "9f460a7886b290318a5740eab3d0708cff810004e74ddc3e748c8ec60fb29bce",
+        "completed_at": "2026-10-09T16:35:24.493640+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/chunk-0012.complete.json",
+      "metadata": {
+        "audio_sha256": "4ff8a3936a84a4a967381c704eaec8faaaa668bccac7b7700437f30e45823f11",
+        "transcript_sha256": "ceb48514b0ad2b9937e79be1cea6d547a2b04b7f63d205d2c7a163058e7148fb",
+        "completed_at": "2026-10-09T16:40:06.492994+00:00"
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/complete.json",
+      "metadata": {
+        "source_sha256": "d47bd478614e95ee3ab1bf68e4d7073eeeb0a62c0ca698b5213a05d5bb867fd7",
+        "chunks": 12,
+        "merged_sha256": "040db4527158910c192dc4b02139f6167fa1f5c051db8775a428fc89806e7cb8",
+        "review_complete": false
+      }
+    },
+    {
+      "relativePath": "batch-02/chunks/d47bd478614e95ee/source.json",
+      "metadata": {
+        "source_name": "02-recording-04.mp3",
+        "source_sha256": "d47bd478614e95ee3ab1bf68e4d7073eeeb0a62c0ca698b5213a05d5bb867fd7"
+      }
+    },
+    {
+      "relativePath": "batch-02/output/recording-01.complete.json",
+      "metadata": {
+        "model": "/opt/fanasa-transcription/model",
+        "completed_at": "2026-10-09T12:45:36.841120+00:00"
+      }
+    },
+    {
+      "relativePath": "output/recording-01.complete.json",
+      "metadata": {
+        "model": "/opt/fanasa-transcription/model",
+        "completed_at": "2026-10-09T08:55:08.790770+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0001.complete.json",
+      "metadata": {
+        "audio_sha256": "12e020d255a80e64ee729f9f38206f481b571c402e53b8b3bfecf7f64475257c",
+        "transcript_sha256": "77bb6250c1bfd1e2a284256ddea27113a074e06a3813a4fe3adda763871949d4",
+        "completed_at": "2026-10-09T19:37:52.282326+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0002.complete.json",
+      "metadata": {
+        "audio_sha256": "93005e508c79e54175bc10a7af88b0bfc2d2f13492ab80a3a24f0c3c1245428b",
+        "transcript_sha256": "d09447550ead34c4483a1d87af4c8b0d7109f0a00a50cf272d2f9be77c863f91",
+        "completed_at": "2026-10-09T19:53:34.457127+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0003.complete.json",
+      "metadata": {
+        "audio_sha256": "b4b41e8924176369b7e5558e6a05dba6a093c8f48d04e0a6b3dfbf0d87dce959",
+        "transcript_sha256": "07a6d826409e3bc7f19c3ab90d6cf53b950b7e76fd7c46a0a0cd992e32abc038",
+        "completed_at": "2026-10-09T20:02:22.179880+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0004.complete.json",
+      "metadata": {
+        "audio_sha256": "d1151b7926ba20845850abf589e8315cb8a0c69d4d3e7f371157ec209d9fefc5",
+        "transcript_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "completed_at": "2026-10-09T20:02:25.647353+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0005.complete.json",
+      "metadata": {
+        "audio_sha256": "a44a021958906a16f6df767c4c1048070f00f9bfa734be5b8b23d14cf837284d",
+        "transcript_sha256": "21ef55c6f716d99cfcb3fc455d338bc024896ce78ccd49fa5af8b679bd3f6915",
+        "completed_at": "2026-10-09T20:04:04.223814+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0006.complete.json",
+      "metadata": {
+        "audio_sha256": "ba0b0b4d068ff1476ff46fa36706f8736227c4fcaa167ca1bb04a33f19a72778",
+        "transcript_sha256": "746acc4dd748753dc78e14edd750197ffe243b453df8b1ccde2d06b2761476ba",
+        "completed_at": "2026-10-09T20:22:39.935218+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0007.complete.json",
+      "metadata": {
+        "audio_sha256": "6631c92d721b154a2d59534e43a11f8ec5e924a50e5cc3d3b1c2158156ef4faf",
+        "transcript_sha256": "ae72b044641418370da6be423aacd2ba107d274c5d62e8a4efda6456d8164c3d",
+        "completed_at": "2026-10-09T20:33:47.893065+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0008.complete.json",
+      "metadata": {
+        "audio_sha256": "bcdf529a6854b41a6e58a924a25606e5f4339573d917d3c377db3e16fecb2c1a",
+        "transcript_sha256": "47231efa71256b18095a59ff9ebfa0b5e0e8e684472e5ec058c970184ac5cb51",
+        "completed_at": "2026-10-09T20:43:54.779929+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0009.complete.json",
+      "metadata": {
+        "audio_sha256": "26f302f29a34c975b1e7f42bd10ee0c1a3573597e627077450fae5cae189ba29",
+        "transcript_sha256": "bfb0363188aa8d33ffde7c73a107fe0cd3ccd52f45456e9b69997a2e453da6e0",
+        "completed_at": "2026-10-09T20:57:41.255906+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0010.complete.json",
+      "metadata": {
+        "audio_sha256": "834185c8eb1cdf4e07aaf08d95bf9568ad59cb5bff426a8eef90dcd831bef70c",
+        "transcript_sha256": "2b8e9496493d189bf1359fb170d0d3635c043b9c41a4cf561aaa9418713333ac",
+        "completed_at": "2026-10-09T21:15:37.193645+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0011.complete.json",
+      "metadata": {
+        "audio_sha256": "40495eddca6590ec4cc80074f04ff4aa830b482596112e5745d50de4520dd6e7",
+        "transcript_sha256": "d0a07264cde53445bbbc73f36b76c85695e5c512bd8c3ce4b2dd00d08a2f719d",
+        "completed_at": "2026-10-09T21:22:42.584457+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0012.complete.json",
+      "metadata": {
+        "audio_sha256": "8aca41d7bbf1519b4ea9562fa703cd237e4ae65b60892922ecbbd8429358e706",
+        "transcript_sha256": "6880bbd9084902d2df46607004ad26afdece14fff3b8381bbc9abd3e15bc027d",
+        "completed_at": "2026-10-09T21:24:20.540319+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0013.complete.json",
+      "metadata": {
+        "audio_sha256": "b5bc11e7443a536312b4539ec1740af6d87633aced2cbfa8a61cbb7be265fb3f",
+        "transcript_sha256": "3b0ccd56f41d7ca41af3f30dd2b57be67bd4a7b8cf05746711b6074f5cf19d04",
+        "completed_at": "2026-10-09T21:32:33.949563+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/chunk-0014.complete.json",
+      "metadata": {
+        "audio_sha256": "f43f22c6065176ad8f150e7a099aeda9ae92f537762602a20757d54f26d95589",
+        "transcript_sha256": "ed62f4d88b22895d7273bb049706b048adc6772e1a4cb5af04cc1c768616d82a",
+        "completed_at": "2026-10-09T21:33:59.663105+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/complete.json",
+      "metadata": {
+        "source_sha256": "0ef9788e1a0b212033fc379b96fd28c64659913db4c608af4deeea4ab325f98f",
+        "chunks": 14,
+        "merged_sha256": "95a96da98d3611f29bca25a4e13e59161e5b959c4b22f373607aefefa5b4ddef",
+        "review_complete": false
+      }
+    },
+    {
+      "relativePath": "recording-03/output/0ef9788e1a0b2120/source.json",
+      "metadata": {
+        "source_name": "recording-03-tail.mp3",
+        "source_sha256": "0ef9788e1a0b212033fc379b96fd28c64659913db4c608af4deeea4ab325f98f"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0001.complete.json",
+      "metadata": {
+        "audio_sha256": "52ada59ebac9e69858e22de920540bf1192abee0f408efd83ae9f0bcd41e6a08",
+        "transcript_sha256": "31dbb91e833bc945e325ab885ef917b8fa246a4910d2d9f07a4680c00f3220f6",
+        "completed_at": "2026-10-09T21:51:11.556218+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0002.complete.json",
+      "metadata": {
+        "audio_sha256": "dc62d2383547e162f059ed3f7d81c6b31ac699ad80b026792311ca3a3604f402",
+        "transcript_sha256": "34fd8d444cab075b5581ec0d73b39f701e3afa0bb57615f8603c1e14f9ce5475",
+        "completed_at": "2026-10-09T22:09:40.343702+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0003.complete.json",
+      "metadata": {
+        "audio_sha256": "583947ae13447fd2bf98457911153b10c60f18d974f9b2334239932de62bd535",
+        "transcript_sha256": "f95c748dad7b68b273c1d4b6ff9d59219abe15ca9b6227ee30a224e9fe30eb48",
+        "completed_at": "2026-10-09T22:30:39.573328+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0004.complete.json",
+      "metadata": {
+        "audio_sha256": "3c91bc88bc55a15e645d59cf069f9840a358d4223f2d734c20943a4de37ede64",
+        "transcript_sha256": "86281611f10aa86505594b0190770422336d53589750aceb33ed856c00c6c114",
+        "completed_at": "2026-10-09T22:51:12.879815+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0005.complete.json",
+      "metadata": {
+        "audio_sha256": "a379cc3820e829ea9d8b1ce1ccf00e6eee16a69c5a9856ae318ab5016ccf99cf",
+        "transcript_sha256": "26a87673ae949be5521df7295ffa13571f73d7fd4a76dbbbe5fdad1dc52fcd3f",
+        "completed_at": "2026-10-09T23:11:27.923047+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0006.complete.json",
+      "metadata": {
+        "audio_sha256": "99e95badc7853072314cb2e69b394aa6363c8eddb46cfe87e7b2fc00e482d640",
+        "transcript_sha256": "f8136f2ce1b9826e1a166d68f59ffcdb3f35f54ab2aeb24655b2f6ef0ec7549e",
+        "completed_at": "2026-10-09T23:30:22.863395+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0007.complete.json",
+      "metadata": {
+        "audio_sha256": "5e74aaa187e4353ab84da4f7c2bb5ac52ac9a9b3e50e286619ef8cce0a7b5af2",
+        "transcript_sha256": "0ec3d2f2beee3088ec29eebea1c2d9d1f41ed124ee36a9b2e957401c2c7240f7",
+        "completed_at": "2026-10-09T23:53:04.933851+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0008.complete.json",
+      "metadata": {
+        "audio_sha256": "f8ddac98bb8915287c912382eeb3aef0814c221582687c07f4d454893f98daaa",
+        "transcript_sha256": "7959b0a96ef9f493f481a4eddebe955ba6d53015467374f86a11885cb5aba031",
+        "completed_at": "2026-10-10T00:17:14.558567+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0009.complete.json",
+      "metadata": {
+        "audio_sha256": "c31416fa2bab546ba536dd3e0ba79e4112e1cbb05b2c86f117d9eb20c916e44b",
+        "transcript_sha256": "13d2e377a119c51309358dc43f24cfe3684edce5f2d4eb1456e6683a27d73d8d",
+        "completed_at": "2026-10-10T00:37:14.707016+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0010.complete.json",
+      "metadata": {
+        "audio_sha256": "ac2ec8e639e786b8925771385253b6f860773b84adecc765465fd2c56d5ee94c",
+        "transcript_sha256": "9721dc3035ecb42d2a06d5bd7ddecfcfe1be11a125b04c1fefed1ae1c5e02099",
+        "completed_at": "2026-10-10T00:57:51.903792+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0011.complete.json",
+      "metadata": {
+        "audio_sha256": "4cebf7f519d21a675964f86ef48a991df5c08109d16b1b8ee027962d7ddc80c1",
+        "transcript_sha256": "5c8b6d069a907263cb48cc8ee49d49af8c1b623a35fe1dcf7cdb2ec054627e2b",
+        "completed_at": "2026-10-10T01:19:04.094891+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0012.complete.json",
+      "metadata": {
+        "audio_sha256": "754bf7487bfdf3541a91349917c5059cdad5534ce7e1152b4ab0b92d4f8dc823",
+        "transcript_sha256": "cfb9711ce20ef1cb52cb08aed69dbb47948776688a176cce651a711a789ced71",
+        "completed_at": "2026-10-10T01:39:56.106598+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0013.complete.json",
+      "metadata": {
+        "audio_sha256": "37b5743bb6fa9a8b58a19764f189a0cc2c3da47c6708068113fc8b818a8a58f8",
+        "transcript_sha256": "38a07f24c06de27edeaf0417d6f568c179e4e05686470c0aeedd48f554e85699",
+        "completed_at": "2026-10-10T01:57:17.588625+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0014.complete.json",
+      "metadata": {
+        "audio_sha256": "3a2cb40462faafcaeb790058b2a07138499bc34be69b81da7303a466597336c8",
+        "transcript_sha256": "35534f068d7e4efa1306a489fa1ba9e6c8033d124f9b7a280f848bec722045ad",
+        "completed_at": "2026-10-10T02:12:50.051161+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0015.complete.json",
+      "metadata": {
+        "audio_sha256": "a961329edc52cefaeb3877c0b9b61c8b7d23950c100644db1b815b4d441f254b",
+        "transcript_sha256": "4123840271897bfbb549149308c165df5cb9de7e0665ea17dcb027fdc0d6105f",
+        "completed_at": "2026-10-10T02:34:47.912401+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/chunk-0016.complete.json",
+      "metadata": {
+        "audio_sha256": "c2b4471fefa7554bb6413301f943d67247b12a6eafaaa056eae644122d515846",
+        "transcript_sha256": "b9bef223f35115cd6eeedd999bd14a3344112c4ad58772c389fb8c5b7c668cb0",
+        "completed_at": "2026-10-10T02:56:22.248098+00:00"
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/complete.json",
+      "metadata": {
+        "source_sha256": "f90d0fc19ff8b6451944e77a7022466033d0cbd12e9ae3dbcb54f4d98eb2d249",
+        "chunks": 16,
+        "merged_sha256": "8654ca08e22d84226b96edce7cd1df18e02613d70cb439a56f86acb361966507",
+        "review_complete": false
+      }
+    },
+    {
+      "relativePath": "recording-06/output/f90d0fc19ff8b645/source.json",
+      "metadata": {
+        "source_name": "recording-06.mp3",
+        "source_sha256": "f90d0fc19ff8b6451944e77a7022466033d0cbd12e9ae3dbcb54f4d98eb2d249"
+      }
+    }
+  ],
+  "services": [
+    {
+      "unit": "fanasa-transcription-tail-03.service",
+      "queryExitCode": 0,
+      "Result": "success",
+      "ExecMainCode": "0",
+      "ExecMainStatus": "0",
+      "LoadState": "not-found",
+      "ActiveState": "inactive",
+      "SubState": "dead"
+    },
+    {
+      "unit": "fanasa-transcription-recording-06.service",
+      "queryExitCode": 0,
+      "Result": "success",
+      "ExecMainCode": "0",
+      "ExecMainStatus": "0",
+      "LoadState": "not-found",
+      "ActiveState": "inactive",
+      "SubState": "dead"
+    },
+    {
+      "unit": "fanasa-transcription-batch-02.service",
+      "queryExitCode": 0,
+      "Result": "oom-kill",
+      "ExecMainCode": "2",
+      "ExecMainStatus": "9",
+      "LoadState": "loaded",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    {
+      "unit": "fanasa-transcription-batch-02-retry.service",
+      "queryExitCode": 0,
+      "Result": "oom-kill",
+      "ExecMainCode": "2",
+      "ExecMainStatus": "9",
+      "LoadState": "loaded",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    }
+  ],
+  "toolFiles": [
+    {
+      "relativePath": "__pycache__/transcribe_chunks.cpython-311.pyc",
+      "bytes": 15842,
+      "suffix": ".pyc"
+    },
+    {
+      "relativePath": "download_model.py",
+      "bytes": 3678,
+      "suffix": ".py"
+    },
+    {
+      "relativePath": "install.log",
+      "bytes": 6936,
+      "suffix": ".log"
+    },
+    {
+      "relativePath": "installed-versions.txt",
+      "bytes": 383,
+      "suffix": ".txt"
+    },
+    {
+      "relativePath": "model/config.json",
+      "bytes": 2263,
+      "suffix": ".json"
+    },
+    {
+      "relativePath": "model/download-source.json",
+      "bytes": 115,
+      "suffix": ".json"
+    },
+    {
+      "relativePath": "model/model.bin",
+      "bytes": 1617884929,
+      "suffix": ".bin"
+    },
+    {
+      "relativePath": "model/preprocessor_config.json",
+      "bytes": 340,
+      "suffix": ".json"
+    },
+    {
+      "relativePath": "model/tokenizer.json",
+      "bytes": 2710337,
+      "suffix": ".json"
+    },
+    {
+      "relativePath": "model/vocabulary.json",
+      "bytes": 1068114,
+      "suffix": ".json"
+    },
+    {
+      "relativePath": "model-download.log",
+      "bytes": 16628,
+      "suffix": ".log"
+    },
+    {
+      "relativePath": "requirements.in",
+      "bytes": 97,
+      "suffix": ".in"
+    },
+    {
+      "relativePath": "run_vps_batch.sh",
+      "bytes": 962,
+      "suffix": ".sh"
+    },
+    {
+      "relativePath": "run_vps_chunks.sh",
+      "bytes": 812,
+      "suffix": ".sh"
+    },
+    {
+      "relativePath": "run_vps_tail.py",
+      "bytes": 1370,
+      "suffix": ".py"
+    },
+    {
+      "relativePath": "run_vps_trial.sh",
+      "bytes": 918,
+      "suffix": ".sh"
+    },
+    {
+      "relativePath": "test_chunks.py",
+      "bytes": 2014,
+      "suffix": ".py"
+    },
+    {
+      "relativePath": "transcribe.py",
+      "bytes": 5120,
+      "suffix": ".py"
+    },
+    {
+      "relativePath": "transcribe_chunks.py",
+      "bytes": 8126,
+      "suffix": ".py"
+    },
+    {
+      "relativePath": "transcribe_chunks_tail.py",
+      "bytes": 8995,
+      "suffix": ".py"
+    },
+    {
+      "relativePath": "venv/bin/python",
+      "symlink": true
+    },
+    {
+      "relativePath": "venv/bin/python3",
+      "symlink": true
+    },
+    {
+      "relativePath": "venv/bin/python3.11",
+      "symlink": true
+    },
+    {
+      "relativePath": "venv/lib64",
+      "symlink": true
+    }
+  ]
+}

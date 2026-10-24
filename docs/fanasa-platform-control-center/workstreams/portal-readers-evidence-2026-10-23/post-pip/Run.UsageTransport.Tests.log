@@ -1,0 +1,146 @@
+PASS v1 projection preserves exact financial strings
+PASS one human credential lookup and one GET, without retries
+PASS only consumer and exact UTC period are sent to the fixed route
+PASS human bearer stays in request header only
+PASS presentation result excludes subject and credential
+PASS credential does not leak through ToString or default JSON serialization
+PASS production handler disables redirects, cookies, ambient credentials and decompression
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS missing/invalid/expired human credential clears financial data
+PASS missing/invalid/expired human credential preserves requested consumer and UTC period
+PASS invalid human credential never reaches the network
+PASS HTTP 300 clears financial data
+PASS HTTP 300 preserves requested consumer and UTC period
+PASS HTTP 300 does not retry or follow Location
+PASS HTTP 301 clears financial data
+PASS HTTP 301 preserves requested consumer and UTC period
+PASS HTTP 301 does not retry or follow Location
+PASS HTTP 302 clears financial data
+PASS HTTP 302 preserves requested consumer and UTC period
+PASS HTTP 302 does not retry or follow Location
+PASS HTTP 303 clears financial data
+PASS HTTP 303 preserves requested consumer and UTC period
+PASS HTTP 303 does not retry or follow Location
+PASS HTTP 307 clears financial data
+PASS HTTP 307 preserves requested consumer and UTC period
+PASS HTTP 307 does not retry or follow Location
+PASS HTTP 308 clears financial data
+PASS HTTP 308 preserves requested consumer and UTC period
+PASS HTTP 308 does not retry or follow Location
+PASS HTTP 400 clears financial data
+PASS HTTP 400 preserves requested consumer and UTC period
+PASS HTTP 400 does not retry or follow Location
+PASS HTTP 401 clears financial data
+PASS HTTP 401 preserves requested consumer and UTC period
+PASS HTTP 401 does not retry or follow Location
+PASS HTTP 403 clears financial data
+PASS HTTP 403 preserves requested consumer and UTC period
+PASS HTTP 403 does not retry or follow Location
+PASS HTTP 404 clears financial data
+PASS HTTP 404 preserves requested consumer and UTC period
+PASS HTTP 404 does not retry or follow Location
+PASS HTTP 429 clears financial data
+PASS HTTP 429 preserves requested consumer and UTC period
+PASS HTTP 429 does not retry or follow Location
+PASS HTTP 500 clears financial data
+PASS HTTP 500 preserves requested consumer and UTC period
+PASS HTTP 500 does not retry or follow Location
+PASS HTTP 503 clears financial data
+PASS HTTP 503 preserves requested consumer and UTC period
+PASS HTTP 503 does not retry or follow Location
+PASS cacheable response clears financial data
+PASS cacheable response preserves requested consumer and UTC period
+PASS HTML response clears financial data
+PASS HTML response preserves requested consumer and UTC period
+PASS missing media type clears financial data
+PASS missing media type preserves requested consumer and UTC period
+PASS encoded response clears financial data
+PASS encoded response preserves requested consumer and UTC period
+PASS oversized declared body clears financial data
+PASS oversized declared body preserves requested consumer and UTC period
+PASS foreign final URL clears financial data
+PASS foreign final URL preserves requested consumer and UTC period
+PASS foreign subject clears financial data
+PASS foreign subject preserves requested consumer and UTC period
+PASS foreign consumer clears financial data
+PASS foreign consumer preserves requested consumer and UTC period
+PASS different period clears financial data
+PASS different period preserves requested consumer and UTC period
+PASS non-ledger basis clears financial data
+PASS non-ledger basis preserves requested consumer and UTC period
+PASS partial financial report clears financial data
+PASS partial financial report preserves requested consumer and UTC period
+PASS notRecorded is preserved without stale amounts or fabricated zero
+PASS incomplete is preserved without stale amounts or fabricated zero
+PASS unavailable is preserved without stale amounts or fabricated zero
+PASS malformed or oversized unknown-length body clears financial data
+PASS malformed or oversized unknown-length body preserves requested consumer and UTC period
+PASS malformed or oversized unknown-length body clears financial data
+PASS malformed or oversized unknown-length body preserves requested consumer and UTC period
+PASS credential expiry while reading clears financial data
+PASS credential expiry while reading preserves requested consumer and UTC period
+PASS reused reader first receives a valid report
+PASS revocation response on reused reader cannot retain an earlier amount clears financial data
+PASS revocation response on reused reader cannot retain an earlier amount preserves requested consumer and UTC period
+PASS network error clears financial data
+PASS network error preserves requested consumer and UTC period
+PASS deadline includes credential lookup clears financial data
+PASS deadline includes credential lookup preserves requested consumer and UTC period
+PASS credential timeout sends no network request
+PASS deadline includes response headers clears financial data
+PASS deadline includes response headers preserves requested consumer and UTC period
+PASS deadline includes streaming response body clears financial data
+PASS deadline includes streaming response body preserves requested consumer and UTC period
+PASS caller cancellation is preserved, not a financial failure response
+PASS already-cancelled request does not acquire credentials
+PASS invalid central origin rejected before network use
+PASS invalid central origin rejected before network use
+PASS invalid central origin rejected before network use
+PASS invalid central origin rejected before network use
+PASS invalid central origin rejected before network use
+PASS invalid central origin rejected before network use
+PASS invalid central origin rejected before network use
+PASS invalid timeout budget rejected
+PASS invalid timeout budget rejected
+PASS invalid timeout budget rejected
+PASS invalid consumer/period is rejected before credential lookup
+PASS invalid consumer/period is rejected before credential lookup
+PASS invalid consumer/period is rejected before credential lookup
+PASS invalid consumer/period is rejected before credential lookup
+PASS invalid consumer/period is rejected before credential lookup
+145 usage-transport checks passed; synthetic handlers only, no live SSO, entitlement or billing acceptance claimed.

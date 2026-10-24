@@ -1,0 +1,2 @@
+PASS: pilot YAML and published JSON parse; route/schema agreement; 18 local refs; Draft 2020-12 schemas; valid offset + 10 invalid command examples.
+LIMIT: these are contract checks, not full OpenAPI validation, deployment, or business authorization.

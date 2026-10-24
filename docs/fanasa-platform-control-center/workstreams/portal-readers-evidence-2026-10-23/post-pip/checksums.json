@@ -1,0 +1,278 @@
+{
+  "files": [
+    {
+      "path": "adapter-fixtures/incomplete.json",
+      "bytes": 375,
+      "sha256": "7149a69fa00c1a921160531c53a487a54501f1bc240a2d9fba139101de138361"
+    },
+    {
+      "path": "adapter-fixtures/large-usd.json",
+      "bytes": 704,
+      "sha256": "4bee2889b33aab8d8c265a26da16c1a2a4a3ec437582599384b68fa845dfa09c"
+    },
+    {
+      "path": "adapter-fixtures/not-recorded.json",
+      "bytes": 376,
+      "sha256": "f9ec63ba784b048857965f22de84df5fe3b8c171f12c40dea52a1c3dc18c0c21"
+    },
+    {
+      "path": "adapter-fixtures/ready-empty.json",
+      "bytes": 406,
+      "sha256": "6192e6083cdbda0ff3b8c1b73ad7d9ef7d04459e06f11d82ca5ee631874f1902"
+    },
+    {
+      "path": "adapter-fixtures/ready-legacy.json",
+      "bytes": 668,
+      "sha256": "9b085f77c913e64a5d809f65ddcd9e5075eaf65233c3fe1bf0e079966e1c6776"
+    },
+    {
+      "path": "adapter-fixtures/ready-measured.json",
+      "bytes": 682,
+      "sha256": "afed27fe7187e7c1a5b7768cdfb85e10fe4ec1ac6e416580cfe6365df2d2e92d"
+    },
+    {
+      "path": "adapter-fixtures/ready-mixed.json",
+      "bytes": 951,
+      "sha256": "55d404b5ba68e5d574be1b007035c4a62b862bdc2054eef5acb1723193007e6f"
+    },
+    {
+      "path": "adapter-fixtures/unavailable.json",
+      "bytes": 376,
+      "sha256": "5f78564314624319c8e3ef3e1ccb6d900b3e0a5d18194688e043ea7bbfdf18ac"
+    },
+    {
+      "path": "Build.AccessManagement.log",
+      "bytes": 1286,
+      "sha256": "311ef722c33acad26715d1abf2e56006bf6df1767eeff9532a6ad286c7566300"
+    },
+    {
+      "path": "Build.ConsumerApplicationCatalog.Tests.log",
+      "bytes": 825,
+      "sha256": "5750a848914538e71159449d2b1077aa005a49e0189f087a01888567054db0fb"
+    },
+    {
+      "path": "Build.ConsumerUsage.Api.Tests.log",
+      "bytes": 778,
+      "sha256": "c60d89954ae79eaa16c4d4d53b2786acfde4bbc11fa4fe464a0797d1d6e6d008"
+    },
+    {
+      "path": "Build.ConsumerUsageReport.Tests.log",
+      "bytes": 812,
+      "sha256": "c4082c901f247bb35ce13ff1a2bae0940faba844ce005367bbab6ee6dab9eeb7"
+    },
+    {
+      "path": "Build.Organization.Calendar.Tests.log",
+      "bytes": 800,
+      "sha256": "c27e591ea8096b41b79432b75492984e1eaa3019219e073f9cc2da0a3ade1d3c"
+    },
+    {
+      "path": "Build.Organization.Temporal.Tests.log",
+      "bytes": 800,
+      "sha256": "cc3c41193614aa0989376d5eb0aa902270f86a0e0c7a2c9faad989a17202a691"
+    },
+    {
+      "path": "Build.Portal.log",
+      "bytes": 1463,
+      "sha256": "80670f9834b0c82105b2c6d7535ac796a23a50592fc72b806c55a56537637795"
+    },
+    {
+      "path": "Build.PortalAdapter.Tests.log",
+      "bytes": 802,
+      "sha256": "8e6d7dea0a8626d5d85a6fad1431e533331ed0c176c95a62e59b8ccf6d3d7f6c"
+    },
+    {
+      "path": "Build.PortalTransport.Tests.log",
+      "bytes": 448,
+      "sha256": "caa332d163e6fbab5e753545075858ca2ecde45ebdf2418dc1f16795b1818730"
+    },
+    {
+      "path": "Build.PublishedCatalog.Tests.log",
+      "bytes": 775,
+      "sha256": "2a9369b883b44e98ab4c4410924b395b65d34d555a3cab14255c266b704e20e8"
+    },
+    {
+      "path": "cleanup.json",
+      "bytes": 429,
+      "sha256": "20330601a37f1224110216cce4beab3e19647f9128e582eb691f5eb0e402cf95"
+    },
+    {
+      "path": "Final.Build.AccessManagement.log",
+      "bytes": 666,
+      "sha256": "2c8ed92afe01e4a8652de1a0123ab5b40a0f49b579235dff059574bb5c017028"
+    },
+    {
+      "path": "Final.Run.Discovery.Tests.log",
+      "bytes": 5801,
+      "sha256": "71ec87117cb031624bcac185514b6985ee52b063263ec6dd39fb11bf8d688b17"
+    },
+    {
+      "path": "Final.Run.Organization.Tests.log",
+      "bytes": 39937,
+      "sha256": "b8fe4f3c44f202f060807f95cad6e113aef7c3029dc7634ccd4fed1b93048fef"
+    },
+    {
+      "path": "Final.Startup.Web.log",
+      "bytes": 3158,
+      "sha256": "67dc3d1e5fdf9e2a6c13b986a4e210fd28b89ceaeb572af22253bb0dc3ea2e0b"
+    },
+    {
+      "path": "finalize-integration.py",
+      "bytes": 6244,
+      "sha256": "2900651c61ce146d56b138e7a845e317919e54f9a6716ad705f8a850d76a71bb"
+    },
+    {
+      "path": "integration-final-verification.json",
+      "bytes": 25594,
+      "sha256": "ad3917115109fc207e972a708941d4dd73acf539417b7f15d2986abdc4bd17e4"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1427,
+      "sha256": "b085365e60743b901e6718f5db6b00137cbf7d0a52bbb256e17aa4a670763c51"
+    },
+    {
+      "path": "Run.ConsumerApplicationCatalog.Tests.log",
+      "bytes": 19219,
+      "sha256": "735128d632d02fd8ff389f3b86f40d22f8ee90dfc23ea192ec9021321c0281f9"
+    },
+    {
+      "path": "Run.ConsumerUsage.Api.Tests.log",
+      "bytes": 9045,
+      "sha256": "50fc534caafac246d6d15a70a255a5d5a5b91ac0e0c85c6a6028ef57252b3a56"
+    },
+    {
+      "path": "Run.ConsumerUsageReport.Tests.log",
+      "bytes": 13090,
+      "sha256": "6d059f93d28b3dc529c1ff50dc8e7f9fff81c38395f5aa8e2914305cd69eac2d"
+    },
+    {
+      "path": "Run.Discovery.Tests.log",
+      "bytes": 4098,
+      "sha256": "892845758f288703d6a3b041e589095eea6a389f6da8babb20350176206f503c"
+    },
+    {
+      "path": "Run.Organization.Calendar.Tests.log",
+      "bytes": 2653,
+      "sha256": "24aeddab0821ff83b98865a45ace2202f1d374a4f81ec7e1a1525bef43df85ba"
+    },
+    {
+      "path": "Run.Organization.Temporal.Tests.log",
+      "bytes": 8877,
+      "sha256": "0154c3e56a75f0d6a0e41ba9363099eff660b252c90eb2cfa5c29114da1a41d7"
+    },
+    {
+      "path": "Run.Organization.Tests.log",
+      "bytes": 39937,
+      "sha256": "b8fe4f3c44f202f060807f95cad6e113aef7c3029dc7634ccd4fed1b93048fef"
+    },
+    {
+      "path": "Run.Portal.Tests.log",
+      "bytes": 7448,
+      "sha256": "a82b0441e06f6dceae1c3e37532790fa2c14da3c666796a0a05369c434f4e614"
+    },
+    {
+      "path": "Run.PortalAdapter.Tests.log",
+      "bytes": 10131,
+      "sha256": "8e4cdd9d1e1c2f0137281679a8027fe751dd7e6f3deb343d8976d81ccc2ab7a1"
+    },
+    {
+      "path": "Run.PortalTransport.Tests.log",
+      "bytes": 2284,
+      "sha256": "5a32e19533bece3f306da6330cf73f8498246b85825ca4e16be6a70e1b050e09"
+    },
+    {
+      "path": "Run.PublishedCatalog.Tests.log",
+      "bytes": 3345,
+      "sha256": "54244011f26f7b0f0323c7384b44d72ca7dd6dde2ad28854a5089fe106419a63"
+    },
+    {
+      "path": "Run.UsageProjection.Tests.log",
+      "bytes": 4196,
+      "sha256": "c4a7c1e33325de1ae61788f3abc12f2cfd581c662c306f018648f55189e97f38"
+    },
+    {
+      "path": "Run.UsageTransport.Tests.log",
+      "bytes": 9098,
+      "sha256": "2019414481a1b164b59cfa9546367d7377458ed99f24616b20e7376b2d99ea34"
+    },
+    {
+      "path": "source-after.json",
+      "bytes": 45850,
+      "sha256": "565f70169678bf0262ecf44eec86ac0acabb03326e8654b39211ac21af96e613"
+    },
+    {
+      "path": "source-before.json",
+      "bytes": 45850,
+      "sha256": "565f70169678bf0262ecf44eec86ac0acabb03326e8654b39211ac21af96e613"
+    },
+    {
+      "path": "startup-smoke-retry.py",
+      "bytes": 4462,
+      "sha256": "2fa5192484a28c62db0e9ab078e99cda3a3b9d764c3d2ae0ff7cd42a51b2b41a"
+    },
+    {
+      "path": "startup-smoke.py",
+      "bytes": 4443,
+      "sha256": "de9bd3a4d9419fa2e87a555c3076169146d090ba3ec5cdc3fdf14626edf930c7"
+    },
+    {
+      "path": "startup-verification-retry.json",
+      "bytes": 3158,
+      "sha256": "67dc3d1e5fdf9e2a6c13b986a4e210fd28b89ceaeb572af22253bb0dc3ea2e0b"
+    },
+    {
+      "path": "startup-verification.json",
+      "bytes": 2634,
+      "sha256": "e3467d5d54d53761beee7866a0ba6c97d56c9ccdf206029e6baa21a6add62f81"
+    },
+    {
+      "path": "Startup.Web.log",
+      "bytes": 1227,
+      "sha256": "17300b694c9e46aa664ddecb99300ca436aa392e154c15a24173f794cc73cda0"
+    },
+    {
+      "path": "Startup.Web.retry.log",
+      "bytes": 3256,
+      "sha256": "aef2f5113aa0ccdafa14d50ade2122af2ba5a3e7dc8ed0d434a58b48a7637757"
+    },
+    {
+      "path": "UI.AccessManagement.log",
+      "bytes": 11741,
+      "sha256": "00023446e67bb09043c7a68d37496c5fab176946ea9af19bcf7a2d04361b4f91"
+    },
+    {
+      "path": "UI.ConsumerReport.log",
+      "bytes": 5292,
+      "sha256": "32178c5d6af274c636ff88ca155df9ef7ba80f86578a2b83a0dba7122a987021"
+    },
+    {
+      "path": "UI.Portal.log",
+      "bytes": 10634,
+      "sha256": "7663937d9eeb4e98ffc2a009e85def0b3d03f3578aed5e92bfacc9894ec90e35"
+    },
+    {
+      "path": "validate-post-pip.py",
+      "bytes": 8671,
+      "sha256": "18e8176a4a85ea626b69606b1de91207769152322bbe720d5df7048169f2f83a"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 30938,
+      "sha256": "e58a84d07cf494bb6a325302fcafa8430886e8642b8a1319a13250f9aeecfbf3"
+    }
+  ],
+  "reports": [
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/portal-post-pip-integration-2026-10-23.md",
+      "sha256": "405d0e112df8f8b97b476fe527d87a25147a73dd14ae219355f03c6e8408bf52"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/portal-central-readers-2026-10-23.md",
+      "sha256": "f83d390a3f75752a83c6028d9a4b66a688a9014d4f7689de568d5a598b941bb3"
+    },
+    {
+      "path": "docs/fanasa-platform-control-center/workstreams/portal-reader-503-diagnosis-2026-10-23.md",
+      "sha256": "83659660918546d1f15b6d0aee6b3808b0344fc0f5b2e0a238cb846a6605edb0"
+    }
+  ]
+}

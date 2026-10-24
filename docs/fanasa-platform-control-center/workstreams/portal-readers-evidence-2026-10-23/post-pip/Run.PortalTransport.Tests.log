@@ -1,0 +1,58 @@
+PASS exact origin route, trusted bearer, no subject input or cookies
+PASS production handler disables redirects, cookies and alternate authentication
+PASS large exact money and legacy null metadata retained
+PASS real zero report remains ready
+PASS notRecorded clears server timestamp and preserves non-ready meaning
+PASS incomplete clears server timestamp and preserves non-ready meaning
+PASS unavailable clears server timestamp and preserves non-ready meaning
+PASS HTTP 301 never retries or follows Location
+PASS HTTP 302 never retries or follows Location
+PASS HTTP 303 never retries or follows Location
+PASS HTTP 307 never retries or follows Location
+PASS HTTP 308 never retries or follows Location
+PASS HTTP 400 never retries or follows Location
+PASS HTTP 401 never retries or follows Location
+PASS HTTP 403 never retries or follows Location
+PASS HTTP 503 never retries or follows Location
+PASS subject mismatch
+PASS consumer mismatch
+PASS from mismatch
+PASS to mismatch
+PASS non-UTC from
+PASS non-UTC asOf
+PASS missing ready asOf
+PASS foreign basis
+PASS unknown status
+PASS numeric total
+PASS numeric item amount
+PASS numeric quantity
+PASS mismatched total
+PASS decimal loss
+PASS exponent amount
+PASS negative amount
+PASS mixed legacy metadata
+PASS zero measured quantity
+PASS zero charges
+PASS oversized charges
+PASS fractional charges
+PASS duplicate group
+PASS unknown/private field
+PASS non-ready financial payload
+PASS unsupported currency
+PASS IRR minor precision
+PASS missing required property
+PASS malformed JSON
+PASS duplicate envelope property
+PASS advertised oversized body rejected before reading
+PASS chunked oversized body bounded even without Content-Length
+PASS response transport hazard html
+PASS response transport hazard no-store-missing
+PASS response transport hazard content-encoding
+PASS response transport hazard different-origin
+PASS missing or expired credential does not send
+PASS transport error sanitized without credential/error leakage
+PASS request timeout clears finance
+PASS caller cancellation preserved before send
+PASS caller cancellation preserved during send
+PASS invalid origin and period rejected before credential/send
+PASS 57 groups; 342 assertions. No network or operational data.

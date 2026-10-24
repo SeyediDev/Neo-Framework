@@ -1,0 +1,55 @@
+{
+  "verifiedAtUtc": "2026-10-11T06:40:32.185Z",
+  "browser": "155.0.8059.40",
+  "scope": "Disposable loopback preview with synthetic cookie identity. Live local recovery and CSRF; intercepted responses for UI state scenarios. No live SSO or production data.",
+  "checks": [
+    {
+      "name": "live preview renders 27 exact operations and responsive overview",
+      "passed": true
+    },
+    {
+      "name": "status filter, Persian number search and empty search state",
+      "passed": true
+    },
+    {
+      "name": "recovery form requires review reason and antiforgery rejects missing token",
+      "passed": true
+    },
+    {
+      "name": "real recovery changes one pending operation once and refreshes dashboard",
+      "passed": true
+    },
+    {
+      "name": "lost response after server commit preserves request across refresh and retries idempotently",
+      "passed": true
+    },
+    {
+      "name": "known pending receipt requires deliberate new request identity",
+      "passed": true
+    },
+    {
+      "name": "incomplete or corrupt report disables recovery and explains evidence limits",
+      "passed": true
+    },
+    {
+      "name": "failed refresh keeps last report visible but disables a new recovery",
+      "passed": true
+    },
+    {
+      "name": "large wire decimals remain exact on mobile and drawer stays within viewport",
+      "passed": true
+    },
+    {
+      "name": "empty report and failed read have clear distinct states",
+      "passed": true
+    },
+    {
+      "name": "malformed and foreign reports are rejected without rendering injected text",
+      "passed": true
+    },
+    {
+      "name": "page reports no uncaught JavaScript errors",
+      "passed": true
+    }
+  ]
+}

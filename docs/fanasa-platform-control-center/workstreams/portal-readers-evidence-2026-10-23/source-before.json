@@ -1,0 +1,66 @@
+[
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerApplicationCatalog.cs",
+    "sha256": "9f9c416fa540b5338ebd1935fb7257252bb026763e95374371a0a662e14753b3"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PlatformApi.cs",
+    "sha256": "213ae417a8b8143414c144bba96234d873ccb67c79bb0e1ee205bcac221c52dc"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/PublishedServiceCatalog.cs",
+    "sha256": "5bdfdc6bb3a06369d6b2ae1983929873ad3ad9247a014afab8fac1fbaa109c53"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerUsageReport.cs",
+    "sha256": "09e4bd0e566bb4faa8442a2072104ddc7f54f09adcac58a5a29e88d79ca3f3ec"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerUsageReportApi.cs",
+    "sha256": "45737d9e9d5bbc058405f3b5b7902d004c0d44b2b2015d0d234c06898478c5f5"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricDatabase.cs",
+    "sha256": "7de828e9e414b1c9cd2582e50b72bf2270fd43263429690bec91820252eea38b"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs",
+    "sha256": "f7bb247a31ea500a5a60de75c649cde061d899e57604abf368017bfc580b6416"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Program.cs",
+    "sha256": "e0309216dcbe36f0238a39e7895a592967bc1d01e4ba541db85f3b58600e02c2"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj",
+    "sha256": "6ace772bec93068b21841373edff2f6e769b4979695dfdb19505eb66bca5240d"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/Directory.Packages.props",
+    "sha256": "a3db9bb97c2e70e2414892241dabc74d62c6e270f7e588eec8d32216c5c0926e"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/tests/ConsumerApplicationCatalog.Tests/Program.cs",
+    "sha256": "59fd2ca14d28bba001136494de0546d9412a7fe0fa75625319a862178d9ac309"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/tests/PublishedCatalog.Tests/Program.cs",
+    "sha256": "a8c1eb955f374f8d838724513725294f9b46dadf9f117e6e98f443d25fc5d135"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/tests/ConsumerUsage.Api.Tests/Program.cs",
+    "sha256": "f715425d9720a5a7d75bc9cbc1f8c6a1e0bab71a63896598268bd5c732ede37b"
+  },
+  {
+    "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/contracts/portal-readers-v1.openapi.json",
+    "sha256": "64c151280e76075c94d3812c4f971f746262edefc66f4c58317a982bf8a934b4"
+  },
+  {
+    "path": "docs/fanasa-platform-control-center/workstreams/usage-accounting/consumer-report/portal-transport/ConsumerUsageHttpReader.cs",
+    "sha256": "03040357003887b36bb746cb27a89631dfb7c4c1c9a84b7b797fb62779a94e40"
+  },
+  {
+    "path": "docs/fanasa-platform-control-center/workstreams/usage-accounting/consumer-report/portal-adapter/WorkspaceUsageReportAdapter.cs",
+    "sha256": "2674979824c9949f212395834ba91b8fb2038a86e5d52982afdaf9ac8fd00b11"
+  }
+]

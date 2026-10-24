@@ -1,0 +1,10 @@
+  Fanasa.ContractPolicy -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.ContractPolicy\release\Fanasa.ContractPolicy.dll
+  Fanasa.AccessManagement.Web -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.AccessManagement.Web\release\Fanasa.AccessManagement.Web.dll
+  Organization.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Organization.Tests\release\Organization.Tests.dll
+  FabricRecovery -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\FabricRecovery\release\FabricRecovery.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:11.01

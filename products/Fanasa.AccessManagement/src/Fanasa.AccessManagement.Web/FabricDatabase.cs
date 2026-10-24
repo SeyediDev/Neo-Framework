@@ -4,12 +4,15 @@ using Microsoft.Data.Sqlite;
 namespace Fanasa.AccessManagement.Web.Persistence;
 
 public sealed record FabricOutbox(long Id, string Key, string Kind, string Payload, DateTimeOffset RecordedAt);
+public sealed record FabricOutboxEvidence(long Id, string Key, string Kind, string Payload, string RecordedAt);
+public sealed record FabricDocument(string Kind, string Key, string Json);
 
 /// <summary>SQLite local-volume transactions; nested domain commands share the same unit of work.</summary>
 public sealed class FabricDatabase : IDisposable
 {
     private readonly string connectionString;
     private readonly ThreadLocal<(SqliteConnection Connection, SqliteTransaction Transaction)?> context = new();
+    public bool IsInTransaction => context.Value.HasValue;
     public FabricDatabase(string path)
     {
         path = Path.GetFullPath(path); Directory.CreateDirectory(Path.GetDirectoryName(path)!);
@@ -37,6 +40,19 @@ public sealed class FabricDatabase : IDisposable
         try { var result = action(); transaction.Commit(); return result; }
         finally { context.Value = null; }
     }
+    /// <summary>A consistent SQLite read snapshot. It cannot run inside an uncommitted writer or perform writes.</summary>
+    public T ReadSnapshot<T>(Func<T> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        if (IsInTransaction) throw new InvalidOperationException("A read snapshot cannot inspect an ambient Fabric transaction.");
+        using var connection = Open();
+        using (var command = connection.CreateCommand())
+        { command.CommandText = "PRAGMA query_only=ON"; command.ExecuteNonQuery(); }
+        using var transaction = connection.BeginTransaction(deferred: true);
+        context.Value = (connection, transaction);
+        try { var result = action(); transaction.Commit(); return result; }
+        finally { context.Value = null; }
+    }
     private T WithConnection<T>(Func<SqliteConnection, SqliteTransaction?, T> action)
     {
         if (context.Value is { } current) return action(current.Connection, current.Transaction);
@@ -55,6 +71,25 @@ public sealed class FabricDatabase : IDisposable
         command.CommandText = "SELECT json FROM fabric_documents WHERE kind=$kind ORDER BY key"; command.Parameters.AddWithValue("$kind", kind);
         using var reader = command.ExecuteReader(); var result = new List<T>();
         while (reader.Read()) result.Add(JsonSerializer.Deserialize<T>(reader.GetString(0)) ?? throw new InvalidDataException());
+        return result.ToArray();
+    });
+    public FabricDocument? ReadDocument(string kind, string key) => WithConnection((connection, transaction) =>
+    {
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT json FROM fabric_documents WHERE kind=$kind AND key=$key";
+        command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$key", key);
+        return command.ExecuteScalar() is string json ? new FabricDocument(kind, key, json) : null;
+    });
+    /// <summary>Keyed raw evidence, so one malformed document does not abort a diagnostic scan.</summary>
+    public FabricDocument[] DocumentPage(string kind, string? after = null, int take = 100) => WithConnection((connection, transaction) =>
+    {
+        if (string.IsNullOrWhiteSpace(kind) || take is < 1 or > 100) throw new ArgumentException("Invalid document page query.");
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT key,json FROM fabric_documents WHERE kind=$kind AND ($after IS NULL OR key>$after COLLATE BINARY) ORDER BY key COLLATE BINARY LIMIT $take";
+        command.Parameters.AddWithValue("$kind", kind); command.Parameters.AddWithValue("$after", (object?)after ?? DBNull.Value);
+        command.Parameters.AddWithValue("$take", take);
+        using var reader = command.ExecuteReader(); var result = new List<FabricDocument>();
+        while (reader.Read()) result.Add(new(kind, reader.GetString(0), reader.GetString(1)));
         return result.ToArray();
     });
     public void Put<T>(string kind, string key, T value)
@@ -87,6 +122,17 @@ public sealed class FabricDatabase : IDisposable
         command.Parameters.AddWithValue("$after", after); command.Parameters.AddWithValue("$take", Math.Clamp(take, 1, 100));
         using var reader = command.ExecuteReader(); var result = new List<FabricOutbox>();
         while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), DateTimeOffset.Parse(reader.GetString(4), System.Globalization.CultureInfo.InvariantCulture)));
+        return result.ToArray();
+    });
+    /// <summary>Raw outbox evidence for diagnosis, including invalid persisted timestamps.</summary>
+    public FabricOutboxEvidence[] OutboxEvidence(long after = 0, int take = 100) => WithConnection((connection, transaction) =>
+    {
+        if (after < 0 || take is < 1 or > 100) throw new ArgumentException("Invalid outbox evidence query.");
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = "SELECT id,key,kind,payload,recorded FROM fabric_outbox WHERE id>$after ORDER BY id LIMIT $take";
+        command.Parameters.AddWithValue("$after", after); command.Parameters.AddWithValue("$take", take);
+        using var reader = command.ExecuteReader(); var result = new List<FabricOutboxEvidence>();
+        while (reader.Read()) result.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4)));
         return result.ToArray();
     });
     public FabricOutbox[] Audit(Guid tenant, string[] kinds, long before = long.MaxValue, int take = 30) => WithConnection((connection, transaction) =>

@@ -1,0 +1,224 @@
+PASS consumer catalog: default-off fixture supplies no enable flag
+PASS consumer catalog: tenant reader default-off HTTP 503
+PASS consumer catalog: tenant reader default-off preserves all tables and schemas in both databases
+PASS consumer catalog: tenant reader default-off is no-store
+PASS consumer catalog: consumer products default-off HTTP 503
+PASS consumer catalog: consumer products default-off preserves all tables and schemas in both databases
+PASS consumer catalog: consumer products default-off is no-store
+PASS consumer catalog: anonymous tenant reader HTTP 401
+PASS consumer catalog: anonymous tenant reader preserves all tables and schemas in both databases
+PASS consumer catalog: anonymous products HTTP 401
+PASS consumer catalog: anonymous products preserves all tables and schemas in both databases
+PASS consumer catalog: invalid JWT signature HTTP 401
+PASS consumer catalog: invalid JWT signature preserves all tables and schemas in both databases
+PASS consumer catalog: wrong JWT audience HTTP 401
+PASS consumer catalog: wrong JWT audience preserves all tables and schemas in both databases
+PASS consumer catalog: expired JWT HTTP 401
+PASS consumer catalog: expired JWT preserves all tables and schemas in both databases
+PASS consumer catalog: synthetic administrator cookie established
+PASS consumer catalog: administrator cookie cannot replace bearer HTTP 401
+PASS consumer catalog: administrator cookie cannot replace bearer preserves all tables and schemas in both databases
+PASS consumer catalog: unapproved client HTTP 403
+PASS consumer catalog: unapproved client preserves all tables and schemas in both databases
+PASS consumer catalog: unapproved client is no-store
+PASS consumer catalog: developer scope cannot substitute catalog scope HTTP 403
+PASS consumer catalog: developer scope cannot substitute catalog scope preserves all tables and schemas in both databases
+PASS consumer catalog: developer scope cannot substitute catalog scope is no-store
+PASS consumer catalog: conflicting signed client id HTTP 403
+PASS consumer catalog: conflicting signed client id preserves all tables and schemas in both databases
+PASS consumer catalog: conflicting signed client id is no-store
+PASS consumer catalog: inactive signed token HTTP 403
+PASS consumer catalog: inactive signed token preserves all tables and schemas in both databases
+PASS consumer catalog: inactive signed token is no-store
+PASS consumer catalog: memberships independent of developer grants HTTP 200
+PASS consumer catalog: memberships independent of developer grants preserves all tables and schemas in both databases
+PASS consumer catalog: memberships independent of developer grants is no-store
+PASS consumer catalog: only delegated subject's active consumer membership is listed
+PASS consumer catalog: tenant DTO exposes only membership fields
+PASS consumer catalog: consumer has no manufactured developer permission
+PASS consumer catalog: authorized application projection HTTP 200
+PASS consumer catalog: authorized application projection preserves all tables and schemas in both databases
+PASS consumer catalog: authorized application projection is no-store
+PASS consumer catalog: authorized application projection exposes exactly the eligible applications
+PASS consumer catalog: consumer transport redaction HTTP 200
+PASS consumer catalog: consumer transport redaction preserves all tables and schemas in both databases
+PASS consumer catalog: consumer transport redaction is no-store
+PASS consumer catalog: authorized SaaS keeps its different producer tenant
+PASS consumer catalog: repository, owner identity and Attributes are redacted
+PASS consumer catalog: consumer DTO has only compatibility fields
+PASS consumer catalog: no private registry marker enters consumer response
+PASS consumer catalog: member without application grants HTTP 200
+PASS consumer catalog: member without application grants preserves all tables and schemas in both databases
+PASS consumer catalog: member without application grants is no-store
+PASS consumer catalog: member without application grants exposes exactly the eligible applications
+PASS consumer catalog: cross-consumer query HTTP 403
+PASS consumer catalog: cross-consumer query preserves all tables and schemas in both databases
+PASS consumer catalog: cross-consumer query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: noncanonical, duplicate or unsupported query HTTP 400
+PASS consumer catalog: noncanonical, duplicate or unsupported query preserves all tables and schemas in both databases
+PASS consumer catalog: noncanonical, duplicate or unsupported query is no-store
+PASS consumer catalog: spoofed delegation header X-Subject HTTP 400
+PASS consumer catalog: spoofed delegation header X-Subject preserves all tables and schemas in both databases
+PASS consumer catalog: spoofed delegation header X-Subject is no-store
+PASS consumer catalog: spoofed delegation header X-User-Id HTTP 400
+PASS consumer catalog: spoofed delegation header X-User-Id preserves all tables and schemas in both databases
+PASS consumer catalog: spoofed delegation header X-User-Id is no-store
+PASS consumer catalog: spoofed delegation header X-Tenant-Id HTTP 400
+PASS consumer catalog: spoofed delegation header X-Tenant-Id preserves all tables and schemas in both databases
+PASS consumer catalog: spoofed delegation header X-Tenant-Id is no-store
+PASS consumer catalog: spoofed delegation header X-Consumer-Tenant-Id HTTP 400
+PASS consumer catalog: spoofed delegation header X-Consumer-Tenant-Id preserves all tables and schemas in both databases
+PASS consumer catalog: spoofed delegation header X-Consumer-Tenant-Id is no-store
+PASS consumer catalog: public client cannot delegate subjects HTTP 403
+PASS consumer catalog: public client cannot delegate subjects preserves all tables and schemas in both databases
+PASS consumer catalog: public client cannot delegate subjects is no-store
+PASS consumer catalog: deactivated registered client HTTP 403
+PASS consumer catalog: deactivated registered client preserves all tables and schemas in both databases
+PASS consumer catalog: deactivated registered client is no-store
+PASS consumer catalog: revoked registered catalog scope HTTP 403
+PASS consumer catalog: revoked registered catalog scope preserves all tables and schemas in both databases
+PASS consumer catalog: revoked registered catalog scope is no-store
+PASS consumer catalog: deactivated reader product owner HTTP 403
+PASS consumer catalog: deactivated reader product owner preserves all tables and schemas in both databases
+PASS consumer catalog: deactivated reader product owner is no-store
+PASS consumer catalog: deactivated selected consumer HTTP 403
+PASS consumer catalog: deactivated selected consumer preserves all tables and schemas in both databases
+PASS consumer catalog: deactivated selected consumer is no-store
+PASS consumer catalog: offboarded delegated subject HTTP 403
+PASS consumer catalog: offboarded delegated subject preserves all tables and schemas in both databases
+PASS consumer catalog: offboarded delegated subject is no-store
+PASS consumer catalog: offboarded membership list HTTP 200
+PASS consumer catalog: offboarded membership list preserves all tables and schemas in both databases
+PASS consumer catalog: offboarded membership list is no-store
+PASS consumer catalog: offboarded subject has no listed consumers
+PASS consumer catalog: expired application grant HTTP 200
+PASS consumer catalog: expired application grant preserves all tables and schemas in both databases
+PASS consumer catalog: expired application grant is no-store
+PASS consumer catalog: expired application grant exposes exactly the eligible applications
+PASS consumer catalog: revoked application grant HTTP 200
+PASS consumer catalog: revoked application grant preserves all tables and schemas in both databases
+PASS consumer catalog: revoked application grant is no-store
+PASS consumer catalog: revoked application grant exposes exactly the eligible applications
+PASS consumer catalog: inactive consumer offer HTTP 200
+PASS consumer catalog: inactive consumer offer preserves all tables and schemas in both databases
+PASS consumer catalog: inactive consumer offer is no-store
+PASS consumer catalog: inactive consumer offer exposes exactly the eligible applications
+PASS consumer catalog: expired consumer offer HTTP 200
+PASS consumer catalog: expired consumer offer preserves all tables and schemas in both databases
+PASS consumer catalog: expired consumer offer is no-store
+PASS consumer catalog: expired consumer offer exposes exactly the eligible applications
+PASS consumer catalog: inactive application producer HTTP 200
+PASS consumer catalog: inactive application producer preserves all tables and schemas in both databases
+PASS consumer catalog: inactive application producer is no-store
+PASS consumer catalog: inactive application producer exposes exactly the eligible applications
+PASS consumer catalog: invalid or noncurrent linked subscription HTTP 200
+PASS consumer catalog: invalid or noncurrent linked subscription preserves all tables and schemas in both databases
+PASS consumer catalog: invalid or noncurrent linked subscription is no-store
+PASS consumer catalog: invalid or noncurrent linked subscription exposes exactly the eligible applications
+PASS consumer catalog: invalid or noncurrent linked subscription HTTP 200
+PASS consumer catalog: invalid or noncurrent linked subscription preserves all tables and schemas in both databases
+PASS consumer catalog: invalid or noncurrent linked subscription is no-store
+PASS consumer catalog: invalid or noncurrent linked subscription exposes exactly the eligible applications
+PASS consumer catalog: invalid or noncurrent linked subscription HTTP 200
+PASS consumer catalog: invalid or noncurrent linked subscription preserves all tables and schemas in both databases
+PASS consumer catalog: invalid or noncurrent linked subscription is no-store
+PASS consumer catalog: invalid or noncurrent linked subscription exposes exactly the eligible applications
+PASS consumer catalog: invalid or noncurrent linked subscription HTTP 200
+PASS consumer catalog: invalid or noncurrent linked subscription preserves all tables and schemas in both databases
+PASS consumer catalog: invalid or noncurrent linked subscription is no-store
+PASS consumer catalog: invalid or noncurrent linked subscription exposes exactly the eligible applications
+PASS consumer catalog: invalid or noncurrent linked subscription HTTP 200
+PASS consumer catalog: invalid or noncurrent linked subscription preserves all tables and schemas in both databases
+PASS consumer catalog: invalid or noncurrent linked subscription is no-store
+PASS consumer catalog: invalid or noncurrent linked subscription exposes exactly the eligible applications
+PASS consumer catalog: invalid or noncurrent linked subscription HTTP 200
+PASS consumer catalog: invalid or noncurrent linked subscription preserves all tables and schemas in both databases
+PASS consumer catalog: invalid or noncurrent linked subscription is no-store
+PASS consumer catalog: invalid or noncurrent linked subscription exposes exactly the eligible applications
+PASS consumer catalog: invalid or noncurrent linked subscription HTTP 200
+PASS consumer catalog: invalid or noncurrent linked subscription preserves all tables and schemas in both databases
+PASS consumer catalog: invalid or noncurrent linked subscription is no-store
+PASS consumer catalog: invalid or noncurrent linked subscription exposes exactly the eligible applications
+PASS consumer catalog: restored authoritative subscription HTTP 200
+PASS consumer catalog: restored authoritative subscription preserves all tables and schemas in both databases
+PASS consumer catalog: restored authoritative subscription is no-store
+PASS consumer catalog: restored authoritative subscription exposes exactly the eligible applications
+PASS consumer catalog: historical offer without optional subscriptionId HTTP 200
+PASS consumer catalog: historical offer without optional subscriptionId preserves all tables and schemas in both databases
+PASS consumer catalog: historical offer without optional subscriptionId is no-store
+PASS consumer catalog: historical offer without optional subscriptionId exposes exactly the eligible applications
+PASS consumer catalog: zoneless grant expiry fails closed HTTP 503
+PASS consumer catalog: zoneless grant expiry fails closed preserves all tables and schemas in both databases
+PASS consumer catalog: zoneless grant expiry fails closed is no-store
+PASS consumer catalog: zoneless offer expiry fails closed HTTP 503
+PASS consumer catalog: zoneless offer expiry fails closed preserves all tables and schemas in both databases
+PASS consumer catalog: zoneless offer expiry fails closed is no-store
+PASS consumer catalog: malformed eligible offer fails closed HTTP 503
+PASS consumer catalog: malformed eligible offer fails closed preserves all tables and schemas in both databases
+PASS consumer catalog: malformed eligible offer fails closed is no-store
+PASS consumer catalog: ungranted malformed metadata does not poison eligible applications HTTP 200
+PASS consumer catalog: ungranted malformed metadata does not poison eligible applications preserves all tables and schemas in both databases
+PASS consumer catalog: ungranted malformed metadata does not poison eligible applications is no-store
+PASS consumer catalog: ungranted malformed metadata does not poison eligible applications exposes exactly the eligible applications
+PASS consumer catalog: products observes membership revocation committed after its Fabric snapshot
+PASS consumer catalog: revocation race fixture restores all rows and schemas
+PASS consumer catalog: tenants observes membership revocation committed after its Fabric snapshot
+PASS consumer catalog: revocation race fixture restores all rows and schemas
+PASS consumer catalog: missing metadata fails closed HTTP 503
+PASS consumer catalog: missing metadata fails closed preserves all tables and schemas in both databases
+PASS consumer catalog: missing metadata fails closed is no-store
+PASS consumer catalog: outage exposes no partial catalog or storage diagnostics
+PASS consumer catalog: restored application metadata HTTP 200
+PASS consumer catalog: restored application metadata preserves all tables and schemas in both databases
+PASS consumer catalog: restored application metadata is no-store
+PASS consumer catalog: restored application metadata exposes exactly the eligible applications
+PASS consumer catalog: pre-existing developer branch HTTP 200
+PASS consumer catalog: pre-existing developer branch preserves all tables and schemas in both databases
+PASS consumer catalog: developer branch retains its authorized existing DTO
+PASS consumer catalog: developer branch still requires PlatformService HTTP 403
+PASS consumer catalog: developer branch still requires PlatformService preserves all tables and schemas in both databases
+PASS consumer catalog: tenant indicator prevents developer fallback HTTP 403
+PASS consumer catalog: tenant indicator prevents developer fallback preserves all tables and schemas in both databases
+PASS consumer catalog: tenant indicator prevents developer fallback is no-store
+PASS consumer catalog: catalog scope prevents developer fallback HTTP 403
+PASS consumer catalog: catalog scope prevents developer fallback preserves all tables and schemas in both databases
+PASS consumer catalog: catalog scope prevents developer fallback is no-store
+PASS consumer catalog: catalog client cannot read developer memberships HTTP 403
+PASS consumer catalog: catalog client cannot read developer memberships preserves all tables and schemas in both databases
+PASS consumer catalog: catalog client cannot mutate developer API HTTP 403
+PASS consumer catalog: catalog client cannot mutate developer API preserves all tables and schemas in both databases
+PASS consumer catalog: catalog client cannot mutate developer API HTTP 403
+PASS consumer catalog: catalog client cannot mutate developer API preserves all tables and schemas in both databases
+PASS consumer catalog: catalog client cannot mutate developer API HTTP 403
+PASS consumer catalog: catalog client cannot mutate developer API preserves all tables and schemas in both databases
+PASS consumer catalog: unconfigured catalog reader HTTP 503
+PASS consumer catalog: unconfigured catalog reader preserves all tables and schemas in both databases
+PASS consumer catalog: unconfigured catalog reader is no-store
+PASS consumer catalog: missing historical schema is not silently created HTTP 503
+PASS consumer catalog: missing historical schema is not silently created preserves all tables and schemas in both databases
+PASS consumer catalog: missing historical schema is not silently created is no-store
+PASS consumer catalog: 223 checks

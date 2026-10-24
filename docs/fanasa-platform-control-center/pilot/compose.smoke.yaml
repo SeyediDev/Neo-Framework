@@ -1,0 +1,33 @@
+# Root-owned single-gateway smoke overlay. Merge AFTER compose.resources.yaml.
+# Skip image build; capability-check the exact Python base before initializing.
+x-smoke-tools: &smoke-tools
+  image: python:3.12.10-slim-bookworm
+  build: !reset null
+  working_dir: /opt/fanasa-api-gateway
+  environment:
+    PYTHONDONTWRITEBYTECODE: "1"
+    PYTHONUNBUFFERED: "1"
+
+services:
+  certs:
+    <<: *smoke-tools
+  oidc:
+    <<: *smoke-tools
+  pdp:
+    <<: *smoke-tools
+  backend:
+    <<: *smoke-tools
+  gateway2:
+    profiles: ["full-acceptance-only"]
+  gateway3:
+    profiles: ["full-acceptance-only"]
+  gateway-no-pep:
+    profiles: ["full-acceptance-only"]
+  runner:
+    <<: *smoke-tools
+    profiles: ["manual-smoke"]
+    depends_on: !reset {}
+    command: ["python", "/root-native-controls/native-single-gateway-smoke.py"]
+    volumes:
+      - ${FANASA_NATIVE_CONTROLS_DIR:?Set the root-owned controls directory}:/root-native-controls:ro
+      - ${FANASA_NATIVE_EVIDENCE_DIR:?Set the root-owned evidence directory}:/results

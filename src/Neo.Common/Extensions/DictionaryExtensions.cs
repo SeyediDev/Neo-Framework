@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using System.ComponentModel;
+
 namespace Neo.Common.Extensions;
 
 public static class DictionaryExtensions
@@ -12,15 +14,22 @@ public static class DictionaryExtensions
 
         foreach (var item in source)
         {
-            var property = (MemberInfo?)someObjectType.GetProperty(item.Key) ??
-                     someObjectType.GetField(item.Key);
-            if (property is PropertyInfo p)
-                p.SetValue(someObject, item.Value, null);
-            else if (property is FieldInfo f)
-                f.SetValue(someObject, item.Value);
+            var property = (MemberInfo?)someObjectType.GetProperty(item.Key, BindingFlags.Public | BindingFlags.Instance) ??
+                     someObjectType.GetField(item.Key, BindingFlags.Public | BindingFlags.Instance);
+            if (property is PropertyInfo p && p.SetMethod?.IsPublic == true && p.GetIndexParameters().Length == 0)
+                p.SetValue(someObject, ConvertValue(item.Value, p.PropertyType), null);
+            else if (property is FieldInfo f && !f.IsInitOnly)
+                f.SetValue(someObject, ConvertValue(item.Value, f.FieldType));
         }
 
         return someObject;
+    }
+
+    private static object? ConvertValue(string value, Type type)
+    {
+        if (type.IsAssignableFrom(typeof(string))) return value;
+        if (Nullable.GetUnderlyingType(type) != null && string.IsNullOrEmpty(value)) return null;
+        return TypeDescriptor.GetConverter(type).ConvertFromInvariantString(value);
     }
 
     public static void MergeObject<T>(this IDictionary<string, object> dest, T obj)

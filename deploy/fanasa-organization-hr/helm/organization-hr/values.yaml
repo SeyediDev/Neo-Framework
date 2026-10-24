@@ -1,0 +1,55 @@
+# Required values deliberately have no deployable defaults. No secrets belong here.
+targetNamespace: ""
+applicationId: ""
+tenantId: ""
+sourceCommit: ""
+release: ""
+bundleSha256: ""
+configurationSha256: ""
+
+# Both role images must derive from the exact same verified bundle, never a tag.
+image:
+  web:
+    repository: ""
+    digest: ""
+  workbench:
+    repository: ""
+    digest: ""
+  existingPullSecret: ""
+
+persistence:
+  existingClaim: ""
+  webSubPath: web
+  workbenchSubPath: workbench
+
+configuration:
+  existingSecret: ""
+  key: appsettings.Development.json
+  metadataKey: deployment.json
+
+tls:
+  existingSecret: ""
+
+network:
+  gateway:
+    namespace: ""
+    podLabels: {}
+  dns:
+    namespace: ""
+    podLabels: {}
+  identity:
+    # A single reviewed IPv4 identity endpoint, not a broad network.
+    cidr: ""
+
+resources:
+  web:
+    cpuMillicores: 150
+    memoryMiB: 256
+  workbench:
+    cpuMillicores: 100
+    memoryMiB: 192
+
+# Optional host-Gateway bridge; preserves the original mTLS stream without keys.
+gatewayRelay:
+  enabled: false
+  nodeSourceCidr: ""

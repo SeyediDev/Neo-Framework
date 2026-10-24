@@ -9,7 +9,7 @@ public class TypeExtensionsTests
     [InlineData(null, true)]
     [InlineData(0, true)]
     [InlineData(1, false)]
-    [InlineData("", true)]
+    [InlineData("", false)]
     [InlineData("test", false)]
     public void IsNullOrDefault_ShouldReturnCorrectValue<T>(T? argument, bool expected)
     {

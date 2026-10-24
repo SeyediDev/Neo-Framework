@@ -1,5 +1,15 @@
 # مرکز راهبری پلتفرم فن‌آسا (Fanasa Platform Control Center)
 
+API شخصی اندروید در `GET /api/mobile/catalog/tenants` و `GET /api/mobile/catalog/tenants/{tenantId}/apps` افزوده شده است؛ bearer کاربر با scope مستقل `platform.catalog.self` و public client ثبت‌شده فقط کاتالوگ subject خود را می‌خواند. مسیر delegation سرویس تغییر نکرده است. قابلیت پیش‌فرض غیرفعال است؛ [قرارداد، ثبت مرکزی و نمونه تنظیمات IdP](docs/MOBILE-CATALOG.fa.md) و [آزمون HTTP محلی](tests/MobileApplicationCatalog.Tests/README.md) وضعیت پیاده‌سازی و حدود پذیرش را مشخص می‌کنند. این تغییر ثبت واقعی client، grant، انتشار یا پذیرش ورود دستگاه نیست.
+
+ماژول Contract Policy در DI همین میزبان ثبت شده است: ingress قرارداد با JWT اختصاصی producer، projection/receipt اتمی در Fabric، reader معتبر، سیاست نسخه‌دار مستقل و انتساب صریح نقش محصول. ادامه `0.4.0`، endpoint اختصاصی `POST /api/gateway/decision` و گیرندهٔ مستقیم mTLS/HMAC را اضافه می‌کند؛ guard داخل تراکنش از اجرای درخواست منقضی یا ابطال‌شده جلوگیری می‌کند. فعال‌سازی نیازمند پیکربندی و ثبت‌های معتبر است؛ executor پیش‌فرض Gateway بسته می‌ماند. [راهنمای پایه](../../docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/PCC-INTEGRATION.md) و [اتصال Gateway](../../docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/PCC-GATEWAY.md).
+
+## اطلس معماری
+
+صفحه `/Architecture` از منوی اصلی و نمای کلی قابل دسترسی است. نقشه تعاملی مسئولیت‌ها، نماهای هویت، محصول و آینده، جزئیات المان‌ها، سند معماری و چاپ/PDF را ارائه می‌کند. پیوند مستقیم مانند `/Architecture#system-observe` انتخاب المان را حفظ می‌کند. وضعیت مانیتورینگ و درگاه هدف، چشم‌انداز است و نقشه تله‌متری زنده نیست. لینک ورود محصولات از `PlatformRegistry` با همان محدودیت subject صفحه Platform خوانده می‌شود؛ کاتالوگ موازی یا ثبت خودکار ایجاد نمی‌شود. صفحه زیر سیاست ورود موجود قرار دارد و تغییری در مجوز مقصد نمی‌دهد.
+
+آزمون رفتار انتخاب، پیوند مستقیم، نمای آینده و چاپ: `node products/Fanasa.AccessManagement/tests/architecture-ui.test.cjs`.
+
 مرجع مرکزی ثبت سامانه‌ها، محصول‌ها، کلاینت‌ها، tenant، عضویت، نقش، مجوز و مصرف SaaS. این محصول جایگزین
 Keycloak نیست و هویت یا رمز عبور کاربر را ذخیره نمی‌کند.
 
@@ -15,6 +25,12 @@ Keycloak نیست و هویت یا رمز عبور کاربر را ذخیره ن
 جزئیات API، claimها، subscription gate و محدودیت‌های استقرار در
 [تصمیم معماری](docs/IDENTITY-ORGANIZATION.md) آمده است.
 
+تقویم کاری، تعطیلی و پنجرهٔ داده در پنل سازمان و سیاست‌های وابسته به آن‌ها در
+راهبری تعریف می‌شوند. نمونهٔ آموزشی «سازمان الگو» و مرز فعال‌سازی محدودیت زمانی
+در [راهنمای تقویم و دسترسی زمانی](docs/ORGANIZATION-TEMPORAL-ACCESS.fa.md) توضیح داده شده‌اند؛
+اجرای زنده به‌صورت پیش‌فرض خاموش است و فقط برای tenantهای مشخص و مجوزهای
+`organization.read` و `organization.write` قابل فعال‌سازی است.
+
 ```powershell
 dotnet run --project products/Fanasa.AccessManagement/tests/Organization.Tests
 ```
@@ -23,6 +39,19 @@ dotnet run --project products/Fanasa.AccessManagement/tests/Organization.Tests
 `/Tenancy` مدیریت اعضا و اشتراک را پوشش می‌دهد. با فعال‌سازی
 `Organization__MeterChanges=true`، تغییر چارت و مصرف در یک تراکنش ثبت می‌شوند؛
 تعرفه `organization.change` و اعتبار کافی باید قبلاً آماده باشند.
+
+مسیر نسخه‌دار جدید برای `unit.save` با `UsageMetering__Organization__Enabled=true`
+قابل انتخاب است و پیش‌فرض خاموش می‌ماند. نرخ هنگام پذیرش ثابت می‌شود و تغییر چارت،
+رسید مصرف، بدهی و رویداد کامل در همان Fabric commit می‌شوند. این گزینه و
+`Organization__MeterChanges` هم‌زمان مجاز نیستند. منبع قابل انتخاب قرارداد و تخصیص،
+نگاشت تنظیمات یا projection احراز‌شدهٔ ContractPolicy با قیمت نسخه‌دار پایدار است.
+تحویل outbox با retry و ack نیز opt-in و پیش‌فرض خاموش است؛ مقصد واقعی متصل نشده است.
+تطبیق خواندنی receipt/دفتر/outbox و retry مدیریتیِ شواهد معتبر pending نیز فراهم است؛
+retry فقط حسابداری همان رویداد و نرخ تاریخی را اجرا می‌کند. ورودی عمومی مصرف بیرونی
+هنوز به هویت producer مورد تأیید و شاهد پایدار پذیرش تاریخی نیاز دارد.
+پیش‌نیازها، تنظیمات و بازیابی در [راهنمای مصرف نسخه‌دار](docs/USAGE-ACCOUNTING.md) آمده است.
+پنل مدیر پلتفرم در `/UsageAccounting`، گزارش سلامت شواهد، جست‌وجوی مصرف و تلاش
+مجدد با دلیل و شناسهٔ ثابت برای پاسخ نامشخص را ارائه می‌کند.
 
 مسیر `Fabric__DataDirectory` باید روی volume محلی پایدار با backup باشد.
 ابزار backup/verify/restore دو پایگاه با مقصد تازه و کنترل integrity در
@@ -37,8 +66,10 @@ dispatcher بیرونی outbox، آزمون SSO واقعی و استقرار چ�
 
 صفحه `/Governance` برای درخواست ورود/جابه‌جایی/خروج، بررسی مستقل، تعریف
 الگوهای نقش و زمان و شبیه‌سازی تصمیم بر مبنای مفاهیم XACML اضافه شده است.
-اتصال سیاست به دسترسی زنده و اجرای خودکار درخواست‌ها هنوز فعال نیست؛
-دامنه پشتیبانی و مرز فعال‌سازی در [راهنمای راهبری و XACML](docs/GOVERNANCE-XACML.md) آمده است.
+محدودیت زمانی دسترسی سازمان به‌صورت opt-in و پیش‌فرض خاموش پیاده شده است؛
+اجرای خودکار درخواست‌های چرخهٔ هویت هنوز فعال نیست. دامنهٔ سیاست‌ها در
+[راهنمای راهبری و XACML](docs/GOVERNANCE-XACML.md) و مرز اتصال زمانی در
+[راهنمای تقویم و دسترسی زمانی](docs/ORGANIZATION-TEMPORAL-ACCESS.fa.md) آمده است.
 
 صفحه `/Audit` اکنون سوابق واقعی هر سازمان را با فیلتر نوع رویداد و صفحه‌بندی
 نمایش می‌دهد. هر دسته به مجوز مشاهده همان بخش وابسته است؛ جزئیات در

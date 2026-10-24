@@ -1,6 +1,7 @@
 using Fanasa.AccessManagement.Web.Application.Access;
 using Fanasa.AccessManagement.Web.Domain.Access;
 using Fanasa.AccessManagement.Web.Security;
+using Fanasa.AccessManagement.Web.Organization;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace Fanasa.AccessManagement.Web.Api;
 
 /// <summary>Scopes the legacy Access surface without changing the central registry's controller contract.</summary>
-public sealed class AccessBoundaryFilter(IAccessManagement access, IAntiforgery antiforgery) : IAsyncActionFilter
+public sealed class AccessBoundaryFilter(IAccessManagement access, IAntiforgery antiforgery, TemplateOrganizationStore? examples = null) : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -41,6 +42,8 @@ public sealed class AccessBoundaryFilter(IAccessManagement access, IAntiforgery 
         {
             try { await antiforgery.ValidateRequestAsync(context.HttpContext); }
             catch (AntiforgeryValidationException) { context.Result = new BadRequestObjectResult(new { error = "Invalid CSRF token." }); return; }
+            if (tenant.HasValue && TemplateOrganizationWriteGuard.Reject(examples, tenant.Value) is { } readOnly)
+            { context.Result = readOnly; return; }
         }
         await next();
     }

@@ -5,6 +5,7 @@ using Fanasa.AccessManagement.Web.Domain.Access;
 using Fanasa.AccessManagement.Web.Organization;
 using Fanasa.AccessManagement.Web.Accounting;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,15 +15,20 @@ using Fanasa.AccessManagement.Web.Application.Tenancy;
 using Fanasa.AccessManagement.Web.Platform;
 using Fanasa.AccessManagement.Web.Security;
 using Microsoft.Extensions.Configuration;
+using Fanasa.AccessManagement.Web.Governance;
 
 // Local test fixture only. Production host never references this assembly.
 static class TestPreview
 {
     public static async Task Run()
     {
-        var contentRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Fanasa.AccessManagement.Web"));
+        var contentRoot = Path.GetFullPath(Environment.GetEnvironmentVariable("FANASA_PREVIEW_CONTENT_ROOT")
+            ?? Path.Combine(AppContext.BaseDirectory, "../../../../../src/Fanasa.AccessManagement.Web"));
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { ContentRootPath = contentRoot, ApplicationName = typeof(AccessManagementHost).Assembly.GetName().Name, EnvironmentName = "Development" });
-        builder.WebHost.UseUrls("http://127.0.0.1:5198");
+        var previewUrl = Environment.GetEnvironmentVariable("FANASA_PREVIEW_URL") ?? "http://127.0.0.1:5198";
+        if (!Uri.TryCreate(previewUrl, UriKind.Absolute, out var previewUri) || !previewUri.IsLoopback || previewUri.Scheme != "http")
+            throw new InvalidOperationException("Synthetic preview authentication is restricted to loopback HTTP.");
+        builder.WebHost.UseUrls(previewUrl);
         var data = Path.Combine(Path.GetTempPath(), "fanasa-preview-" + Guid.NewGuid());
         builder.Configuration["Platform:RegistryPath"] = Path.Combine(data, "catalog.db");
         var registry = new PlatformRegistry(builder.Configuration);
@@ -47,10 +53,22 @@ static class TestPreview
         var position = store.Execute(tenant, command, "demo").Positions.Single().Id;
         store.Execute(tenant, C("", "") with { Operation = "appointment.add", PositionId = position, Subject = "demo-member", From = DateTimeOffset.UtcNow.AddDays(-1) }, "demo");
         builder.Services.AddSingleton<IAccessManagement>(access); builder.Services.AddSingleton(store);
-        builder.Services.AddSingleton(new AccountingStore(data, access, database: database));
+        var accounting = new AccountingStore(data, access, database: database);
+        builder.Services.AddSingleton(accounting);
+        UsageAccountingPreview.Register(builder.Services, database, accounting, tenant);
         builder.Services.AddSingleton(access); builder.Services.AddSingleton(registry); builder.Services.AddTransient<IClaimsTransformation, FabricClaimsTransformation>();
         builder.Services.AddSingleton(new Fanasa.AccessManagement.Web.Payments.ZarinpalOptions { Enabled = true, Sandbox = true, MerchantId = Guid.NewGuid().ToString(), CallbackUrl = "https://preview.example/api/payments/zarinpal/callback" });
         builder.Services.AddSingleton(database);
+        builder.Services.AddSingleton<OrganizationCalendarStore>();
+        builder.Services.AddSingleton<TemplateOrganizationStore>();
+        builder.Services.AddSingleton<PipStore>();
+        builder.Services.AddSingleton<IPolicyInformationPoint>(sp => sp.GetRequiredService<PipStore>());
+        builder.Services.AddSingleton(new PipTransportOptions()); // No endpoint is approved; this fixture cannot fetch external data.
+        builder.Services.AddSingleton<IPipSecretResolver, ConfigurationPipSecretResolver>();
+        builder.Services.AddHttpClient<IPipExternalConnector, HttpPipExternalConnector>(client => client.Timeout = Timeout.InfiniteTimeSpan)
+            .ConfigurePrimaryHttpMessageHandler(PipHttpTransport.CreateHandler);
+        builder.Services.AddSingleton<PipSyncService>();
+        builder.Services.AddSingleton<PipEducationalExample>();
         builder.Services.AddSingleton<Fanasa.AccessManagement.Web.Governance.AccessPolicyStore>();
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddSingleton<Fanasa.AccessManagement.Web.Governance.IdentityLifecycle>();
@@ -58,8 +76,19 @@ static class TestPreview
         builder.Services.AddTransient<Fanasa.AccessManagement.Web.Payments.ZarinpalPayments>();
         builder.Services.AddRazorPages(); builder.Services.AddControllers(options => options.Filters.Add<Fanasa.AccessManagement.Web.Api.AccessBoundaryFilter>());
         builder.Services.AddAntiforgery(o => o.HeaderName = "X-CSRF-TOKEN");
-        builder.Services.AddAuthentication("test").AddScheme<AuthenticationSchemeOptions, PreviewIdentity>("test", _ => { }); builder.Services.AddAuthorization();
+        builder.Services.AddAuthentication("test")
+            .AddScheme<AuthenticationSchemeOptions, PreviewIdentity>("test", _ => { })
+            .AddScheme<AuthenticationSchemeOptions, PreviewIdentity>(CookieAuthenticationDefaults.AuthenticationScheme, _ => { });
+        builder.Services.AddAuthorization(options => options.AddPolicy("PlatformAdmin", policy =>
+            policy.RequireAuthenticatedUser().RequireClaim("permission", "platform.admin")));
         var app = builder.Build(); app.UseStaticFiles(); app.UseRouting(); app.UseAuthentication(); app.UseAuthorization();
+        if (Environment.GetEnvironmentVariable("FANASA_PREVIEW_PIP_EXAMPLES") == "1")
+        {
+            var educational = app.Services.GetRequiredService<TemplateOrganizationStore>().Ensure("demo", "دادهٔ مصنوعی بررسی رابط PIP؛ فقط پایگاه دادهٔ موقت");
+            app.Services.GetRequiredService<PipEducationalExample>().Ensure(educational.Tenant.Id, "demo", "بررسی رابط نمونهٔ PIP بدون انتشار سیاست");
+            Console.WriteLine("PIP_PREVIEW_ORGANIZATION=" + previewUrl + "/Organization?tenant=" + educational.Tenant.Id + "#organization-pip");
+            Console.WriteLine("PIP_PREVIEW_GOVERNANCE=" + previewUrl + "/Governance?tenant=" + educational.Tenant.Id + "#decision-workbench");
+        }
         app.MapControllers().RequireAuthorization(); app.MapRazorPages().RequireAuthorization();
         try { await app.RunAsync(); } finally { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); Directory.Delete(data, true); }
     }
@@ -78,7 +107,8 @@ sealed class PreviewIdentity(IOptionsMonitor<AuthenticationSchemeOptions> option
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var identity = new ClaimsIdentity(new[] { new Claim("sub", "demo"), new Claim(ClaimTypes.Name, "محیط بررسی رابط"), new Claim("permission", "platform.admin") }, "test");
-        return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), "test")));
+        var identity = new ClaimsIdentity(new[] { new Claim("sub", "demo"), new Claim(ClaimTypes.Name, "محیط بررسی رابط"),
+            new Claim("permission", "platform.admin"), new Claim("fanasa.preview", "synthetic") }, Scheme.Name);
+        return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name)));
     }
 }

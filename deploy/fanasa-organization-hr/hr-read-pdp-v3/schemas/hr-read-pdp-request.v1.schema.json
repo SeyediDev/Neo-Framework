@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fanasa:hr-read:pdp:request:1",
+  "title": "HR read PDP evaluation request v1",
+  "description": "Untrusted structural request to POST /internal/contract-policy/hr-read/v3/evaluate. The body describes an exact GET chart/history request; identity, tuple, hash and expiry assertions require separate Gateway service authentication, subject-token authentication and fresh authoritative PIP correlation.",
+  "$comment": "Maximum UTF-8 request size 32768 bytes and depth eight. Every listed root field is required, including nullable ownerTenantId. HrReadPdpWire rejects duplicate keys at any depth, unknown fields, noncanonical number spellings and invalid dynamic correlations. Bearer tokens and caller-supplied authentication, PIP, grant, Permit, admission or fulfillment flags are not body fields. JSON Schema does not substitute for runtime checks.",
+  "type": "object", "additionalProperties": false,
+  "required": [
+    "transportVersion", "schemaVersion", "profileId", "method", "rawTarget",
+    "requestId", "requestedAt", "subjectId", "clientId", "audience", "scope",
+    "tokenSha256", "tokenExpiresAt", "consumerTenantId", "ownerTenantId", "ownership",
+    "productId", "environment", "zone", "contractId", "contractVersion", "policyId",
+    "policyVersion", "allocationId", "allocationScope", "configRevision", "action", "operationGroup"
+  ],
+  "properties": {
+    "transportVersion": { "const": "fanasa.hr-read.pdp.request/1" },
+    "schemaVersion": { "const": "3.0.0" },
+    "profileId": { "const": "fanasa.organization-hr-read/1" },
+    "method": { "const": "GET" },
+    "rawTarget": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/rawTarget" },
+    "requestId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/requestId" },
+    "requestedAt": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/epochSeconds" },
+    "subjectId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/uuid" },
+    "clientId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "audience": { "const": "fanasa-organization-fabric" },
+    "scope": { "const": "organization.hr.read" },
+    "tokenSha256": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/tokenSha256" },
+    "tokenExpiresAt": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/tokenExpiresAt" },
+    "consumerTenantId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/uuid" },
+    "ownerTenantId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/nullableUuid" },
+    "ownership": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/ownership" },
+    "productId": { "const": "organization-fabric" },
+    "environment": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "zone": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "contractId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "contractVersion": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/version" },
+    "policyId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "policyVersion": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/version" },
+    "allocationId": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/id" },
+    "allocationScope": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/allocationScope" },
+    "configRevision": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/version" },
+    "action": { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/action" },
+    "operationGroup": { "const": "organization.hr.read" }
+  },
+  "allOf": [
+    { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/routeActionCorrelation" },
+    { "$ref": "hr-read-pdp-common.v1.schema.json#/$defs/ownershipCorrelation" }
+  ]
+}

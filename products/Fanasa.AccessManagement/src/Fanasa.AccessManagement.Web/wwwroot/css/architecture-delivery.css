@@ -1,0 +1,10 @@
+.arch-delivery-status{display:flex;flex-wrap:wrap;align-items:start;justify-content:space-between;gap:18px;border-block:1px solid var(--arch-line);padding:22px 0;margin-bottom:28px;line-height:1.9;min-width:0}
+.arch-delivery-status>div{flex:1;min-width:240px}
+.arch-delivery-status h3{font-size:20px;letter-spacing:0;margin:0 0 8px}
+.arch-delivery-status p{font-size:14px;color:var(--muted);margin:8px 0;overflow-wrap:anywhere}
+.arch-delivery-status>a{max-width:100%;white-space:normal;border-radius:6px}
+.arch-delivery-status ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;width:100%}
+.arch-delivery-status li{display:grid;gap:6px;border-inline-start:2px solid var(--teal);padding-inline-start:14px}
+.arch-delivery-status li b{font-size:14px}.arch-delivery-status li span{font-size:13px;color:var(--muted)}
+.arch-delivery-status .arch-delivery-boundary{width:100%;border-top:1px solid var(--arch-line);padding-top:14px;font-size:12px}
+@media(max-width:600px){.arch-delivery-status ol{grid-template-columns:1fr}.arch-delivery-status>div{min-width:0;flex-basis:100%}.arch-delivery-status h3{font-size:18px}}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "fanasa.hr-read.pdp.delivery-status/1",
+  "sourcePackage": "hr-read-pdp-v3/SOURCE-PACKAGE.json",
+  "sourcePackageSha256": "4679302e5a4c409337a00a2cf8784c88a8b62d0a0799fcf37368c2460ed2c414",
+  "sourceFileCount": 31,
+  "localByteVerification": "31 PDP files and 80 immutable HR3 dependency files verified; exit 0",
+  "layoutVerification": "Default sibling ProjectReference FullPath values resolve to the pinned hr-read-profile-v3 package; dotnet msbuild exit 0",
+  "localAssertions": 341,
+  "testExitCode": 0,
+  "independentReview": "Source-only reviews completed; actionable scope/proof-correlation/send-timeout findings fixed before successful suite",
+  "remoteUploadPerformed": false,
+  "remoteBranchCreated": false,
+  "liveHostRegistration": false,
+  "operationalAcceptance": false,
+  "publicationStatus": "not-attempted; pending explicit approval for the sensitive source transfer previously rejected by automatic approval review",
+  "liveIntegrationStatus": "unavailable-by-default; current authoritative introspection/unique consumer mapping, HR3 delegation and publisher remain required",
+  "selectedCiChanged": false,
+  "deploymentChanged": false,
+  "credentialsIncluded": false
+}

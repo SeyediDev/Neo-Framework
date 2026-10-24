@@ -10,6 +10,10 @@ public interface IIdpService
     Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(CancellationToken cancellationToken);
     Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, CancellationToken cancellationToken);
     Task<IdpClientCredentialResponseDtp?> GetClientCredentialTokenAsync(string clientId, string clientSecret, string? channelKey, CancellationToken cancellationToken);
+    /// <summary>
+    /// Legacy mobile-only token request. Keycloak returns null because a mobile number
+    /// is not proof of identity; use the configured identity provider's verified flow.
+    /// </summary>
     Task<TokenResponseDto?> GetUserTokenAsync(string mobile, CancellationToken cancellationToken);
     Task<TokenResponseDto?> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
     Task<IdpUserResponseDto?> GetUserAsync(string mobile);

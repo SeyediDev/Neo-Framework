@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  Restored E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\usage-accounting\consumer-report\tests\ConsumerUsageReport.Tests.csproj (in 1.08 sec).
+  2 of 3 projects are up-to-date for restore.
+  Fanasa.ContractPolicy -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.ContractPolicy\release\Fanasa.ContractPolicy.dll
+  Fanasa.AccessManagement.Web -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.AccessManagement.Web\release\Fanasa.AccessManagement.Web.dll
+  ConsumerUsageReport.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\ConsumerUsageReport.Tests\release\ConsumerUsageReport.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:12.10

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "eventId": "00000000-0000-4000-8000-000000000201",
+  "occurredAt": "2026-10-10T06:31:00Z",
+  "producedAt": "2026-10-10T06:31:01Z",
+  "producer": {
+    "id": "fixture-organization-backend",
+    "kind": "product-backend",
+    "deploymentId": "fixture-build-001"
+  },
+  "environment": "development",
+  "ownerTenantId": "11111111-1111-4111-8111-111111111111",
+  "consumerTenantId": "22222222-2222-4222-8222-222222222222",
+  "productKey": "organization-fabric",
+  "contractId": "fixture-contract-b",
+  "contractVersion": 7,
+  "allocationId": "fixture-shared-organization",
+  "allocationPeriodId": "2026-10",
+  "operation": {
+    "id": "55555555-5555-4555-8555-555555555555",
+    "version": "organization.unit.save/v1",
+    "actorId": "33333333-3333-4333-8333-333333333333",
+    "requestId": "66666666-6666-4666-8666-666666666666",
+    "requestFingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acceptedAt": "2026-10-10T06:30:00Z",
+    "billableBoundary": "organization-unit-committed/v1"
+  },
+  "authorization": {
+    "decisionId": "g-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "policyVersion": "fixture-organization-unit-save@3",
+    "admissionId": "admission:g-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "meter": {
+    "id": "organization.change",
+    "version": "1",
+    "unit": "change",
+    "quantity": "1"
+  },
+  "rateSnapshot": {
+    "rateId": "fixture-organization-rate",
+    "rateVersion": 7,
+    "effectiveFrom": "2026-10-01T00:00:00Z",
+    "effectiveTo": "2026-10-10T07:00:00Z",
+    "unitPrice": "12",
+    "currency": "IRR",
+    "minorUnitScale": 0,
+    "rounding": "away-from-zero",
+    "billingMode": "postpaid"
+  },
+  "outcome": "completed",
+  "evidence": {
+    "businessReceiptId": "fixture-business-receipt-common-001",
+    "resultDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "reference": "fixture://organization/55555555-5555-4555-8555-555555555555"
+  },
+  "correlationId": "44444444-4444-4444-8444-444444444444",
+  "traceId": "cccccccccccccccccccccccccccccccc"
+}

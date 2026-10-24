@@ -1,0 +1,358 @@
+PASS cycle rejected
+PASS duplicate code rejected
+PASS stale revision rejected
+PASS parent archive rejected
+PASS cross-tenant appointment rejected
+PASS over-capacity rejected
+PASS duplicate appointment rejected
+PASS adjacent intervals accepted
+PASS future appointment prevents archive
+PASS historical snapshot preserved
+PASS restart preserves state and audit
+PASS tenant data isolated
+PASS tenant and permission authorization
+PASS API cross-tenant read forbidden
+PASS API read-only user cannot mutate
+PASS anonymous access rejected
+PASS SaaS subscription gate enforced
+PASS concurrent writers serialized
+PASS organizational role linked to chart position
+PASS organization permission does not grant accounting access
+PASS payg insufficient balance rejected
+PASS payg debits wallet
+PASS billing retry idempotent before version check
+PASS duplicate billing key with changed payload rejected
+PASS postpaid accrues debt within credit limit
+PASS postpaid credit limit enforced
+PASS open period cannot be invoiced
+PASS closed monthly invoice uses recorded charges
+PASS partial invoice payment restores credit
+PASS overpayment rejected
+PASS billing ledger survives restart
+PASS developer grant requires authoritative active membership
+PASS durable subscription seat limit enforced
+PASS duplicate active subscription rejected
+PASS organization change and consumption commit together
+PASS organization request retry does not repeat charge or outbox
+PASS organization request identity rejects changed payload
+PASS organization request receipt is actor-bound
+PASS ledger retains original unit-price snapshot
+PASS transaction failure injected
+PASS organization accounting history and outbox all rollback
+PASS invalid organization mutation rejected before debit
+PASS invalid mutation does not consume credit
+PASS organization action blocked by postpaid credit limit
+PASS unfunded action leaves chart and history unchanged
+PASS memberships plans subscriptions persist across restart
+PASS existing central product registry reused across restart
+PASS transactional chart and accounting survive restart
+PASS contract event persisted idempotently
+PASS contract event key with different payload rejected
+PASS persistent usage identity conflict rejected
+PASS separate database connections serialize stale-version writers
+PASS metering cannot use a different transaction database
+PASS multi-tenant unscoped permissions cannot bleed across tenants
+PASS scoped permission pair grants exactly one tenant operation
+PASS durable grants replace stale session domain permissions
+PASS grant revocation takes effect on next request
+PASS offboarding denies existing developer launch grant
+PASS offboarding removes effective grants and reconciles seats
+PASS reactivation does not resurrect revoked grants
+PASS suspended subscription blocks organization access
+PASS subscription renewal restores access without recreating chart
+PASS tenant manager cannot escalate accounting grants
+PASS nested failure caught by caller rolls back its savepoint
+PASS explicit legacy import preserves chart and billing
+PASS legacy import cannot overwrite existing tenant state
+PASS offboarding ends current appointments and cancels future appointments
+PASS offboarding preserves previous appointment history
+PASS UsageEvent 1.0 strict wire roundtrip preserves the frozen snapshot
+PASS usage parser rejects duplicate root properties
+PASS usage parser rejects duplicate nested properties
+PASS usage parser rejects unknown properties
+PASS usage parser requires schema version
+PASS usage quantity must be a decimal string
+PASS usage parser rejects exponent prices
+PASS usage parser rejects negative prices
+PASS usage timestamps require explicit UTC Z
+PASS usage timestamps require string tokens
+PASS usage production cannot precede completion
+PASS usage admission must be inside the frozen rate window
+PASS pilot usage requires exactly one committed change
+PASS usage meter unit is version-bound
+PASS usage currency must be supported
+PASS IRR usage requires zero minor digits
+PASS usage price fractional precision is bounded
+PASS usage prices round away from zero at the currency scale
+PASS delivery metadata changes retain one logical operation identity
+PASS delayed usage bills historical v7 price and records registration plus occurrence time
+PASS historical intake leaves current v8 tariff unchanged
+PASS measured ledger identity is stable
+PASS committed replay and regenerated delivery debit once without revalidating rates
+PASS same usage event rejects a changed actor
+PASS same operation rejects changed business evidence
+PASS same operation cannot be repriced
+PASS usage identity conflicts leave ledger and outbox unchanged
+PASS usage outbox retains the full original schema and tenant for recovery
+PASS measured outer transaction failure injected
+PASS business evidence usage journal receipts ledger and outbox rollback together
+PASS reopen and replay after a lost acknowledgement preserves one charge
+PASS two Fabric connections racing one event create one ledger debit and usage outbox
+PASS concurrent distinct operations cannot overspend postpaid credit or retain rejected local evidence
+PASS measured intake rejects accounting on a separate Fabric instance
+PASS completed unfunded usage retains original evidence and one pending outbox across aliases
+PASS pending logical identity rejects conflicting historical prices
+PASS pending conflict cannot replace recovery evidence
+PASS invalid trusted bindings never become accounting-pending
+PASS pending retry commits original rate despite changed validation and all aliases resolve once
+PASS pending completion preserves the first received complete event
+PASS late usage for an issued period remains durable pending without rewriting invoice or ledger
+PASS inactive consumer holds completed remote evidence without losing event or mutating ledger
+PASS reactivated consumer resolves the retained original usage exactly once
+PASS inactive committed consumer still yields its durable usage receipt without duplicating charge
+PASS actual recovery bundle restores complete usage journals pending evidence aliases and outbox
+PASS restored committed identities replay without duplicate charge or rate resolution
+PASS post-restore stable replay completes pending and missing post-backup events exactly once
+PASS new usage metering defaults disabled and existing organization callers remain compatible
+PASS enabled metered unit.save requires an explicit UUID request identity
+PASS enabled metered unit.save requires actual authenticated principal
+PASS both organization billing switches reject startup to prevent double charging
+PASS authenticated unit.save commits central contract-bound usage with domain state in shared Fabric
+PASS failure after metered organization staging injected
+PASS outer failure rolls back actual chart history org receipt usage journal charge and every outbox together
+PASS new local usage deserialized from JSON cannot impersonate invocation proof
+PASS invalid metered organization mutation is rejected
+PASS invalid domain mutation leaves usage accounting organization history and outbox untouched
+PASS organization request replay returns original receipt after configured v8 price change
+PASS metered organization request rejects changed payload before repricing
+PASS fresh organization action uses new configured v8 rate without repricing v7
+PASS opted-in usage pilot meters only unit.save
+PASS expired configured pricing windows still permit an exact authorized organization receipt replay
+PASS expired configured pricing windows reject a fresh metered action
+PASS current subscription suspension rejects metered replay even with legacy subscription gate disabled
+PASS expired current subscription rejects metered receipt replay
+PASS expired current entitlement rejects metered receipt replay
+PASS current entitlement renewal restores original response without a new charge
+PASS financial admission rejects unfunded local action before business commit
+PASS local credit rejection rolls back chart history receipts and leaves no pending completed event
+PASS current durable grant revocation blocks even an authorized historical response replay
+PASS durable usage price binds exact version snapshot meter and central owner
+PASS exact price publication replay returns original immutable audit without duplicate outbox
+PASS one price ID and version cannot identify changed numeric snapshot
+PASS one price ID and version cannot identify changed effective window
+PASS conflicting price publication leaves original data and audit unchanged
+PASS usage prices resolve the requested historical version at inclusive interval start
+PASS usage price lookup has no implicit latest version or synthetic default
+PASS usage resolution never substitutes latest price for a missing exact version
+PASS usage resolution rejects consumer substitution for authoritative owner
+PASS usage resolution rejects admission before exact price effective interval
+PASS usage resolution treats the exact price interval end as exclusive
+PASS usage resolution admission timestamp must be UTC
+PASS overlapping price windows resolve only the explicit immutable version
+PASS price reference ID must match frozen rate identity
+PASS price reference version must match frozen rate version
+PASS usage price versions must be positive
+PASS usage price interval must have positive duration
+PASS usage price interval timestamps require UTC
+PASS usage price scale must match currency
+PASS usage price pilot rejects unsupported billing mode
+PASS usage price decimal cannot be negative
+PASS usage price decimal precision is bounded
+PASS usage price rounding method is version-bound
+PASS usage price publication requires an audit actor
+PASS usage price publication requires an audit reason
+PASS usage price publication outer failure injected
+PASS usage price and publication audit rollback in the same Fabric transaction
+PASS exact immutable historical usage price survives store and Fabric restart
+PASS actual recovery bundle restores every immutable usage price and publication audit
+PASS usage price ownership remains the central product owner rather than the billed consumer
+PASS usage price resolution requires a currently active authoritative owner
+PASS usage price publication cannot create prices for an inactive central owner
+PASS corrupted durable usage price cannot bypass stored meter validation
+PASS contract-policy usage source requires actual durable projection and price dependencies
+PASS contract-policy usage mode never falls back to configured price when projection is missing
+PASS trusted contract projection cannot bill an unpublished exact price reference
+PASS real authenticated central projection freezes its exact price allocation and UTC monthly billable event
+PASS updated trusted projection selects its explicit newer price without implicit latest selection
+PASS current projected access permits original receipt replay after price snapshot expiry
+PASS fresh projected operation rejects an expired exact price without fallback
+PASS current trusted contract suspension denies replay of previously charged organization response
+PASS opaque commercial subscription requires exact explicit central subscription link on replay
+PASS central allocation revision and complete projection allocation must match before replay
+PASS contract projection version outside UsageEvent integer range cannot be truncated for billing
+PASS contract price version outside UsageEvent integer range cannot be truncated or defaulted
+PASS projected binding failures preserve organization state financial ledger and completed usage count
+PASS usage destination commit with lost response persists retry before advancing local cursor
+PASS durable usage retry survives Fabric restart and honors persisted backoff
+PASS lost acknowledgement retry accepts duplicate receipt and commits durable usage cursor exactly once
+PASS usage retry preserves source delivery identity exact event bytes and fingerprint
+PASS acknowledged usage cursor survives worker restart without sending again
+PASS usage dispatcher refuses ambient Fabric transaction before asynchronous delivery
+PASS ambient transaction rejection performs no remote transport action
+PASS mismatched usage acknowledgement cannot advance a committed destination receipt
+PASS correct duplicate acknowledgement recovers previously mismatched usage response
+PASS usage consumer subscription skips unrelated event kinds and other consumer events safely
+PASS usage scoped cursor includes safely skipped rows without claiming their deliveries
+PASS poisoned usage payload blocks the head without delivering later valid financial rows
+PASS poisoned usage remains blocked across worker restart without silent skip
+PASS usage dispatcher validates outer financial envelope against complete retained event
+PASS stale usage worker cannot acknowledge a cursor after its lease fence changes
+PASS usage worker honors another worker live lease without sending
+PASS expired usage lease permits fenced retry of the same durable destination receipt
+PASS usage cursor cannot silently inherit delivery progress after endpoint binding changes
+PASS usage cursor cannot inherit delivery progress for a different consumer scope
+PASS independent usage destination gets a separate durable delivery cursor
+PASS usage cursor cannot advance against a changed restore anchor payload
+PASS usage restore anchor validation performs no remote resend
+PASS usage cursor cannot inherit progress from another durable source database identity
+PASS changed retained retry evidence blocks delivery without replacing the stable pending attempt
+PASS usage dispatcher will not publish committed envelope whose durable financial charge no longer matches
+PASS usage destination advances after an actual source backup
+PASS actual restore preserves source stream identity and rolls back only local usage delivery progress
+PASS restored source safely resends stable usage to an ahead durable destination without duplicate effect
+PASS restored usage dispatcher durably acknowledges the duplicate receipt
+PASS usage HTTP transport posts exact original wire event to configured destination
+PASS usage HTTP transport binds server credential and stable idempotency header
+PASS usage HTTP duplicate receipt acknowledges unchanged event bytes
+PASS usage HTTP rejects acknowledgement with mismatched destination
+PASS usage HTTP rejects acknowledgement with mismatched ledger key
+PASS usage HTTP rejects acknowledgement with mismatched event ID
+PASS usage HTTP rejects acknowledgement with mismatched fingerprint
+PASS usage HTTP rejects acknowledgement with mismatched disposition
+PASS usage HTTP strict acknowledgement rejects unknown field
+PASS usage HTTP strict acknowledgement rejects duplicate field
+PASS usage HTTP strict acknowledgement rejects missing field
+PASS usage HTTP strict acknowledgement rejects null field
+PASS usage HTTP strict acknowledgement rejects numeric field
+PASS usage HTTP strict acknowledgement rejects non-object payload
+PASS usage HTTP strict acknowledgement rejects malformed JSON
+PASS usage HTTP rejects oversized known-length acknowledgement before parsing
+PASS usage HTTP bounds streamed acknowledgement without content length
+PASS usage HTTP server failure cannot acknowledge delivery
+PASS usage HTTP redirect response cannot acknowledge delivery
+PASS usage HTTP wrong destination is rejected before transport
+PASS usage HTTP mutated event identity is rejected before transport
+PASS usage HTTP idempotency header cannot contain control characters
+PASS usage HTTP consumer scope cannot send another tenant complete event
+PASS usage HTTP destination and scope rejection sends no network request
+PASS usage HTTP cancellation propagates without accepted receipt
+PASS usage outbox disabled configuration cannot create a worker subscription
+PASS usage outbox endpoint rejects unsafe binding http
+PASS usage outbox endpoint rejects unsafe binding https
+PASS usage outbox endpoint rejects unsafe binding https
+PASS usage outbox endpoint rejects unsafe binding https
+PASS usage outbox lease must cover transport timeout plus safety interval
+PASS usage outbox rejects credentials unsafe for HTTP authorization headers
+PASS usage outbox batch size respects bounded Fabric polling
+PASS pending gateway payment prevents account mode change
+PASS gateway request retry reuses persisted authority
+PASS gateway request payload conflict rejected
+PASS gateway only accepts integer rial amounts
+PASS forged callback authority rejected
+PASS cancel callback cannot credit or release unverified payment
+PASS unsuccessful verification cannot credit wallet
+PASS server verified payment credits wallet
+PASS replayed callback applies ledger exactly once
+PASS already verified gateway response safely recovers payment
+PASS gateway reference cannot credit two intents
+PASS uncertain gateway request remains durable
+PASS uncertain request retry cannot create duplicate remote payment
+PASS failed inquiry preserves pending invoice reservation
+PASS failed inquiry cannot make pending funds available
+PASS confirmed reversal releases only unpaid reservation
+PASS reversed payment cannot be credited by replay
+PASS postpaid pending payments reserve invoice balance
+PASS gateway partial postpaid settlement restores credit
+PASS local settlement conflict does not lose verified payment
+PASS verified unapplied payment retained for reconciliation
+PASS reversal of verified payment requires financial review without silent release
+PASS reversal after ledger credit cannot silently rewrite wallet
+PASS payment reconciliation rejects foreign tenant
+PASS in-bank inquiry cannot credit wallet
+PASS paid inquiry still requires successful amount-bound verify
+PASS inquiry alone never credits account
+PASS reconciliation recovers paid payment through verify
+PASS unknown provider status cannot change payment state
+PASS gateway payment state survives restart
+PASS gateway wire contract uses sandbox integer rial amount
+PASS gateway callback binds persisted payment identity
+PASS inquiry wire contract binds stored merchant and authority
+PASS host registration shares persistent access and transaction database
+PASS startup refuses silently abandoning existing legacy chart
+PASS explicit startup cutover imports known tenant chart
+PASS startup connects authoritative membership resolver
+PASS production refuses sandbox credits
+PASS backup requires explicit offline confirmation
+PASS recovery bundle verifies both databases with checksums and integrity
+PASS backup cannot overwrite an existing bundle
+PASS restore preserves memberships and central registry grants together
+PASS restore preserves current chart and historical snapshot
+PASS restore preserves ledger and undelivered outbox
+PASS SQLite backup includes committed WAL data
+PASS restore cannot overwrite active data directory
+PASS restore cannot contaminate its source backup bundle
+PASS rejected nested restore preserves source bundle
+PASS restore rejects corrupted backup before publishing destination
+PASS failed verification leaves destination absent
+PASS manifest path traversal rejected
+PASS null manifest entries rejected with controlled error
+PASS backup refuses unrelated SQLite schema
+PASS audit scopes tenant and hides financial events from chart readers
+PASS audit keyset pagination stays stable after new insert
+PASS audit rejects explicit unauthorized tenant
+PASS audit rejects unauthorized filter and invalid cursor
+PASS audit recognizes nested tenant events without guessing global ownership
+PASS audit financial summary excludes raw payload and unrelated events
+PASS anonymous audit exposes no tenants or events
+PASS comparison reports exactly changed fields without unchanged metadata
+PASS same revision comparison is empty
+PASS comparison identifies baseline additions
+PASS archive is a status change preserving identity
+PASS comparison bounds output and pages immutable snapshots without duplication
+PASS read-only chart user can compare historical revisions
+PASS comparison rejects cross-tenant access
+PASS comparison validates range offset and missing revisions
+PASS empty comparison cannot bypass SaaS subscription gate
+PASS comparison covers roles positions and appointments
+PASS comparison identifies appointment termination
+PASS PAP requires independent publisher
+PASS PAP rejects stale policy revisions
+PASS PAP cannot define platform administrator grants
+PASS time pattern requires an explicit window
+PASS PAP rejects cross-tenant role references
+PASS pending join cannot create membership or access
+PASS published management pattern can be simulated independently
+PASS simulated policy Permit cannot grant workflow review authority before activation
+PASS requester cannot review without management authority
+PASS JML prevents self-approval even with management rights
+PASS approved future join cannot execute early
+PASS approved join atomically creates membership and appointment
+PASS JML apply replay cannot repeat mutations or events
+PASS JML submission replay returns original receipt after time advances
+PASS JML idempotency key is actor and payload bound
+PASS PIP derives active appointment role and PDP returns audit obligation
+PASS role access is inactive before appointment start
+PASS PDP never reuses membership across tenants
+PASS PDP does not permit unsupported actions
+PASS authorization fulfills mandatory audit obligation before returning Permit
+PASS deny-overrides beats role permit and direct grant
+PASS validity window excludes exact end
+PASS deny-overrides keeps valid direct Permit when only permit-side attribute is missing
+PASS missing deny-side reference cannot fall through to Permit
+PASS environment window handles overnight UTC interval and exclusive end
+PASS approved mover ends old appointment and starts new one atomically
+PASS mover removes stale direct grants and old role-derived access
+PASS scheduler fails stale chart request without partial membership
+PASS requester can cancel pending request
+PASS scheduled execution rechecks reviewer authority
+PASS full position rejects lifecycle execution
+PASS capacity failure rolls back membership and request state
+PASS approved leaver closes membership and denies published policy access
+PASS lifecycle state and tenant-isolated history persist across restart
+PASS tenant reader cannot author granting policy
+PASS governance API forbids cross-tenant reads and simulating another subject
+PASS governance authoring API cannot execute membership changes before activation
+PASS expired SaaS governance view hides subscribed chart but permits offboarding navigation
+PASS offboarding remains possible after subscription expiry and exceeded seat quota
+356 checks passed.
+

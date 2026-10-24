@@ -1,0 +1,118 @@
+{
+  "readOnly": true,
+  "deployment": {
+    "uid": "cdcb2c5e-7d2e-4a45-aff1-b618c8bc0b98",
+    "generation": 3,
+    "labels": {
+      "app.kubernetes.io/component": "repo-server",
+      "app.kubernetes.io/instance": "argocd",
+      "app.kubernetes.io/managed-by": "Helm",
+      "app.kubernetes.io/name": "argocd-repo-server",
+      "app.kubernetes.io/part-of": "argocd",
+      "app.kubernetes.io/version": "v3.5.3",
+      "helm.sh/chart": "argo-cd-10.9.6"
+    },
+    "annotations": {
+      "meta.helm.sh/release-name": "argocd",
+      "meta.helm.sh/release-namespace": "argocd"
+    },
+    "image": "quay.io/argoproj/argocd:v3.5.3",
+    "livenessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/healthz?full=true",
+        "port": "metrics",
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 10,
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 5
+    },
+    "readinessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/healthz",
+        "port": "metrics",
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 10,
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 1
+    },
+    "resources": {
+      "limits": {
+        "cpu": "500m",
+        "memory": "512Mi"
+      },
+      "requests": {
+        "cpu": "50m",
+        "memory": "128Mi"
+      }
+    }
+  },
+  "helmList": [
+    {
+      "name": "argocd",
+      "namespace": "argocd",
+      "revision": "2",
+      "updated": "2026-10-06 11:57:44.751888872 +0330 +0330",
+      "status": "deployed",
+      "chart": "argo-cd-10.9.6",
+      "app_version": "v3.5.3"
+    }
+  ],
+  "helmValues": {
+    "repoServer": {
+      "replicas": 1,
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "512Mi"
+        },
+        "requests": {
+          "cpu": "50m",
+          "memory": "128Mi"
+        }
+      }
+    },
+    "topLevelKeys": [
+      "applicationSet",
+      "configs",
+      "controller",
+      "dex",
+      "global",
+      "notifications",
+      "redis",
+      "repoServer",
+      "server"
+    ]
+  },
+  "helmManifestProbeLines": [
+    "        livenessProbe:",
+    "          httpGet:",
+    "            path: /healthz?full=true",
+    "            port: metrics",
+    "          initialDelaySeconds: 10",
+    "          periodSeconds: 10",
+    "          timeoutSeconds: 1",
+    "          successThreshold: 1",
+    "          failureThreshold: 3",
+    "        readinessProbe:",
+    "          httpGet:",
+    "            path: /healthz",
+    "            port: metrics",
+    "          initialDelaySeconds: 10"
+  ],
+  "remoteSourceFiles": [
+    {
+      "path": "/opt/neocluster/argocd-values.yaml",
+      "sha256": "e171de8a0cb467b68c32a04e5d69c6a317d38575d23f44db76b58a2f31ecf4db"
+    },
+    {
+      "path": "/opt/neocluster/install-core.sh",
+      "sha256": "bf69232120e28a930d8e901e10fbfb0cebdf859f35baa066436f53d4bc5751bc"
+    }
+  ]
+}

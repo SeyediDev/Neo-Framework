@@ -1,0 +1,142 @@
+PASS template does not appear before bootstrap
+PASS empty tenant is not an educational marker
+PASS template tenant has the requested identity
+PASS marker binds only its own active tenant
+PASS bootstrap records actual actor and recipe version
+PASS all five members are explicitly synthetic
+PASS offboarded example is inactive
+PASS operator is not silently added as a tenant member
+PASS example connects units roles positions and appointments
+PASS all appointments resolve to active local structures
+PASS work night and data calendars are persisted separately
+PASS nine drafts never invent an independent publisher
+PASS examples create no commercial entitlement or subscription
+PASS seed does not grant its operator runtime access
+PASS draft examples do not grant live reader access
+PASS all twenty-four stored scenarios run
+PASS stored example before-opening expected=Deny actual=Deny
+PASS stored example opening-inclusive expected=Permit actual=Permit
+PASS stored example before-closing expected=Permit actual=Permit
+PASS stored example closing-exclusive expected=Deny actual=Deny
+PASS stored example short-thursday expected=Permit actual=Permit
+PASS stored example thursday-closed expected=Deny actual=Deny
+PASS stored example weekend expected=Deny actual=Deny
+PASS stored example holiday expected=Deny actual=Deny
+PASS stored example exception-before expected=Deny actual=Deny
+PASS stored example exception-open expected=Permit actual=Permit
+PASS stored example no-role expected=NotApplicable actual=NotApplicable
+PASS stored example inactive-member expected=Deny actual=Deny
+PASS stored example manual-grant-inside expected=Permit actual=Permit
+PASS stored example manual-grant-outside expected=Deny actual=Deny
+PASS stored example data-open expected=Permit actual=Permit
+PASS stored example data-closed expected=Deny actual=Deny
+PASS stored example data-holiday expected=Deny actual=Deny
+PASS stored example non-holiday-evening expected=Permit actual=Permit
+PASS stored example non-holiday-closed expected=Deny actual=Deny
+PASS stored example night-start expected=Permit actual=Permit
+PASS stored example night-spill expected=Permit actual=Permit
+PASS stored example night-end expected=Deny actual=Deny
+PASS stored example night-holiday expected=Deny actual=Deny
+PASS stored example unknown-coverage expected=Indeterminate actual=Indeterminate
+PASS bootstrap leaves existing tenant membership and grants unchanged
+PASS synthetic direct grant is scoped to educational tenant
+PASS bootstrap replay does not write documents or audit
+PASS scenario evaluation is read only
+PASS restart preserves original data and audit
+PASS stored examples pass after restart
+PASS bootstrap replay preserves subsequent edits
+PASS key collision without marker is rejected
+PASS collision leaves existing tenant unchanged and creates no partial seed
+PASS late marker write failure propagates
+PASS late failure rolls back every document and outbox record
+PASS failed bootstrap leaves no tenant
+PASS bootstrap retries cleanly after rollback
+PASS policy author cannot publish their own pattern
+PASS failed self-publication changes neither revision nor audit
+PASS unpublished guard does not silently alter live grants
+PASS draft preview exercises the mandatory guard
+PASS enforced guard permits existing grant inside window
+PASS direct grant cannot bypass published enforced guard
+PASS open guard does not manufacture a base permission
+PASS AuthorizeLive refuses blocked direct grant
+PASS AuthorizeLive permits grant inside window
+PASS live permit writes required decision audit
+PASS two guards allow their intersection
+PASS two guards use AND semantics and report both checks
+PASS ordinary evaluation includes published non-enforced policy
+PASS Enforce=false is excluded from live evaluation
+PASS published Enforce=true is included in live evaluation
+PASS time guard rejects nonexistent optional role
+PASS time guard rejects optional role owned by another tenant
+PASS invalid optional role references leave policy and audit unchanged
+PASS time guard accepts optional role belonging to the same tenant
+PASS AuthorizeLiveNow permits after acquiring current transaction
+PASS clock is sampled once only after SQLite transaction has been acquired
+PASS gate uses post-acquisition time and refuses a window that closed before transaction acquisition
+PASS malformed persisted role without role id fails closed despite direct grant
+PASS malformed persisted member window with a role id fails closed despite direct grant
+PASS malformed persisted member window without time condition fails closed despite direct grant
+PASS malformed persisted non-holiday without calendar fails closed despite direct grant
+PASS draft rejects unknown calendar reference
+PASS invalid calendar draft changes neither policy nor audit
+PASS missing required calendar cannot fall back to manual grant
+PASS inactive required calendar cannot fall back to manual grant
+PASS AuthorizeLive fails closed for inactive required calendar
+PASS disabled gate does not evaluate or change existing access
+PASS tenant outside exact allowlist remains untouched
+PASS disabled and unlisted gates perform no database writes
+PASS enabled gate rejects empty allowlist
+PASS gate rejects duplicate tenant identifiers
+PASS gate rejects empty tenant identifier
+PASS gate rejects null tenant allowlist
+PASS enabled gate cannot imply support for another permission
+PASS server clock outside window vetoes an existing write grant
+PASS server clock inside window accepts existing write grant
+PASS open calendar cannot give an unknown subject access
+PASS store ignores caller time and rejects write using current server time
+PASS outside-window write leaves all documents and outbox unchanged
+PASS window closure between mutation checks rejects final commit
+PASS mutation takes a fresh server-clock sample before and after domain work
+PASS post-mutation denial rolls back chart history receipt and all decision/domain audit records
+PASS in-window authenticated mutation commits normally
+PASS commit cannot borrow another principal's time permission
+PASS actor mismatch writes no domain or decision state
+PASS store restriction does not change unlisted tenant behavior
+PASS temporal filter blocks action execution outside window
+PASS denied time-sensitive response is not cacheable
+PASS filter continues original action when time restriction passes
+PASS temporal filter denies anonymous invocation
+PASS filter preserves unrelated tenant request flow
+PASS filter does not expand beyond explicitly marked business endpoints
+PASS OrganizationApi.Read has the required temporal endpoint metadata
+PASS OrganizationApi.Compare has the required temporal endpoint metadata
+PASS OrganizationApi.Execute has the required temporal endpoint metadata
+PASS OrganizationHrApi.Chart has the required temporal endpoint metadata
+PASS OrganizationHrApi.History has the required temporal endpoint metadata
+PASS OrganizationHrApi.Execute has the required temporal endpoint metadata
+PASS OrganizationOperationApi.Execute has the required temporal endpoint metadata
+PASS tenant administration rejects adding a member to marked template
+PASS tenant administration rejects deactivating a reference member
+PASS tenant administration rejects changing reference grants
+PASS tenant administration rejects adding a reference subscription
+PASS tenant administration rejects subscription mutation before domain writes
+PASS tenant administration rejects plan authoring through reference tenant
+PASS template administration metadata remains readable with no writes
+PASS creating an existing template key fails without overwriting reference data
+PASS reference guard does not replace ordinary authorization
+PASS an unauthenticated admin claim cannot mutate reference membership
+PASS ordinary tenant with identical display name keeps normal membership behavior
+PASS membership page hides mutations for marked template even for admin
+PASS membership page retains admin management for other tenants
+PASS organization mutation cannot change template even with an otherwise valid write claim
+PASS legacy Access mutation is blocked for template: AddUser
+PASS legacy Access mutation is blocked for template: CreateRole
+PASS legacy Access mutation is blocked for template: Subscribe
+PASS legacy Access mutation is blocked for template: ContractEvent
+PASS legacy Access mutation is blocked for template: Usage
+PASS legacy Access route-scoped charge is blocked for template
+PASS blocked legacy mutations leave every document and audit record unchanged
+PASS legacy template metadata remains readable
+PASS legacy Access writes still work for ordinary tenant
+PASS reference scenarios remain valid after all rejected HTTP mutations
+141 temporal integration checks passed.

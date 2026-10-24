@@ -1,0 +1,11 @@
+{
+  "recordedAtUtc": "2026-10-23T13:28:50.8759352+00:00",
+  "path": ".build/portal-readers-post-pip-20261023",
+  "bytesRemoved": 620410258,
+  "filesRemoved": 1669,
+  "targetValidated": true,
+  "reparsePointsAbsent": true,
+  "absenceVerified": true,
+  "scope": "Only outputs and synthetic state of this local validation",
+  "finalVerificationSha256": "ad3917115109fc207e972a708941d4dd73acf539417b7f15d2986abdc4bd17e4"
+}

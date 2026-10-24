@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\src\Fanasa.ContractPolicy\Fanasa.ContractPolicy.csproj (in 524 ms).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\tests\Organization.Tests\Organization.Tests.csproj (in 1.54 sec).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\tools\FabricRecovery\FabricRecovery.csproj (in 1.54 sec).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\Fanasa.AccessManagement.Web.csproj (in 1.74 sec).
+  Fanasa.ContractPolicy -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.ContractPolicy\debug\Fanasa.ContractPolicy.dll
+  Fanasa.AccessManagement.Web -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Fanasa.AccessManagement.Web\release\Fanasa.AccessManagement.Web.dll
+  Organization.Tests -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\Organization.Tests\release\Organization.Tests.dll
+  FabricRecovery -> E:\SJVS\Projects\Neo\.build\portal-readers-post-pip-20261023\bin\FabricRecovery\release\FabricRecovery.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:01:07.55

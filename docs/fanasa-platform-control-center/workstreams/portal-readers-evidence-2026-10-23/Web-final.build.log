@@ -1,0 +1,10 @@
+  Fanasa.ContractPolicy -> E:\SJVS\Projects\Neo\.build\usage-reader-20261015\bin\Fanasa.ContractPolicy\release\Fanasa.ContractPolicy.dll
+E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\PipContracts.cs(8,94): error CS1061: 'PipSourceDefinition' does not contain a definition for 'Definitions' and no accessible extension method 'Definitions' accepting a first argument of type 'PipSourceDefinition' could be found (are you missing a using directive or an assembly reference?) [E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\Fanasa.AccessManagement.Web.csproj]
+
+Build FAILED.
+
+E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\PipContracts.cs(8,94): error CS1061: 'PipSourceDefinition' does not contain a definition for 'Definitions' and no accessible extension method 'Definitions' accepting a first argument of type 'PipSourceDefinition' could be found (are you missing a using directive or an assembly reference?) [E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\Fanasa.AccessManagement.Web.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:01:08.07

@@ -1,0 +1,117 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.OrganizationHrModel
+@{ ViewData["Title"] = "API منابع انسانی · مسیر توسعه"; }
+<link rel="stylesheet" href="~/css/organization-hr.css" asp-append-version="true" />
+<div class="hr-documentation">
+    <section class="panel hr-hero">
+        <div><span class="eyebrow">ORGANIZATION FABRIC · DEVELOPMENT API</span><h2>ساختار سازمانی را به سامانه منابع انسانی متصل کنید</h2><p>سامانه شما چارت و نسخه‌های آن را می‌خواند و تغییر نقش، سمت و انتصاب را با هویت سرویس ثبت می‌کند. هر تغییر به سازمان مشخص، نسخه مورد انتظار، دلیل و شناسه درخواست متصل است؛ نتیجه در دیتابیس و تاریخچه همان سازمان نگهداری می‌شود.</p></div>
+        <span class="pill blue">محیط توسعه · قرارداد v1</span>
+    </section>
+
+    <section class="panel hr-status" aria-labelledby="hr-deployment-heading">
+        <h3 id="hr-deployment-heading">وضعیت ثبت‌شده استقرار</h3>
+        <p class="muted">این اطلاعات از پیکربندی و گزارش استقرار خوانده می‌شوند؛ آزمون زنده در مرورگر انجام نمی‌شود.</p>
+        <dl class="hr-status-grid">
+            <div><dt>فعال‌سازی API در برنامه</dt><dd>@(Model.ApiEnabled ? "فعال در پیکربندی" : "غیرفعال؛ هویت سرویس و تنظیمات باید تکمیل شوند")</dd></div>
+            <div><dt>اتصال و تأیید Gateway</dt><dd>@(Model.GatewayConnected ? "تأیید ثبت‌شده" : "اتصال سرویس تأیید نشده")</dd>@if(Model.GatewayConnected){<small><bdi>@Model.GatewayVerifiedAt?.ToUniversalTime().ToString("u")</bdi></small>}</div>
+            <div><dt>CI/CD</dt><dd>@Model.PipelineStatusLabel</dd>@if(Model.PipelineUrl is not null){<a href="@Model.PipelineUrl" target="_blank" rel="noreferrer">مشاهده پایپ‌لاین</a>}</div>
+            <div><dt>نسخه استقرار</dt><dd><bdi>@(Model.ReleaseId ?? "ثبت نشده")</bdi></dd>@if(Model.PipelineVerified){<a href="@Model.LastSuccessfulRun" target="_blank" rel="noreferrer">مدرک اجرای موفق</a><small><bdi>@Model.PipelineVerifiedAt?.ToUniversalTime().ToString("u")</bdi></small>}</div>
+        </dl>
+        @if(Model.MetadataNotice is not null){<p class="hr-notice" role="status">@Model.MetadataNotice</p>}
+        @if(Model.RepositoryUrl is not null){<p><a href="@Model.RepositoryUrl" target="_blank" rel="noreferrer">مخزن خصوصی منابع انسانی در GitLab داخلی</a> · منبع مسیر توسعه، شاخه <code>develop</code> است.</p>}
+        @if(Model.DevelopmentTenantId is not null){<p class="hr-notice">سازمان مصنوعی آزمون: <code>@Model.DevelopmentTenantId</code>. این شناسه را برای مثال‌های توسعه استفاده کنید. @if(Model.DevelopmentGrantExpiresAt.HasValue){<span>مجوز سرویس تا <bdi>@Model.DevelopmentGrantExpiresAt?.ToUniversalTime().ToString("u")</bdi> ثبت شده است؛ پس از انقضا، درخواست به مجوز تازه نیاز دارد.</span>}</p>}
+    </section>
+
+    <section class="panel" aria-labelledby="hr-address-heading">
+        <div class="panel-heading"><h3 id="hr-address-heading">نشانی قرارداد API پشت Gateway</h3>@if(Model.HasOpenApi){<a class="button secondary" href="~/contracts/organization-hr-v1.openapi.json" download>دریافت OpenAPI</a>}</div>
+        <p>برای هر درخواست، <code>tenantId</code> را با UUID سازمانی جایگزین کنید که سرویس به آن مجوز دارد. میزبان داخلی <code>fanasa.net.local</code> به DNS داخلی و اعتماد به CA پلتفرم نیاز دارد.</p>
+        <p class="hr-address"><code>@Model.ApiBaseUrl/tenants/{tenantId}</code></p>
+        <p class="muted">اگر اتصال بالا تأیید نشده باشد، این نشانی قرارداد مسیر توسعه است؛ آماده بودن نشانی به معنی فعال بودن دسترسی نیست.</p>
+        <div class="hr-table-wrap"><table><caption>عملیات نسخه اول</caption><thead><tr><th>درخواست</th><th>هدف و ورودی</th><th>دسترسی لازم</th></tr></thead><tbody>
+            <tr><td><code>GET /chart</code></td><td>چارت جاری؛ پاسخ شامل <code>revision</code>، واحدها، نقش‌ها، سمت‌ها، انتصاب‌ها و تغییرات است.</td><td>Scope خواندن و مجوز <code>organization.read</code> برای همان سازمان</td></tr>
+            <tr><td><code>GET /history/{revision}</code></td><td>مشاهده نسخه قبلی؛ شماره نسخه باید عدد مثبت باشد.</td><td>Scope خواندن و مجوز <code>organization.read</code></td></tr>
+            <tr><td><code>POST /commands</code></td><td>ثبت یک دستور JSON با <code>expectedRevision</code>، <code>operation</code>، <code>reason</code> و <code>requestId</code></td><td>Scope نوشتن و مجوز مستقل <code>organization.write</code></td></tr>
+        </tbody></table></div>
+    </section>
+
+    <section class="panel" aria-labelledby="hr-auth-heading">
+        <h3 id="hr-auth-heading">۱. هویت سرویس و مجوز سازمان را درست تنظیم کنید</h3>
+        <p>از کلاینت اختصاصی مرکزی Keycloak و جریان <code>client_credentials</code> استفاده کنید. ورود انسانی این صفحه برای مدیریت مستندات است؛ کوکی ورود و توکن کاربر جای توکن سرویس HR را نمی‌گیرند.</p>
+        <dl class="hr-identity-grid">
+            <div><dt>Authority</dt><dd><code>@(Model.Authority ?? "پیکربندی نشده")</code></dd></div>
+            <div><dt>Client ID</dt><dd><code>@(Model.ClientId ?? "پیکربندی نشده")</code></dd></div>
+            <div><dt>Audience</dt><dd><code>@(Model.Audience ?? "پیکربندی نشده")</code></dd></div>
+            <div><dt>Scope خواندن</dt><dd><code>@Model.ReadScope</code> @if(!Model.ReadScopeConfigured){<span class="pill amber">پیشنهاد؛ پیکربندی نشده</span>}</dd></div>
+            <div><dt>Scope نوشتن</dt><dd><code>@Model.WriteScope</code> @if(!Model.WriteScopeConfigured){<span class="pill amber">پیشنهاد؛ پیکربندی نشده</span>}</dd></div>
+        </dl>
+        <ol class="hr-steps">
+            <li>کلاینت سرویس، audience و scopeهای مستقل را در هویت مرکزی و ثبت مرکزی محصول <code>organization-fabric</code> هماهنگ کنید. secret کلاینت در مخزن یا رابط مرورگر نگهداری نمی‌شود.</li>
+            <li>Subject سرویس باید عضو فعال همان سازمان باشد. برای خواندن، مجوز <code>organization.read</code> و برای نوشتن، مجوز <code>organization.write</code> را جدا ثبت کنید؛ نوشتن به‌تنهایی مجوز خواندن نیست.</li>
+            <li>توکن را از <code>{Authority}/protocol/openid-connect/token</code> با <code>grant_type=client_credentials</code> بگیرید و در سرور خود به‌صورت <code>Authorization: Bearer …</code> ارسال کنید. scope فقط شرط توکن است؛ مجوز جاری سازمان هم در هر درخواست کنترل می‌شود.</li>
+            <li>امضا، issuer، audience، انقضا، Subject و کلاینت باید با پیکربندی تطابق داشته باشند. لغو عضویت یا مجوز سازمان، دسترسی بعدی را قطع می‌کند؛ حتی تکرار درخواست موفق باید دوباره مجاز باشد.</li>
+        </ol>
+        <p class="hr-notice">در این محیط توسعه، برای خواندن توکن با scope <code>@Model.ReadScope</code> و برای نوشتن توکن جدا با scope <code>@Model.WriteScope</code> بگیرید. مثال‌ها به‌ترتیب از <code>HR_READ_ACCESS_TOKEN</code> و <code>HR_WRITE_ACCESS_TOKEN</code> استفاده می‌کنند؛ درخواست توکن با هر دو scope در تنظیم فعلی هویت مرکزی پذیرفته نمی‌شود.</p>
+        <p class="hr-notice">ارتباط Gateway با برنامه از TLS و گواهی client اختصاصی و پین‌شده استفاده می‌کند. caller بیرونی توکن سرویس را می‌فرستد؛ گواهی upstream در Gateway نگهداری می‌شود. دسترسی مستقیم به listener برنامه یا جعل header گواهی مجوز ایجاد نمی‌کند.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="hr-example-heading">
+        <h3 id="hr-example-heading">۲. مثال: تعریف نقش «کارشناس جذب» با نسخه درست</h3>
+        <p>در سازمان توسعه مجاز، ابتدا چارت را بخوانید. برای مثال اگر <code>revision</code> پاسخ <code>12</code> باشد، فقط همان مقدار را برای <code>expectedRevision</code> قرار دهید. نام و کد زیر نمونه‌اند؛ اجرای POST، داده واقعی همان سازمان را تغییر می‌دهد.</p>
+        <pre dir="ltr"><code># Bash; use your trusted internal CA and a service token from your secret store.
+BASE='@Model.ApiBaseUrl'
+TENANT_ID='@(Model.DevelopmentTenantId ?? "<authorized-tenant-uuid>")'
+curl --fail-with-body --cacert "$FANASA_CA_FILE" \
+  --header "Authorization: Bearer $HR_READ_ACCESS_TOKEN" \
+  "$BASE/tenants/$TENANT_ID/chart"</code></pre>
+        <p>این JSON را پس از جایگزینی نسخه واقعی در فایل <code>command.json</code> آماده کنید. UUID درخواست را در کلاینت تولید و برای retry نگهداری کنید.</p>
+        <pre dir="ltr"><code>{
+  "expectedRevision": 12,
+  "operation": "role.save",
+  "name": "کارشناس جذب",
+  "code": "HR-RECRUITMENT-SPECIALIST",
+  "reason": "تعریف نقش برای فرایند جذب در سازمان توسعه",
+  "requestId": "f16c1b02-12c3-4e50-9df9-9a93e092e60b"
+}</code></pre>
+        <pre dir="ltr"><code>curl --fail-with-body --cacert "$FANASA_CA_FILE" \
+  --header "Authorization: Bearer $HR_WRITE_ACCESS_TOKEN" \
+  --header 'Content-Type: application/json' \
+  --header 'Idempotency-Key: f16c1b02-12c3-4e50-9df9-9a93e092e60b' \
+  --data-binary '@@command.json' \
+  "$BASE/tenants/$TENANT_ID/commands"</code></pre>
+        <ol class="hr-steps">
+            <li>موفقیت، چارت با نسخه بعدی و تغییر ثبت‌شده همراه با عامل و دلیل را برمی‌گرداند. شناسه نقش تازه را از آرایه <code>roles</code> پاسخ بگیرید.</li>
+            <li>اگر پاسخ شبکه نامشخص بود، همان JSON و همان <code>Idempotency-Key</code> را تکرار کنید. در ذخیره‌ساز دیتابیس، receipt همان نتیجه ثبت‌شده را برمی‌گرداند و نقش دوباره ساخته نمی‌شود.</li>
+            <li>در خطای نسخه <code>409</code>، چارت جاری را دوباره بخوانید، تغییر خود را با آن تطبیق دهید و برای دستور اصلاح‌شده UUID تازه بسازید. از کلید قبلی برای محتوای متفاوت استفاده نکنید.</li>
+        </ol>
+        <p class="muted">header باید دقیقاً یک UUID کوچک canonical و برابر <code>requestId</code> باشد. JSON حداکثر ۶۴ KiB است؛ فیلد ناشناخته، تکراری، تاریخ بدون <code>Z</code> یا offset و Content-Encoding پذیرفته نمی‌شوند. دلیل تغییر الزامی است.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="hr-operations-heading">
+        <h3 id="hr-operations-heading">۳. از نقش به سمت و انتصاب برسید</h3>
+        <p>برای هر مرحله، نسخه جاری را استفاده کنید. این API جریان عضویت یا ساخت کاربر ایجاد نمی‌کند؛ انتصاب به هویت موجود و فعال همان سازمان متصل می‌شود.</p>
+        <div class="hr-table-wrap"><table><caption>دستورهای مجاز و پیش‌نیازهای مهم</caption><thead><tr><th>operation</th><th>فیلدهای عملیاتی</th><th>کنترل لازم</th></tr></thead><tbody>
+            <tr><td><code>role.save</code></td><td><code>name, code</code>؛ برای ویرایش <code>id</code></td><td>کد نقش در سازمان یکتا باشد.</td></tr>
+            <tr><td><code>position.save</code></td><td><code>name, code, unitId, capacity</code>؛ <code>roleId</code> اختیاری</td><td>واحد فعال، ظرفیت ۱ تا ۱۰٬۰۰۰، نقش موجود و بدون عبور انتصاب‌ها از ظرفیت</td></tr>
+            <tr><td><code>appointment.add</code></td><td><code>positionId, subject, from</code>؛ <code>to</code> اختیاری</td><td>سمت فعال، عضو فعال همان سازمان، بازه معتبر و بدون هم‌پوشانی؛ Subject خود سرویس HR قابل انتصاب نیست.</td></tr>
+            <tr><td><code>appointment.end</code></td><td><code>id, to</code></td><td>زمان خاتمه پس از شروع و در بازه انتصاب باشد.</td></tr>
+            <tr><td><code>unit.archive</code></td><td><code>id</code></td><td>ابتدا زیرواحدها و سمت‌های فعال را منتقل یا بایگانی کنید.</td></tr>
+            <tr><td><code>position.archive</code></td><td><code>id</code></td><td>ابتدا انتصاب‌های جاری و آینده را خاتمه دهید.</td></tr>
+            <tr><td><code>unit.save</code></td><td><code>name, code, kind</code>؛ <code>id, parentId</code> اختیاری</td><td>در حالت اندازه‌گیری مصرف از این مسیر مسدود است؛ چرخه سازمانی و کد تکراری هم پذیرفته نمی‌شوند.</td></tr>
+        </tbody></table></div>
+        <p class="hr-notice">@(Model.MeteringEnabled ? "اندازه‌گیری مصرف در پیکربندی این اجرا فعال است: unit.save در API منابع انسانی پاسخ 403 می‌گیرد." : "وضعیت اندازه‌گیری مصرف در این اجرا فعال گزارش نشده است. هر زمان اندازه‌گیری فعال باشد، unit.save در API منابع انسانی پاسخ 403 می‌گیرد.") مسیر مالی <code>unit.save</code> به admission قابل اعتماد Gateway و کنترل سهمیه نیاز دارد؛ این API جای آن کنترل را نمی‌گیرد.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="hr-errors-heading">
+        <h3 id="hr-errors-heading">۴. خطا را در محل درست برطرف کنید</h3>
+        <div class="hr-table-wrap"><table><caption>پاسخ‌ها و اقدام بعدی</caption><thead><tr><th>کد</th><th>معنی</th><th>اقدام</th></tr></thead><tbody>
+            <tr><td><code>400</code></td><td>JSON، کلید درخواست، فیلد یا قاعده سازمانی نامعتبر</td><td>پیام <code>error</code> و پیش‌نیاز دستور را بررسی کنید؛ ورودی اصلاح‌شده کلید تازه می‌خواهد.</td></tr>
+            <tr><td><code>401</code></td><td>توکن سرویس معتبر نیست یا ارسال نشده</td><td>توکن تازه با issuer، audience و کلاینت درست بگیرید.</td></tr>
+            <tr><td><code>403</code></td><td>هویت/مجوز سازمان، scope، گواهی Gateway یا عملیات اندازه‌گیری‌شده مجاز نیست</td><td>عضویت فعال، مجوز مستقل و تنظیمات Gateway را بررسی کنید؛ retry دسترسی ایجاد نمی‌کند.</td></tr>
+            <tr><td><code>404</code></td><td>رکورد یا نسخه درخواستی وجود ندارد</td><td>شناسه را از پاسخ چارت همان سازمان بگیرید.</td></tr>
+            <tr><td><code>409</code></td><td>نسخه جاری تغییر کرده یا کلید درخواست با محتوای متفاوت استفاده شده</td><td>چارت را دوباره بخوانید، تغییر را تطبیق دهید و درخواست تازه بسازید.</td></tr>
+            <tr><td><code>413 / 415</code></td><td>اندازه یا نوع بدنه قابل قبول نیست</td><td>JSON بدون encoding اضافی، با UTF-8 و کمتر از ۶۴ KiB بفرستید.</td></tr>
+            <tr><td><code>502 / 503</code></td><td>upstream در دسترس نیست یا مسیر هنوز فعال نشده است</td><td>وضعیت استقرار بالای صفحه را بررسی کنید؛ هویت سرویس و اتصال Gateway باید تأیید شوند.</td></tr>
+        </tbody></table></div>
+    </section>
+    <footer class="hr-footer"><a asp-page="/Organization">بازگشت به استودیو ساختار سازمانی</a><span>فن‌آسا · مرکز راهبری پلتفرم · قرارداد API منابع انسانی v1</span></footer>
+</div>

@@ -1,0 +1,79 @@
+{
+  "SchemaVersion": "fanasa.usage-integration-evidence/1",
+  "Synthetic": true,
+  "Checks": 53,
+  "InputBinding": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\integration\\fixture-binding.v1.json",
+  "Decision": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\fixtures\\integration-decision.v2.json",
+  "Admission": "E:\\SJVS\\Projects\\NeoCluster\\fanasa-platform-workstreams\\api-gateway\\fixtures\\integration-admission.v1.json",
+  "Files": [
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\integration\\fixture-binding.v1.json",
+      "Sha256": "4db84427c46041d209b1f965ea694b907e1c24f02a7dcfbcb5301bd47978966c"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\fixtures\\integration-decision.v2.json",
+      "Sha256": "17eebeb459c6c58d3ed5d82af64b15c55eb1cde8b8664e27e40c26fffca75ac3"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\NeoCluster\\fanasa-platform-workstreams\\api-gateway\\fixtures\\integration-admission.v1.json",
+      "Sha256": "ff9131c1bae7fbe211673e1151bfca73ab57194f61b2c6b4054001f22608ae15"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\IntegrationCompatibility.cs",
+      "Sha256": "3f193c30b2cab9f9ea3932a0a42588b00a98a7f949d3737d986dd55d52c94f38"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\ProposedUsageIntake.cs",
+      "Sha256": "4eb964ad6439580baa16c3bdd22002ab3155baf00b7c32edb7b1415c4f61c677"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\Program.cs",
+      "Sha256": "3be8ad0f2207d73a6801038a99bdc4f6502647560d3bff2a44ed127e43abb53e"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\FixtureEvent.cs",
+      "Sha256": "d69781d4a3bdb8c8442f9e2403bd852b2c1581dffd91c74e7d73a96713887b6d"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\UnknownOutcome.cs",
+      "Sha256": "9897b9730c859e077b403795ec74f16b39175014b96f016fe5a941682f083e7e"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\run-integration.ps1",
+      "Sha256": "2b344fecb266014d85528744048808a48d61ccb6a423e5b4e1d0808b65dd8e57"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\schema-check\\validate.py",
+      "Sha256": "3c7018349ee46b39eee5803cd7f4493abd318072d04809b0cf58a2200cca9ed8"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\fixtures\\usage-event-v1.json",
+      "Sha256": "06d16d2509e1789813c9ca6ab27159d345b8a218ac11493914197834d40037d8"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\schemas\\usage-event-v1.schema.json",
+      "Sha256": "3439709d49f47fe0027821f43abd4e5249c465aeacb8435fb8442308c5bf0fac"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\results\\integration-final-20261010\\integration-usage-event.v1.json",
+      "Sha256": "502757d9cd46998f5947a6f18086b2c862655b744d41788e1bdd8e8a6f025b0b"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\results\\integration-final-20261010\\integration-ledger.v1.json",
+      "Sha256": "841359ba1c7e26670c4d32431467230056af707ba660e7ecf58c34799817fc2c"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\results\\integration-final-20261010\\backend-committed-evidence.json",
+      "Sha256": "043a055bd1946089ec092a0bdcaddd1a3f810286d365322cdd5611cd94283a9d"
+    },
+    {
+      "Path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\sample\\results\\integration-final-20261010\\integration-checks.txt",
+      "Sha256": "423d2ee49c022c4f288b6883e8b2ede3579ca23f022c4397f1c012d17a098d60"
+    }
+  ],
+  "Limits": [
+    "Local generated fixtures only; producer/PDP/Gateway authentication and real rate provenance remain pending.",
+    "Proposed snapshot append uses existing Fabric/Accounting models; no product runtime wiring or production debit API installed.",
+    "Native APISIX/Redis/TLS, backend data-tenant enforcement, real product/contract acceptance and settlement remain pending."
+  ]
+}

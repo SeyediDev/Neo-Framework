@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "2.0.0",
+  "profileId": "fanasa.contract-policy/2",
+  "requestId": "g-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "decision": "Permit",
+  "reasonCode": "all-conditions-satisfied",
+  "evaluatedAt": "2026-10-10T06:29:59.000Z",
+  "validUntil": "2026-10-10T06:30:29.000Z",
+  "policyReferences": [
+    {
+      "policyId": "fixture-organization-unit-save",
+      "policyVersion": 3
+    }
+  ],
+  "projectionReference": {
+    "contractId": "fixture-contract-b",
+    "contractVersion": 7,
+    "subscriptionId": "fixture-subscription-b"
+  },
+  "allocationReference": {
+    "allocationId": "fixture-shared-organization",
+    "canonicalScope": "tenant=22222222-2222-4222-8222-222222222222;products=organization-fabric;environments=development;groups=organization"
+  },
+  "obligations": [
+    {
+      "id": "urn:fanasa:obligation:admit-allocation:1",
+      "fulfillOn": "Permit",
+      "parameters": {
+        "allocationId": "fixture-shared-organization",
+        "configRevision": 1,
+        "scope": {
+          "consumerTenantId": "22222222-2222-4222-8222-222222222222",
+          "productIds": [
+            "organization-fabric"
+          ],
+          "environments": [
+            "development"
+          ],
+          "operationGroups": [
+            "organization"
+          ]
+        },
+        "canonicalScope": "tenant=22222222-2222-4222-8222-222222222222;products=organization-fabric;environments=development;groups=organization",
+        "meter": "api.request.admitted",
+        "unit": "request",
+        "rate": {
+          "algorithm": "token-bucket",
+          "requestsPerSecond": 5,
+          "burstCapacity": 10
+        },
+        "quota": {
+          "algorithm": "fixed-calendar-utc",
+          "period": "month",
+          "requests": 1000
+        }
+      }
+    },
+    {
+      "id": "urn:fanasa:obligation:resource-tenant:1",
+      "fulfillOn": "Permit",
+      "parameters": {
+        "consumerTenantId": "22222222-2222-4222-8222-222222222222",
+        "productId": "organization-fabric",
+        "environment": "development",
+        "action": "organization.unit.save"
+      }
+    }
+  ]
+}

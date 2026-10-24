@@ -1,0 +1,18 @@
+{
+  "binding": {
+    "organization_id": "00000000-0000-0000-0000-000000000001",
+    "workspace_id": "00000000-0000-0000-0000-000000000002",
+    "project_id": "00000000-0000-0000-0000-000000000003",
+    "project_key": "PROJECT-KEY",
+    "gitlab_project_id": 1,
+    "gitlab_project_path": "organization/repository",
+    "gitlab_url": "https://gitlab.example.internal",
+    "web_url": "https://work.example.internal",
+    "board_url": "https://gitlab.example.internal/organization/repository/-/boards/1"
+  },
+  "ca_file": "/etc/fanasa-work-gitlab-ca.crt",
+  "authority": "https://sso.example.internal/realms/organization",
+  "source_url": "http://127.0.0.1:18110/api/orchestration/v1/organizations/00000000-0000-0000-0000-000000000001/workspaces/00000000-0000-0000-0000-000000000002",
+  "state_directory": "/var/lib/fanasa-work-gitlab",
+  "bot_user_id": 2
+}

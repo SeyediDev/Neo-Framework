@@ -1,0 +1,524 @@
+{
+  "schemaVersion": "fanasa.gateway-native-smoke-orchestration.v1",
+  "passed": true,
+  "scope": "isolated single-gateway synthetic smoke",
+  "fullAcceptanceExecuted": false,
+  "deployed": false,
+  "sharedWiringApplied": false,
+  "cleanupAttempted": true,
+  "cleanupSucceeded": true,
+  "volumesPreserved": true,
+  "prerequisites": {
+    "memoryAvailableBytes": 2094645248,
+    "scratchAvailableBytes": 113580675072,
+    "dockerAvailableBytes": 113580675072,
+    "composeVersion": "5.3.1",
+    "dockerEngineVersion": "29.6.1",
+    "existingNodesReady": true,
+    "selectedDeploymentCount": 1,
+    "selectedDeploymentsReady": true,
+    "existingK3sActive": true
+  },
+  "project": "fanasa-gateway-smoke-20261010t142349z-725f390f",
+  "evidenceDirectory": "/var/tmp/fanasa-gateway-smoke-20261010t142349z-725f390f/evidence",
+  "archiveSha256": "a8ad2b872200ff1eacd3631b2ec37a5653e9148c4e07b30ae804288021671f46",
+  "manifestPayloadSha256": "13dce2708b8ebd98d0423d6d9afdc5f946761ab599bf13529d1ac37d12a89f06",
+  "manifestEntryCount": 24,
+  "validatedResources": {
+    "activeMemoryCapBytesIncludingRunner": 671088640,
+    "activeCpuCapIncludingRunner": 0.55,
+    "certsMemoryCapBytes": 67108864,
+    "certsCpuCap": 0.2,
+    "servicesValidated": 10,
+    "publishedPorts": 0,
+    "internalNetworksOnly": true,
+    "buildDisabled": true
+  },
+  "sourceSha256": {
+    "adapters/pep.lua": "abee6b0932da93530cbfe681a21670b00aa5f49ffd1c997353c637e7b89f121d",
+    "apisix/apisix.yaml": "72c6ee3d7ca50d758ff188d1bf2bddcedee28a8534ea6088a6686ac573f325ba",
+    "apisix/config.yaml": "ff081ce2fa581860cdf685a4d103df780be7fe2f44c1248dcbc8960154ececa3",
+    "apisix/plugins/fanasa-pep.lua": "ca7eb8ee7a8a1779b21e69f05182672a0b999c6900ffece3e845b1ae609fd785",
+    "EVIDENCE.md": "f91b004284e71a5cdd42d1faf84d63054446a46497cdcc039beacc2625e0641b",
+    "limiter/admit.lua": "bb5d6913e308ae5c2ae44ecd0d44e5bc68e6179fe1cc00dc86cd1975490a7dc0",
+    "native/apisix-boot.sh": "bcc6cdc30d8968bc6525f35905b6cd4f6148ec7da7e8278ede406abb64ebc7c7",
+    "native/BOUNDARY-REVIEW.md": "d87bb4f67b56a0d5ba5e13408d1d0135cf3ab84a6d9395fdf4d6d51e295e803f",
+    "native/certs.sh": "ace2d0b68800bc5cceeab4c0089653d4ed8157499883706985899e7160ed6b0f",
+    "native/compose.yaml": "8e57fa1be6258104d641988ae7926fb1ca7c7f5ff0976b5c37d36fe4083eb844",
+    "native/Dockerfile": "137893b3554d24c113f68ac9af08f8a848fbe1a5e2b463a2bad1f5e2855c2e6d",
+    "native/fixture.py": "03b8d09386870f0045269d40ce05ff4a5cc841288dbd46358379f6db3f4b31f3",
+    "native/generated/apisix.yaml": "dd9e976fc1a5a37a9f8f32614d33ade3b0b4e1a287775ed9d037d94e35e8d5ee",
+    "native/generated/config.yaml": "e914725890335f2817feb12e1d0c1d212ca26f2e4a945bef96574086a752cc93",
+    "native/generated/gateway.env": "1f35e5db02f0e8c5c6a22cfdab080999ab9bcaeb203301b481f5f7e8d07ffee2",
+    "native/generated/redis.acl": "682a8d378ff8a074ff2add300a7ef3b2850b75ef1a1151ebef162b634ffc06da",
+    "native/generated/redis.conf": "44e2dc18767a9d394dd3a0d4082ccf2be44df1bd86e5f738ddc5672248dca73d",
+    "native/generated/settings.json": "5a22fea6acfeb87b386c6a2193c60ca52144e25de087c40e3874d749359677f9",
+    "native/prepare.py": "59ebe2a65eb647e718bb1e695fb95418eea93a77f60c992af5e6f3b26fc83cda",
+    "native/README.md": "7a7915c6fe3f2b028473a9424dd65b9c8d9a02fbedce73a51bf69440fb046c9d",
+    "native/run.py": "528c1f42d3dfa126c5a62d43638ff7708d4d3c9df8da592699eff68ea174b1f4",
+    "native-harness-local-verification.json": "34de6bf242c2dbb59702969ff317239399fe207955a7acb4eca0107c0525eb60",
+    "native-harness-local-verification.log": "bcc395e00f59dcb709ef5ec8e608ada545a9ec22f1d1e6d2c67134ffd285b498",
+    "README.md": "3beda23e99a86743e4392ab9b62f6164560ed59f0772b4a2e09b97d36b849880"
+  },
+  "controlsSha256": {
+    "compose.smoke.yaml": "b90a9b922299e3025b76661f8cb53ca88863ce1b98b791e83b300009838eb856",
+    "compose.resources.yaml": "0e4110f4af7705e73bad5051559f76df9cb674b938a01a23394d2ef940e0027b",
+    "native-single-gateway-smoke.py": "326d4f888021b93e68020378651c32ee72b0fca2cdc4329e57a1bcf348e8b4d2"
+  },
+  "images": [
+    {
+      "reference": "python:3.12.10-slim-bookworm",
+      "imageId": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+      "repoDigests": [
+        "python@sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4"
+      ],
+      "imageIdKind": "manifest",
+      "os": "linux",
+      "architecture": "amd64",
+      "rootfsDiffIds": [
+        "sha256:ace34d1d784c01e3f9d156687089e8f58f786e23ccd097bdbbf337d6d28b3783",
+        "sha256:edf2e8d9a6f19eeb93e6adb712ccda0d8e687effd6a79400f258d957f40321a1",
+        "sha256:4a0992abe543a127be2561cc40cd50315516bfbf9d6169f06f3f8d30166fa6ab",
+        "sha256:de0b11a690a6e81271e41db48dea18fc39104f7ba2034e2ecf6971586f66021b"
+      ],
+      "verifiedConfigDigest": "sha256:acf8897bf01a3a0ea273a50a58fc10b6317a3e360bd29aa7c9246a54d7c63e88",
+      "verifiedManifestDigest": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+      "manifestProvenance": "supplied verified image lock",
+      "cacheIdentityVerified": true,
+      "verifiedIndexDigest": "sha256:fd95fa221297a88e1cf49c55ec1828edd7c5a428187e67b5d1805692d11588db",
+      "importArchiveSha256": "ca1bc7fc668c5a9157bc991801e5bc30b4c7908df2d861a43a4bb9e3ecdbecc0"
+    },
+    {
+      "reference": "redis:7.4.6-bookworm",
+      "imageId": "sha256:6a11fed904cf317684ebb75bfe987d4f777c605d6f4e98d1bf3066db6c58f0c1",
+      "repoDigests": [
+        "redis@sha256:6a11fed904cf317684ebb75bfe987d4f777c605d6f4e98d1bf3066db6c58f0c1"
+      ],
+      "imageIdKind": "manifest",
+      "os": "linux",
+      "architecture": "amd64",
+      "rootfsDiffIds": [
+        "sha256:d6d0586ce8024205fd00d811876170571638957b5095d7e9dd1d015345c8d069",
+        "sha256:6fcfc553909845fa81f41be1abb58230fcf0b37836b5299e36e68cbab3060d46",
+        "sha256:67ddf0db316b5d32081a38aad068f8cc592cf2e958eb607d43d1f2cd8978de5a",
+        "sha256:6f5ff7f211593b65be17a83b7b62245eed142c30c7f850c1ef53735692f28a53",
+        "sha256:c064b08fd97d88fba9a5f20a8ef569a5b16c46bdef0f9e78f617bed2bb74e296",
+        "sha256:28731d7170a205024ddaed63d3ef39c926c99c2b00356421177ea6d7757833c4",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:0e2b13b72cd35d3bf53f128797c3547bbff9f348d187b3bda86a856ac9754e32"
+      ],
+      "verifiedConfigDigest": "sha256:b4e53bb4637c329c42395eec0b86851f5314f6ed597ec217b5e4e19f7c102c11",
+      "verifiedManifestDigest": "sha256:6a11fed904cf317684ebb75bfe987d4f777c605d6f4e98d1bf3066db6c58f0c1",
+      "manifestProvenance": "supplied verified image lock",
+      "cacheIdentityVerified": true,
+      "verifiedIndexDigest": "sha256:a9cc41d6d01da2aa26c219e4f99ecbeead955a7b656c1c499cce8922311b2514",
+      "importArchiveSha256": "ca1bc7fc668c5a9157bc991801e5bc30b4c7908df2d861a43a4bb9e3ecdbecc0"
+    },
+    {
+      "reference": "apache/apisix:3.14.1-debian",
+      "imageId": "sha256:4674c13b9be69447f97e84fa476a0c65e8cd2d8262ffa8c7d6a7330224ff06ff",
+      "repoDigests": [
+        "apache/apisix@sha256:4674c13b9be69447f97e84fa476a0c65e8cd2d8262ffa8c7d6a7330224ff06ff"
+      ],
+      "imageIdKind": "manifest",
+      "os": "linux",
+      "architecture": "amd64",
+      "rootfsDiffIds": [
+        "sha256:a90c6d363f64891ca4c1bf6a00776b28e2818b4dbcd386fc95e36241efac6aab",
+        "sha256:c019f563be9ebe8f17aa7eaa2402e07b6ce3ba91566f8ef4a61f7eab1b235b74",
+        "sha256:9d92332a5ec659193bb6e752893db245621cb291ba44e76c3fd814bb7946b711",
+        "sha256:f1858aafe13def0087c26793c1f23d846cd390d3d89db1c47d548f3a5b6b7e78",
+        "sha256:11c00a788549208346778f0b4a778be52836d27d4fbe33cc915b04cb2963a935",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:fc178c315bc0fb43a6652d75b79fe28ce0426b6bcbc0cf01a040771b6cecf734",
+        "sha256:4d1d13c82d8e443c97a86a0fb2ecfe521b6ff627099add666c67059cfb3b344c",
+        "sha256:6dc5d3a7ede53612083400b20e8c6309ec823a1f42f77f6c4ee336d195d3891a",
+        "sha256:921a04692a022e5bfe5d98c1f723773f59b40b1650aeeb359ee5738e280b414e"
+      ],
+      "verifiedConfigDigest": "sha256:0a9bce260e2261d990bb2ea6f203e2437cac313e487d4e59adfc33ae47b526ba",
+      "verifiedManifestDigest": "sha256:4674c13b9be69447f97e84fa476a0c65e8cd2d8262ffa8c7d6a7330224ff06ff",
+      "manifestProvenance": "supplied verified image lock",
+      "cacheIdentityVerified": true,
+      "verifiedIndexDigest": "sha256:c228717165ecf4c0055818c9e2d9843f7b303f17a6df9e5fbaf8eafeb5007ae4",
+      "importArchiveSha256": "ca1bc7fc668c5a9157bc991801e5bc30b4c7908df2d861a43a4bb9e3ecdbecc0"
+    }
+  ],
+  "imagePullAttempted": false,
+  "imageLockOverrideSha256": "33a90d1cfa3dca2479f7508cd526fca627a5f090f4d2635a66db5244213bfaa9",
+  "runtimeImagesPinnedToVerifiedIds": true,
+  "toolsProbe": {
+    "passed": true,
+    "networkMode": "none",
+    "memoryCapBytes": 67108864,
+    "cpuCap": 0.2,
+    "pidsLimit": 64
+  },
+  "smokeResultSha256": "b9d75a4bc78332447d75ead54e398643daf9774550e45f5557382c569665e774",
+  "smokeResult": {
+    "nativeSmokeExecuted": true,
+    "fullAcceptanceExecuted": false,
+    "threeReplicaConcurrencyVerified": false,
+    "guardGatewayVerified": false,
+    "deployed": false,
+    "sharedWiringApplied": false,
+    "passed": true,
+    "nativeApisixSmokeVerified": true,
+    "nativeRedisTlsSmokeVerified": true,
+    "backendMtlsSmokeVerified": true,
+    "sourceUnchangedDuringSmoke": true,
+    "schemaVersion": "fanasa.gateway-native-single-smoke.v1",
+    "cases": [
+      {
+        "name": "single-gateway-readiness",
+        "passed": true
+      },
+      {
+        "name": "verified-redis-tls-ping",
+        "passed": true
+      },
+      {
+        "name": "verified-oidc-discovery",
+        "passed": true,
+        "status": 200
+      },
+      {
+        "name": "verified-pdp-tls-readiness",
+        "passed": true,
+        "status": 404
+      },
+      {
+        "name": "inactive-identity-denied",
+        "passed": true,
+        "status": 401
+      },
+      {
+        "name": "fresh-fixture-allocation",
+        "passed": true
+      },
+      {
+        "name": "inactive-identity-no-backend-forward",
+        "passed": true,
+        "status": 401
+      },
+      {
+        "name": "pdp-deny-no-backend-forward",
+        "passed": true,
+        "status": 403
+      },
+      {
+        "name": "positive-single-gateway-backend-mtls",
+        "passed": true,
+        "status": 200,
+        "used": 1,
+        "forwarded": 1
+      },
+      {
+        "name": "direct-backend-without-client-cert-denied",
+        "passed": true,
+        "status": 0
+      },
+      {
+        "name": "gateway1-runtime-observation-present",
+        "passed": true
+      },
+      {
+        "name": "source-unchanged",
+        "passed": true
+      }
+    ]
+  },
+  "runnerExitCode": 0,
+  "containers": [
+    {
+      "service": "runner",
+      "imageId": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+      "containerMemoryLimitBytes": 100663296,
+      "containerMemorySwapLimitBytes": 100663296,
+      "nanoCpus": 150000000,
+      "pidsLimit": 64,
+      "oomKilled": false,
+      "running": false,
+      "exitCode": 0,
+      "status": "exited",
+      "health": "not-configured",
+      "currentMemoryUsage": "0B / 0B"
+    },
+    {
+      "service": "gateway1",
+      "imageId": "sha256:4674c13b9be69447f97e84fa476a0c65e8cd2d8262ffa8c7d6a7330224ff06ff",
+      "containerMemoryLimitBytes": 268435456,
+      "containerMemorySwapLimitBytes": 268435456,
+      "nanoCpus": 150000000,
+      "pidsLimit": 64,
+      "oomKilled": false,
+      "running": true,
+      "exitCode": 0,
+      "status": "running",
+      "health": "not-configured",
+      "currentMemoryUsage": "39.86MiB / 256MiB"
+    },
+    {
+      "service": "oidc",
+      "imageId": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+      "containerMemoryLimitBytes": 67108864,
+      "containerMemorySwapLimitBytes": 67108864,
+      "nanoCpus": 50000000,
+      "pidsLimit": 64,
+      "oomKilled": false,
+      "running": true,
+      "exitCode": 0,
+      "status": "running",
+      "health": "not-configured",
+      "currentMemoryUsage": "14.55MiB / 64MiB"
+    },
+    {
+      "service": "backend",
+      "imageId": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+      "containerMemoryLimitBytes": 67108864,
+      "containerMemorySwapLimitBytes": 67108864,
+      "nanoCpus": 50000000,
+      "pidsLimit": 64,
+      "oomKilled": false,
+      "running": true,
+      "exitCode": 0,
+      "status": "running",
+      "health": "not-configured",
+      "currentMemoryUsage": "16.32MiB / 64MiB"
+    },
+    {
+      "service": "redis",
+      "imageId": "sha256:6a11fed904cf317684ebb75bfe987d4f777c605d6f4e98d1bf3066db6c58f0c1",
+      "containerMemoryLimitBytes": 100663296,
+      "containerMemorySwapLimitBytes": 100663296,
+      "nanoCpus": 100000000,
+      "pidsLimit": 64,
+      "oomKilled": false,
+      "running": true,
+      "exitCode": 0,
+      "status": "running",
+      "health": "not-configured",
+      "currentMemoryUsage": "10.93MiB / 96MiB"
+    },
+    {
+      "service": "pdp",
+      "imageId": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+      "containerMemoryLimitBytes": 67108864,
+      "containerMemorySwapLimitBytes": 67108864,
+      "nanoCpus": 50000000,
+      "pidsLimit": 64,
+      "oomKilled": false,
+      "running": true,
+      "exitCode": 0,
+      "status": "running",
+      "health": "not-configured",
+      "currentMemoryUsage": "14.58MiB / 64MiB"
+    },
+    {
+      "service": "certs",
+      "imageId": "sha256:97983fa8cc88343512862c62307159a82261c3528dc025f79e5a3f7af43e50b4",
+      "containerMemoryLimitBytes": 67108864,
+      "containerMemorySwapLimitBytes": 67108864,
+      "nanoCpus": 200000000,
+      "pidsLimit": 64,
+      "oomKilled": false,
+      "running": false,
+      "exitCode": 0,
+      "status": "exited",
+      "health": "not-configured",
+      "currentMemoryUsage": "0B / 0B"
+    }
+  ],
+  "sourceUnchanged": true,
+  "commands": [
+    {
+      "stage": "docker-version",
+      "exitCode": 0,
+      "elapsedSeconds": 0.029
+    },
+    {
+      "stage": "compose-version",
+      "exitCode": 0,
+      "elapsedSeconds": 0.066
+    },
+    {
+      "stage": "docker-storage",
+      "exitCode": 0,
+      "elapsedSeconds": 0.085
+    },
+    {
+      "stage": "compose-feature-probe",
+      "exitCode": 0,
+      "elapsedSeconds": 0.089
+    },
+    {
+      "stage": "existing-node-health",
+      "exitCode": 0,
+      "elapsedSeconds": 0.624
+    },
+    {
+      "stage": "existing-deployment-health",
+      "exitCode": 0,
+      "elapsedSeconds": 0.334
+    },
+    {
+      "stage": "existing-k3s-service",
+      "exitCode": 0,
+      "elapsedSeconds": 0.013
+    },
+    {
+      "stage": "project-collision-container",
+      "exitCode": 0,
+      "elapsedSeconds": 0.029
+    },
+    {
+      "stage": "project-collision-network",
+      "exitCode": 0,
+      "elapsedSeconds": 0.026
+    },
+    {
+      "stage": "project-collision-volume",
+      "exitCode": 0,
+      "elapsedSeconds": 0.022
+    },
+    {
+      "stage": "merged-compose-model",
+      "exitCode": 0,
+      "elapsedSeconds": 0.119
+    },
+    {
+      "stage": "verify-cached-image",
+      "exitCode": 0,
+      "elapsedSeconds": 0.043
+    },
+    {
+      "stage": "verify-cached-image",
+      "exitCode": 0,
+      "elapsedSeconds": 0.051
+    },
+    {
+      "stage": "verify-cached-image",
+      "exitCode": 0,
+      "elapsedSeconds": 0.047
+    },
+    {
+      "stage": "verified-image-compose-model",
+      "exitCode": 0,
+      "elapsedSeconds": 0.132
+    },
+    {
+      "stage": "tools-probe-compose-model",
+      "exitCode": 0,
+      "elapsedSeconds": 0.132
+    },
+    {
+      "stage": "network-none-python-openssl-probe",
+      "exitCode": 0,
+      "elapsedSeconds": 1.776
+    },
+    {
+      "stage": "certificate-init",
+      "exitCode": 0,
+      "elapsedSeconds": 16.488
+    },
+    {
+      "stage": "certificate-container-id",
+      "exitCode": 0,
+      "elapsedSeconds": 0.126
+    },
+    {
+      "stage": "certificate-exit-state",
+      "exitCode": 0,
+      "elapsedSeconds": 0.024
+    },
+    {
+      "stage": "single-gateway-start",
+      "exitCode": 0,
+      "elapsedSeconds": 2.01
+    },
+    {
+      "stage": "single-gateway-smoke",
+      "exitCode": 0,
+      "elapsedSeconds": 11.568
+    },
+    {
+      "stage": "container-evidence-list",
+      "exitCode": 0,
+      "elapsedSeconds": 0.032
+    },
+    {
+      "stage": "container-evidence",
+      "exitCode": 0,
+      "elapsedSeconds": 0.028
+    },
+    {
+      "stage": "container-memory",
+      "exitCode": 0,
+      "elapsedSeconds": 0.023
+    },
+    {
+      "stage": "container-evidence",
+      "exitCode": 0,
+      "elapsedSeconds": 0.031
+    },
+    {
+      "stage": "container-memory",
+      "exitCode": 0,
+      "elapsedSeconds": 1.037
+    },
+    {
+      "stage": "container-evidence",
+      "exitCode": 0,
+      "elapsedSeconds": 0.026
+    },
+    {
+      "stage": "container-memory",
+      "exitCode": 0,
+      "elapsedSeconds": 1.981
+    },
+    {
+      "stage": "container-evidence",
+      "exitCode": 0,
+      "elapsedSeconds": 0.024
+    },
+    {
+      "stage": "container-memory",
+      "exitCode": 0,
+      "elapsedSeconds": 1.981
+    },
+    {
+      "stage": "container-evidence",
+      "exitCode": 0,
+      "elapsedSeconds": 0.023
+    },
+    {
+      "stage": "container-memory",
+      "exitCode": 0,
+      "elapsedSeconds": 1.988
+    },
+    {
+      "stage": "container-evidence",
+      "exitCode": 0,
+      "elapsedSeconds": 0.024
+    },
+    {
+      "stage": "container-memory",
+      "exitCode": 0,
+      "elapsedSeconds": 1.98
+    },
+    {
+      "stage": "container-evidence",
+      "exitCode": 0,
+      "elapsedSeconds": 0.025
+    },
+    {
+      "stage": "container-memory",
+      "exitCode": 0,
+      "elapsedSeconds": 0.039
+    },
+    {
+      "stage": "exact-project-cleanup",
+      "exitCode": 0,
+      "elapsedSeconds": 2.295
+    }
+  ]
+}

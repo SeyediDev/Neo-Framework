@@ -1,0 +1,22 @@
+{
+  "readOnly": true,
+  "configuredMirrorCount": 0,
+  "dockerRelevantCachedImages": [],
+  "dockerImageListExit": 0,
+  "k3sRelevantCachedImages": [
+    "docker.io/library/redis:7.4.2-alpine",
+    "docker.io/library/redis@sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952",
+    "ecr-public.aws.com/docker/library/redis:8.6.4-alpine",
+    "ecr-public.aws.com/docker/library/redis@sha256:2cc044fc5a07c9b701f8f1255a309ae9ad7856e694ac03513bf3648c01e40763"
+  ],
+  "k3sImageListExit": 0,
+  "publicPythonManifest": {
+    "exitCode": 1,
+    "errorClasses": [
+      "timeout"
+    ],
+    "manifestReceived": false
+  },
+  "registryErrorClass": "URLError",
+  "authErrorClass": "URLError"
+}

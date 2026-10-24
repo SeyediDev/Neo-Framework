@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "organization-hr.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "organization-hr.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "organization-hr.selector" . | nindent 4 }}
+  ports:
+    - name: hr-tls
+      protocol: TCP
+      port: 5193
+      targetPort: hr-tls

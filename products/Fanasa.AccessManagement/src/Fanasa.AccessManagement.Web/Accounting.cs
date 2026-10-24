@@ -1,11 +1,12 @@
 using System.Text.Json;
 using Fanasa.AccessManagement.Web.Application.Access;
 using Fanasa.AccessManagement.Web.Persistence;
+using Fanasa.AccessManagement.Web.Metering;
 
 namespace Fanasa.AccessManagement.Web.Accounting;
 
 public sealed record Tariff(string ProductKey, string Metric, decimal UnitPrice);
-public sealed record LedgerEntry(Guid Id, string Key, string Kind, string? ProductKey, string? Metric, decimal Quantity, decimal Amount, DateTimeOffset At, string Actor, string Reference, Guid? InvoiceId = null, decimal? UnitPrice = null);
+public sealed record LedgerEntry(Guid Id, string Key, string Kind, string? ProductKey, string? Metric, decimal Quantity, decimal Amount, DateTimeOffset At, string Actor, string Reference, Guid? InvoiceId = null, decimal? UnitPrice = null, DateTimeOffset? UsageOccurredAt = null);
 public sealed record Invoice(Guid Id, string Period, decimal Amount, DateTimeOffset IssuedAt);
 public sealed record BillingAccount(Guid TenantId, long Revision, string Mode, string Currency, decimal CreditLimit, Tariff[] Tariffs, LedgerEntry[] Entries, Invoice[] Invoices);
 public sealed record BillingCommand(long ExpectedRevision, string Operation, string Key, string? Mode, string? Currency, decimal CreditLimit, string? ProductKey, string? Metric, decimal UnitPrice, decimal Quantity, decimal Amount, string Reference, string? Period, Guid? InvoiceId);
@@ -30,11 +31,58 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
     }
     public AccountView Execute(Guid tenant, BillingCommand command, string actor)
         => database is null ? ExecuteCore(tenant, command, actor) : database.Transaction(() => ExecuteCore(tenant, command, actor));
+    // Called only after measured intake has validated the trusted frozen snapshot.
+    internal AccountView AppendMeasured(UsageEventV1 usage)
+    {
+        if (database is null) throw new InvalidOperationException("Measured usage requires transactional Fabric persistence.");
+        return database.Transaction(() =>
+        {
+            lock (gate)
+            {
+                AccountView view;
+                try { view = Read(usage.ConsumerTenantId); }
+                catch (KeyNotFoundException) { throw new MeasuredAccountingException("Consumer account is unavailable or inactive; completed evidence requires reconciliation."); }
+                var account = view.Account;
+                var fingerprint = usage.OperationFingerprint;
+                var receipt = account.Entries.SingleOrDefault(x => x.Kind == "receipt" && x.Key == usage.BusinessKey);
+                if (receipt is not null)
+                {
+                    if (receipt.Reference != fingerprint || receipt.Actor != usage.Operation.ActorId)
+                        throw new InvalidOperationException("Measured ledger key conflicts with an existing request.");
+                    return view;
+                }
+                if (account.Entries.Any(x => x.Key == usage.BusinessKey)) throw new InvalidOperationException("Measured ledger identity is already occupied.");
+                if (account.Mode != usage.RateSnapshot.BillingMode || account.Currency != usage.RateSnapshot.Currency)
+                    throw new MeasuredAccountingException("Account mode or currency differs from the frozen usage snapshot.");
+                var period = usage.OccurredAt.ToString("yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
+                if (account.Invoices.Any(x => x.Period == period))
+                    throw new MeasuredAccountingException("Usage belongs to an issued invoice period and requires an approved adjustment.");
+                var amount = usage.Amount;
+                if (account.Mode == "payg" && amount > view.WalletBalance)
+                    throw new MeasuredAccountingException("Insufficient wallet balance for completed usage.");
+                if (account.Mode == "postpaid" && amount > view.AvailableCredit)
+                    throw new MeasuredAccountingException("Insufficient postpaid credit for completed usage.");
+                var now = (timeProvider ?? TimeProvider.System).GetUtcNow();
+                var entry = new LedgerEntry(UsageEventV1.StableGuid(usage.BusinessKey + ":charge"), usage.BusinessKey, "usage", usage.ProductKey,
+                    usage.Meter.Id, usage.Quantity, amount, now, usage.Operation.ActorId, usage.Evidence.Reference,
+                    UnitPrice: usage.UnitPrice, UsageOccurredAt: usage.OccurredAt);
+                var marker = new LedgerEntry(UsageEventV1.StableGuid(usage.BusinessKey + ":receipt"), usage.BusinessKey, "receipt", null, null,
+                    0, 0, now, usage.Operation.ActorId, fingerprint);
+                account = account with { Revision = account.Revision + 1, Entries = [.. account.Entries, entry, marker] };
+                database.Put("accounting", usage.ConsumerTenantId.ToString(), account);
+                database.Emit($"accounting:{usage.ConsumerTenantId}:{account.Revision}", "AccountingChanged",
+                    new { TenantId = usage.ConsumerTenantId, account.Revision, Operation = "measured-usage", Key = usage.BusinessKey }, now);
+                return View(account);
+            }
+        });
+    }
     private AccountView ExecuteCore(Guid tenant, BillingCommand command, string actor)
     {
         lock (gate)
         {
             var view = Read(tenant); var account = view.Account;
+            if (command.Key?.StartsWith("measured:", StringComparison.Ordinal) == true)
+                throw new ArgumentException("Measured ledger identities are reserved for trusted typed intake.");
             if (string.IsNullOrWhiteSpace(command.Key) || command.Key.Length > 200 || string.IsNullOrWhiteSpace(command.Reference) || command.Reference.Length > 1000 || string.IsNullOrWhiteSpace(actor)) throw new ArgumentException("کلید یکتا، عامل و مرجع الزامی است.");
             // Store the exact request without its concurrency token for safe retries.
             var fingerprint = JsonSerializer.Serialize(command with { ExpectedRevision = 0 });
@@ -78,7 +126,7 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
                 case "invoice":
                     if (!DateTimeOffset.TryParseExact(command.Period + "-01", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out var start) || start >= new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, TimeSpan.Zero)) throw new ArgumentException("فقط دوره ماهانه پایان‌یافته قابل صدور است.");
                     if (invoices.Any(x => x.Period == command.Period)) throw new InvalidOperationException("صورتحساب این دوره صادر شده است.");
-                    var amount = entries.Where(x => x.Kind == "usage" && x.At >= start && x.At < start.AddMonths(1)).Sum(x => x.Amount);
+                    var amount = entries.Where(x => x.Kind == "usage" && (x.UsageOccurredAt ?? x.At) >= start && (x.UsageOccurredAt ?? x.At) < start.AddMonths(1)).Sum(x => x.Amount);
                     invoices.Add(new(Guid.NewGuid(), command.Period!, amount, now));
                     break;
                 case "payment":

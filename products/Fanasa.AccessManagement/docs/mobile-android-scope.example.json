@@ -1,0 +1,9 @@
+{
+  "name": "platform.catalog.self",
+  "description": "Read only the authenticated human subject's central application catalog",
+  "protocol": "openid-connect",
+  "attributes": {
+    "include.in.token.scope": "true",
+    "display.on.consent.screen": "true"
+  }
+}

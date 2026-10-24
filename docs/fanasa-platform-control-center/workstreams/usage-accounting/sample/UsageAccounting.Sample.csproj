@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>UsageAccounting.Sample</AssemblyName>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory).artifacts</ArtifactsPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);.artifacts/**;results/**;obj/**;bin/**</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../../../../products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj"
+                      AdditionalProperties="UseArtifactsOutput=true;ArtifactsPath=$(MSBuildThisFileDirectory).artifacts" />
+  </ItemGroup>
+</Project>

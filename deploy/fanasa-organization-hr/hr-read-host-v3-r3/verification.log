@@ -1,0 +1,40 @@
+HR3_ARTIFACTS_PATH=E:/SJVS/Projects/Neo/.build/hr3-host-r3-artifacts/acceptance-20261016
+  Determining projects to restore...
+  Restored E:\SJVS\Projects\Neo\deploy\fanasa-organization-hr\hr-read-profile-v3\contract-policy\src\Fanasa.ContractPolicy\Fanasa.ContractPolicy.csproj (in 463 ms).
+  Restored E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\Fanasa.AccessManagement.Web.csproj (in 1.23 sec).
+  Restored E:\SJVS\Projects\Neo\deploy\fanasa-organization-hr\hr-read-host-v3-r3\tests\Fanasa.HrReadHost.Tests.csproj (in 92 ms).
+  Fanasa.ContractPolicy -> E:\SJVS\Projects\Neo\.build\hr3-host-r3-artifacts\acceptance-20261016\bin\Fanasa.ContractPolicy\debug\Fanasa.ContractPolicy.dll
+  Fanasa.AccessManagement.Web -> E:\SJVS\Projects\Neo\.build\hr3-host-r3-artifacts\acceptance-20261016\bin\Fanasa.AccessManagement.Web\debug\Fanasa.AccessManagement.Web.dll
+  Fanasa.HrReadHost.Tests -> E:\SJVS\Projects\Neo\.build\hr3-host-r3-artifacts\acceptance-20261016\bin\Fanasa.HrReadHost.Tests\debug\Fanasa.HrReadHost.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:01:28.22
+HR3_TEST_DLL=E:/SJVS/Projects/Neo/.build/hr3-host-r3-artifacts/acceptance-20261016/bin/Fanasa.HrReadHost.Tests/debug/Fanasa.HrReadHost.Tests.dll
+RUN: wire/schema
+PASS: wire/schema: 138
+RUN: named JWT/native HTTP
+PASS: named JWT/native HTTP: 92
+RUN: Fabric source
+PASS: Fabric source: 74
+RUN: PDP service
+PASS: PDP service: 37
+RUN: atomic publication
+PASS: atomic publication: 86
+RUN: central host records
+PASS: central host records: 81
+RUN: calendar coexistence
+PASS: calendar coexistence: 24
+RUN: dual introspection
+PASS: dual introspection: 172
+RUN: legacy coexistence
+PASS: legacy coexistence: 35
+RUN: central consumer authority
+PASS: central consumer authority: 62
+RUN: actual host HTTP
+PASS: actual host HTTP: 30
+RUN: runtime DI registration
+PASS: runtime DI registration: 16
+PASS: 847 HR3 actual-host source integration assertions (complete). No live authority or deployment acceptance.

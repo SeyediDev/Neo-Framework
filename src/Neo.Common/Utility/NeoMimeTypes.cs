@@ -709,10 +709,6 @@ public static class NeoMimeTypes
 
     public static string GetMimeType(byte[] fileBytes, string? base64Content=null)
     {
-        if (IsProbablyPlainText(fileBytes))
-        {
-            return "text/plain";
-        }
         // List of signature checks in order
         List<(byte[] Signature, string MimeType)> signatures =
         [
@@ -780,6 +776,10 @@ public static class NeoMimeTypes
                     return mimeType;
                 }
             }
+        }
+        if (IsProbablyPlainText(fileBytes))
+        {
+            return "text/plain";
         }
         base64Content ??= Encoding.UTF8.GetString(fileBytes);
 

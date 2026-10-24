@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fanasa:contract-policy:request:3.0.0",
+  "title": "HR read candidate request-context v3.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "subject",
+    "resource",
+    "action",
+    "environment",
+    "tenant",
+    "membership",
+    "grant",
+    "evidence"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subjectId",
+        "authenticationValid",
+        "clientAuthorized",
+        "audience",
+        "scopes"
+      ],
+      "properties": {
+        "subjectId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+        },
+        "authenticationValid": {
+          "type": "boolean"
+        },
+        "clientAuthorized": {
+          "type": "boolean"
+        },
+        "audience": {
+          "const": "fanasa-organization-fabric"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "productId",
+        "consumerTenantId",
+        "environment",
+        "operationGroup"
+      ],
+      "properties": {
+        "productId": {
+          "const": "organization-fabric"
+        },
+        "consumerTenantId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+        },
+        "environment": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+        },
+        "operationGroup": {
+          "const": "organization.hr.read"
+        }
+      }
+    },
+    "action": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "now",
+        "zone"
+      ],
+      "properties": {
+        "now": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "zone": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+        }
+      }
+    },
+    "tenant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tenantId",
+        "active"
+      ],
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "membership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subjectId",
+        "tenantId",
+        "active",
+        "validFrom",
+        "validTo"
+      ],
+      "properties": {
+        "subjectId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+        },
+        "tenantId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "validFrom": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "validTo": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "grant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grantId",
+        "subjectId",
+        "consumerTenantId",
+        "productId",
+        "role",
+        "actions",
+        "active",
+        "validFrom",
+        "validTo"
+      ],
+      "properties": {
+        "grantId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+        },
+        "subjectId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+        },
+        "consumerTenantId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9.-]{0,63}|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$"
+        },
+        "productId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "validFrom": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "validTo": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validUntil",
+        "contractVersion",
+        "policyVersion"
+      ],
+      "properties": {
+        "validUntil": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contractVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "policyVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    }
+  }
+}

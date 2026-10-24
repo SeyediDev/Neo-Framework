@@ -92,12 +92,24 @@ try
     Reject<ArgumentException>(() => billing.Execute(other, Bill(other, "payment", "overpay") with { InvoiceId = invoiceId, Amount = 31 }, "actor"), "overpayment rejected");
     Check(new AccountingStore(directory, access, clock).Read(other).Outstanding == 30, "billing ledger survives restart");
     TransactionalFabricTests.Run(directory, Check);
+    UsageAccountingTests.Run(directory, Check);
+    UsagePriceTests.Run(directory, Check);
+    UsageOutboxTests.Run(directory, Check);
+    UsageHttpTransportTests.Run(directory, Check);
+    UsageReconciliationTests.Run(directory, Check);
     ZarinpalTests.Run(directory, Check);
     FabricStartupTests.Run(directory, Check);
     RecoveryTests.Run(directory, Check);
     AuditTests.Run(directory, Check);
     ComparisonTests.Run(directory, Check);
     GovernanceTests.Run(directory, Check);
+    PipPolicyTests.Run(directory, Check);
+    // Includes PipHardeningTests; invoke once because both share its isolated persistent fixture.
+    PipExternalSourceTests.Run(directory, Check);
+    PipApiTests.Run(directory, Check);
+    PipSchedulingTests.Run(directory, Check);
+    PipDatetimeTests.Run(Check);
+    PipEducationalTests.Run(directory, Check);
     Console.WriteLine($"{count} checks passed.");
 }
 finally { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }

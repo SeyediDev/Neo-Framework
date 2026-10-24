@@ -1,0 +1,565 @@
+{
+  "schemaVersion": "fanasa.pilot-storage-cleanup.v1",
+  "clientDate": "2026-10-10",
+  "completedAtUtc": "2026-10-10T17:25:45.2541064Z",
+  "workspace": "E:\\SJVS\\Projects\\Neo",
+  "authorization": "User requested extra generated-file cleanup; coordinator approved only the five listed targets.",
+  "targets": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\output\\official-image-bridge\\blobs",
+      "status": "deleted",
+      "beforeFiles": 30,
+      "beforeBytes": 209328480,
+      "afterFiles": 0,
+      "afterBytes": 0,
+      "removedFiles": 30,
+      "removedBytes": 209328480,
+      "pathValidated": true,
+      "metadataStable": true,
+      "reparsePoints": 0,
+      "reason": "First cleanup pass removed the verified redundant blob cache, then stopped before the next target because evidence-object boolean syntax needed correction. Its recorded pre-delete path/count/bytes/timestamp check matched."
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-verification",
+      "status": "deleted",
+      "beforeFiles": 377,
+      "beforeBytes": 140734089,
+      "afterFiles": 0,
+      "afterBytes": 0,
+      "removedFiles": 377,
+      "removedBytes": 140734089,
+      "pathValidated": true,
+      "metadataStable": true,
+      "reparsePoints": 0
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\__pycache__",
+      "status": "deleted",
+      "beforeFiles": 1,
+      "beforeBytes": 39993,
+      "afterFiles": 0,
+      "afterBytes": 0,
+      "removedFiles": 1,
+      "removedBytes": 39993,
+      "pathValidated": true,
+      "metadataStable": true,
+      "reparsePoints": 0
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\diagnostic.log",
+      "status": "deleted",
+      "beforeFiles": 1,
+      "beforeBytes": 205106,
+      "afterFiles": 0,
+      "afterBytes": 0,
+      "removedFiles": 1,
+      "removedBytes": 205106,
+      "pathValidated": true,
+      "metadataStable": true,
+      "reparsePoints": 0
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\restore.log",
+      "status": "deleted",
+      "beforeFiles": 1,
+      "beforeBytes": 570,
+      "afterFiles": 0,
+      "afterBytes": 0,
+      "removedFiles": 1,
+      "removedBytes": 570,
+      "pathValidated": true,
+      "metadataStable": true,
+      "reparsePoints": 0
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin",
+      "kind": "generated_bin_tree",
+      "status": "deleted",
+      "removedFiles": 13,
+      "removedBytes": 222668,
+      "afterExists": false,
+      "pathValidated": true,
+      "hashesStableBeforeDeletion": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj",
+      "kind": "generated_obj_files_only",
+      "status": "generated_files_deleted_restore_assets_retained",
+      "removedFiles": 30,
+      "removedBytes": 424627,
+      "preservedFiles": 15,
+      "preservedBytes": 580864,
+      "exactFilePathsValidated": true,
+      "hashesStableBeforeDeletion": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin",
+      "kind": "generated_bin_tree",
+      "status": "deleted",
+      "removedFiles": 290,
+      "removedBytes": 137824485,
+      "afterExists": false,
+      "pathValidated": true,
+      "hashesStableBeforeDeletion": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj",
+      "kind": "generated_obj_files_only",
+      "status": "generated_files_deleted_restore_assets_retained",
+      "removedFiles": 72,
+      "removedBytes": 3216243,
+      "preservedFiles": 15,
+      "preservedBytes": 580711,
+      "exactFilePathsValidated": true,
+      "hashesStableBeforeDeletion": true
+    }
+  ],
+  "removedFiles": 825,
+  "removedBytes": 2372488811,
+  "preservedArchive": {
+    "path": "E:\\SJVS\\Projects\\Neo\\.build\\output\\official-image-bridge\\official-images-linux-amd64.tar",
+    "bytes": 209377280,
+    "sha256": "ca1bc7fc668c5a9157bc991801e5bc30b4c7908df2d861a43a4bb9e3ecdbecc0",
+    "verifiedUnchanged": true
+  },
+  "preserved": [
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin",
+      "exists": false,
+      "initialCleanupExists": true,
+      "status": "removed_only_after_final_test_and_hash_capture"
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj",
+      "exists": true,
+      "status": "restore_assets_retained_after_final_test_generated_outputs_removed",
+      "retainedFiles": 15,
+      "retainedBytes": 580711
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\verified.log",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\verified-evidence.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\pilot-vps-deps",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\output\\official-image-bridge\\official-images-linux-amd64.tar.report.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\.build\\output\\official-image-bridge\\patched-source-audit.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\official-images-linux-amd64.lock.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\official-images-export.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\official-images-source-audit.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\image-delivery.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\native-smoke-orchestration-3.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\vps-postflight-3.json",
+      "exists": true
+    },
+    {
+      "path": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\pcc-host-verification.json",
+      "exists": true
+    }
+  ],
+  "audioInventory": {
+    "scopes": [
+      "E:\\SJVS\\Entekhab\\Metting\\2026-10-07",
+      "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\audio-clips"
+    ],
+    "foundFiles": 9,
+    "foundBytes": 352586172,
+    "noAudioFound": false,
+    "deletedFiles": 9,
+    "deletedBytes": 352586172,
+    "allExactTargetsAbsentAfterDeletion": true,
+    "metadataOnly": true
+  },
+  "scopeLimit": "Local cleanup targeted the initial five generated-file paths, six exact original MP3s, three exact clips, one approved task-created model weight, and generated bin/obj outputs only in gateway-connection-check and pcc-host-repair. Final PCC cleanup occurred only after session 75144 completed with 134 passed/0 failed and DLL/source/log hashes were saved. Each project retains its 15 restore assets and all logs/evidence with stable hashes. Owner build paths, source, canonical evidence, final logs, credentials, dependency cache, offline archives, VPS files and unrelated files remain outside deletion scope.",
+  "generatedCleanupCompletedAtUtc": "2026-10-10T16:31:20.3245699Z",
+  "generatedRemovedFiles": 815,
+  "generatedRemovedBytes": 491996261,
+  "initialGeneratedFileAudioInventory": {
+    "scopes": [
+      ".build",
+      "artifacts",
+      "docs/fanasa-platform-control-center"
+    ],
+    "foundFiles": 0,
+    "noAudioFound": true,
+    "deletedFiles": 0,
+    "metadataOnly": true
+  },
+  "localAudioCleanup": {
+    "evidencePath": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\audio-cleanup-local.json",
+    "evidenceSha256": "e42547796b20776fa65207b718244f64452fd6a91b3c5e532acc6b7eb0a26650",
+    "authorization": "User selected removal of all original audio and derivatives; coordinator approved exact originals 1-6, three clips and task-created whisper-medium/model.bin after preserved-evidence verification, explicitly retaining the missing-primary-ASR limitation for 1/2.",
+    "completedAtUtc": "2026-10-10T16:55:28.2077191Z",
+    "removedFiles": 10,
+    "removedBytes": 1880492550,
+    "originalRecordingIndexesDeleted": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "audioRemovedFiles": 9,
+    "audioRemovedBytes": 352586172,
+    "modelRemovedFiles": 1,
+    "modelRemovedBytes": 1527906378,
+    "targets": [
+      {
+        "kind": "task_created_model_weight",
+        "recordingIndex": null,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\audio-validation\\models\\whisper-medium\\model.bin",
+        "beforeBytes": 1527906378,
+        "sha256": "9b45e1009dcc4ab601eff815b61d80e60ce3fd8c74c1a14f4a282258286b51ae",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 1527906378,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "original_mp3",
+        "recordingIndex": 1,
+        "path": "E:\\SJVS\\Entekhab\\Metting\\2026-10-07\\Oct 7, 09.41\u200b.mp3",
+        "beforeBytes": 77488944,
+        "sha256": "b239fd27925c304b708335fb89486994e69f880a47a2a1e4204af553b6dbff02",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 77488944,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "original_mp3",
+        "recordingIndex": 2,
+        "path": "E:\\SJVS\\Entekhab\\Metting\\2026-10-07\\Oct 7, 11.14\u200b.mp3",
+        "beforeBytes": 12165360,
+        "sha256": "ff2be44b7b845900f829ada4143690a28a37cd552b98fceb54d1e63f3048ad0f",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 12165360,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "original_mp3",
+        "recordingIndex": 3,
+        "path": "E:\\SJVS\\Entekhab\\Metting\\2026-10-07\\Oct 7, 12.03\u200b.mp3",
+        "beforeBytes": 128228304,
+        "sha256": "0e88bad4349df1a61479b4af63091d13c99d0739c04bad5215df385b01303b05",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 128228304,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "original_mp3",
+        "recordingIndex": 4,
+        "path": "E:\\SJVS\\Entekhab\\Metting\\2026-10-07\\Oct 7, 15.13\u200b.mp3",
+        "beforeBytes": 46454208,
+        "sha256": "d47bd478614e95ee3ab1bf68e4d7073eeeb0a62c0ca698b5213a05d5bb867fd7",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 46454208,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "original_mp3",
+        "recordingIndex": 5,
+        "path": "E:\\SJVS\\Entekhab\\Metting\\2026-10-07\\Oct 7, 16.32\u200b.mp3",
+        "beforeBytes": 22009368,
+        "sha256": "4a205df4fa0251dbdb4cb7385180eed1c0292b45c07231c296e6e3f600c8148f",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 22009368,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "original_mp3",
+        "recordingIndex": 6,
+        "path": "E:\\SJVS\\Entekhab\\Metting\\2026-10-07\\Oct 7, 17.06\u200b.mp3",
+        "beforeBytes": 65038896,
+        "sha256": "f90d0fc19ff8b6451944e77a7022466033d0cbd12e9ae3dbcb54f4d98eb2d249",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 65038896,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "derivative_audio",
+        "recordingIndex": 2,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\audio-clips\\recording02-001204-001234-direct.wav",
+        "beforeBytes": 960044,
+        "sha256": "b3a528e09904c2b6459864385213a13422ca12a5149ddb36f5e3dd2a46ad9b12",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 960044,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "derivative_audio",
+        "recordingIndex": 2,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\audio-clips\\recording02-001207-001213.wav",
+        "beforeBytes": 192044,
+        "sha256": "45626ae76866ef2d16c2b6a3728fed38255a48fda8b22cc7d3dc641c951a4697",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 192044,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      },
+      {
+        "kind": "derivative_audio",
+        "recordingIndex": 2,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\audio-clips\\recording02-001207-001213.mp3",
+        "beforeBytes": 49004,
+        "sha256": "d7d57f08ae08dcced4af29eaaa3d5ede7e01ce2270bf2de8af7f6372fb191450",
+        "status": "deleted",
+        "removedFiles": 1,
+        "removedBytes": 49004,
+        "exactPathValidated": true,
+        "noReparseAncestors": true,
+        "hashVerifiedImmediatelyBeforeDeletion": true,
+        "afterExists": false
+      }
+    ],
+    "verifiedFinalTranscripts": [
+      {
+        "recordingIndex": 3,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\recording-03-assembled\\merged-original-times.jsonl",
+        "sha256": "c9194ae2e1bbebca4febfd6a058bf89e9e9591f898c7ffd4096d82831fffc294",
+        "entries": 1731,
+        "verified": true
+      },
+      {
+        "recordingIndex": 4,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\recording-04\\merged.jsonl",
+        "sha256": "040db4527158910c192dc4b02139f6167fa1f5c051db8775a428fc89806e7cb8",
+        "entries": 913,
+        "verified": true
+      },
+      {
+        "recordingIndex": 5,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\recording-05\\recording-01.jsonl",
+        "sha256": "eda0509122e5c18422ae69328eeead6525ac4ed9b70b57d8c2bc387c5ffc09fb",
+        "entries": 459,
+        "verified": true
+      },
+      {
+        "recordingIndex": 6,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\vps-final\\recording-06\\merged.jsonl",
+        "sha256": "8654ca08e22d84226b96edce7cd1df18e02613d70cb439a56f86acb361966507",
+        "entries": 1335,
+        "verified": true
+      }
+    ],
+    "verifiedReviewReports": [
+      {
+        "recordingIndex": 1,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\recording-01-review.json",
+        "sha256": "4c513f02e5789c7a9fc8c42c43cdc9a0cfd5f45fa21774f7799fc50a833f1d47",
+        "verified": true
+      },
+      {
+        "recordingIndex": 2,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\recording-02-review.json",
+        "sha256": "c99e9cfcc6b3fbccac1abf0c6097f2238b9dbca43150473052680ba41b786bec",
+        "verified": true
+      },
+      {
+        "recordingIndex": 3,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\recording-03-review.json",
+        "sha256": "f2dc6e7fdf9ca3bd8339eb50fca761f4f135b4b04a2a01acf6f8ede2571afc3f",
+        "verified": true
+      },
+      {
+        "recordingIndex": 4,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\recording-04-review.json",
+        "sha256": "23d8a3b476070c74deb4940fce7cf9736d009f76422118606bb2d764826f0a57",
+        "verified": true
+      },
+      {
+        "recordingIndex": 5,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\recording-05-review.json",
+        "sha256": "19f74367e73b88988955a6cf32ac8316b8f2d30435d5c12d8b3ebcd189d5a02f",
+        "verified": true
+      },
+      {
+        "recordingIndex": 6,
+        "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\recording-06-review.json",
+        "sha256": "bbb3b42fcfde0846bff8ac1705ee5958321ed809b188e710315e3383324f1492",
+        "verified": true
+      }
+    ],
+    "preservedFilesCount": 221,
+    "preservedFilesVerifiedUnchanged": true,
+    "primaryAsrLimitations": [
+      {
+        "recordingIndex": 1,
+        "status": "primary_ASR_not_found_before_deletion",
+        "historicalPath": "C:\\Users\\JavadSeyediPC\\.codex\\worktrees\\8f13\\Neo\\.artifacts\\meeting-transcription\\2026-10-07\\recording-01.jsonl",
+        "expectedSha256": "a92c1c97f471f32fc3568ab09761240156f734d6e130c745e09ecfd2e9759dd8",
+        "expectedEntries": 1613,
+        "currentReviewReportPreserved": true,
+        "originalDeletionExplicitlyAuthorized": true
+      },
+      {
+        "recordingIndex": 2,
+        "status": "primary_ASR_not_found_before_deletion",
+        "historicalPath": "C:\\Users\\JavadSeyediPC\\.codex\\worktrees\\8f13\\Neo\\.artifacts\\meeting-transcription\\2026-10-07\\recording-02.jsonl",
+        "expectedSha256": "47e3810ca747b1274761c57c641a5d204b560807d0fafc3ada5de643a006a211",
+        "expectedEntries": 204,
+        "currentReviewReportPreserved": true,
+        "originalDeletionExplicitlyAuthorized": true
+      }
+    ],
+    "recoveredRecording02Alternate": {
+      "recordingIndex": 2,
+      "kind": "existing_VPS_alternate_ASR",
+      "path": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\vps-retained-recording-02-alternate\\recording-01.jsonl",
+      "bytes": 44849,
+      "sha256": "3946bd66466ee50d219640f47750f93e180b34f07f27b08c13219d81d4d0423b",
+      "entries": 211,
+      "verified": true,
+      "preservationEvidencePath": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\vps-asr-preservation.json",
+      "primary204EntryTranscriptRecovered": false
+    },
+    "noNewAsr": true,
+    "noAudioPlayback": true,
+    "vpsDeletionEvidenceManagedSeparately": true
+  },
+  "gatewayGeneratedCleanup": {
+    "evidencePath": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\gateway-build-cleanup.json",
+    "evidenceSha256": "f7b736f1ef55a0ed97a33494c34ee2d751afe5f3c4351d0d88ce051524a61890",
+    "priorStorageEvidenceSha256": "25965c74ba8425b9c2dd66f514594d0622344902e6f37c4b083c6a82278c1c57",
+    "authorization": "Coordinator approved removing only gateway-connection-check/bin and generated obj files after completed tests, retaining all 15 gateway restore assets, logs and evidence; PCC and owner build paths remain preserved.",
+    "completedAtUtc": "2026-10-10T17:09:29.8206127Z",
+    "removedFiles": 43,
+    "removedBytes": 647295,
+    "targets": [
+      {
+        "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\bin",
+        "kind": "generated_bin_tree",
+        "status": "deleted",
+        "removedFiles": 13,
+        "removedBytes": 222668,
+        "afterExists": false,
+        "pathValidated": true,
+        "hashesStableBeforeDeletion": true
+      },
+      {
+        "path": "E:\\SJVS\\Projects\\Neo\\.build\\gateway-connection-check\\obj",
+        "kind": "generated_obj_files_only",
+        "status": "generated_files_deleted_restore_assets_retained",
+        "removedFiles": 30,
+        "removedBytes": 424627,
+        "preservedFiles": 15,
+        "preservedBytes": 580864,
+        "exactFilePathsValidated": true,
+        "hashesStableBeforeDeletion": true
+      }
+    ],
+    "retainedRestoreAssetsFiles": 15,
+    "retainedRestoreAssetsBytes": 580864,
+    "preservedFilesCount": 16,
+    "preservedFilesVerifiedUnchanged": true,
+    "relevantGatewayWorkers": 0,
+    "pccBinAndObjPreserved": true,
+    "ownerBuildPathsOutsideDeletionScope": true
+  },
+  "pccGeneratedCleanup": {
+    "evidencePath": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\pilot\\pcc-build-cleanup.json",
+    "evidenceSha256": "3a31254110ba9f3beb78a5692a1e80764eb147b92594938e31c6b5aa881bd34d",
+    "priorStorageEvidenceSha256": "e46760f786c182449d9e71446ecd752535f14fb9765468ed1cf04163070966ed",
+    "authorization": "Coordinator authorized this final PCC cleanup only after session 75144 completion and saved DLL/source/log hashes, retaining all 15 PCC restore assets, logs and evidence; every other build path remains outside scope.",
+    "completedAtUtc": "2026-10-10T17:25:45.2541064Z",
+    "removedFiles": 362,
+    "removedBytes": 141040728,
+    "targets": [
+      {
+        "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\bin",
+        "kind": "generated_bin_tree",
+        "status": "deleted",
+        "removedFiles": 290,
+        "removedBytes": 137824485,
+        "afterExists": false,
+        "pathValidated": true,
+        "hashesStableBeforeDeletion": true
+      },
+      {
+        "path": "E:\\SJVS\\Projects\\Neo\\.build\\pcc-host-repair\\obj",
+        "kind": "generated_obj_files_only",
+        "status": "generated_files_deleted_restore_assets_retained",
+        "removedFiles": 72,
+        "removedBytes": 3216243,
+        "preservedFiles": 15,
+        "preservedBytes": 580711,
+        "exactFilePathsValidated": true,
+        "hashesStableBeforeDeletion": true
+      }
+    ],
+    "retainedRestoreAssetsFiles": 15,
+    "retainedRestoreAssetsBytes": 580711,
+    "preservedFilesCount": 24,
+    "preservedFilesVerifiedUnchanged": true,
+    "dependentProcessCommandLineMatches": 0,
+    "finalTestSession": 75144,
+    "finalTestExitCode": 0,
+    "finalTestsPassed": 134,
+    "finalTestsFailed": 0,
+    "sourceHashesStableCount": 16,
+    "dllSourceAndLogHashesSavedBeforeCleanup": true,
+    "ownerBuildPathsOutsideDeletionScope": true
+  }
+}

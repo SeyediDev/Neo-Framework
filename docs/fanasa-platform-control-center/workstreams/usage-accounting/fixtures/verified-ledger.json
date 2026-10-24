@@ -1,0 +1,38 @@
+{
+  "Scope": "PROPOSED standalone fixture using the existing BillingAccount ledger",
+  "Charges": [
+    {
+      "Id": "0e9a18a1-d174-421d-b253-eac8f1eb1af2",
+      "Key": "measured:v1:3518081bc019cd36d7950b6bd494f0e8fb91342f35978b6464d8afbce419212f",
+      "Kind": "usage",
+      "ProductKey": "organization-fabric",
+      "Metric": "organization.change",
+      "Quantity": 1,
+      "Amount": 18,
+      "At": "2026-10-10T08:00:00+00:00",
+      "Actor": "fixture-actor-B",
+      "Reference": "fixture://organization/unit-save-op-002",
+      "InvoiceId": null,
+      "UnitPrice": 18
+    },
+    {
+      "Id": "c4ec885b-a98d-6c08-4603-d3cb67f9c165",
+      "Key": "measured:v1:8890e2e94495664a5cdcef32c9e071339846639e44b32ad231b987d95c0f5a6e",
+      "Kind": "usage",
+      "ProductKey": "organization-fabric",
+      "Metric": "organization.change",
+      "Quantity": 1,
+      "Amount": 12,
+      "At": "2026-10-10T08:00:00+00:00",
+      "Actor": "fixture-actor-B",
+      "Reference": "fixture://organization/unit-save-op-001",
+      "InvoiceId": null,
+      "UnitPrice": 12
+    }
+  ],
+  "Outstanding": 30,
+  "AvailableCredit": 9970,
+  "OwnerRevenueShare": null,
+  "PlatformRevenueShare": null,
+  "SettlementStatus": "not-defined"
+}

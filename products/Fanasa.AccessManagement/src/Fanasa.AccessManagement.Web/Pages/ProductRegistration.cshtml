@@ -1,0 +1,52 @@
+@page
+@model Fanasa.AccessManagement.Web.Pages.ProductRegistrationModel
+@{ ViewData["Title"] = "ثبت سامانه"; }
+<div class="page-actions"><p class="muted">سامانه و لینک‌های ورود آن را در فهرست مرکزی ثبت کنید.</p><a class="button" asp-page="/Platform">بازگشت به سامانه‌ها</a></div>
+<section class="panel" style="margin-top:20px">
+    <p>ثبت سامانه به‌تنهایی مجوز ورود نمی‌دهد و تنظیمات SSO، کاربران یا ایجنت‌ها را تغییر نمی‌دهد.</p>
+    @if (Model.Created is not null)
+    {
+        <div role="status"><h2>سامانه ثبت شد</h2><p>@Model.Created.DisplayName</p><a class="button primary" href="@Model.Created.Url" target="_blank" rel="noopener noreferrer">باز کردن سامانه</a>
+        @if (Model.Created.Attributes?.TryGetValue("entrypoint.kanban.url", out var createdBoard) == true && Fanasa.AccessManagement.Web.Pages.ProductRegistrationModel.SafeUrl(createdBoard, out _))
+        { <a class="button" href="@createdBoard" target="_blank" rel="noopener noreferrer">باز کردن کانبان</a> }</div>
+    }
+    <div asp-validation-summary="All" role="alert"></div>
+    @if (Model.IsPreview)
+    {
+        <h2>بررسی پیش از ثبت</h2>
+        <dl><dt>نام سامانه</dt><dd>@Model.Input.DisplayName</dd><dt>مرکز</dt><dd>@Model.CenterName</dd><dt>سازمان</dt><dd>@Model.TenantName</dd><dt>نشانی ورود</dt><dd dir="ltr">@Model.Input.Url</dd>
+        @if (!string.IsNullOrEmpty(Model.Input.BoardUrl)) { <dt>لینک کانبان</dt><dd dir="ltr">@Model.Input.BoardUrl</dd> }</dl>
+        <details><summary>شناسه‌های اتصال</summary><p dir="ltr">@Model.Input.Key · @Model.Input.Audience · @Model.Input.Owner</p></details>
+        <form method="post" asp-page-handler="Register" style="margin-top:20px">
+            <input asp-for="Input.Key" type="hidden" /><input asp-for="Input.DisplayName" type="hidden" /><input asp-for="Input.Audience" type="hidden" /><input asp-for="Input.Center" type="hidden" /><input asp-for="Input.TenantId" type="hidden" /><input asp-for="Input.Owner" type="hidden" /><input asp-for="Input.Url" type="hidden" /><input asp-for="Input.BoardUrl" type="hidden" /><input asp-for="PreviewReceipt" type="hidden" />
+            <button class="button primary" type="submit">تأیید و ثبت سامانه</button><a class="button" asp-page="/ProductRegistration">شروع دوباره</a>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-page-handler="Preview" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:20px">
+            <label>نام سامانه<input asp-for="Input.DisplayName" required maxlength="160" /></label>
+            <label>مرکز قابلیت<select asp-for="Input.Center" required><option value="">انتخاب مرکز</option>@foreach (var center in Fanasa.AccessManagement.Web.CapabilityCatalog.All) { <option value="@center.Audience">@center.Name</option> }</select></label>
+            <label>سازمان<select asp-for="Input.TenantId" required><option value="">انتخاب سازمان</option>@foreach (var tenant in Model.Tenants) { <option value="@tenant.Id">@tenant.Name</option> }</select></label>
+            <label>نشانی ورود<input asp-for="Input.Url" type="url" dir="ltr" required maxlength="1024" placeholder="https://system.fanasa.net.local/" /></label>
+            <label>لینک کانبان (اختیاری)<input asp-for="Input.BoardUrl" type="url" dir="ltr" maxlength="1024" /></label>
+            <details open="@string.IsNullOrEmpty(Model.Input.Key)" style="grid-column:1/-1"><summary>شناسه‌های اتصال</summary><p class="muted">شناسه‌ها باید با ثبت موجود سامانه و SSO هماهنگ باشند. رمز یا توکن وارد نکنید.</p>
+                <label>کلید یکتای سامانه<input asp-for="Input.Key" dir="ltr" required maxlength="90" /></label>
+                <label>Audience سامانه<input asp-for="Input.Audience" dir="ltr" required maxlength="120" /></label>
+                <label>مالک محصول<input asp-for="Input.Owner" dir="ltr" required maxlength="120" /></label>
+            </details>
+            <div style="grid-column:1/-1"><button class="button primary" type="submit">بررسی و پیش‌نمایش</button></div>
+        </form>
+    }
+</section>
+<section class="panel" style="margin-top:20px;overflow:auto"><h2>سامانه‌های ثبت‌شده</h2>
+    <table style="width:100%;text-align:right"><thead><tr><th>سامانه</th><th>مرکز</th><th>پیوندها</th></tr></thead><tbody>
+        @foreach (var product in Model.Products)
+        {
+            <tr><td>@product.DisplayName</td><td>@(Fanasa.AccessManagement.Web.CapabilityCatalog.All.FirstOrDefault(x => x.Audience == product.Center)?.Name ?? product.Center)</td><td>
+            @if (Fanasa.AccessManagement.Web.Pages.ProductRegistrationModel.SafeUrl(product.Url, out _)) { <a href="@product.Url" target="_blank" rel="noopener noreferrer">ورود به سامانه</a> }
+            @if (product.Attributes?.TryGetValue("entrypoint.kanban.url", out var boardUrl) == true && Fanasa.AccessManagement.Web.Pages.ProductRegistrationModel.SafeUrl(boardUrl, out _)) { <a href="@boardUrl" target="_blank" rel="noopener noreferrer">کانبان</a> }
+            </td></tr>
+        }
+    </tbody></table>
+</section>

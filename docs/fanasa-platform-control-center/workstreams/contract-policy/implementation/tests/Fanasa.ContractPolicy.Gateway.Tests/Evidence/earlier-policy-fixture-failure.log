@@ -1,0 +1,97 @@
+PASS Gateway registered Gateway JWT and authoritative PIP return pure Permit
+PASS Gateway Gateway JWT rejects signature
+PASS Gateway Gateway JWT rejects issuer
+PASS Gateway Gateway JWT rejects audience
+PASS Gateway Gateway JWT rejects expired
+PASS Gateway Gateway JWT rejects client
+PASS Gateway Gateway JWT rejects scope
+PASS Gateway Gateway JWT rejects human
+PASS Gateway Gateway JWT rejects producer
+PASS Gateway Gateway JWT rejects duplicate-iss
+PASS Gateway Gateway JWT rejects escaped-iss
+PASS Gateway Gateway JWT rejects quoted-exp
+PASS Gateway Gateway JWT rejects fractional-exp
+PASS Gateway Gateway JWT rejects array-scope
+PASS Gateway Gateway JWT rejects duplicate-aud
+PASS Gateway Gateway JWT rejects wrong-active
+PASS Gateway trusted Gateway request rejects unknown
+PASS Gateway trusted Gateway request rejects duplicate
+PASS Gateway trusted Gateway request rejects environment
+PASS Gateway trusted Gateway request rejects owner
+PASS Gateway trusted Gateway request rejects allocation
+PASS Gateway trusted Gateway request rejects scope
+PASS Gateway trusted Gateway request rejects consumer
+PASS Gateway trusted Gateway request rejects requested-future
+PASS Gateway trusted Gateway request rejects requested-stale
+PASS Gateway trusted Gateway request rejects expiry
+PASS Gateway trusted Gateway request rejects quoted-expiry
+PASS Gateway trusted Gateway request rejects missing
+PASS Gateway revoked Gateway registered scope denies current signed token
+PASS Gateway inactive Gateway registered client denies current signed token
+PASS Gateway Gateway scope revoked during an awaited body read denies without writes
+PASS Gateway signed context rejects missing without business writes
+PASS Gateway signed context rejects forged-signature without business writes
+PASS Gateway signed context rejects wrong-body without business writes
+PASS Gateway signed context rejects wrong-auth without business writes
+PASS Gateway signed context rejects wrong-path without business writes
+PASS Gateway signed context rejects wrong-idempotency without business writes
+PASS Gateway signed context rejects expired without business writes
+PASS Gateway signed context rejects future without business writes
+PASS Gateway signed context rejects too-long without business writes
+PASS Gateway signed context rejects wrong-tenant without business writes
+PASS Gateway signed context rejects wrong-subject without business writes
+PASS Gateway signed context rejects wrong-client without business writes
+PASS Gateway signed context rejects wrong-policy without business writes
+PASS Gateway signed context rejects wrong-contract without business writes
+PASS Gateway signed context rejects wrong-revision without business writes
+PASS Gateway signed context rejects wrong-period without business writes
+PASS Gateway signed context rejects unknown-context without business writes
+PASS Gateway signed context rejects duplicate-context without business writes
+PASS Gateway signed context rejects unknown-envelope without business writes
+PASS Gateway signed context rejects duplicate-envelope without business writes
+PASS Gateway signed context rejects not-confirmed without business writes
+PASS Gateway signed context rejects not-allowed without business writes
+PASS Gateway signed context rejects foreign-resource without business writes
+PASS Gateway signed context rejects noncanonical-number without business writes
+PASS Gateway signed context rejects unknown-key without business writes
+PASS Gateway signed context rejects wrong-tier without business writes
+PASS Gateway signed context rejects duplicate-header without business writes
+PASS Gateway signed context rejects underscore-header without business writes
+PASS Gateway signed context rejects oversize-body without business writes
+PASS Gateway signed context rejects unknown-command without business writes
+PASS Gateway signed context rejects duplicate-command without business writes
+PASS Gateway correct HMAC without client certificate fails direct backend boundary
+PASS Gateway correct HMAC with wrong client certificate fails pinned boundary
+PASS Gateway grant revocation invalidates correctly signed context
+PASS Gateway role revocation invalidates correctly signed context
+FAIL Gateway retired published policy vetoes pure decision and signed operation: System.InvalidOperationException: Publication requires the same policy ID and a newer policy version.
+   at Fanasa.AccessManagement.Web.ContractPolicies.ContractPolicyStore.<>c__DisplayClass33_0.<PublishPolicy>b__0() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\pcc\ContractPolicyStore.cs:line 183
+   at Fanasa.AccessManagement.Web.Persistence.FabricDatabase.Transaction[T](Func`1 action) in E:\SJVS\Projects\Neo\products\Fanasa.AccessManagement\src\Fanasa.AccessManagement.Web\FabricDatabase.cs:line 38
+   at Fanasa.AccessManagement.Web.ContractPolicies.ContractPolicyStore.PublishPolicy(Guid consumer, ContractPolicyBinding binding, Int64 expectedRevision, String actor, String reason) in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\pcc\ContractPolicyStore.cs:line 176
+   at Program.<>c__DisplayClass0_1.<<<Main>$>b__11>d.MoveNext() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 145
+   at Program.<>c__DisplayClass0_1.<<<Main>$>b__11>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Program.<>c__DisplayClass0_0.<<<Main>$>g__Test|0>d.MoveNext() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 49
+FAIL Gateway real mTLS plus request-bound HMAC executes committed unit save once: System.InvalidOperationException: Expected OK; actual Forbidden
+   at Program.<<Main>$>g__Equal|0_2[T](T expected, T actual) in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 242
+   at Program.<>c__DisplayClass0_1.<<<Main>$>b__12>d.MoveNext() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 150
+--- End of stack trace from previous location ---
+   at Program.<>c__DisplayClass0_0.<<<Main>$>g__Test|0>d.MoveNext() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 49
+PASS Gateway unknown parent ID is denied without business writes
+FAIL Gateway one Gateway nonce is claimed once under concurrent HTTP requests: System.InvalidOperationException: Expected 1; actual 0
+   at Program.<<Main>$>g__Equal|0_2[T](T expected, T actual) in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 242
+   at Program.<>c__DisplayClass0_1.<<<Main>$>b__14>d.MoveNext() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 174
+--- End of stack trace from previous location ---
+   at Program.<>c__DisplayClass0_0.<<<Main>$>g__Test|0>d.MoveNext() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 49
+FAIL Gateway replay claims persist through independent Fabric connection reopen: System.InvalidOperationException: no persisted replay tombstones
+   at Program.<<Main>$>g__Check|0_1(Boolean condition, String message) in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 241
+   at Program.<>c__DisplayClass0_1.<<Main>$>b__15() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 185
+   at Program.<>c__DisplayClass0_0.<<<Main>$>g__Test|0>d.MoveNext() in E:\SJVS\Projects\Neo\docs\fanasa-platform-control-center\workstreams\contract-policy\implementation\tests\Fanasa.ContractPolicy.Gateway.Tests\Program.cs:line 49
+PASS Gateway Gateway Permit cannot charge a different configured contract version
+PASS Gateway omitted signed Gateway mode keeps actual business route closed
+PASS Gateway uppercase GUID subject preserves signed identity and stored membership
+PASS Gateway Gateway witness expiring after admission vetoes actual business commit
+PASS Gateway Gateway witness expiry during usage admission rolls back shared business ledger outbox
+PASS Gateway one tick beyond signed fractional deadline vetoes business commit
+PASS Gateway fresh authorized receipt retry preserves historical tariff after rate window closes
+Gateway integration: 74 passed, 4 failed.

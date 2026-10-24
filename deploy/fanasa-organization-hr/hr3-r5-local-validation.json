@@ -1,0 +1,282 @@
+{
+  "schemaVersion": "fanasa.hr3.reviewed-local-source/1",
+  "recordedAtUtc": "2026-10-23T19:26:42.964857+00:00",
+  "status": "reviewed-local-ready-for-ci",
+  "scope": "HR3 actual-host compatibility plus deploy/OCI Python source checks; local synthetic fixtures only",
+  "sourcePackage": "deploy/fanasa-organization-hr/hr-read-host-v3-r5",
+  "testedManifestSha256": "869c397defa681a90a7ad1c5040ebf3c75faa021057480ea9886925e935e53c1",
+  "afterPythonTestsBeforeReceiptMetadataSha256": "04ef5650fc3426f4c597701619b282ee99a3422c2771aa3b935fb14a00ca2b61",
+  "finalManifestSha256": "c2cd886eef4381b0e614dfb28b3efe7bb47c42c2ce98a2188796d670429a3318",
+  "metadataFinalizedAfterActualHostTest": true,
+  "postActualHostChanges": [
+    "README.fa.md",
+    "REVIEW-DELTA.fa.md",
+    "tests/test_verify_package.py (metadata assertions only)",
+    "SOURCE-PACKAGE.json"
+  ],
+  "compiledBuildInputsUnchangedAfterActualHostTest": true,
+  "runtimeActivation": false,
+  "liveHostRegistration": false,
+  "operationalAcceptance": false,
+  "trustedCi": false,
+  "gitCommitClaim": null,
+  "tools": {
+    "dotnetSdk": "10.0.401",
+    "python": "3.12.10",
+    "os": "Windows"
+  },
+  "actualHost": {
+    "command": "deploy/fanasa-organization-hr/hr-read-host-v3-r5/test-host.ps1 -RepositoryRoot E:/SJVS/Projects/Neo",
+    "cachedRestore": false,
+    "nugetAuditEnabled": true,
+    "configuredFeeds": true,
+    "exitCode": 0,
+    "assertions": 908,
+    "newPipAssertions": 61,
+    "suiteCount": 13,
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "log": ".build/hr3-r5-pip-20261023-r2/actual-host-tests.log",
+    "logSha256": "4f27fdfdf42ad7f95afe7e7654fb77046e6b92c30331f9c82ef619f5c9d606c4",
+    "suites": [
+      {
+        "name": "wire/schema",
+        "assertions": 138
+      },
+      {
+        "name": "named JWT/native HTTP",
+        "assertions": 92
+      },
+      {
+        "name": "Fabric source",
+        "assertions": 74
+      },
+      {
+        "name": "PDP service",
+        "assertions": 37
+      },
+      {
+        "name": "atomic publication",
+        "assertions": 86
+      },
+      {
+        "name": "central host records",
+        "assertions": 81
+      },
+      {
+        "name": "calendar coexistence",
+        "assertions": 24
+      },
+      {
+        "name": "PIP coexistence",
+        "assertions": 61
+      },
+      {
+        "name": "dual introspection",
+        "assertions": 172
+      },
+      {
+        "name": "legacy coexistence",
+        "assertions": 35
+      },
+      {
+        "name": "central consumer authority",
+        "assertions": 62
+      },
+      {
+        "name": "actual host HTTP",
+        "assertions": 30
+      },
+      {
+        "name": "runtime DI registration",
+        "assertions": 16
+      }
+    ],
+    "artifactDirectory": ".build/hr3-host-r5-artifacts/run-5bcf095999534215a3e3878b0776c250"
+  },
+  "hostFreeze": {
+    "inputCount": 138,
+    "noAutomaticRepin": true,
+    "beforeAfterActualHostAndFinalizationEqual": true,
+    "actualBeforeLogSha256": "afc7ffd5d4b8ac440dac8d31a411ca773ad8877849b0d6f2a3850ed5dc6e4f96",
+    "actualAfterLogSha256": "afc7ffd5d4b8ac440dac8d31a411ca773ad8877849b0d6f2a3850ed5dc6e4f96",
+    "finalizationBeforeLogSha256": "afc7ffd5d4b8ac440dac8d31a411ca773ad8877849b0d6f2a3850ed5dc6e4f96",
+    "finalizationAfterLogSha256": "3d6cd1d505c40d4c0f91a4762b59563e9f3910bb6fc0355c5c446374b9ab2439",
+    "comparison": "parsed complete path/SHA-256 inventory; metadata wrapper may differ",
+    "runtimeInputs": [
+      {
+        "path": "Directory.Build.props",
+        "sha256": "a7edad6153962207f4655cc4568ea766db66d924f3336644484388e165555d9d"
+      },
+      {
+        "path": "Directory.Packages.props",
+        "sha256": "e107928b4b719c963b18c429357d4c7fb1358311e95a5f225b2ba0cb4c44b73f"
+      },
+      {
+        "path": "compatibility/ContractPolicyStore.cs",
+        "sha256": "94c5cd7f6643d6646f812575fef5d4d1dd0658f2aead8731632ce2442a713c90"
+      },
+      {
+        "path": "compatibility/Program.Hr3.cs",
+        "sha256": "ab8ed8b12ba55a0efb778f91815a090fe6ee060052ff4294bff48377b410b52c"
+      },
+      {
+        "path": "integration/Hr3Host.targets",
+        "sha256": "3d965474681034f1a0ca461474261c5824b587ba9de62baa5affaedf725b9bde"
+      },
+      {
+        "path": "src/Hr3CentralHostRecords.cs",
+        "sha256": "f84aecf2b6f015654fe411c083107ae10fc426ada2c8bbc89ef2ebc29d1fa5e9"
+      },
+      {
+        "path": "src/Hr3CentralIntrospectionAuthority.cs",
+        "sha256": "fece094f2494305a5e9453681113bcc4c3d18de3539bb8155218338183007418"
+      },
+      {
+        "path": "src/Hr3HostPdpEndpoint.cs",
+        "sha256": "ab98048a080eb88314713f2e05abace66a81a8a9c08f986914a8a29643e235d0"
+      },
+      {
+        "path": "src/Hr3HostServices.cs",
+        "sha256": "c25db82387756671927edb6ea50b4ad7be9c2bbcb1379c31a35c1a8c10995a92"
+      },
+      {
+        "path": "src/Hr3Introspection.cs",
+        "sha256": "c3f118d8fa00192245c8982ee18702f9720afa3094b43f5d9b20faa95fb3713e"
+      },
+      {
+        "path": "src/Hr3PublicationStore.cs",
+        "sha256": "d695804131bebe5cffa037b448b5cb8f0c20209d421c64b6711304599b244c36"
+      },
+      {
+        "path": "test-host.ps1",
+        "sha256": "081a8c626951bb2e25a3f3e73c439f336fa798b3aa3577d56853b6c1bb7dde10"
+      },
+      {
+        "path": "test-host.sh",
+        "sha256": "30b1bc74604f2e9df827fd62630c667ef8d215bcad1ee847ebd3544bba34bc7f"
+      },
+      {
+        "path": "tests/CalendarCoexistenceTests.cs",
+        "sha256": "b92d96dfa03a5c2d22034fd204a743891e06facf58a36fa58eb53054b1c991d5"
+      },
+      {
+        "path": "tests/CentralHostRecordsTests.cs",
+        "sha256": "3871546ffc7ce4fb0ccc0ebab6c4f759748824f5286d33800da9f31ed7bec1fd"
+      },
+      {
+        "path": "tests/CentralIntrospectionAuthorityTests.cs",
+        "sha256": "92b75636dc2b80d514dc04b4ce111d05488107084d7c26385628a02a424925b3"
+      },
+      {
+        "path": "tests/CompatibilityTests.cs",
+        "sha256": "ed622efdd87981f5dd6eb5d9e94b40c2bfbb379af022646b505db310348ba2c9"
+      },
+      {
+        "path": "tests/Fanasa.HrReadHost.Tests.csproj",
+        "sha256": "49751f57698c7bdf01fe845d10215ff8e4fc49b10556788a278a287c3cef83cb"
+      },
+      {
+        "path": "tests/HostEndpointTests.cs",
+        "sha256": "1500497b7c3c374f0a0a27b966c1ec19ae32700c334292ff64554c4dd0170b27"
+      },
+      {
+        "path": "tests/HostServicesTests.cs",
+        "sha256": "9dc5179b9fde0ac50f94395808a017d5bfc8c0060607170e28fa5c41896d6538"
+      },
+      {
+        "path": "tests/IntrospectionTests.cs",
+        "sha256": "1399c2a50b82650ade28fe45ca7c471aa313c265aa5836990b6729f2a13625ba"
+      },
+      {
+        "path": "tests/PipCoexistenceTests.cs",
+        "sha256": "2593f1106a887c15fd5e77bfef808568333c67eb7ed999e29657666be90df0d1"
+      },
+      {
+        "path": "tests/Program.cs",
+        "sha256": "ae86f754dd79c20b761a4a3ef20151e5d91f6e321d3cf9489ebedd30d9d602bd"
+      },
+      {
+        "path": "tests/PublicationTests.cs",
+        "sha256": "ab6ac9fa46338163d79e9a95780ab601003751ddf380b0d15247674f93506d96"
+      },
+      {
+        "path": "verify-package.py",
+        "sha256": "1f33c0c2a0468b6880138e709f90f696fac2302ec83f8162595fd2b0f6ef9fba"
+      }
+    ]
+  },
+  "pythonChecks": [
+    {
+      "log": ".build/hr3-r5-ci-finalization-20261023-r1/deploy-python-tests.log",
+      "logSha256": "3f3e62087fcb72d73ed067c6d1d03d9be12aa152289de7ae211b1a14d70b4037",
+      "total": 58,
+      "passed": 58,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    {
+      "log": ".build/hr3-r5-ci-finalization-20261023-r1/oci-python-tests.log",
+      "logSha256": "2317fc0bedbc260acb61f52bef4e94156cdad6f2913aaf2edcab070ac50eae62",
+      "total": 20,
+      "passed": 20,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    {
+      "log": ".build/hr3-r5-ci-finalization-20261023-r1/r5-filesystem-tests.log",
+      "logSha256": "74c52a50cca9f74d3e7fd523b370cf2c50be962ada682107b83a31baee835876",
+      "total": 34,
+      "passed": 31,
+      "skipped": 3,
+      "exitCode": 0
+    }
+  ],
+  "pythonCommands": [
+    "python -B -m unittest discover -s deploy/fanasa-organization-hr/tests -p test_*.py -v",
+    "python -B -m unittest discover -s deploy/fanasa-organization-hr/oci/tests -p test_*.py -v",
+    "python -B -m unittest discover -s deploy/fanasa-organization-hr/hr-read-host-v3-r5/tests -p test_*.py -v"
+  ],
+  "additionalHelmAttempt": {
+    "command": "python -B -m unittest discover -s deploy/fanasa-organization-hr/helm/organization-hr/tests -p test_*.py -v",
+    "status": "failed-environment",
+    "exitCode": 1,
+    "reportedTests": 5,
+    "failures": 1,
+    "errors": 2,
+    "reasons": [
+      "PyYAML absent in selected Python",
+      "Helm not available in PATH",
+      "OpenSSL not available in PATH",
+      "unreviewed destination fixture process exceeded its 5 second timeout"
+    ],
+    "log": ".build/hr3-r5-ci-finalization-20261023-r1/helm-python-tests.log",
+    "logSha256": "5cbf3670cc0b6dbc8a97e151c2c583936ac4535d37ce83b7ba5663fb218cc83e",
+    "acceptance": false
+  },
+  "ciDefinition": {
+    "activePackageConstant": "ci.py:HR3_PACKAGE",
+    "stages": [
+      "validate-host",
+      "verify-package"
+    ],
+    "secondJobScripts": [
+      "source",
+      "deploy Python unittest",
+      "verify",
+      "package",
+      "verify_bundle"
+    ],
+    "executedGitLabForThisSource": false,
+    "ociPublishClaim": false
+  },
+  "limitations": [
+    "Local source checks are not trusted GitLab evidence for an exact commit.",
+    "Final documentation, Python metadata assertions and receipt metadata postdate the 908 runtime run; compiled/build and all 138 host input bytes are unchanged.",
+    "Three real symlink tests skipped for Windows privilege; mocked reparse/link guards passed.",
+    "Additional Helm suite did not pass with this local tool environment.",
+    "PIP attribute Enforce=false currently participates in the native evaluator; no simulation-only PIP claim or new Allow.",
+    "Multi-source PIP freshness has incomplete native provenance and therefore fails closed in HR3.",
+    "No SSH, deployment, Keycloak/HR provisioning, runtime activation or operational acceptance."
+  ]
+}

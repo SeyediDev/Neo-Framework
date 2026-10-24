@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Hr3RepositoryRoot Condition="'$(Hr3RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)../../../</Hr3RepositoryRoot>
+    <Hr3ProfileRoot Condition="'$(Hr3ProfileRoot)' == ''">$(Hr3RepositoryRoot)deploy/fanasa-organization-hr/hr-read-profile-v3</Hr3ProfileRoot>
+    <Hr3PdpRoot Condition="'$(Hr3PdpRoot)' == ''">$(Hr3RepositoryRoot)deploy/fanasa-organization-hr/hr-read-pdp-v3</Hr3PdpRoot>
+  </PropertyGroup>
+</Project>

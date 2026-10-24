@@ -2,6 +2,7 @@ using Fanasa.AccessManagement.Web.Application.Access;
 using Fanasa.AccessManagement.Web.Application.Tenancy;
 using Fanasa.AccessManagement.Web.Organization;
 using Fanasa.AccessManagement.Web.Accounting;
+using Fanasa.AccessManagement.Web.Metering;
 using Fanasa.AccessManagement.Web.Persistence;
 using Fanasa.AccessManagement.Web.Security;
 using Microsoft.AspNetCore.Authentication;
@@ -13,19 +14,65 @@ public static class FabricServices
 {
     public static IServiceCollection AddIdentityOrganizationFabric(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
+        if (configuration.GetValue("Organization:MeterChanges", false)
+            && configuration.GetValue("UsageMetering:Organization:Enabled", false))
+            throw new InvalidOperationException("Legacy organization metering and measured organization usage cannot both be enabled.");
         var directory = configuration["Fabric:DataDirectory"] ?? Path.Combine(environment.ContentRootPath, "App_Data", "fabric");
         services.AddSingleton(_ => new FabricDatabase(Path.Combine(directory, "fabric.db")));
         services.AddSingleton<PersistentAccessManagement>(sp => new(sp.GetRequiredService<FabricDatabase>(), new InMemoryAccessManagement(sp.GetRequiredService<Platform.PlatformRegistry>())));
         services.Replace(ServiceDescriptor.Singleton<IAccessManagement>(sp => sp.GetRequiredService<PersistentAccessManagement>()));
-        services.Replace(ServiceDescriptor.Singleton<AccountingStore>(sp => new(directory, sp.GetRequiredService<IAccessManagement>(), database: sp.GetRequiredService<FabricDatabase>())));
+        services.TryAddSingleton(TimeProvider.System);
+        services.Replace(ServiceDescriptor.Singleton<AccountingStore>(sp => new(directory, sp.GetRequiredService<IAccessManagement>(),
+            sp.GetRequiredService<TimeProvider>(), sp.GetRequiredService<FabricDatabase>())));
+        services.AddSingleton<OrganizationUsagePriceStore>(sp => new(sp.GetRequiredService<FabricDatabase>(),
+            sp.GetRequiredService<IAccessManagement>(), sp.GetRequiredService<Platform.PlatformRegistry>(), sp.GetRequiredService<TimeProvider>()));
+        services.AddSingleton<OrganizationUsageMetering>(sp => new(configuration, sp.GetRequiredService<IAccessManagement>(),
+            sp.GetRequiredService<Platform.PlatformRegistry>(), sp.GetRequiredService<TimeProvider>(),
+            sp.GetRequiredService<ContractPolicies.ContractPolicyStore>(), sp.GetRequiredService<OrganizationUsagePriceStore>()));
+        services.AddSingleton<IUsageSnapshotValidator>(sp => sp.GetRequiredService<OrganizationUsageMetering>());
+        services.AddSingleton<MeasuredUsageStore>(sp => new(sp.GetRequiredService<FabricDatabase>(), sp.GetRequiredService<AccountingStore>(),
+            sp.GetRequiredService<IUsageSnapshotValidator>(), sp.GetRequiredService<TimeProvider>()));
+        services.AddSingleton<UsageReconciliationStore>();
+        services.AddSingleton<MeasuredUsageRecoveryStore>(sp => new(sp.GetRequiredService<FabricDatabase>(),
+            sp.GetRequiredService<MeasuredUsageStore>(), sp.GetRequiredService<TimeProvider>()));
         services.Replace(ServiceDescriptor.Singleton<OrganizationStore>(sp => new(directory, sp.GetRequiredService<IAccessManagement>(),
             configuration.GetValue("Organization:RequireSubscription", !environment.IsDevelopment()), sp.GetRequiredService<FabricDatabase>(),
-            configuration.GetValue("Organization:MeterChanges", false) ? sp.GetRequiredService<AccountingStore>() : null)));
+            configuration.GetValue("Organization:MeterChanges", false) ? sp.GetRequiredService<AccountingStore>() : null,
+            sp.GetRequiredService<OrganizationUsageMetering>(), sp.GetRequiredService<MeasuredUsageStore>(),
+            sp.GetService<ContractPolicies.IContractPolicyGatewayCommitGuard>(), sp.GetRequiredService<TemporalAccessGate>())));
         services.AddTransient<IClaimsTransformation, FabricClaimsTransformation>();
-        // Governance authoring/simulation only. Live enforcement and scheduled execution are not enabled here.
+        services.AddSingleton<OrganizationCalendarStore>();
+        services.AddSingleton<TemplateOrganizationStore>();
+        services.AddSingleton<Governance.PipStore>();
+        services.AddSingleton<Governance.IPolicyInformationPoint>(sp => sp.GetRequiredService<Governance.PipStore>());
+        services.AddSingleton<Governance.IPipSecretResolver, Governance.ConfigurationPipSecretResolver>();
+        var pipTransport = configuration.GetSection("Pip:Transport").Get<Governance.PipTransportOptions>() ?? new();
+        pipTransport.Validate();
+        services.AddSingleton(pipTransport);
+        services.AddHttpClient<Governance.IPipExternalConnector, Governance.HttpPipExternalConnector>(client => client.Timeout = Timeout.InfiniteTimeSpan)
+            .ConfigurePrimaryHttpMessageHandler(Governance.PipHttpTransport.CreateHandler);
+        services.AddSingleton<Governance.PipSyncService>();
+        services.AddSingleton<Governance.PipEducationalExample>();
+        services.AddHostedService<Governance.PipSyncWorker>();
+        // Policy authoring and simulation; runtime temporal restrictions are a separate explicit tenant opt-in.
         services.AddSingleton<Governance.AccessPolicyStore>();
-        services.TryAddSingleton(TimeProvider.System);
+        // Opt-in only: no configured tenants by default and no changes to existing identities or grants.
+        var temporalAccess = configuration.GetSection("Organization:TemporalAccess").Get<TemporalAccessOptions>() ?? new();
+        temporalAccess.Validate(); services.AddSingleton(temporalAccess);
+        services.AddSingleton<TemporalAccessGate>();
         services.AddSingleton<Governance.IdentityLifecycle>();
+        ContractPolicies.ContractGatewayContextServices.AddContractPolicyHostWithGatewayContext(services, configuration);
+        var usageOutbox = configuration.GetSection("UsageMetering:Outbox").Get<UsageOutboxOptions>() ?? new();
+        usageOutbox.Validate(); services.AddSingleton(usageOutbox);
+        if (usageOutbox.Enabled)
+        {
+            services.AddHttpClient<IUsageOutboxTransport, HttpUsageOutboxTransport>(client =>
+                client.Timeout = TimeSpan.FromSeconds(usageOutbox.TimeoutSeconds))
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+            services.AddSingleton<UsageOutboxDispatcher>(sp => new(sp.GetRequiredService<FabricDatabase>(),
+                sp.GetRequiredService<IUsageOutboxTransport>(), usageOutbox.Subscription(), sp.GetRequiredService<TimeProvider>()));
+            services.AddHostedService<UsageOutboxWorker>();
+        }
         var paymentOptions = configuration.GetSection("Payments:Zarinpal").Get<Payments.ZarinpalOptions>() ?? new();
         if (paymentOptions.Enabled)
         {
@@ -37,6 +84,7 @@ public static class FabricServices
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
         services.AddTransient<Payments.ZarinpalPayments>();
         services.AddControllers(options => options.Filters.Add<Api.AccessBoundaryFilter>());
+        services.AddControllers(options => options.Filters.Add<TemporalAccessFilter>());
         services.AddHostedService<FabricStartup>();
         return services;
     }

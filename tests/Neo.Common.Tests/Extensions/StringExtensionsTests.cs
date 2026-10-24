@@ -21,10 +21,10 @@ public class StringExtensionsTests
     }
 
     [Theory]
-    [InlineData("hello world", true, "HW")]
-    [InlineData("hello world", false, "HW")]
-    [InlineData("test,case;example", true, "TCE")]
-    [InlineData("test'case", true, "TC")]
+    [InlineData("hello world", true, "HelloWorld")]
+    [InlineData("hello world", false, "HelloWorld")]
+    [InlineData("test,case;example", true, "TestCaseExample")]
+    [InlineData("test'case", true, "Testcase")]
     public void ToPascalCase_WithLower_ShouldConvertCorrectly(string input, bool lower, string expected)
     {
         // Act

@@ -1,0 +1,91 @@
+{
+  "packageId": "fanasa.contract-policy",
+  "packageVersion": "1.0.0",
+  "profileId": "fanasa.contract-policy/1",
+  "createdDate": "2026-10-10",
+  "dateTimezone": "Asia/Tehran",
+  "mode": "offline-reference",
+  "syntheticFixtures": true,
+  "pilot": {
+    "productId": "club",
+    "action": "report.read",
+    "audience": "fanasa-club-api",
+    "ownerTenantId": "tenant-a",
+    "consumerTenantId": "tenant-b"
+  },
+  "schemas": {
+    "projection": "schemas/contract-access-projection.v1.schema.json",
+    "limits": "schemas/limits.v1.schema.json",
+    "decision": "schemas/decision.v1.schema.json",
+    "normalizedEvent": "schemas/projection-event.v1.schema.json",
+    "trustedSampleContext": "schemas/request-context.v1.schema.json"
+  },
+  "obligations": [
+    "urn:fanasa:obligation:admit-allocation:1",
+    "urn:fanasa:obligation:resource-tenant:1"
+  ],
+  "validation": {
+    "nodeVersion": "24.12.0",
+    "command": "node --test --experimental-test-isolation=none tests/contract-policy.test.cjs",
+    "tests": 145,
+    "pass": 145,
+    "fail": 0,
+    "exitCode": 0
+  },
+  "conformanceClaim": false,
+  "runtimeWired": false,
+  "sha256": [
+    {
+      "file": "fixtures/context.v1.json",
+      "sha256": "672a88b7e02c62f0f8b58dcc98dcb1699c4d804426b8c1758bd5c63520e80955"
+    },
+    {
+      "file": "fixtures/golden-decisions.v1.json",
+      "sha256": "e0688f0e20b10190d4c42f81030e6601d81384efe60f6b8a6107d8341eaf30dd"
+    },
+    {
+      "file": "fixtures/projection-event.v1.json",
+      "sha256": "d34759be5b1adc9ae4e6ca5a4a3205552976ef830f7c172406e668589bb1889d"
+    },
+    {
+      "file": "fixtures/projection.v1.json",
+      "sha256": "3d92552fa06b0a414bfa4823ee6c7e6cda463c97a0de35b0559f77cc97f39b96"
+    },
+    {
+      "file": "sample/contract-policy.cjs",
+      "sha256": "24c9e688f0eb521f6cd91301cdbad972113f108df745ea6f6666d46330e42853"
+    },
+    {
+      "file": "sample/run-fixture.cjs",
+      "sha256": "f85ddce7fcab9ad752d7d5ec1400b57e56b052645c96f880fa3954aca0fc28cb"
+    },
+    {
+      "file": "sample/schema-validator.cjs",
+      "sha256": "6b69d3d1586d2021b68448fff2e159826725fd7234a8b55779b60c5142f1c6f1"
+    },
+    {
+      "file": "schemas/contract-access-projection.v1.schema.json",
+      "sha256": "0a4f15771ad0cfd15e64ac0dc22730ffd19997ea7273caa389aaf6d86ffbf402"
+    },
+    {
+      "file": "schemas/decision.v1.schema.json",
+      "sha256": "168b9026b3464e682d3aff7fd26ea35113e5eae02ff270380eb1e22e1da9eff2"
+    },
+    {
+      "file": "schemas/limits.v1.schema.json",
+      "sha256": "5ec5dd597c94d7dad3455fd79be2911b2b44626968e1ce803bd2b35ef43a0c09"
+    },
+    {
+      "file": "schemas/projection-event.v1.schema.json",
+      "sha256": "96decadaea560bb0ac2cd31a7827bd15dab417ad36e5983165ace5b77fe4235c"
+    },
+    {
+      "file": "schemas/request-context.v1.schema.json",
+      "sha256": "80da7caecd00b8741ab819c95334cee5db1c41920ac716ff618885551cfd4708"
+    },
+    {
+      "file": "tests/contract-policy.test.cjs",
+      "sha256": "e86926013cd4817a341eb72f70d990127fa98ac78c4532a6f1e124d5b4bf2efb"
+    }
+  ]
+}

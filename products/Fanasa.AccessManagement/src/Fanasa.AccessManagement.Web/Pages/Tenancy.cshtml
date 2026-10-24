@@ -8,6 +8,7 @@ else {
 <div id="tenancy-app" data-tenant="@Model.SelectedTenant">
 @Html.AntiForgeryToken()
 <div class="org-toolbar"><form method="get"><label>سازمان <select name="tenant" onchange="this.form.submit()">@foreach(var tenant in Model.Tenants){<option value="@tenant.Id" selected="@(tenant.Id == Model.SelectedTenant)">@tenant.DisplayName</option>}</select></label></form><button id="tenancy-refresh" class="button secondary">بارگذاری مجدد</button></div>
+@if(Model.IsTemplateTenant){<p class="governance-note">@Fanasa.AccessManagement.Web.Organization.TemplateOrganizationWriteGuard.Message <a href="/Organization?tenant=@Model.SelectedTenant">بازگشت به ساختار و درس‌های سازمان الگو</a></p>}
 <p id="tenancy-message" role="status" aria-live="polite"></p><div class="grid-two"><section class="panel"><h3>اعضای سازمان</h3><div id="tenancy-members"></div></section><section class="panel"><h3>اشتراک‌های سرویس</h3><div id="tenancy-subscriptions"></div></section></div>
 @if(Model.CanManage){<section class="panel org-editor"><h3>ثبت تغییر</h3><form id="tenancy-command">
 <label>عملیات <select name="operation"><option value="member">افزودن عضو</option><option value="membership">فعال / غیرفعال کردن عضو</option><option value="subscribe">ثبت اشتراک</option><option value="subscription">تعلیق / تمدید اشتراک</option>@if(Model.IsAdmin){<option value="grant">ثبت / لغو مجوز</option><option value="plan">تعریف پلن مصرفی</option><option value="tenant">ثبت سازمان</option>}</select></label>

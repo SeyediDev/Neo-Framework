@@ -1,0 +1,136 @@
+PASS PCC anonymous producer
+PASS PCC cookie cannot publish contracts
+PASS PCC bad producer signature
+PASS PCC wrong producer issuer
+PASS PCC wrong producer audience
+PASS PCC expired producer JWT
+PASS PCC wrong producer client
+PASS PCC missing producer scope
+PASS PCC signed producer duplicate iss is denied
+PASS PCC signed producer duplicate azp is denied
+PASS PCC signed producer duplicate sub is denied
+PASS PCC signed producer duplicate scope is denied
+PASS PCC signed producer duplicate aud is denied
+PASS PCC signed producer duplicate exp is denied
+PASS PCC signed producer duplicate nbf is denied
+PASS PCC escaped duplicate producer issuer has the same decoded claim name
+PASS PCC signed malformed producer missing-exp is denied
+PASS PCC signed malformed producer quoted-exp is denied
+PASS PCC signed malformed producer fractional-exp is denied
+PASS PCC signed malformed producer exponent-exp is denied
+PASS PCC signed malformed producer quoted-nbf is denied
+PASS PCC signed malformed producer negative-nbf is denied
+PASS PCC signed malformed producer future-nbf is denied
+PASS PCC signed malformed producer array-scope is denied
+PASS PCC signed malformed producer tab-scope is denied
+PASS PCC signed malformed producer mixed-audience is denied
+PASS PCC central producer registration is checked on each request
+PASS PCC central producer allowed scope cannot be forged by JWT claims
+PASS PCC registered signed producer persists the normalized complete projection
+PASS PCC exact HTTP replay returns duplicate and adds no durable mutation
+PASS PCC signed producer expiring during streamed body read cannot commit
+PASS PCC signed audience array retains exact registered producer authority
+PASS PCC body producer cannot rename the signed central producer
+PASS PCC strict HTTP event parser rejects duplicate fields
+PASS PCC real registry, membership, grant, role and published policy produce pure Permit
+PASS PCC caller body attributes and headers cannot replace server tenant, grant or environment
+PASS PCC forged headers cannot replace server tenant or deployment on empty-body PDP
+PASS PCC anonymous PDP
+PASS PCC cookie cannot evaluate bearer operation
+PASS PCC bad consumer signature
+PASS PCC wrong consumer issuer
+PASS PCC wrong consumer audience
+PASS PCC expired consumer JWT
+PASS PCC wrong consumer client
+PASS PCC missing consumer scope
+PASS PCC unknown member cannot use forged permission claims
+PASS PCC route tenant prevents cross-tenant access
+PASS PCC signed consumer duplicate iss is denied
+PASS PCC signed consumer duplicate azp is denied
+PASS PCC signed consumer duplicate sub is denied
+PASS PCC signed consumer duplicate scope is denied
+PASS PCC signed consumer duplicate aud is denied
+PASS PCC signed consumer duplicate exp is denied
+PASS PCC signed consumer duplicate nbf is denied
+PASS PCC signed malformed consumer missing-exp is denied
+PASS PCC signed malformed consumer quoted-exp is denied
+PASS PCC signed malformed consumer fractional-exp is denied
+PASS PCC signed malformed consumer exponent-exp is denied
+PASS PCC signed malformed consumer quoted-nbf is denied
+PASS PCC signed malformed consumer negative-nbf is denied
+PASS PCC signed malformed consumer future-nbf is denied
+PASS PCC anonymous administration
+PASS PCC ordinary member cookie administration
+PASS PCC producer bearer cannot administer
+PASS PCC consumer bearer permission claim cannot administer
+PASS PCC PlatformAdmin cookie can read authoritative policy and role assignment
+PASS PCC administrative policy missing CSRF is denied
+PASS PCC administrative policy forged CSRF is denied
+PASS PCC administrative policy/retire missing CSRF is denied
+PASS PCC administrative policy/retire forged CSRF is denied
+PASS PCC administrative role-assignments missing CSRF is denied
+PASS PCC administrative role-assignments forged CSRF is denied
+PASS PCC cookie admin publishes versioned policy with CSRF without creating grants
+PASS PCC cookie admin role revocation uses CSRF and preserves independent grants
+PASS PCC separately published legacy Deny vetoes the native contract Permit
+PASS PCC corrupted durable role assignment tenant fails closed
+PASS PCC corrupted durable role assignment subject fails closed
+PASS PCC corrupted durable role assignment revision fails closed
+PASS PCC corrupted durable role assignment window fails closed
+PASS PCC corrupted durable role assignment role fails closed
+PASS PCC corrupted durable role assignment reason fails closed
+PASS PCC corrupted durable published policy tenant fails closed
+PASS PCC corrupted durable published policy revision fails closed
+PASS PCC corrupted durable published policy immutable-version fails closed
+PASS PCC corrupted durable published policy reason fails closed
+PASS PCC offboarded member role can still be explicitly revoked
+PASS PCC current member grant revocation prevents Permit
+PASS PCC current member offboarding prevents Permit
+PASS PCC inactive authoritative tenant prevents Permit
+PASS PCC inactive central consumer client prevents Permit
+PASS PCC revoked central consumer scope prevents Permit
+PASS PCC explicit product role assignment is independent of direct permission grant
+PASS PCC product role must retain the actual organization.write permission
+PASS PCC server published policy mismatch cannot be resolved by projection or client claims
+PASS PCC server policy retirement vetoes purchased eligibility
+PASS PCC pure Permit does not satisfy mandatory execution obligations
+PASS PCC native admission requires definitive fresh obligations: complete
+PASS PCC native admission requires definitive fresh obligations: partial
+PASS PCC native admission requires definitive fresh obligations: unknown
+PASS PCC native admission requires definitive fresh obligations: unknown-superset
+PASS PCC native admission requires definitive fresh obligations: duplicate
+PASS PCC native admission requires definitive fresh obligations: null
+PASS PCC native admission requires definitive fresh obligations: throws
+PASS PCC native admission requires definitive fresh obligations: changed-role
+PASS PCC native admission requires definitive fresh obligations: changed-projection
+PASS PCC native admission requires definitive fresh obligations: expired
+PASS PCC native admission preserves cancellation before invoking executor
+PASS PCC same aggregate version with changed data remains a durable conflict
+PASS PCC shared allocation rejects changed limits under an equal config revision
+PASS PCC two independent Fabric writers serialize projection versions and receipt commits
+PASS PCC outer Fabric rollback removes state and receipt changes together
+PASS PCC producer revocation at final commit rolls back projection receipts and outbox
+PASS PCC newer suspension survives stale activation and receipt replay
+PASS PCC reopening actual SQLite restores projection and replay fingerprints
+FAIL PCC Gateway limits hashes match the original NeoContract dispatcher implementation: Expected 15073d8b69029122113e72d6a2be168cd5f9b3e0ee9c7f759ca9906f8f14ef90; actual 6050757d5f73c4813ae3edb8f4465ee1d3c98b4719ae94c41e00c78aeab958c1
+PASS PCC Gateway publication remains pending after projection apply
+PASS PCC Projection HTTP response remains 202 while Gateway observer is unavailable
+PASS PCC Gateway observation rejects contract-version without durable writes
+PASS PCC Gateway observation rejects allocation without durable writes
+PASS PCC Gateway observation rejects canonical-scope without durable writes
+PASS PCC Gateway observation rejects config-revision without durable writes
+PASS PCC Gateway observation rejects limits-hash without durable writes
+PASS PCC Gateway observation rejects before-effective without durable writes
+PASS PCC Gateway observation rejects future without durable writes
+PASS PCC Gateway observation rejects invalid-time without durable writes
+PASS PCC Gateway observation rejects denied authority
+PASS PCC Gateway observation rolls back late authority revocation
+PASS PCC Exact observed configuration is durably acknowledged and replay emits once
+PASS PCC Observed Gateway receipt is immutable
+PASS PCC Gateway publication returns detached nested snapshots
+PASS PCC Observed Gateway acknowledgement survives Fabric reopen
+PASS PCC Shared allocation drift vetoes an old Gateway acknowledgement
+PASS PCC Current duplicate event freezes pending publication
+PASS PCC Superseded and unseen stale projection cannot acknowledge old configuration
+PCC contract policy integration: 133 passed, 1 failed.
+

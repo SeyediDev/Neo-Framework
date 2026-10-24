@@ -1,0 +1,14 @@
+{
+  "recordedDate": "2026-10-12",
+  "mode": "static-demo",
+  "syntaxCheck": {"tool": "node --check", "exitCode": 0},
+  "domContract": {"missingIds": [], "duplicateIds": [], "views": 5},
+  "sourceContainsBackendNetworkCalls": false,
+  "browserVerification": {"completed": false, "reason": "Two in-app browser navigation tool timeouts; no visual or responsive acceptance claimed."},
+  "productionAcceptance": false,
+  "files": {
+    "wwwroot/previews/control-center.html": "501b5b737e64f50a417c8f50d02ba206c6c513f8376c87ce9120b6e47f62b381",
+    "wwwroot/css/control-center-preview.css": "be8d24e9659ed5979b7ac94de4e372bf7c4712c02aeccf58868bc8085ffb1484",
+    "wwwroot/js/control-center-preview.js": "3ceef8f9409a9eaf62e955add65035018b68ec8c1c8b7752b418750ceb8fa650"
+  }
+}

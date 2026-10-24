@@ -1,0 +1,22 @@
+✔ wire decimal amounts and receipt amounts retain every digit (10.9522ms)
+✔ amount parser preserves escaped text and escaped property names (4.986ms)
+✔ decimal exponents expand without floating point arithmetic (2.3987ms)
+✔ reason is explicit and bounded before a request can be created (1.3825ms)
+✔ only the exact pending operation in a fresh complete verified report is actionable (2.9624ms)
+✔ recovery command carries an immutable reviewed identity and trimmed reason (3.4894ms)
+✔ double submission is refused while the first request is in flight (2.6082ms)
+✔ timeout retry keeps exactly the same command and request UUID (1.3983ms)
+✔ unknown outcome locks organization, operation, fingerprint and reason (10.6309ms)
+✔ a mismatched or malformed acknowledgement leaves the outcome unknown (5.6826ms)
+✔ a known pending receipt allows a later deliberate attempt with a fresh UUID (1.3988ms)
+✔ known rejection clears command but requires the caller to refresh evidence (1.3911ms)
+✔ network and server failure cannot justify creating a new request (3.6767ms)
+✔ saved unresolved command resumes after reload without a new UUID or automatic submission (3.5367ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1321.5695

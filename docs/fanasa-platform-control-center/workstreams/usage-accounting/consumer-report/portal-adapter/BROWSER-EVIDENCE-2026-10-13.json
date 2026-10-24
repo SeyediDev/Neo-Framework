@@ -1,0 +1,386 @@
+{
+  "passed": true,
+  "browserVersion": "155.0.8059.40",
+  "browserExecutable": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "playwrightModule": "C:/Users/JavadSeyediPC/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright",
+  "fixtureDirectory": "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\usage-accounting\\consumer-report\\portal-adapter\\tests\\results\\fixtures-2026-10-13-a01",
+  "viewSha256": "e13b12ac68a66f48cadfffb11285b70b29cba123ddcaf2674d351b4946b5998f",
+  "styleSha256": "7f10a69e2d96c148a017f26744d1adf77bb94752b366dc89d6c6bba9e2f9821f",
+  "fixtureSha256": {
+    "ready-mixed": "535fb0689a06feb1b104ad48577a1c4d767852d8a9048664e2e678bc2632d78f",
+    "ready-empty": "ee7ec650f0a0493e0f4273dba131f9a6a97db7c1a3851fd496dd8b7361ed1b15",
+    "ready-measured": "bb1a995b913b474254c8f88214227b61dbb14c1cfdb11a4567fed8e8e78fedb0",
+    "ready-legacy": "00a840ad08220adc31f5d696dc87ad1c35bf98e5287fc9d3f12daa4d9e4b0dca",
+    "large-usd": "e76e8f41b721ccabf791eadbec5f7260dc092c91f6868d8fddd44f72132e3376",
+    "not-recorded": "5d60baa872ab21baa769c3f05e5f4f79836dc5ce7fbe4290866e2ffd341d61d5",
+    "incomplete": "f258882fe1bf5aafa351b765399592ce965beb9c9fa7c0aab8f0ce1a581622bd",
+    "unavailable": "bc354ae2d1d7600dcd2fff53f10359fa65f10d4c53f22b33021da4609602a913"
+  },
+  "groups": 19,
+  "passedGroups": 19,
+  "results": [
+    {
+      "name": "local renderer and embedded Vazir load without a server",
+      "passed": true
+    },
+    {
+      "name": "mixed measured and unknown consumption renders exactly at 1440px",
+      "passed": true
+    },
+    {
+      "name": "RTL document contains its table at 1440px",
+      "passed": true
+    },
+    {
+      "name": "table scroll region is keyboard accessible at 1440px",
+      "passed": true
+    },
+    {
+      "name": "mixed measured and unknown consumption renders exactly at 390px",
+      "passed": true
+    },
+    {
+      "name": "RTL document contains its table at 390px",
+      "passed": true
+    },
+    {
+      "name": "table scroll region is keyboard accessible at 390px",
+      "passed": true
+    },
+    {
+      "name": "mixed measured and unknown consumption renders exactly at 320px",
+      "passed": true
+    },
+    {
+      "name": "RTL document contains its table at 320px",
+      "passed": true
+    },
+    {
+      "name": "table scroll region is keyboard accessible at 320px",
+      "passed": true
+    },
+    {
+      "name": "persisted empty ready report displays known zero without unknown rows",
+      "passed": true
+    },
+    {
+      "name": "notRecorded remains distinct with no partial or fabricated amounts",
+      "passed": true
+    },
+    {
+      "name": "incomplete remains distinct with no partial or fabricated amounts",
+      "passed": true
+    },
+    {
+      "name": "unavailable remains distinct with no partial or fabricated amounts",
+      "passed": true
+    },
+    {
+      "name": "large USD values retain every digit and fractional zero",
+      "passed": true
+    },
+    {
+      "name": "approved hostile display name remains text without execution or requests",
+      "passed": true
+    },
+    {
+      "name": "organization change clears all previous financial and historical display data",
+      "passed": true
+    },
+    {
+      "name": "malformed numeric money clears a previously ready report",
+      "passed": true
+    },
+    {
+      "name": "all pages remain free of network traffic, dialogs, and uncaught errors",
+      "passed": true
+    }
+  ],
+  "geometry": [
+    {
+      "name": "mixed-1440",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440,
+      "direction": "rtl",
+      "expanding": []
+    },
+    {
+      "name": "mixed-390",
+      "viewport": 390,
+      "document": 390,
+      "body": 390,
+      "direction": "rtl",
+      "expanding": [
+        {
+          "tag": "TABLE",
+          "class": "consumer-usage-table",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "THEAD",
+          "class": "",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "TR",
+          "class": "",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -32.921875,
+          "right": 124.078125
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -100.9375,
+          "right": -32.921875
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -210.28125,
+          "right": -100.9375
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -292,
+          "right": -210.28125
+        },
+        {
+          "tag": "TBODY",
+          "class": "",
+          "left": -292,
+          "right": 348
+        }
+      ]
+    },
+    {
+      "name": "mixed-320",
+      "viewport": 320,
+      "document": 320,
+      "body": 320,
+      "direction": "rtl",
+      "expanding": [
+        {
+          "tag": "TABLE",
+          "class": "consumer-usage-table",
+          "left": -350,
+          "right": 290
+        },
+        {
+          "tag": "THEAD",
+          "class": "",
+          "left": -350,
+          "right": 290
+        },
+        {
+          "tag": "TR",
+          "class": "",
+          "left": -350,
+          "right": 290
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -90.921875,
+          "right": 66.078125
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -158.9375,
+          "right": -90.921875
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -268.28125,
+          "right": -158.9375
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -350,
+          "right": -268.28125
+        },
+        {
+          "tag": "TBODY",
+          "class": "",
+          "left": -350,
+          "right": 290
+        }
+      ]
+    },
+    {
+      "name": "ready-empty-390",
+      "viewport": 390,
+      "document": 390,
+      "body": 390,
+      "direction": "rtl",
+      "expanding": []
+    },
+    {
+      "name": "not-recorded-390",
+      "viewport": 390,
+      "document": 390,
+      "body": 390,
+      "direction": "rtl",
+      "expanding": []
+    },
+    {
+      "name": "incomplete-390",
+      "viewport": 390,
+      "document": 390,
+      "body": 390,
+      "direction": "rtl",
+      "expanding": []
+    },
+    {
+      "name": "unavailable-390",
+      "viewport": 390,
+      "document": 390,
+      "body": 390,
+      "direction": "rtl",
+      "expanding": []
+    },
+    {
+      "name": "large-usd-390",
+      "viewport": 390,
+      "document": 390,
+      "body": 390,
+      "direction": "rtl",
+      "expanding": [
+        {
+          "tag": "TABLE",
+          "class": "consumer-usage-table",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "THEAD",
+          "class": "",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "TR",
+          "class": "",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -5.0625,
+          "right": 60.53125
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -215.859375,
+          "right": -5.0625
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -292,
+          "right": -215.859375
+        },
+        {
+          "tag": "TBODY",
+          "class": "",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "TR",
+          "class": "",
+          "left": -292,
+          "right": 348
+        }
+      ]
+    },
+    {
+      "name": "hostile-name-390",
+      "viewport": 390,
+      "document": 390,
+      "body": 390,
+      "direction": "rtl",
+      "expanding": [
+        {
+          "tag": "TABLE",
+          "class": "consumer-usage-table",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "THEAD",
+          "class": "",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "TR",
+          "class": "",
+          "left": -292,
+          "right": 348
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -44.140625,
+          "right": 107.53125
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -107.390625,
+          "right": -44.140625
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -213.03125,
+          "right": -107.390625
+        },
+        {
+          "tag": "TH",
+          "class": "",
+          "left": -292,
+          "right": -213.03125
+        },
+        {
+          "tag": "TBODY",
+          "class": "",
+          "left": -292,
+          "right": 348
+        }
+      ]
+    }
+  ],
+  "requests": [],
+  "pageErrors": [],
+  "dialogs": [],
+  "screenshots": [
+    "ready-mixed-1440.png",
+    "ready-mixed-390.png",
+    "ready-mixed-390-amounts.png",
+    "ready-mixed-320.png",
+    "ready-mixed-320-amounts.png",
+    "ready-empty-390.png",
+    "not-recorded-390.png",
+    "incomplete-390.png",
+    "unavailable-390.png",
+    "large-usd-390.png",
+    "large-usd-390-amounts.png",
+    "scope-rejected-390.png"
+  ]
+}

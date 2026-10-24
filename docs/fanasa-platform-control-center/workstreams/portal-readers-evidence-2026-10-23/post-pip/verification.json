@@ -1,0 +1,703 @@
+{
+  "startedAtUtc": "2026-10-23T13:14:41.159856+00:00",
+  "scope": "local Release integration after PIP",
+  "configuration": "Release",
+  "nugetAuditDisabledForLocalRunOnly": true,
+  "deployed": false,
+  "commands": [
+    {
+      "name": "UI.AccessManagement",
+      "command": [
+        "E:\\Program Files\\nodejs\\node.EXE",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "products/Fanasa.AccessManagement/tests/governance-ui.test.cjs",
+        "products/Fanasa.AccessManagement/tests/organization-calendar-ui.test.cjs",
+        "products/Fanasa.AccessManagement/tests/pip-ui.test.cjs",
+        "products/Fanasa.AccessManagement/tests/pip-governance-ui.test.cjs",
+        "products/Fanasa.AccessManagement/tests/platform-navigation.test.cjs",
+        "products/Fanasa.AccessManagement/tests/architecture-ui.test.cjs",
+        "products/Fanasa.AccessManagement/tests/usage-accounting-ui.test.cjs"
+      ],
+      "startedAtUtc": "2026-10-23T13:14:42.860329+00:00",
+      "log": "UI.AccessManagement.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:14:45.485251+00:00",
+      "logSha256": "00023446e67bb09043c7a68d37496c5fab176946ea9af19bcf7a2d04361b4f91",
+      "checks": 50,
+      "pass": 50,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "name": "UI.Portal",
+      "command": [
+        "E:\\Program Files\\nodejs\\node.EXE",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "products/Fanasa.UnifiedPortal/tests/portal-client.test.cjs",
+        "products/Fanasa.UnifiedPortal/tests/service-catalog.test.cjs",
+        "products/Fanasa.UnifiedPortal/tests/workspace-ui.test.cjs",
+        "products/Fanasa.UnifiedPortal/tests/workspace-transport.test.cjs"
+      ],
+      "startedAtUtc": "2026-10-23T13:14:45.512955+00:00",
+      "log": "UI.Portal.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:14:47.158844+00:00",
+      "logSha256": "7663937d9eeb4e98ffc2a009e85def0b3d03f3578aed5e92bfacc9894ec90e35",
+      "checks": 49,
+      "pass": 49,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Build.AccessManagement",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "products/Fanasa.AccessManagement/Fanasa.AccessManagement.slnx",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:14:47.187073+00:00",
+      "log": "Build.AccessManagement.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:15:55.648626+00:00",
+      "logSha256": "311ef722c33acad26715d1abf2e56006bf6df1767eeff9532a6ad286c7566300",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.Portal",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "products/Fanasa.UnifiedPortal/Fanasa.UnifiedPortal.slnx",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:15:55.677153+00:00",
+      "log": "Build.Portal.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:16:19.378125+00:00",
+      "logSha256": "80670f9834b0c82105b2c6d7535ac796a23a50592fc72b806c55a56537637795",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.ConsumerApplicationCatalog.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "products/Fanasa.AccessManagement/tests/ConsumerApplicationCatalog.Tests/ConsumerApplicationCatalog.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:16:19.402295+00:00",
+      "log": "Build.ConsumerApplicationCatalog.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:16:58.828637+00:00",
+      "logSha256": "5750a848914538e71159449d2b1077aa005a49e0189f087a01888567054db0fb",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.PublishedCatalog.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "products/Fanasa.AccessManagement/tests/PublishedCatalog.Tests/PublishedCatalog.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:16:58.849303+00:00",
+      "log": "Build.PublishedCatalog.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:17:10.894748+00:00",
+      "logSha256": "2a9369b883b44e98ab4c4410924b395b65d34d555a3cab14255c266b704e20e8",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.ConsumerUsage.Api.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "products/Fanasa.AccessManagement/tests/ConsumerUsage.Api.Tests/ConsumerUsage.Api.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:17:10.912842+00:00",
+      "log": "Build.ConsumerUsage.Api.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:17:23.379736+00:00",
+      "logSha256": "c60d89954ae79eaa16c4d4d53b2786acfde4bbc11fa4fe464a0797d1d6e6d008",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.ConsumerUsageReport.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "docs/fanasa-platform-control-center/workstreams/usage-accounting/consumer-report/tests/ConsumerUsageReport.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:17:23.411244+00:00",
+      "log": "Build.ConsumerUsageReport.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:17:36.643050+00:00",
+      "logSha256": "c4082c901f247bb35ce13ff1a2bae0940faba844ce005367bbab6ee6dab9eeb7",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.PortalAdapter.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "docs/fanasa-platform-control-center/workstreams/usage-accounting/consumer-report/portal-adapter/tests/PortalAdapter.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:17:36.670209+00:00",
+      "log": "Build.PortalAdapter.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:17:49.435865+00:00",
+      "logSha256": "8e6d7dea0a8626d5d85a6fad1431e533331ed0c176c95a62e59b8ccf6d3d7f6c",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.PortalTransport.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "docs/fanasa-platform-control-center/workstreams/usage-accounting/consumer-report/portal-transport/tests/PortalTransport.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:17:49.467628+00:00",
+      "log": "Build.PortalTransport.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:18:00.335855+00:00",
+      "logSha256": "caa332d163e6fbab5e753545075858ca2ecde45ebdf2418dc1f16795b1818730",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.Organization.Temporal.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "products/Fanasa.AccessManagement/tests/Organization.Temporal.Tests/Organization.Temporal.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:18:00.433414+00:00",
+      "log": "Build.Organization.Temporal.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:18:14.627191+00:00",
+      "logSha256": "cc3c41193614aa0989376d5eb0aa902270f86a0e0c7a2c9faad989a17202a691",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Build.Organization.Calendar.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "build",
+        "products/Fanasa.AccessManagement/tests/Organization.Calendar.Tests/Organization.Calendar.Tests.csproj",
+        "-c",
+        "Release",
+        "--artifacts-path",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-nr:false",
+        "-v:minimal"
+      ],
+      "startedAtUtc": "2026-10-23T13:18:14.654154+00:00",
+      "log": "Build.Organization.Calendar.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:18:25.663346+00:00",
+      "logSha256": "c27e591ea8096b41b79432b75492984e1eaa3019219e073f9cc2da0a3ade1d3c",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "Run.ConsumerApplicationCatalog.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\consumerapplicationcatalog.tests\\release\\ConsumerApplicationCatalog.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:18:35.280733+00:00",
+      "log": "Run.ConsumerApplicationCatalog.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:18:54.550871+00:00",
+      "logSha256": "735128d632d02fd8ff389f3b86f40d22f8ee90dfc23ea192ec9021321c0281f9",
+      "checks": 223
+    },
+    {
+      "name": "Run.PublishedCatalog.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\publishedcatalog.tests\\release\\PublishedCatalog.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:18:54.613866+00:00",
+      "log": "Run.PublishedCatalog.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:18:59.352369+00:00",
+      "logSha256": "54244011f26f7b0f0323c7384b44d72ca7dd6dde2ad28854a5089fe106419a63",
+      "checks": 65
+    },
+    {
+      "name": "Run.ConsumerUsage.Api.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\consumerusage.api.tests\\release\\ConsumerUsage.Api.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:18:59.403904+00:00",
+      "log": "Run.ConsumerUsage.Api.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:19:09.197914+00:00",
+      "logSha256": "50fc534caafac246d6d15a70a255a5d5a5b91ac0e0c85c6a6028ef57252b3a56",
+      "checks": 106
+    },
+    {
+      "name": "Run.ConsumerUsageReport.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\consumerusagereport.tests\\release\\ConsumerUsageReport.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:19:09.252158+00:00",
+      "log": "Run.ConsumerUsageReport.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:19:18.183966+00:00",
+      "logSha256": "6d059f93d28b3dc529c1ff50dc8e7f9fff81c38395f5aa8e2914305cd69eac2d",
+      "checks": 145
+    },
+    {
+      "name": "Run.PortalAdapter.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\portaladapter.tests\\release\\PortalAdapter.Tests.dll",
+        "--export-fixtures",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\adapter-fixtures"
+      ],
+      "startedAtUtc": "2026-10-23T13:19:18.235009+00:00",
+      "log": "Run.PortalAdapter.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:19:20.574842+00:00",
+      "logSha256": "8e4cdd9d1e1c2f0137281679a8027fe751dd7e6f3deb343d8976d81ccc2ab7a1",
+      "checks": 116
+    },
+    {
+      "name": "Run.PortalTransport.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\portaltransport.tests\\release\\PortalTransport.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:19:20.601865+00:00",
+      "log": "Run.PortalTransport.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:19:21.479679+00:00",
+      "logSha256": "5a32e19533bece3f306da6330cf73f8498246b85825ca4e16be6a70e1b050e09",
+      "checks": null
+    },
+    {
+      "name": "Run.Organization.Temporal.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\organization.temporal.tests\\release\\Organization.Temporal.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:19:21.508325+00:00",
+      "log": "Run.Organization.Temporal.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:19:27.064663+00:00",
+      "logSha256": "0154c3e56a75f0d6a0e41ba9363099eff660b252c90eb2cfa5c29114da1a41d7",
+      "checks": 141
+    },
+    {
+      "name": "Run.Organization.Calendar.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\organization.calendar.tests\\release\\Organization.Calendar.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:19:27.124157+00:00",
+      "log": "Run.Organization.Calendar.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:19:30.592149+00:00",
+      "logSha256": "24aeddab0821ff83b98865a45ace2202f1d374a4f81ec7e1a1525bef43df85ba",
+      "checks": 62
+    },
+    {
+      "name": "Run.Organization.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\organization.tests\\release\\Organization.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:19:30.620456+00:00",
+      "log": "Run.Organization.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:20:39.894537+00:00",
+      "logSha256": "b8fe4f3c44f202f060807f95cad6e113aef7c3029dc7634ccd4fed1b93048fef",
+      "checks": 585
+    },
+    {
+      "name": "Run.Portal.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\portal.tests\\release\\Portal.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:20:39.937391+00:00",
+      "log": "Run.Portal.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:20:40.835581+00:00",
+      "logSha256": "a82b0441e06f6dceae1c3e37532790fa2c14da3c666796a0a05369c434f4e614",
+      "checks": 100
+    },
+    {
+      "name": "Run.Discovery.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\discovery.tests\\release\\Discovery.Tests.dll",
+        "--http"
+      ],
+      "startedAtUtc": "2026-10-23T13:20:40.889985+00:00",
+      "log": "Run.Discovery.Tests.log",
+      "exitCode": 3762504530,
+      "completedAtUtc": "2026-10-23T13:20:50.198951+00:00",
+      "logSha256": "892845758f288703d6a3b041e589095eea6a389f6da8babb20350176206f503c",
+      "checks": null
+    },
+    {
+      "name": "Run.UsageProjection.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\usageprojection.tests\\release\\UsageProjection.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:20:50.236457+00:00",
+      "log": "Run.UsageProjection.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:20:51.342288+00:00",
+      "logSha256": "c4a7c1e33325de1ae61788f3abc12f2cfd581c662c306f018648f55189e97f38",
+      "checks": 90
+    },
+    {
+      "name": "Run.UsageTransport.Tests",
+      "command": [
+        "C:\\Program Files\\dotnet\\dotnet.EXE",
+        "E:\\SJVS\\Projects\\Neo\\.build\\portal-readers-post-pip-20261023\\bin\\usagetransport.tests\\release\\UsageTransport.Tests.dll"
+      ],
+      "startedAtUtc": "2026-10-23T13:20:51.377438+00:00",
+      "log": "Run.UsageTransport.Tests.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:20:52.308324+00:00",
+      "logSha256": "2019414481a1b164b59cfa9546367d7377458ed99f24616b20e7376b2d99ea34",
+      "checks": 145
+    },
+    {
+      "name": "UI.ConsumerReport",
+      "command": [
+        "E:\\Program Files\\nodejs\\node.EXE",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "docs/fanasa-platform-control-center/workstreams/usage-accounting/consumer-report/portal-adapter/tests/usage-report-view.test.cjs"
+      ],
+      "startedAtUtc": "2026-10-23T13:20:52.338929+00:00",
+      "log": "UI.ConsumerReport.log",
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-23T13:20:53.122274+00:00",
+      "logSha256": "32178c5d6af274c636ff88ca155df9ef7ba80f86578a2b83a0dba7122a987021",
+      "checks": 24,
+      "pass": 24,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  ],
+  "limitations": [
+    "Synthetic identities and isolated fixture databases; no live SSO, grants, Gateway or operational acceptance.",
+    "Selected source inventory excludes generated build output and evidence; no repository-wide lock."
+  ],
+  "assembliesBeforeRun": [
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerApplicationCatalog.Tests/release/ConsumerApplicationCatalog.Tests.dll",
+      "sha256": "1ba11e8a04011487f9de3db90158dc03eea10b13722a92be656cb04a2191a476"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerApplicationCatalog.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsage.Api.Tests/release/ConsumerUsage.Api.Tests.dll",
+      "sha256": "3c089b7d02e60888421ab267b866d3f302bb6b8524d6f41551497e762f72fef8"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsage.Api.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsageReport.Tests/release/ConsumerUsageReport.Tests.dll",
+      "sha256": "68db49fcec34582574cdc0d80066e936c952897c56060f312d4e37a21034bd6c"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsageReport.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Discovery.Tests/release/Discovery.Tests.dll",
+      "sha256": "46675f3a3ba3af4475b224a4a8741f888b3761a53a4cd31afcdaa7f1bfc78c51"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Discovery.Tests/release/Fanasa.UnifiedPortal.Web.dll",
+      "sha256": "5705bb0c4f593ac764e1873d6141cf295664fafb0588c2938c9e79de828722f4"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/FabricRecovery/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "2ecbf0db25b550c0141c93f03b0d96e1cebb6c48d862a1a0fca51ce9b30588df"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Fanasa.AccessManagement.Web/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Fanasa.UnifiedPortal.Web/release/Fanasa.UnifiedPortal.Web.dll",
+      "sha256": "5705bb0c4f593ac764e1873d6141cf295664fafb0588c2938c9e79de828722f4"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Calendar.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Calendar.Tests/release/Organization.Calendar.Tests.dll",
+      "sha256": "5b1ae02faff2c9e135225732be952274efd0e32a9200d7aa7f3b2a5a3c134548"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Temporal.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Temporal.Tests/release/Organization.Temporal.Tests.dll",
+      "sha256": "b591fd3fb097a600a15ac6b0773805dc2cc48acdde9a6fc2f2dc2612f560ee4c"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "2ecbf0db25b550c0141c93f03b0d96e1cebb6c48d862a1a0fca51ce9b30588df"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Tests/release/Organization.Tests.dll",
+      "sha256": "4bd6ea65104313932b9c60d99cb6d8f6d9bbd7e49fad2cc7333baa1347762366"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Portal.Tests/release/Fanasa.UnifiedPortal.Web.dll",
+      "sha256": "5705bb0c4f593ac764e1873d6141cf295664fafb0588c2938c9e79de828722f4"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Portal.Tests/release/Portal.Tests.dll",
+      "sha256": "516c86843fd0a20f443461f0b4516baf615bfc53806ed277c4d598c25685e1f0"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PortalAdapter.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PortalAdapter.Tests/release/PortalAdapter.Tests.dll",
+      "sha256": "ff7afee7acfd8abaf809e8e5cac800c0a3d4f52cdbb543e45ae94f70b9b65f38"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PortalTransport.Tests/release/PortalTransport.Tests.dll",
+      "sha256": "a142e6e048490637deaaa600c49f0f75e777bbdc81252007a24c48a0da2de1c5"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PublishedCatalog.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PublishedCatalog.Tests/release/PublishedCatalog.Tests.dll",
+      "sha256": "5723264d968c5503c0bfaad1d4200efe8e482642a2a0ee909b1eff3939bc36e8"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/UsageProjection.Tests/release/UsageProjection.Tests.dll",
+      "sha256": "ebf9bf5498702963ff26c9f99c0b3b3113bd259783929850c02bee5101fdb69d"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/UsageTransport.Tests/release/UsageTransport.Tests.dll",
+      "sha256": "4b1b02b19a42270be4828b958888ee3bfdd75909757d462f8670794cd59ea455"
+    }
+  ],
+  "sourceInventoryCount": 278,
+  "changedSources": [],
+  "assembliesAfterRun": [
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerApplicationCatalog.Tests/release/ConsumerApplicationCatalog.Tests.dll",
+      "sha256": "1ba11e8a04011487f9de3db90158dc03eea10b13722a92be656cb04a2191a476"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerApplicationCatalog.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsage.Api.Tests/release/ConsumerUsage.Api.Tests.dll",
+      "sha256": "3c089b7d02e60888421ab267b866d3f302bb6b8524d6f41551497e762f72fef8"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsage.Api.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsageReport.Tests/release/ConsumerUsageReport.Tests.dll",
+      "sha256": "68db49fcec34582574cdc0d80066e936c952897c56060f312d4e37a21034bd6c"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/ConsumerUsageReport.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Discovery.Tests/release/Discovery.Tests.dll",
+      "sha256": "46675f3a3ba3af4475b224a4a8741f888b3761a53a4cd31afcdaa7f1bfc78c51"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Discovery.Tests/release/Fanasa.UnifiedPortal.Web.dll",
+      "sha256": "5705bb0c4f593ac764e1873d6141cf295664fafb0588c2938c9e79de828722f4"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/FabricRecovery/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "2ecbf0db25b550c0141c93f03b0d96e1cebb6c48d862a1a0fca51ce9b30588df"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Fanasa.AccessManagement.Web/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Fanasa.UnifiedPortal.Web/release/Fanasa.UnifiedPortal.Web.dll",
+      "sha256": "5705bb0c4f593ac764e1873d6141cf295664fafb0588c2938c9e79de828722f4"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Calendar.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Calendar.Tests/release/Organization.Calendar.Tests.dll",
+      "sha256": "5b1ae02faff2c9e135225732be952274efd0e32a9200d7aa7f3b2a5a3c134548"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Temporal.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Temporal.Tests/release/Organization.Temporal.Tests.dll",
+      "sha256": "b591fd3fb097a600a15ac6b0773805dc2cc48acdde9a6fc2f2dc2612f560ee4c"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "2ecbf0db25b550c0141c93f03b0d96e1cebb6c48d862a1a0fca51ce9b30588df"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Organization.Tests/release/Organization.Tests.dll",
+      "sha256": "4bd6ea65104313932b9c60d99cb6d8f6d9bbd7e49fad2cc7333baa1347762366"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Portal.Tests/release/Fanasa.UnifiedPortal.Web.dll",
+      "sha256": "5705bb0c4f593ac764e1873d6141cf295664fafb0588c2938c9e79de828722f4"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/Portal.Tests/release/Portal.Tests.dll",
+      "sha256": "516c86843fd0a20f443461f0b4516baf615bfc53806ed277c4d598c25685e1f0"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PortalAdapter.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PortalAdapter.Tests/release/PortalAdapter.Tests.dll",
+      "sha256": "ff7afee7acfd8abaf809e8e5cac800c0a3d4f52cdbb543e45ae94f70b9b65f38"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PortalTransport.Tests/release/PortalTransport.Tests.dll",
+      "sha256": "a142e6e048490637deaaa600c49f0f75e777bbdc81252007a24c48a0da2de1c5"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PublishedCatalog.Tests/release/Fanasa.AccessManagement.Web.dll",
+      "sha256": "d78b162f3260e955075c0b5cfa24b8cd187c560d42d369b301b81443fd10b695"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/PublishedCatalog.Tests/release/PublishedCatalog.Tests.dll",
+      "sha256": "5723264d968c5503c0bfaad1d4200efe8e482642a2a0ee909b1eff3939bc36e8"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/UsageProjection.Tests/release/UsageProjection.Tests.dll",
+      "sha256": "ebf9bf5498702963ff26c9f99c0b3b3113bd259783929850c02bee5101fdb69d"
+    },
+    {
+      "path": ".build/portal-readers-post-pip-20261023/bin/UsageTransport.Tests/release/UsageTransport.Tests.dll",
+      "sha256": "4b1b02b19a42270be4828b958888ee3bfdd75909757d462f8670794cd59ea455"
+    }
+  ],
+  "assemblyHashesStable": true,
+  "dotnetChecks": 1778,
+  "nodeChecks": 123,
+  "allCommandsPassed": false,
+  "completedAtUtc": "2026-10-23T13:20:54.529103+00:00"
+}

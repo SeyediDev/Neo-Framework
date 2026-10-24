@@ -65,7 +65,9 @@ public sealed class PlatformRegistry
     public void Grant(PlatformGrant grant, string actor)
     {
         if (string.IsNullOrWhiteSpace(grant.Subject) || grant.Subject.Length > 120 || !Tenants().Any(x => x.Id == grant.TenantId)
-            || grant.Permission is not ("developer.read" or "developer.launch" or "developer.manage")) throw new ArgumentException("Subject، سازمان یا مجوز معتبر نیست.");
+            || grant.Permission is not ("developer.read" or "developer.launch" or "developer.manage"
+                or "developer.staging.read" or "developer.staging.launch" or "developer.staging.manage"
+                or "developer.production.read" or "developer.production.launch" or "developer.production.manage")) throw new ArgumentException("Subject، سازمان یا مجوز معتبر نیست.");
         using var connection = Open(); using var command = connection.CreateCommand();
         command.CommandText = "INSERT INTO platform_grants(subject,tenant,permission,expires) VALUES($subject,$tenant,$permission,$expires) ON CONFLICT(subject,tenant,permission) DO UPDATE SET expires=excluded.expires";
         command.Parameters.AddWithValue("$subject", grant.Subject); command.Parameters.AddWithValue("$tenant", grant.TenantId.ToString()); command.Parameters.AddWithValue("$permission", grant.Permission);
@@ -93,6 +95,10 @@ public sealed class PlatformRegistry
         return values.Where(value => subject is null || value.TenantId.HasValue && Allows(subject, value.TenantId.Value, "developer.read")).ToArray();
     }
     public PlatformProduct Register(PlatformProduct product, string actor)
+        => RegisterCore(product, actor, createOnly: false);
+    public PlatformProduct Create(PlatformProduct product, string actor)
+        => RegisterCore(product, actor, createOnly: true);
+    private PlatformProduct RegisterCore(PlatformProduct product, string actor, bool createOnly)
     {
         if (string.IsNullOrWhiteSpace(product.Key) || product.Key.Length > 90 || string.IsNullOrWhiteSpace(product.Audience)
             || string.IsNullOrWhiteSpace(product.DisplayName) || !CapabilityCatalog.All.Any(x => x.Audience == product.Center))
@@ -102,12 +108,24 @@ public sealed class PlatformRegistry
             || !uri.Host.EndsWith(".fanasa.net.local", StringComparison.OrdinalIgnoreCase) || !string.IsNullOrEmpty(uri.UserInfo) || uri.Port != 443))
             throw new ArgumentException("دامنه HTTPS داخلی فن‌آسا لازم است.");
         using var connection = Open(); using var command = connection.CreateCommand();
-        var old = Products().SingleOrDefault(x => x.Key == product.Key);
+        using var transaction = connection.BeginTransaction(deferred: false);
+        command.Transaction = transaction;
+        command.CommandText = "SELECT data FROM platform_products WHERE key=$key";
+        command.Parameters.AddWithValue("$key", product.Key);
+        var oldData = command.ExecuteScalar() as string;
+        var old = oldData is null ? null : JsonSerializer.Deserialize<PlatformProduct>(oldData, JsonOptions);
+        if (createOnly && old is not null) throw new InvalidOperationException("این کلید قبلاً ثبت شده است؛ محصول موجود بازنویسی نمی‌شود.");
+        if (product.Attributes?.ContainsKey("developer.projectId") == true || old?.Attributes?.ContainsKey("developer.projectId") == true)
+            throw new InvalidOperationException("Developer project registrations must use the developer-projects contract.");
         if (old is not null && (old.Owner != product.Owner || old.TenantId != product.TenantId)) throw new InvalidOperationException("مالکیت سامانه قابل تغییر نیست.");
         product = product with { Id = old?.Id ?? (product.Id == Guid.Empty ? Guid.NewGuid() : product.Id) };
+        command.Parameters.Clear();
         command.CommandText = "INSERT INTO platform_products(id,key,data) VALUES($id,$key,$data) ON CONFLICT(key) DO UPDATE SET data=excluded.data";
         command.Parameters.AddWithValue("$id", product.Id.ToString()); command.Parameters.AddWithValue("$key", product.Key);
-        command.Parameters.AddWithValue("$data", JsonSerializer.Serialize(product, JsonOptions)); command.ExecuteNonQuery(); Audit(actor, "product.register", product);
+        command.Parameters.AddWithValue("$data", JsonSerializer.Serialize(product, JsonOptions)); command.ExecuteNonQuery();
+        if (createOnly) Audit(actor, "product.register", product, connection, transaction);
+        transaction.Commit();
+        if (!createOnly) Audit(actor, "product.register", product);
         return product;
     }
     public Product RegisterLegacy(RegisterProductRequest request)
@@ -120,9 +138,11 @@ public sealed class PlatformRegistry
     }
     public static Product Domain(PlatformProduct product) => new(product.Id, product.Key, product.DisplayName, product.Audience, product.Repository, product.Center,
         new Dictionary<string, string>(product.Attributes ?? []) { ["url"] = product.Url ?? "", ["owner"] = product.Owner });
-    private void Audit(string actor, string operation, object value)
+    private void Audit(string actor, string operation, object value, SqliteConnection? activeConnection = null, SqliteTransaction? transaction = null)
     {
-        using var connection = Open(); using var command = connection.CreateCommand();
+        using var ownedConnection = activeConnection is null ? Open() : null;
+        using var command = (activeConnection ?? ownedConnection!).CreateCommand();
+        command.Transaction = transaction;
         command.CommandText = "INSERT INTO platform_audit(actor,operation,data,recorded) VALUES($actor,$operation,$data,$time)";
         command.Parameters.AddWithValue("$actor", actor); command.Parameters.AddWithValue("$operation", operation); command.Parameters.AddWithValue("$data", JsonSerializer.Serialize(value, JsonOptions));
         command.Parameters.AddWithValue("$time", DateTimeOffset.UtcNow.ToString("O")); command.ExecuteNonQuery();

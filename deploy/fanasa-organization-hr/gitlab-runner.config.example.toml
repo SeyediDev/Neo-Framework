@@ -1,0 +1,33 @@
+# Root-owned runner-manager configuration. Replace only the issued project runner token.
+# The manager controls Docker; the Docker socket is never exposed to a source job.
+concurrent = 1
+check_interval = 5
+shutdown_timeout = 15
+
+[[runners]]
+  name = "fanasa-organization-hr-development"
+  url = "https://gitlab.fanasa.net.local"
+  token = "REPLACE_WITH_PROJECT_RUNNER_AUTHENTICATION_TOKEN"
+  executor = "docker"
+  tls-ca-file = "/etc/gitlab-runner/certs/gitlab.fanasa.net.local.crt"
+  limit = 1
+  request_concurrency = 1
+  output_limit = 16384
+  environment = ["FF_NETWORK_PER_BUILD=1"]
+  [runners.docker]
+    image = "fanasa/hr-build:10-node24"
+    privileged = false
+    disable_cache = true
+    volumes = []
+    allowed_images = ["fanasa/hr-build:10-node24"]
+    allowed_services = ["fanasa/no-service:denied"]
+    services_limit = 0
+    allowed_pull_policies = ["if-not-present"]
+    pull_policy = "if-not-present"
+    memory = "768m"
+    memory_swap = "1536m"
+    cpus = "1"
+    cap_drop = ["ALL"]
+    security_opt = ["no-new-privileges:true"]
+    shm_size = 67108864
+    extra_hosts = ["gitlab.fanasa.net.local:host-gateway"]

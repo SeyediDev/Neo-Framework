@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Fanasa.ContractPolicy.Workbench</AssemblyName>
+    <Version>0.1.0</Version>
+    <RootNamespace>Fanasa.ContractPolicy.Workbench</RootNamespace>
+    <DefaultItemExcludes>$(DefaultItemExcludes);data/**;tests/**</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <Reference Include="Fanasa.ContractPolicy">
+      <HintPath>../../src/Fanasa.ContractPolicy/bin/$(Configuration)/net10.0/Fanasa.ContractPolicy.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Content Include="../../../schemas/*.schema.json" Link="Schemas/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Update="Fixtures/*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

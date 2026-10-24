@@ -1,0 +1,169 @@
+{
+  "schemaVersion": "fanasa.hr3.actual-host-test-evidence/1",
+  "observedAtUtc": "2026-10-15T06:58:47.419Z",
+  "environment": "Windows; .NET SDK 10.0.401; target net10.0; local cached restore; NuGet audit disabled for this local run",
+  "command": "./test-host.ps1 -RepositoryRoot E:/SJVS/Projects/Neo -CachedRestore",
+  "build": {
+    "succeeded": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  "suite": "complete",
+  "assertions": 823,
+  "assertionsBySuite": {
+    "wireAndSchema": 138,
+    "namedJwtNativeHttp": 92,
+    "fabricSource": 74,
+    "pdpService": 37,
+    "atomicPublication": 86,
+    "centralHostRecords": 81,
+    "dualIntrospection": 172,
+    "legacyCoexistence": 35,
+    "centralConsumerAuthority": 62,
+    "actualHostHttp": 30,
+    "runtimeDiRegistration": 16
+  },
+  "testedSourceFiles": [
+    {
+      "path": "Directory.Build.props",
+      "sha256": "a7edad6153962207f4655cc4568ea766db66d924f3336644484388e165555d9d"
+    },
+    {
+      "path": "Directory.Packages.props",
+      "sha256": "e107928b4b719c963b18c429357d4c7fb1358311e95a5f225b2ba0cb4c44b73f"
+    },
+    {
+      "path": "README.fa.md",
+      "sha256": "6f28f47b5b0e89ab2c485bc7689748f011f3731ba910af91f28cdcd43e973b97"
+    },
+    {
+      "path": "appsettings.hr3.disabled.json",
+      "sha256": "036c6cf5438226f8f19ee42bd4fefafac80749cf3eabedfaaca35d7bd198893f"
+    },
+    {
+      "path": "compatibility/ContractPolicyStore.cs",
+      "sha256": "94c5cd7f6643d6646f812575fef5d4d1dd0658f2aead8731632ce2442a713c90"
+    },
+    {
+      "path": "compatibility/Program.Hr3.cs",
+      "sha256": "ab8ed8b12ba55a0efb778f91815a090fe6ee060052ff4294bff48377b410b52c"
+    },
+    {
+      "path": "compatibility/README.fa.md",
+      "sha256": "60c16eb7a2caee64c4e6e1ea87d6b5fce4e4dfcff9dd714f30fbec220bbddbc1"
+    },
+    {
+      "path": "compatibility/program-source-pin.json",
+      "sha256": "9f997fac0b63d047aecd5476bdc0d8b751ebf024af300945b016aa575bb2690a"
+    },
+    {
+      "path": "compatibility/source-pin.json",
+      "sha256": "a3993c9c73f23540309f0bdf192ed296f2c6126f630a353e0ac88b009a32e97f"
+    },
+    {
+      "path": "integration/Hr3Host.targets",
+      "sha256": "ff2cdb7075977cef7b94dcfc4d54b9e55e1acb17058a492ae179b9226cc95b7b"
+    },
+    {
+      "path": "src/Hr3CentralHostRecords.cs",
+      "sha256": "b472009b30ead1b1b84745172d69b681db9781db5585c93b37918e8aaba27e30"
+    },
+    {
+      "path": "src/Hr3CentralIntrospectionAuthority.cs",
+      "sha256": "fece094f2494305a5e9453681113bcc4c3d18de3539bb8155218338183007418"
+    },
+    {
+      "path": "src/Hr3HostPdpEndpoint.cs",
+      "sha256": "3bc347da73b2cbd4478281cd8e41398473fc58eccec87cc229bbe407682d2382"
+    },
+    {
+      "path": "src/Hr3HostServices.cs",
+      "sha256": "c25db82387756671927edb6ea50b4ad7be9c2bbcb1379c31a35c1a8c10995a92"
+    },
+    {
+      "path": "src/Hr3Introspection.cs",
+      "sha256": "c3f118d8fa00192245c8982ee18702f9720afa3094b43f5d9b20faa95fb3713e"
+    },
+    {
+      "path": "src/Hr3PublicationStore.cs",
+      "sha256": "d695804131bebe5cffa037b448b5cb8f0c20209d421c64b6711304599b244c36"
+    },
+    {
+      "path": "test-host.ps1",
+      "sha256": "ad572b8245d22f059451a5f8d3c8bee92bc12522826f0f13a86f109f7151ab51"
+    },
+    {
+      "path": "test-host.sh",
+      "sha256": "0bfd40beeff74fc7dff1403f0e5665eb164f1388b48035088a64625920fc8580"
+    },
+    {
+      "path": "tests/CentralHostRecordsTests.cs",
+      "sha256": "3871546ffc7ce4fb0ccc0ebab6c4f759748824f5286d33800da9f31ed7bec1fd"
+    },
+    {
+      "path": "tests/CentralIntrospectionAuthorityTests.cs",
+      "sha256": "92b75636dc2b80d514dc04b4ce111d05488107084d7c26385628a02a424925b3"
+    },
+    {
+      "path": "tests/CompatibilityTests.cs",
+      "sha256": "ed622efdd87981f5dd6eb5d9e94b40c2bfbb379af022646b505db310348ba2c9"
+    },
+    {
+      "path": "tests/Fanasa.HrReadHost.Tests.csproj",
+      "sha256": "49751f57698c7bdf01fe845d10215ff8e4fc49b10556788a278a287c3cef83cb"
+    },
+    {
+      "path": "tests/HostEndpointTests.cs",
+      "sha256": "1500497b7c3c374f0a0a27b966c1ec19ae32700c334292ff64554c4dd0170b27"
+    },
+    {
+      "path": "tests/HostServicesTests.cs",
+      "sha256": "9dc5179b9fde0ac50f94395808a017d5bfc8c0060607170e28fa5c41896d6538"
+    },
+    {
+      "path": "tests/IntrospectionTests.cs",
+      "sha256": "1399c2a50b82650ade28fe45ca7c471aa313c265aa5836990b6729f2a13625ba"
+    },
+    {
+      "path": "tests/Program.cs",
+      "sha256": "b504a751709c8772ac3371960dc7f54230bf85fe9e0037f6519bc0eb4eaf1065"
+    },
+    {
+      "path": "tests/PublicationTests.cs",
+      "sha256": "ab6ac9fa46338163d79e9a95780ab601003751ddf380b0d15247674f93506d96"
+    },
+    {
+      "path": "verify-package.py",
+      "sha256": "cf0af81d9e44764861427583925938fb54dc3fc7bd066184cb53e280891692df"
+    }
+  ],
+  "testedSourceAggregateSha256": "4c08e6969aed54785a8bec87f5754059c231cf07b0dbca4806265fc7aba99e20",
+  "hostInputCount": 96,
+  "hostInputAggregateSha256": "022925050a2534037575c9723d159977a9faa707a979ee4ed68a939a3e7f4846",
+  "compiledArtifacts": [
+    {
+      "file": "Fanasa.HrReadHost.Tests.dll",
+      "sha256": "af6f198c468857f5556c1e34425ab66bd6ebddde0b83d0e9fc3de6fbf30efa5b"
+    },
+    {
+      "file": "Fanasa.AccessManagement.Web.dll",
+      "sha256": "0b0433d7c70fd65017abe1c676b3a2bd00b125e33d09fd051e950372ef3505e1"
+    },
+    {
+      "file": "Fanasa.ContractPolicy.dll",
+      "sha256": "442054ba676cd460e252c78c9f101b90c548c842cc6047aa8ecc0a2190bba08b"
+    }
+  ],
+  "sourceAndHostInputsUnchangedAfterRun": true,
+  "syntheticData": true,
+  "externalHttp": false,
+  "liveAuthorityAcceptance": false,
+  "liveHostRegistration": false,
+  "deployment": false,
+  "limits": [
+    "IdP observation is bounded to at most five seconds; no instantaneous IdP push revocation.",
+    "SQLite synchronous work is cancellation/deadline checked but not hard preempted.",
+    "Actual host PDP integration only; existing HR read/command routes are not replaced.",
+    "Publication business authority remains unavailable by default; no live commercial records created."
+  ]
+}

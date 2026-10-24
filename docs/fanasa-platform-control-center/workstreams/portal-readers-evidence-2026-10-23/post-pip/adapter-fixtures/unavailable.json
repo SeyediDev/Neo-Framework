@@ -1,0 +1,12 @@
+{
+  "organizationId": "bab09528-86aa-4c8e-be01-eeddb62b0734",
+  "status": "unavailable",
+  "from": "2026-10-01T00:00:00+00:00",
+  "to": "2026-10-13T00:00:00+00:00",
+  "periodLabel": "2026/10/01 \u062A\u0627 \u067E\u06CC\u0634 \u0627\u0632 2026/10/13 \u00B7 UTC",
+  "asOf": null,
+  "currency": null,
+  "totalAmount": null,
+  "items": [],
+  "basis": "posted-ledger"
+}

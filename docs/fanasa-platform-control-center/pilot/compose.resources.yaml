@@ -1,0 +1,53 @@
+# Root-owned limits; merge after the owner's isolated native compose.yaml.
+# certs completes before long-running services and runner; it is not in 1408m.
+x-bounded: &bounded
+  cpu_shares: 128
+  pids_limit: 64
+  logging:
+    driver: json-file
+    options:
+      max-size: "5m"
+      max-file: "2"
+
+x-gateway-limits: &gateway-limits
+  <<: *bounded
+  cpus: 0.15
+  mem_limit: 256m
+  memswap_limit: 256m
+
+x-fixture-limits: &fixture-limits
+  <<: *bounded
+  cpus: 0.05
+  mem_limit: 64m
+  memswap_limit: 64m
+
+services:
+  certs:
+    <<: *bounded
+    cpus: 0.20
+    mem_limit: 64m
+    memswap_limit: 64m
+  oidc:
+    <<: *fixture-limits
+  pdp:
+    <<: *fixture-limits
+  backend:
+    <<: *fixture-limits
+  redis:
+    <<: *bounded
+    cpus: 0.10
+    mem_limit: 96m
+    memswap_limit: 96m
+  gateway1:
+    <<: *gateway-limits
+  gateway2:
+    <<: *gateway-limits
+  gateway3:
+    <<: *gateway-limits
+  gateway-no-pep:
+    <<: *gateway-limits
+  runner:
+    <<: *bounded
+    cpus: 0.15
+    mem_limit: 96m
+    memswap_limit: 96m

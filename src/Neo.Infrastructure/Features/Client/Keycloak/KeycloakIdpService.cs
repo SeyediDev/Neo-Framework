@@ -61,13 +61,8 @@ public class KeycloakIdpService(
         {
             username = mobile,
             attributes = new Attributes { userId = userId },
-            credentials =
-            [
-                new Credential
-                {
-                    value = "FDXM5S7or4q35tWFr4R5ORPzZpc9Xj" // Default password
-                }
-            ]
+            // Enrollment and authentication belong to the configured identity provider.
+            credentials = []
         });
         var user = await GetUserAsync(mobile);
         await AddUserRoleAsync(user!.id, role);
@@ -123,30 +118,12 @@ public class KeycloakIdpService(
 		}
 	}
 
-	public async Task<TokenResponseDto?> GetUserTokenAsync(string mobile, CancellationToken cancellationToken)
+    public Task<TokenResponseDto?> GetUserTokenAsync(string mobile, CancellationToken cancellationToken)
     {
-        try
-        {
-            var content = new FormUrlEncodedContent(
-            [
-                new KeyValuePair<string, string>("client_id", ClientId!),
-                new KeyValuePair<string, string>("client_secret", ClientSecret),
-                new KeyValuePair<string, string>("username", mobile),
-                new KeyValuePair<string, string>("password", "FDXM5S7or4q35tWFr4R5ORPzZpc9Xj"),
-                new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("scope", "openid profile email roles"),
-            ]);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-            HttpResponseMessage response = await httpClient.PostAsync(TokenUri, content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync(cancellationToken);
-            return result.FromJson<TokenResponseDto>();
-        }
-        catch (HttpRequestException ex)
-        {
-            logger.LogWarning("{@idp}", ex);
-            return null;
-        }
+        cancellationToken.ThrowIfCancellationRequested();
+        // A mobile number alone is not proof of identity; never supply a shared password.
+        logger.LogWarning("Mobile-only user token issuance is disabled; verified identity-provider authentication is required.");
+        return Task.FromResult<TokenResponseDto?>(null);
     }
 
     public async Task<TokenResponseDto?> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)

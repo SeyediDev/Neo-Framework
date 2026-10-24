@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "fanasa.vps-asr-preservation.v1",
+  "passed": true,
+  "sourceAudioSha256": "ff2be44b7b845900f829ada4143690a28a37cd552b98fceb54d1e63f3048ad0f",
+  "copied": [
+    {
+      "remotePath": "/var/lib/fanasa-transcription/output/inventory.json",
+      "localPath": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\vps-retained-recording-02-alternate\\inventory.json",
+      "bytes": 195,
+      "sha256": "861b66402fae7d705b2ae52efe4f7acf3b801df2fc05e7ce2efd781c74d27274"
+    },
+    {
+      "remotePath": "/var/lib/fanasa-transcription/output/recording-01.complete.json",
+      "localPath": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\vps-retained-recording-02-alternate\\recording-01.complete.json",
+      "bytes": 492,
+      "sha256": "37fac35a647ecff1e1f8953569c993bd448fb5a62f3051d1501080517a4b8ce4"
+    },
+    {
+      "remotePath": "/var/lib/fanasa-transcription/output/recording-01.config.json",
+      "localPath": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\vps-retained-recording-02-alternate\\recording-01.config.json",
+      "bytes": 376,
+      "sha256": "d49e9b5ee6fc32ff4005b5975ed64f01c2549f703a912cd04765da69654242c6"
+    },
+    {
+      "remotePath": "/var/lib/fanasa-transcription/output/recording-01.jsonl",
+      "localPath": "E:\\SJVS\\Projects\\Neo\\.artifacts\\meeting-transcription\\review\\sources\\vps-retained-recording-02-alternate\\recording-01.jsonl",
+      "bytes": 44849,
+      "sha256": "3946bd66466ee50d219640f47750f93e180b34f07f27b08c13219d81d4d0423b"
+    }
+  ],
+  "remoteSourcesPreserved": true,
+  "transcriptEntries": 211,
+  "primaryTranscriptMissingBeforeCleanup": true,
+  "audioTransferred": false,
+  "sourceMetadataVerified": true,
+  "sourceAudioBytes": 12165360,
+  "localCopiesReverified": true
+}

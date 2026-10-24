@@ -1,0 +1,162 @@
+{
+  "started": "2026-10-12T13:13:45.698Z",
+  "completed": "2026-10-12T13:14:36.048Z",
+  "browserVersion": "Chrome/155.0.8059.40",
+  "viewport": "1440 × 1100 / 390 × 844",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Native workbench loads policies and ten server-owned scenarios",
+      "passed": true
+    },
+    {
+      "name": "Reset initializes isolated state and independent references",
+      "passed": true
+    },
+    {
+      "name": "Database validity and backend readiness are visible",
+      "passed": true
+    },
+    {
+      "name": "Guided example includes capacity reasoning and six concrete steps",
+      "passed": true
+    },
+    {
+      "name": "Explicit example action fills supported settings",
+      "passed": true
+    },
+    {
+      "name": "Server validation explains field errors without saving",
+      "passed": true
+    },
+    {
+      "name": "Valid zero quota explains why Permit cannot execute",
+      "passed": true
+    },
+    {
+      "name": "Valid guided settings receive authoritative approval",
+      "passed": true
+    },
+    {
+      "name": "Policy purpose and rules are concrete",
+      "passed": true
+    },
+    {
+      "name": "Desktop workbench has no overflow",
+      "passed": true
+    },
+    {
+      "name": "Actual native Permit has obligations and no operation effect",
+      "passed": true
+    },
+    {
+      "name": "Failed mandatory admission blocks commit and metering",
+      "passed": true
+    },
+    {
+      "name": "Successful obligations commit one operation and one meter unit",
+      "passed": true
+    },
+    {
+      "name": "Retained unit content is saved with the same receipt and metering",
+      "passed": true
+    },
+    {
+      "name": "Replaying same decision is idempotent",
+      "passed": true
+    },
+    {
+      "name": "Server scenario explicit-deny returns Deny and cannot execute",
+      "passed": true
+    },
+    {
+      "name": "Server scenario no-grant returns Deny and cannot execute",
+      "passed": true
+    },
+    {
+      "name": "Server scenario inactive-membership returns Deny and cannot execute",
+      "passed": true
+    },
+    {
+      "name": "Server scenario stale-evidence returns Indeterminate and cannot execute",
+      "passed": true
+    },
+    {
+      "name": "Server scenario wrong-product returns NotApplicable and cannot execute",
+      "passed": true
+    },
+    {
+      "name": "cross-tenant-resource blocks native PEP without operation or metering",
+      "passed": true
+    },
+    {
+      "name": "quota-exhaustion blocks native PEP without operation or metering",
+      "passed": true
+    },
+    {
+      "name": "unknown-obligation blocks native PEP without operation or metering",
+      "passed": true
+    },
+    {
+      "name": "Expired Permit is explained and fresh evaluation required before execution",
+      "passed": true
+    },
+    {
+      "name": "Draft is persisted and user text escaped",
+      "passed": true
+    },
+    {
+      "name": "Self publication is prevented with independent review guidance",
+      "passed": true
+    },
+    {
+      "name": "Publication creates immutable policy and leaves contract binding unchanged",
+      "passed": true
+    },
+    {
+      "name": "Candidate policy evaluation is labelled and cannot execute",
+      "passed": true
+    },
+    {
+      "name": "Binding advances contract and only changed limits revision",
+      "passed": true
+    },
+    {
+      "name": "New bound explicit Deny affects next real evaluation",
+      "passed": true
+    },
+    {
+      "name": "Mobile policy has no horizontal page overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile request has no horizontal page overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile sources has no horizontal page overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile decision has no horizontal page overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile execution has no horizontal page overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile audit has no horizontal page overflow",
+      "passed": true
+    },
+    {
+      "name": "Final browser state is clean and engine-connected",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "expectedHttpErrors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "failure": null
+}

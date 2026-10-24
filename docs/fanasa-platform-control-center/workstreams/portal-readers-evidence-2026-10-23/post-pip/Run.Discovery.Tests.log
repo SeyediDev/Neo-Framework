@@ -1,0 +1,57 @@
+PASS guest sees published description/request but no launch
+PASS no grant keeps catalog service visible without launch
+PASS verified cross-owner consumer can launch
+PASS projection does not leak internal product fields
+PASS Forbidden cannot reuse launch grants
+PASS Unavailable cannot reuse launch grants
+PASS NotConfigured cannot reuse launch grants
+PASS SignInRequired cannot reuse launch grants
+PASS unselected consumer never launches
+PASS matching name/key alone is not a grant
+PASS mismatched central identity cannot launch
+PASS unpublished services hidden even when permitted
+PASS fourteen official centers use the real cloud audience
+PASS all action URLs reject unsafe schemes/credentials
+PASS adapter only exposes explicitly published metadata
+PASS adapter uses limited service credentials
+PASS v1 published-services route does not submit a guessed viewer or tenant
+PASS unapproved/invalid path stays disconnected: 
+PASS unapproved/invalid path stays disconnected: //evil.test/api
+PASS unapproved/invalid path stays disconnected: /api/platform/../products
+PASS unapproved/invalid path stays disconnected: /api/platform/%2e%2e/products
+PASS unapproved/invalid path stays disconnected: /api/platform/catalog?subject=other
+PASS invalid configuration makes no network calls
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS malformed discovery is not a successful empty list
+PASS valid empty published catalog is distinct from outage
+PASS discovery read denial does not expose metadata
+PASS rejected scope is configuration error
+PASS transport sanitizes metadata links
+PASS unknown capability center fails closed
+PASS oversized metadata response is rejected, not silently truncated
+PASS HTML sign-in response is not a successful JSON catalog
+PASS token transport I/O failure becomes unavailable without exposing a response
+PASS interrupted catalog body discards all partial metadata
+PASS discovery stream outage preserves the independently verified workspace instead of failing the page
+PASS caller cancellation propagates
+PASS page joins metadata with its verified workspace and does not cache grants
+PASS AJAX workspace products expose only the five browser card fields
+PASS limited AJAX cards retain verified product identity and launch URL
+PASS full AJAX response omits registry internals and arbitrary product attributes
+PASS unsafe registry launch URL is removed from the server AJAX contract
+PASS mismatched consumer envelope never enables catalog launch
+PASS tampered tenant retains metadata but not launch
+PASS anonymous page does not expose private organization grants
+Unhandled exception. System.IO.DirectoryNotFoundException: E:\SJVS\Projects\Neo\src\Fanasa.UnifiedPortal.Web\
+   at Microsoft.Extensions.FileProviders.PhysicalFileProvider..ctor(String root, ExclusionFilters filters)
+   at Microsoft.Extensions.Hosting.HostBuilder.CreateHostingEnvironment(IConfiguration hostConfiguration)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Initialize(HostApplicationBuilderSettings settings, HostBuilderContext& hostBuilderContext, IHostEnvironment& environment, LoggingBuilder& logging, MetricsBuilder& metrics)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder..ctor(HostApplicationBuilderSettings settings)
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder..ctor(WebApplicationOptions options, Action`1 configureDefaults)
+   at Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(WebApplicationOptions options)
+   at CatalogHttpChecks.RunAsync(PlatformOrganizationView organization, PlatformProductView permitted, PublishedService service) in E:\SJVS\Projects\Neo\products\Fanasa.UnifiedPortal\tests\Discovery.Tests\CatalogHttpChecks.cs:line 22
+   at Program.<Main>$(String[] args) in E:\SJVS\Projects\Neo\products\Fanasa.UnifiedPortal\tests\Discovery.Tests\Program.cs:line 150
+   at Program.<Main>(String[] args)

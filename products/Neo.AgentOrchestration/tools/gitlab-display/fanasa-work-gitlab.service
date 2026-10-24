@@ -1,0 +1,31 @@
+[Unit]
+Description=Fanasa private GitLab work-board mirror
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=fanasa-work-gitlab
+Group=fanasa-work-gitlab
+ExecStart=/usr/bin/python3 /opt/fanasa-work-gitlab/current/mirror.py --config /etc/fanasa-work-gitlab.json
+LoadCredential=source:/opt/fanasa-work-gitlab/credentials/source
+LoadCredential=gitlab:/opt/fanasa-work-gitlab/credentials/gitlab
+LoadCredential=mapping-key:/opt/fanasa-work-gitlab/credentials/mapping-key
+StateDirectory=fanasa-work-gitlab
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+MemoryMax=128M
+CPUQuota=15%
+TimeoutStartSec=300
+Nice=10
+

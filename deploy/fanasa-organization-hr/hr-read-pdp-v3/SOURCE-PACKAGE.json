@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "fanasa.hr-read.pdp.source-package/1",
+  "generatedAtUtc": "2026-10-14T22:59:14.5948287+00:00",
+  "dependencyManifestSha256": "9875088ffe6e3efc9553b0ca42873fa52b8a05d23d8101acd084c69e16b82329",
+  "operationalAcceptance": false,
+  "liveHostRegistration": false,
+  "defaultSource": "UnavailableHrReadPdpSourceFactory",
+  "files": [
+    {
+      "path": "caller-settings.template.json",
+      "sha256": "824f528d5cbd3b8f7d133bc29d2c94fda94cd7ac8d0f4919a31f8067c1e5ef16"
+    },
+    {
+      "path": "ci.fragment.yml",
+      "sha256": "8ef3d4b510683f19cd962dd4298d5f48e0ec2d37d14ebd0352befd9a03cabe78"
+    },
+    {
+      "path": "DEPENDENCIES.json",
+      "sha256": "7348fe69acbc830fe275f79aced1b8fec9f6aed2e386f7566f6d12e486d9211d"
+    },
+    {
+      "path": "Directory.Build.props",
+      "sha256": "c398b3547ce3bbef053383739b071c1df14f6ffa5063fb84b1a7b1f3ce6ab5f3"
+    },
+    {
+      "path": "Directory.Packages.props",
+      "sha256": "e107928b4b719c963b18c429357d4c7fb1358311e95a5f225b2ba0cb4c44b73f"
+    },
+    {
+      "path": "LIVE-INTEGRATION-NEXT.fa.md",
+      "sha256": "a9e3013ef9569639fd8204bbdeaaf3da02298a3bf1489476ab2a034b215d0af4"
+    },
+    {
+      "path": "README.fa.md",
+      "sha256": "fb46fbeb6c0603c1599cc81c1860c298fcb26df90ed269d6d2d5eb20528e978e"
+    },
+    {
+      "path": "schemas/decision.v3.schema.json",
+      "sha256": "a1ee58445cc9d4c76c9370d2696a08de4709c4581ffa360c89029dbb0ddfc029"
+    },
+    {
+      "path": "schemas/hr-read-pdp-common.v1.schema.json",
+      "sha256": "8a72ad43ee81441f7d6b9a33d55ebf9efb154b9fe2c4507c96f3557a6303c86b"
+    },
+    {
+      "path": "schemas/hr-read-pdp-request.v1.schema.json",
+      "sha256": "dcdff3cb86b81d1197fdc8dcac9ffd2dd78c45ae16b9fe64af58d1d263ffbadb"
+    },
+    {
+      "path": "schemas/hr-read-pdp-response.v1.schema.json",
+      "sha256": "7b1233b557e52ad7e13430da8e82c37abc72bba195b6c3f193910bed8fa06636"
+    },
+    {
+      "path": "schemas/limits.v2.schema.json",
+      "sha256": "1934b6281a20e144dca7762c4342f131bcde49e6547e018a6ca0c11de9e6981c"
+    },
+    {
+      "path": "schemas/README.md",
+      "sha256": "88def30ed8980e5748df51e0d182de97f4e68b385723ec2771f47b672ffda83a"
+    },
+    {
+      "path": "src/ExistingFabricHrReadPdpSourceFactory.cs",
+      "sha256": "43057b0d90745ab364650519856efb7386a193ce366b285dc8444347b495b52b"
+    },
+    {
+      "path": "src/Fanasa.HrReadPdp.csproj",
+      "sha256": "4541e01595187a9bbce71d8591c87ac17df2325af7434fd3ac68aa487de19bfe"
+    },
+    {
+      "path": "src/HrReadPdpAuthentication.cs",
+      "sha256": "3c773a67ef5782edb6a6271cba7d1e37e3c46f6a1a1628aa62d3ad053e38cc74"
+    },
+    {
+      "path": "src/HrReadPdpFabricSource.cs",
+      "sha256": "0b30961230b17c39549a0b35329bb0d4a6092a9a5b770b2b9ee9efbc8dfe7c2f"
+    },
+    {
+      "path": "src/HrReadPdpHttpEndpoint.cs",
+      "sha256": "78d6b2baefbfe4ed6cfa254190b70af6161ed1945c9070d4046384cdd62ab079"
+    },
+    {
+      "path": "src/HrReadPdpService.cs",
+      "sha256": "43549e8f417ab93d573934e58a84b36854df00e2d5d12ee623121c9632e425db"
+    },
+    {
+      "path": "src/HrReadPdpWire.cs",
+      "sha256": "cfa909c9afde3329a2239b90f640fe8ea966cdba672acf59e9d1f1b18e7fee8c"
+    },
+    {
+      "path": "tests/FabricSourceTests.cs",
+      "sha256": "1bdcf96667c6009daf951a3ee716b50efc14cdc9784549d899ad181dacfc1a63"
+    },
+    {
+      "path": "tests/Fanasa.HrReadPdp.Tests.csproj",
+      "sha256": "a1a157e04a5888cd61e4b185b6d423a3a3e408362bf1abb242bc58c60b82b280"
+    },
+    {
+      "path": "tests/HttpTests.cs",
+      "sha256": "42a5c403b762072e006d40ec01b0f6b0dd0a2f7da7775b0090dcacbe1d028d04"
+    },
+    {
+      "path": "tests/Program.cs",
+      "sha256": "adf693339369ff68e7d965a4e38a655f85ed91a34a3f81208d38dac1ebd4e213"
+    },
+    {
+      "path": "tests/SchemaTests.cs",
+      "sha256": "54f0c1f65f9e0f6366cf0376282d4720a485a286634f38123c23194c6985ebc5"
+    },
+    {
+      "path": "tests/ServiceTests.cs",
+      "sha256": "56521b409cc436d6d29a6118fc9fa47a14974bf9f904ba88ff824f81ea7f9eab"
+    },
+    {
+      "path": "tests/WireTests.cs",
+      "sha256": "a640218251b4d59080a58b17eed76409e86e39e9cb06442a826382d554902ea6"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "c55fdac94870a64c07df87213db396b64a63d225b41cda75ec3651f80b302e7d"
+    },
+    {
+      "path": "verification.log",
+      "sha256": "28b5e5cd53421a1de386c505644094c745eeb15a2e69a04e4da38e5dbafadcb3"
+    },
+    {
+      "path": "verify-package.ps1",
+      "sha256": "330c2eaae38c98c23ac28e5b677243126a1c60439e08b85d590de6165c2398f1"
+    },
+    {
+      "path": "WIRE-CONTRACT.fa.md",
+      "sha256": "ddd030ab8c1d0ba2886529204dfc2a2c5e0fe2a3f816f75bac252d2de6add00d"
+    }
+  ]
+}

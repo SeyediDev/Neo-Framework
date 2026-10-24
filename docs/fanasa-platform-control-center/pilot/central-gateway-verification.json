@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "1.0",
+  "recordedAtUtc": "2026-10-10T17:38:22.019Z",
+  "scope": "local synthetic PCC publication integration; existing AccessManagement host and SQLite Fabric",
+  "pcc": {
+    "passed": 134,
+    "failed": 0,
+    "exitCode": 0,
+    "sourceStableDuringExecution": true,
+    "sourceStartSha256": {
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractGatewayPublication.cs": "4bb0aed3b4b58ca7c27e2c9831d01bd2f17ce344955799cfe4ca2d0e94f88e9a",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicyApi.cs": "23fdee8fc2be6ad1d0790e203a0c2476467f22524b2952065321238ff5a23e16",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicyGatewayApi.cs": "fd86ea08952b28c3ef81d73f573208de892917f2cdde18638841feb70e3023ee",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicyGatewayContext.cs": "a83f8a2898b3d811bbb89775ffa51bed6670eca2b39f6ce52233c9a0f1627308",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicyGatewayDecision.cs": "73f27721182bd6ee152705fcf8cbdcd0f9265156f44277590dc5c313b53be3a2",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicyGatewaySecurity.cs": "3be738df1128c3429adfa7c401b8720bea821714d684ddde90e897d2827a6baf",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicyHost.cs": "af3121e55a476f8941e15e9ad4eb7fa23905113a4aa85bf3e0f672e27cc67df4",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicySecurity.cs": "c1f1265578c49db87601019dd7a315c57d14e88b9e553df82eeec4a0356a5daa",
+      "E:\\SJVS\\Projects\\Neo\\docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\pcc\\ContractPolicyStore.cs": "f94bee3d9f9d951b08b498bcc704e479bc39dadcaa2774dce07c0bbfca440a02",
+      "products\\Fanasa.AccessManagement\\src\\Fanasa.AccessManagement.Web\\FabricServices.cs": "66eb3dab575804f6798dcb549066e8288a2e875dcb7f2509a7867234bac54e6c",
+      "products\\Fanasa.AccessManagement\\src\\Fanasa.AccessManagement.Web\\OrganizationFabric.cs": "92205ffb5d9e31bc03fb3fd4f56a1710c86c39951c188acab9d4c73a121af1c3",
+      "products\\Fanasa.AccessManagement\\src\\Fanasa.AccessManagement.Web\\OrganizationUsageMetering.cs": "12065b3a36d2d391531dc6d250f8b5fbe2f58efcb6ec024a267b03a0464a3f58",
+      "products\\Fanasa.AccessManagement\\src\\Fanasa.AccessManagement.Web\\OrganizationOperationApi.cs": "ba4613d64c02a519090e71f23f8973386aabf76bfb3208673c1a8b970164e94d",
+      "products\\Fanasa.AccessManagement\\src\\Fanasa.AccessManagement.Web\\OrganizationBearerSecurity.cs": "21ec9cf3224b6edf055bcd0c4285541d6a1f88a41db65c6e151e7d35ddb9f027",
+      "docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\tests\\Fanasa.ContractPolicy.Pcc.Tests\\Program.cs": "16d26aced0dbf33188f073414085807f928594d96de07ea4545328be5a36cbdf",
+      "docs\\fanasa-platform-control-center\\workstreams\\contract-policy\\implementation\\tests\\Fanasa.ContractPolicy.Pcc.Tests\\GatewayConnectionTests.cs": "f8046047cfd32e171bd8b1bc289dfa5810dd03f9c974f553a1d3ccc66e58a2ee"
+    },
+    "log": {
+      "path": ".build/pcc-host-repair/gateway-connection.recheck.log",
+      "sha256": "fe49175f7c53527cbdc3b42c5ee4ef3ea854ef8f7635ebd42d857a5b1b873e6c"
+    },
+    "executionMetadata": {
+      "path": ".build/pcc-host-repair/gateway-recheck-execution.json",
+      "sha256": "5b5256686d608314c9d1e0817b608b877a4fdc41249d38eba6d2edbd97811842"
+    },
+    "builtAssemblies": [
+      {
+        "path": ".build/pcc-host-repair/bin/Fanasa.ContractPolicy/debug/Fanasa.ContractPolicy.dll",
+        "sha256": "e17f6ccc1386333234d585324badd87e215b897a0e98cb81d2240450494acf58",
+        "bytes": 136704
+      },
+      {
+        "path": ".build/pcc-host-repair/bin/Fanasa.AccessManagement.Web/debug/Fanasa.AccessManagement.Web.dll",
+        "sha256": "e131b39452abd874dfcbdac400d2929f356b9837a14dae0a3ee657eee937a02d",
+        "bytes": 1169408
+      },
+      {
+        "path": ".build/pcc-host-repair/bin/Fanasa.ContractPolicy.Pcc.Tests/debug/Fanasa.ContractPolicy.Pcc.Tests.dll",
+        "sha256": "152e2578f51c5d55b76a1a433b242068f1be6b296f35b5a1aa08a1d9bf7a21cb",
+        "bytes": 166400
+      }
+    ],
+    "addedPublicationScenarios": 20,
+    "addedTestPath": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Pcc.Tests/GatewayConnectionTests.cs",
+    "previousVerification": {
+      "log": {
+        "path": ".build/pcc-host-repair/gateway-connection.final.log",
+        "sha256": "fe49175f7c53527cbdc3b42c5ee4ef3ea854ef8f7635ebd42d857a5b1b873e6c"
+      },
+      "executionMetadata": {
+        "path": ".build/pcc-host-repair/gateway-final-execution.json",
+        "sha256": "73c3edf949bc58abd01d5c603b7e0f7865d6aac9af0de4adf24776b4ed16a345"
+      }
+    },
+    "currentSourceStillMatches": true,
+    "builtAssembliesRetainedAfterVerification": false
+  },
+  "canonicalHashParity": {
+    "reference": "actual original NeoContract serviceLimitHash execution",
+    "referenceSourceSha256": "93a78317aece1660bca3c273f2a1bae688cd955ffe23c7f0459b99360a153f62",
+    "cases": 4,
+    "unicodeSha256": "15073d8b69029122113e72d6a2be168cd5f9b3e0ee9c7f759ca9906f8f14ef90"
+  },
+  "gatewayReceiver": {
+    "ownerThreadId": "01a1251f-7d8f-71f2-9956-1da693f49969",
+    "verificationStatus": "passed: owner actual Kestrel HTTPS/mTLS signed receiver integration; root independently read final log and validated manifest input hashes",
+    "retiredTariffRetryCorrection": "verified by fresh authorized receipt retry after synthetic immutable rate window closes; new business request denied without writes",
+    "staticReview": {
+      "status": "passed",
+      "sourceSha256": "a83f8a2898b3d811bbb89775ffa51bed6670eca2b39f6ce52233c9a0f1627308",
+      "scope": "historical receipt identity/fingerprint/history/current access, immutable pre-mutation retry classification, fresh final commit binding checks; no runtime execution"
+    },
+    "passed": 78,
+    "failed": 0,
+    "exitCode": 0,
+    "log": {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Gateway.Tests/Evidence/final-run.log",
+      "sha256": "5233da8194c2ed044fac997ced6adde0c163a702a143beb678a5373e0b7a9f42"
+    },
+    "evidence": {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/EVIDENCE.v0.4.0.md"
+    },
+    "manifest": {
+      "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/manifest.v0.4.0.json",
+      "sha256": "3f4b47e1630ab0f4188a8cd8f26a20edbc2ceeba220ac5c7158aef5c8611d41d",
+      "inputsVerified": 55,
+      "sharedHooksVerified": 5,
+      "mismatches": 0
+    },
+    "testSourceSha256": "0979c82022a5f7e91d743576e23d0dcb84831eee0756984cee5c4ab7b77e3377",
+    "finalAssemblies": [
+      {
+        "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Gateway.Tests/bin/Debug/net10.0/Fanasa.AccessManagement.Web.dll",
+        "sha256": "89e1863fc651961bd187dc040153b9252fb5a3b5d7be3d7a1ad446590e6b5209"
+      },
+      {
+        "path": "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/tests/Fanasa.ContractPolicy.Gateway.Tests/bin/Debug/net10.0/Fanasa.ContractPolicy.dll",
+        "sha256": "4c87acc8fb26e112dd86e5acbe306b390a881030b7a02d9955426153b84b4841"
+      }
+    ],
+    "externalLuaApisixRedisExecuted": false,
+    "scope": "synthetic identities/contracts/JWT/certificates and C# HMAC signer, actual Kestrel TLS, production handlers/DI, SQLite and organization/metering; commercial acceptance not established"
+  },
+  "historicalEvidence": {
+    "pccBaseline": {
+      "passed": 114,
+      "failed": 0,
+      "path": "pcc-host-verification.json"
+    },
+    "bearerBaseline": {
+      "passed": 77,
+      "scope": "earlier independent synthetic Bearer fixture"
+    },
+    "nativeSmoke": {
+      "passed": 12,
+      "scope": "earlier isolated single-Gateway VPS smoke; current receiver absent",
+      "path": "native-smoke-orchestration-3.json"
+    }
+  },
+  "limitations": [
+    "Default IContractGatewayObserver unavailable; no authenticated native rollout observation endpoint delivered.",
+    "Native Redis admission lacks logical operation and payload deduplication; backend nonce does not establish idempotent quota admission.",
+    "No authoritative signed commercial contract/rate, product client/grants/delegation/allocation established for real pilot.",
+    "Multi-replica capacity/recovery acceptance remains open; existing recorded available VPS RAM below full-run gate."
+  ],
+  "commercialAcceptance": false,
+  "productionDeployment": false,
+  "cleanup": {
+    "byteMeaning": "summed logical file lengths, not measured filesystem allocation",
+    "local": {
+      "evidence": "storage-cleanup.json",
+      "sha256": "07468398bf24e0fbf6abe85165e1b3f3d35152005e0ed6ecc2e1af33b0868b8a",
+      "removedFiles": 825,
+      "removedBytes": 2372488811
+    },
+    "vps": {
+      "evidence": "vps-audio-cleanup.json",
+      "sha256": "605e10a369f3e11bc991119585f4d5b279ac9c1a7e094543bfb74fa9aa2dcd46",
+      "removedFiles": 54,
+      "removedBytes": 2262782443
+    },
+    "originalAudioDeleted": true,
+    "existingTranscriptsAndReportsPreserved": true,
+    "primaryTranscriptsOneAndTwo": "not found before explicitly authorized source-audio deletion; existing reviews and recovered recording02 alternate retained",
+    "backgroundCleanupActive": false
+  },
+  "ownerDeliveryChecks": {
+    "totalPassed": 989,
+    "failed": 0,
+    "suiteCounts": {
+      "native": 344,
+      "pcc": 134,
+      "gateway": 78,
+      "bearer": 77,
+      "organization": 356
+    },
+    "scope": "five executed suites; not distinct production scenarios; PCC count includes this publication coverage and is not added twice",
+    "source": "implementation/EVIDENCE.v0.4.0.md"
+  }
+}

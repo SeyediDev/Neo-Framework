@@ -1,0 +1,125 @@
+{{- if .Values.gatewayRelay.enabled -}}
+{{- include "organization-hr.validate" . -}}
+{{- $name := printf "%s-hr-gateway" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- $relaySource := printf "%s\n" (regexReplaceAll "\n+$" (.Files.Get "files/gateway-relay.py" | replace "\r\n" "\n") "") -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  gateway-relay.py: |
+{{ $relaySource | indent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: organization-hr-gateway-relay
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: organization-hr-gateway-relay
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        fanasa.net/application: {{ .Values.applicationId | quote }}
+        fanasa.net/tenant: {{ .Values.tenantId | quote }}
+        fanasa.net/environment: development
+      annotations:
+        fanasa.net/relay-sha256: {{ $relaySource | sha256sum | quote }}
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1654
+        runAsGroup: 1654
+        seccompProfile: {type: RuntimeDefault}
+      {{- if .Values.image.existingPullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.existingPullSecret | quote }}
+      {{- end }}
+      containers:
+        - name: tls-passthrough
+          image: {{ include "organization-hr.web-image" . | quote }}
+          imagePullPolicy: IfNotPresent
+          command: [python3, -B, /relay/gateway-relay.py, {{ printf "%s.%s.svc.cluster.local" (include "organization-hr.name" .) .Release.Namespace | quote }}]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          ports:
+            - {name: hr-tls, containerPort: 5193, protocol: TCP}
+          resources:
+            requests: {cpu: 25m, memory: 32Mi}
+            limits: {cpu: 100m, memory: 64Mi, ephemeral-storage: 16Mi}
+          startupProbe:
+            tcpSocket: {port: hr-tls}
+            periodSeconds: 5
+            failureThreshold: 12
+          readinessProbe:
+            tcpSocket: {port: hr-tls}
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket: {port: hr-tls}
+            periodSeconds: 20
+          volumeMounts:
+            - {name: relay, mountPath: /relay, readOnly: true}
+      volumes:
+        - name: relay
+          configMap:
+            name: {{ $name }}
+            defaultMode: 0444
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: organization-hr-gateway-relay
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  ports:
+    - {name: hr-tls, port: 5193, targetPort: hr-tls, protocol: TCP}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: organization-hr-gateway-relay
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - ipBlock: {cidr: {{ .Values.gatewayRelay.nodeSourceCidr | quote }}}
+      ports: [{protocol: TCP, port: 5193}]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ .Release.Namespace | quote }}}
+          podSelector:
+            matchLabels:
+              {{- include "organization-hr.selector" . | nindent 14 }}
+      ports: [{protocol: TCP, port: 5193}]
+    - to:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ .Values.network.dns.namespace | quote }}}
+          podSelector:
+            matchLabels:
+              {{- toYaml .Values.network.dns.podLabels | nindent 14 }}
+      ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]
+{{- end }}

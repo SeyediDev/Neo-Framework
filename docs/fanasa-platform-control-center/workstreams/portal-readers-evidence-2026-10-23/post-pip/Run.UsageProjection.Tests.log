@@ -1,0 +1,91 @@
+PASS money above JavaScript integer precision remains exact text
+PASS measured precision and unknown legacy units are preserved
+PASS metrics count distinct products and approved name lookup adds no rows
+PASS central internal fields are never projected
+PASS browser projection contains no subject, internal reason or invented quota
+PASS notRecorded is unknown, not zero
+PASS notRecorded cannot contain partial financial data
+PASS notRecorded cannot contain partial financial data preserves requested scope
+PASS incomplete is unknown, not zero
+PASS incomplete cannot contain partial financial data
+PASS incomplete cannot contain partial financial data preserves requested scope
+PASS unavailable is unknown, not zero
+PASS unavailable cannot contain partial financial data
+PASS unavailable cannot contain partial financial data preserves requested scope
+PASS a recorded empty account has a real zero
+PASS foreign subject
+PASS foreign subject preserves requested scope
+PASS case-only subject mismatch
+PASS case-only subject mismatch preserves requested scope
+PASS foreign consumer
+PASS foreign consumer preserves requested scope
+PASS wrong from
+PASS wrong from preserves requested scope
+PASS wrong to
+PASS wrong to preserves requested scope
+PASS non-UTC equivalent boundary
+PASS non-UTC equivalent boundary preserves requested scope
+PASS non-UTC snapshot
+PASS non-UTC snapshot preserves requested scope
+PASS missing UTC designator
+PASS missing UTC designator preserves requested scope
+PASS unknown minus-zero offset
+PASS unknown minus-zero offset preserves requested scope
+PASS wrong ledger basis
+PASS wrong ledger basis preserves requested scope
+PASS unrecognized status
+PASS unrecognized status preserves requested scope
+PASS unsupported currency
+PASS unsupported currency preserves requested scope
+PASS numeric total is not exact string contract
+PASS numeric total is not exact string contract preserves requested scope
+PASS missing total
+PASS missing total preserves requested scope
+PASS mismatched totals
+PASS mismatched totals preserves requested scope
+PASS null rows
+PASS null rows preserves requested scope
+PASS null row
+PASS null row preserves requested scope
+PASS duplicate group
+PASS duplicate group preserves requested scope
+PASS missing quantity
+PASS missing quantity preserves requested scope
+PASS partial meter metadata
+PASS partial meter metadata preserves requested scope
+PASS zero measured quantity
+PASS zero measured quantity preserves requested scope
+PASS quantity rounding
+PASS quantity rounding preserves requested scope
+PASS exponent quantity
+PASS exponent quantity preserves requested scope
+PASS negative amount
+PASS negative amount preserves requested scope
+PASS fractional cents
+PASS fractional cents preserves requested scope
+PASS missing charges
+PASS missing charges preserves requested scope
+PASS aggregate charge limit
+PASS aggregate charge limit preserves requested scope
+PASS unsafe label
+PASS unsafe label preserves requested scope
+PASS malformed/duplicate JSON rejected
+PASS malformed/duplicate JSON rejected
+PASS malformed/duplicate JSON rejected
+PASS malformed/duplicate JSON rejected
+PASS malformed/duplicate JSON rejected
+PASS malformed/duplicate JSON rejected
+PASS 8MiB transport bound rejects oversized responses
+PASS IRR has no fractional minor units
+PASS IRR has no fractional minor units preserves requested scope
+PASS 10000-row report limit rejects oversized item arrays
+PASS 10000-row report limit rejects oversized item arrays preserves requested scope
+PASS positive measured usage may have a real zero posted charge
+PASS invalid requested consumer/period is rejected before parsing
+PASS invalid requested consumer/period is rejected before parsing
+PASS invalid requested consumer/period is rejected before parsing
+PASS invalid requested consumer/period is rejected before parsing
+PASS invalid requested consumer/period is rejected before parsing
+PASS 366-day duration is rejected per HTTP v1 contract
+PASS period label keeps subsecond UTC boundaries
+90 usage-projection checks passed; synthetic v1 JSON only, no live authorization or finance integration claimed.

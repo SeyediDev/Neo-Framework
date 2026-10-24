@@ -1,0 +1,73 @@
+{
+  "observedAtUtc": "2026-10-10T13:21:27.754236+00:00",
+  "readOnly": true,
+  "cpuCount": 4,
+  "loadAverage": [
+    1.228515625,
+    1.01953125,
+    0.79541015625
+  ],
+  "memory": {
+    "MemTotalMiB": 7941,
+    "MemAvailableMiB": 1754,
+    "SwapTotalMiB": 8192,
+    "SwapFreeMiB": 5598
+  },
+  "rootDiskGiB": 178.84,
+  "rootAvailableGiB": 106.86,
+  "developmentQuotas": [
+    {
+      "name": "developer-budget",
+      "hard": {
+        "count/jobs.batch": "8",
+        "limits.cpu": "4",
+        "limits.memory": "3Gi",
+        "persistentvolumeclaims": "12",
+        "pods": "12",
+        "requests.cpu": "2",
+        "requests.memory": "1536Mi",
+        "requests.storage": "12Gi",
+        "services": "12",
+        "services.loadbalancers": "0",
+        "services.nodeports": "0"
+      },
+      "used": {
+        "count/jobs.batch": "0",
+        "limits.cpu": "1900m",
+        "limits.memory": "2Gi",
+        "persistentvolumeclaims": "12",
+        "pods": "10",
+        "requests.cpu": "350m",
+        "requests.memory": "640Mi",
+        "requests.storage": "12Gi",
+        "services": "10",
+        "services.loadbalancers": "0",
+        "services.nodeports": "0"
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "name": "entekhab-vm-01",
+      "ready": "True"
+    }
+  ],
+  "relevantKubernetesDeployments": [
+    {
+      "namespace": "fanasa-developer",
+      "name": "developer-portal",
+      "desired": 1,
+      "ready": 1,
+      "images": [
+        "fanasa/developer-portal:0.2.11"
+      ]
+    }
+  ],
+  "developmentClaimsByPhase": {
+    "Bound": 12
+  },
+  "relevantServiceUnitNames": [],
+  "dockerNameRead": "available",
+  "relevantDockerContainerNames": [],
+  "inventoryLimit": "Deployment and service-unit name matching is not a complete installed-software inventory."
+}

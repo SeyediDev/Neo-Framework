@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "date": "2026-10-10",
+  "scope": "Selected runtime source files, not a full dependency or deployment manifest",
+  "checks": { "product": 248, "newUsageChecks": 70, "historicalSample": 62, "structuralTests": 26 },
+  "files": [
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/UsageContracts.cs", "sha256": "c7fc41c9fd8078db7b8061938f688379150c328a8c2b0c1ef4dd02a20df0363d" },
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationUsageMetering.cs", "sha256": "6989f6e959b6fcf3f9177d82725f851f8ffc0edd01b50d8cf8304671f85645ee" },
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/MeasuredUsageStore.cs", "sha256": "c720f2be2fe82093f39dbd1772cead5163192c4d873266b7fa7388c1da818561" },
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Accounting.cs", "sha256": "86ab72298a1ced9afbf48fb05aa8f5aca8af1b7661707950428af80e9877e56d" },
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccountingApi.cs", "sha256": "b3861562f2f1c4c9d076e8acd495ffc5555209a378ae6a68c1a7cdb1135184e3" },
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationFabric.cs", "sha256": "4e296adc9074c959f45875f92eac71c26613edf1b82c8d015bc6c1060b4f9f03" },
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/OrganizationApi.cs", "sha256": "2932e1796554e182a6c3af16573a005ac73891fa7aa2a25562d9f2d085486000" },
+    { "path": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs", "sha256": "eecebe1e9aa7fc5ae25dff4caca551d0653a017d54fffaa3b35c117ad57c2349" },
+    { "path": "products/Fanasa.AccessManagement/tests/Organization.Tests/UsageAccountingTests.cs", "sha256": "f44f3317fb7bf14e01f7ecdfb19efa28f20644140d3937924b5326aa860ab143" },
+    { "path": "products/Fanasa.AccessManagement/tests/Organization.Tests/Program.cs", "sha256": "e86a8e3d5d88cdad0a2fbff06fb691cbdcbde07662a84cf652479f88b75e547a" }
+  ]
+}

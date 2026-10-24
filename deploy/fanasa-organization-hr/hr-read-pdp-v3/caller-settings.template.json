@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "issuer": null,
+  "audience": null,
+  "clientId": null,
+  "subjectId": null,
+  "requiredScope": null,
+  "peerCertificateSha256": null
+}
