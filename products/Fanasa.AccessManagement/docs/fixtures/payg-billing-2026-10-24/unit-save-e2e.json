@@ -1,0 +1,61 @@
+{
+  "synthetic": true,
+  "scenario": "actual-unit-save-to-consumer-invoice",
+  "producedAt": "2026-10-24T07:53:12.5434338+00:00",
+  "consumerTenantId": "c90f5053-f054-4b36-842b-a14299cf77d9",
+  "period": "2026-10",
+  "operationKey": "measured:v1:9e766e1ed18e3d87643d952df89e57849a179789e34afcde956beaa702528b4e",
+  "price": {
+    "id": "organization-change-rate",
+    "version": 7,
+    "unitPrice": "12",
+    "currency": "IRR"
+  },
+  "exactAmountString": "12",
+  "ledgerChargeCount": 1,
+  "reportTotal": "12",
+  "invoice": {
+    "id": "e9679e68-4072-43d4-a06f-fb1e53ee771c",
+    "hash": "c4b026f5c2c149e15d2efa13967a02296889acc27e8a40f4dd334102275fdd13",
+    "exactAmountString": "12",
+    "lineSummary": [
+      {
+        "entryId": "bd24b179-f610-e8ad-e0f6-e8523d8ded06",
+        "operationKey": "measured:v1:9e766e1ed18e3d87643d952df89e57849a179789e34afcde956beaa702528b4e",
+        "product": "organization-fabric",
+        "meter": "organization.change",
+        "quantity": "1",
+        "unitPrice": "12",
+        "grossAmount": "12",
+        "creditedAmount": "0",
+        "netAmount": "12",
+        "OccurredAt": "2026-10-24T07:54:11.4028678+00:00"
+      }
+    ]
+  },
+  "accountSummary": {
+    "SchemaVersion": 1,
+    "ConsumerTenantId": "c90f5053-f054-4b36-842b-a14299cf77d9",
+    "AsOf": "2026-11-01T00:01:00+00:00",
+    "Status": "ready",
+    "Mode": "payg",
+    "Currency": "IRR",
+    "WalletBalance": "88",
+    "Outstanding": "0",
+    "AvailableCredit": "0",
+    "Invoices": [
+      {
+        "Id": "e9679e68-4072-43d4-a06f-fb1e53ee771c",
+        "Period": "2026-10",
+        "Amount": "12",
+        "CreditedAmount": "0",
+        "PaidAmount": "0",
+        "RemainingAmount": "12",
+        "Status": "statement",
+        "IssuedAt": "2026-11-01T00:01:00+00:00",
+        "From": "2026-10-01T00:00:00+00:00",
+        "To": "2026-11-01T00:00:00+00:00"
+      }
+    ]
+  }
+}

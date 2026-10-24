@@ -1,5 +1,5 @@
 'use strict';
-// Network-free renderer QA. No server, real credential, cookie or storage is used.
+// Network-free renderer QA. No application server, real credential, cookie or storage is used.
 const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path');
 const modulePath = process.env.FANASA_UI_PLAYWRIGHT_MODULE;
@@ -17,13 +17,23 @@ const usage = { organizationId: org, status: 'ready', from: '2026-10-01T00:00:00
 ] };
 const checks = [], pageErrors = [], network = [], screenshots = [];
 async function check(name, action) { await action(); checks.push(name); console.log('PASS ' + name); }
+async function boundedClose(action, name) {
+    let timer;
+    try {
+        await Promise.race([action(), new Promise((_, reject) => { timer = setTimeout(() => reject(Error(name + ' shutdown exceeded 10 seconds')), 10000); })]);
+    } finally { clearTimeout(timer); }
+}
 (async () => {
     fs.mkdirSync(output, { recursive: true });
-    const browser = await chromium.launch({ executablePath: browserPath, headless: true, args: ['--disable-background-networking', '--disable-component-update', '--no-first-run'] });
+    // launchServer exposes the exact child process owned by this harness, so a
+    // shutdown failure cannot leave an unbounded Chrome process behind.
+    const server = await chromium.launchServer({ executablePath: browserPath, headless: true, args: ['--disable-background-networking', '--disable-component-update', '--no-first-run'] });
+    const browser = await chromium.connect(server.wsEndpoint());
+    let context, page, evidence;
     try {
-        const context = await browser.newContext({ serviceWorkers: 'block' });
+        context = await browser.newContext({ serviceWorkers: 'block' });
         await context.route('**/*', route => { network.push(route.request().url()); return route.abort(); });
-        const page = await context.newPage(); page.on('pageerror', error => pageErrors.push(error.message));
+        page = await context.newPage(); page.on('pageerror', error => pageErrors.push(error.message));
         const css = ['portal.css', 'workspace.css', 'consumer-usage-report.css'].map(file => fs.readFileSync(path.join(assets, file), 'utf8')).join('\n');
         await page.setContent('<!doctype html><html lang="fa" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>' + css + '\nbody{margin:0}main{max-width:1280px;margin:auto;padding:16px;min-width:0}</style><main class="service-workspace"><div id="usage"></div><div id="account"></div></main></html>');
         for (const file of ['consumer-usage-report.js', 'consumer-billing.js']) await page.addScriptTag({ content: fs.readFileSync(path.join(assets, file), 'utf8') });
@@ -68,7 +78,20 @@ async function check(name, action) { await action(); checks.push(name); console.
             assert.match(await page.locator('#usage').innerText(), /<img src=x/);
             assert.deepEqual(network, []); assert.deepEqual(pageErrors, []);
         });
-        fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify({ verifiedAtUtc: new Date().toISOString(), browser: browser.version(), checks, pageErrors, network, screenshots }, null, 2));
-        console.log('PASS ' + checks.length + ' browser groups; no network or real credentials.');
-    } finally { await browser.close(); }
+        evidence = { verifiedAtUtc: new Date().toISOString(), browser: browser.version(), checks, pageErrors, network, screenshots };
+    } finally {
+        try {
+            if (page && !page.isClosed()) await boundedClose(() => page.close({ runBeforeUnload: false }), 'page');
+            if (context) await boundedClose(() => context.close(), 'context');
+            await boundedClose(() => browser.close(), 'browser connection');
+            await boundedClose(() => server.close(), 'owned browser process');
+        } catch (error) {
+            try { await boundedClose(() => server.kill(), 'forced owned browser'); }
+            catch { server.process().kill(); }
+            throw error;
+        }
+    }
+    evidence.shutdown = 'clean';
+    fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify(evidence, null, 2));
+    console.log('PASS ' + checks.length + ' browser groups; no network or real credentials; clean shutdown.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

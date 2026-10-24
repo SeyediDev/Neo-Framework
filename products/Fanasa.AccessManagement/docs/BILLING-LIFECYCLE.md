@@ -1,6 +1,6 @@
 # چرخهٔ حساب و صورتحساب
 
-نسخهٔ محلی ۲۴ اکتبر ۲۰۲۶، بر پایهٔ 98ecb7582862f724d3ba1e57d12505feb983fc6b.
+نسخهٔ محلی ۲۴ اکتبر ۲۰۲۶؛ شروع از 98ecb7582862f724d3ba1e57d12505feb983fc6b و ادغام با 4b3cfbccedac2facb356e3742f60387a5f28bad2. [پذیرش نهایی](../../../docs/fanasa-platform-control-center/workstreams/usage-accounting/ACCEPTANCE-2026-10-24.md) نتایج و بستهٔ تحویل را ثبت می‌کند.
 این ماژول از Fabric و ledger موجود استفاده می‌کند. بانک، entitlement، درگاه پرداخت و دفتر مالی دیگری ایجاد نشده است.
 
 ## مرز ثبت مصرف

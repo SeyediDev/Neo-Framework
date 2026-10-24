@@ -1,0 +1,44 @@
+{
+  "synthetic": true,
+  "origin": "loopback",
+  "checks": [
+    {
+      "name": "actual Razor page renders the exact large amount",
+      "passed": true
+    },
+    {
+      "name": "RTL layout remains within 1440 pixels",
+      "passed": true
+    },
+    {
+      "name": "RTL layout remains within 390 pixels",
+      "passed": true
+    },
+    {
+      "name": "RTL layout remains within 320 pixels",
+      "passed": true
+    },
+    {
+      "name": "frozen invoice details retain the original historical amount",
+      "passed": true
+    },
+    {
+      "name": "unknown outcome preserves and freezes the submitted request",
+      "passed": true
+    },
+    {
+      "name": "reload and retry reuse one identity and create one credit note",
+      "passed": true
+    },
+    {
+      "name": "no browser script errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "accounting-1440.png",
+    "accounting-390.png",
+    "accounting-320.png"
+  ]
+}
