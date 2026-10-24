@@ -1,0 +1,20 @@
+{
+  "schema": "fanasa.pip-live-acceptance/1",
+  "template": true,
+  "liveAccepted": false,
+  "releaseCommit": null,
+  "deploymentId": null,
+  "tenantId": null,
+  "sourceId": null,
+  "observedAtUtc": null,
+  "checks": [
+    {"id":"effective-provider-consumer-config","status":"pending","evidence":null},
+    {"id":"reader-registration-membership-grant-subscription","status":"pending","evidence":null},
+    {"id":"secret-ca-egress-gateway-mtls","status":"pending","evidence":null},
+    {"id":"correlated-schema2-observation","status":"pending","evidence":null},
+    {"id":"invalid-token-scope-tenant-subject-certificate-denied","status":"pending","evidence":null},
+    {"id":"test-activation-sync-database-pdp","status":"pending","evidence":null},
+    {"id":"appointment-deadline-outage-expiry-denied","status":"pending","evidence":null},
+    {"id":"disable-reenable-generation-restart","status":"pending","evidence":null}
+  ]
+}

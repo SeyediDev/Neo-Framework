@@ -1,5 +1,7 @@
 # HR attributes ingestion
 
+The standalone [offline deployment preflight](pip-preflight/README.fa.md) checks a nonsecret provider/consumer plan against this contract. Run it from the repository root before deployment review. It is not part of runtime or CI and never establishes live acceptance, credentials, grants or routes.
+
 The attributes adapter supplies current organization membership and effective appointments to the PIP. It does not claim legal employment. The endpoint is additive; chart, history, commands and their existing policy gates remain unchanged.
 
 ## Response and authority

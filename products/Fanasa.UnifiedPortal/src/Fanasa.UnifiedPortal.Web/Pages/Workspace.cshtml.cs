@@ -10,9 +10,12 @@ namespace Fanasa.UnifiedPortal.Web.Pages;
 
 [Authorize]
 public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJourneySource journeys,
-    IConfiguration configuration, IServiceDiscoveryClient? discovery = null, IWorkspaceConsumerBillingReader? billing = null) : PageModel
+    IConfiguration configuration, IServiceDiscoveryClient? discovery = null, IWorkspaceConsumerBillingReader? billing = null,
+    TimeProvider? timeProvider = null) : PageModel
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+    private static readonly TimeSpan FinancialRequestBudget = TimeSpan.FromSeconds(48);
+    private readonly TimeProvider requestClock = timeProvider ?? TimeProvider.System;
     public IReadOnlyCollection<PlatformOrganizationView> Organizations { get; private set; } = [];
     public Guid? ActiveOrganizationId { get; private set; }
     public string ActiveOrganizationName => Organizations.FirstOrDefault(x => x.Id == ActiveOrganizationId)?.Name ?? "";
@@ -27,6 +30,8 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
 
     public async Task OnGetAsync(Guid? tenantId, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        var requestStarted = requestClock.GetTimestamp();
         Response.Headers.CacheControl = "no-store";
         var published = discovery?.GetAsync(cancellationToken)
             ?? Task.FromResult(new ServiceDiscovery(CatalogStatus.NotConfigured, []));
@@ -81,7 +86,7 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
                 }
                 if (!IsPreview && billing is not null)
                 {
-                    financial = await billing.ReadAsync(subject, ActiveOrganizationId.Value, cancellationToken);
+                    financial = await ReadBillingAsync(subject, ActiveOrganizationId.Value, requestStarted, cancellationToken);
                     if (financial.Usage is { } usage && usage.OrganizationId != ActiveOrganizationId
                         || financial.Account is { } account && account.OrganizationId != ActiveOrganizationId)
                         financial = new("unavailable", null, null);
@@ -114,6 +119,37 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
     {
         await OnGetAsync(tenantId, cancellationToken);
         return Content(BootstrapJson, "application/json; charset=utf-8");
+    }
+
+    private async Task<WorkspaceConsumerBilling> ReadBillingAsync(string subject, Guid consumer,
+        long requestStarted, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var remaining = FinancialRequestBudget - requestClock.GetElapsedTime(requestStarted);
+        if (remaining <= TimeSpan.Zero) return new("unavailable", null, null);
+        using var deadline = new CancellationTokenSource(remaining, requestClock);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, deadline.Token);
+        try
+        {
+            var read = billing!.ReadAsync(subject, consumer, linked.Token);
+            // Observe a late fault even when a reader ignores cancellation. Its result
+            // is assigned only by this awaited path, never by a background continuation.
+            _ = read.ContinueWith(static failed => { _ = failed.Exception; }, CancellationToken.None,
+                TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            var result = await read.WaitAsync(linked.Token);
+            cancellationToken.ThrowIfCancellationRequested();
+            return deadline.IsCancellationRequested || requestClock.GetElapsedTime(requestStarted) >= FinancialRequestBudget
+                ? new("unavailable", null, null) : result;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw;
+        }
+        catch (OperationCanceledException) when (deadline.IsCancellationRequested)
+        {
+            return new("unavailable", null, null);
+        }
     }
 
     public static string? CentralAccountingUrl(string? baseUrl, Guid organizationId)

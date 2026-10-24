@@ -1,0 +1,59 @@
+{
+  "provider": {
+    "runtime": "kubernetes",
+    "hrAuthority": "https://sso.example.test/realms/fanasa",
+    "hrAudience": "fanasa-organization-fabric",
+    "reader": {
+      "clientId": "fanasa-organization-pip-reader",
+      "serviceSubject": "33333333-3333-4333-8333-333333333333",
+      "scope": "organization.hr.attributes.read",
+      "tenantIds": ["11111111-1111-4111-8111-111111111111"]
+    }
+  },
+  "consumer": {
+    "runtime": "systemd",
+    "oauth": {
+      "tenantId": "11111111-1111-4111-8111-111111111111",
+      "reference": "organization-hr-reader",
+      "tokenEndpoint": "https://sso.example.test/realms/fanasa/protocol/openid-connect/token",
+      "clientId": "fanasa-organization-pip-reader",
+      "clientSecretReference": "organization-hr-client-secret",
+      "scopes": ["organization.hr.attributes.read"],
+      "caFile": "/certs/fanasa-root-ca.crt",
+      "allowedPrivateAddresses": ["10.20.0.10"],
+      "timeoutSeconds": 10
+    },
+    "binding": {
+      "tenantId": "11111111-1111-4111-8111-111111111111",
+      "endpoint": "https://api.example.test/development/organization-hr/v1/tenants/11111111-1111-4111-8111-111111111111/attributes",
+      "secretReference": "organization-hr-reader",
+      "caFile": "/certs/fanasa-root-ca.crt",
+      "allowedPrivateAddresses": ["10.20.0.11"]
+    },
+    "secretMount": {
+      "reference": "organization-hr-client-secret",
+      "environmentKey": "Pip__Secrets__organization-hr-client-secret"
+    },
+    "egressEndpoints": [
+      "https://sso.example.test/realms/fanasa/protocol/openid-connect/token",
+      "https://api.example.test/development/organization-hr/v1/tenants/11111111-1111-4111-8111-111111111111/attributes"
+    ]
+  },
+  "source": {
+    "tenantId": "11111111-1111-4111-8111-111111111111",
+    "endpoint": "https://api.example.test/development/organization-hr/v1/tenants/11111111-1111-4111-8111-111111111111/attributes",
+    "secretReference": "organization-hr-reader",
+    "schemaVersion": 2,
+    "maxAgeSeconds": 60,
+    "pollIntervalSeconds": 30,
+    "syncSubjects": ["22222222-2222-4222-8222-222222222222"],
+    "definitions": [
+      {"name":"org.member.active","dataType":"boolean","required":true,"externalName":"org.member.active"},
+      {"name":"org.assignment.active","dataType":"boolean","required":true,"externalName":"org.assignment.active"},
+      {"name":"org.assignment.count","dataType":"integer","required":true,"externalName":"org.assignment.count"},
+      {"name":"org.unit.code","dataType":"string","required":false,"externalName":"org.unit.code"},
+      {"name":"org.position.code","dataType":"string","required":false,"externalName":"org.position.code"},
+      {"name":"org.role.code","dataType":"string","required":false,"externalName":"org.role.code"}
+    ]
+  }
+}
