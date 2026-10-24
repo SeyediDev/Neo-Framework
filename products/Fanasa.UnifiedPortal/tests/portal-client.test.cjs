@@ -51,6 +51,7 @@ function setup(options = {}) {
     elements['organization-select'].replaceChildren(new Option('انتخاب', ''), new Option('سازمان', 'tenant-a', false, true));
     elements['product-grid'].append(new Element('stale-link'));
     const requests = [];
+    const ignoresAbort = options.ignoresAbort === true;
     const timers = new Map();
     let timerId = 0;
     const cards = (options.centers || []).map(center => {
@@ -78,7 +79,7 @@ function setup(options = {}) {
         fetch: (url, options) => new Promise((resolve, reject) => {
             const entry = { url: String(url), options, resolve, reject };
             requests.push(entry);
-            options.signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })), { once: true });
+            if (!ignoresAbort) options.signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })), { once: true });
         })
     });
     return { elements, requests, timers, history, cards, buttons,
@@ -131,6 +132,54 @@ test('a hung request reaches a bounded error and retry controls recover', async 
     app.requests[1].resolve(response(payload()));
     await retry;
     assert.equal(app.elements['workspace'].dataset.status, 'Ready');
+    assert.equal(app.timers.size, 0);
+});
+
+test('a request that ignores abort still times out and its late rejection cannot disturb retry', async () => {
+    const app = setup({ ignoresAbort: true }), pending = app.start();
+    app.expire();
+    await pending;
+    assert.equal(app.elements['workspace'].dataset.status, 'Unavailable');
+    assert.equal(app.elements['workspace-refresh'].disabled, false);
+    assert.equal(app.timers.size, 0);
+    const retry = app.start();
+    app.requests[0].reject(new Error('late network failure'));
+    app.requests[1].resolve(response(payload('tenant-b')));
+    await retry;
+    assert.equal(app.elements['workspace'].dataset.status, 'Ready');
+    assert.equal(app.elements['organization-select'].value, 'tenant-b');
+});
+
+test('a stalled body that ignores abort releases controls and cannot render after timeout', async () => {
+    const app = setup(), pending = app.start();
+    let started, finish;
+    const reading = new Promise(resolve => { started = resolve; });
+    app.requests[0].resolve(response(null, () => new Promise(resolve => { finish = resolve; started(); })));
+    await reading;
+    app.expire();
+    await pending;
+    assert.equal(app.elements['workspace'].dataset.status, 'Unavailable');
+    assert.equal(app.elements['workspace-refresh'].disabled, false);
+    assert.equal(app.timers.size, 0);
+    finish(payload());
+    await Promise.resolve();
+    assert.equal(app.elements['workspace'].dataset.status, 'Unavailable');
+    assert.equal(app.history.length, 0);
+});
+
+test('switching organizations settles an unresponsive previous request without enabling current controls', async () => {
+    const app = setup({ ignoresAbort: true }), first = app.start();
+    app.elements['organization-select'].value = 'tenant-b';
+    const second = app.start();
+    await first;
+    assert.equal(app.elements['workspace-refresh'].disabled, true);
+    assert.equal(app.timers.size, 1);
+    app.requests[1].resolve(response(payload('tenant-b')));
+    await second;
+    app.requests[0].resolve(response(payload()));
+    await Promise.resolve();
+    assert.equal(app.elements['organization-select'].value, 'tenant-b');
+    assert.equal(app.elements['workspace-refresh'].disabled, false);
     assert.equal(app.timers.size, 0);
 });
 

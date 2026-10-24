@@ -373,7 +373,7 @@ async function dialogKeyboard(page, opener) {
     await check('connected bootstrap UI simulation ignores saved preview drafts and disables mutations', async () => {
         const connectedContext = await newContext(html => html.replace(/(<script id="workspace-bootstrap" type="application\/json">)([\s\S]*?)(<\/script>)/, (_, before, json, after) => {
             const data = JSON.parse(json);
-            data.mode = 'connected'; data.isAdmin = false; data.catalog = []; data.requests = []; data.publications = [];
+            data.mode = 'connected'; data.journeyStatus = 'notConnected'; data.isAdmin = false; data.catalog = []; data.requests = []; data.publications = [];
             data.usage = { status: 'notConnected', periodLabel: '', asOf: '', currency: 'IRR', totalAmount: '', items: [] };
             return before + JSON.stringify(data).replace(/</g, '\\u003c') + after;
         }));

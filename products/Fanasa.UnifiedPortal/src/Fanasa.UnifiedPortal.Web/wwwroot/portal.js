@@ -82,6 +82,16 @@
     // Three sequential server calls can each take 15 seconds. Bound the whole
     // browser request (including its body) without cutting off a normal server timeout.
     const workspaceTimeoutMs = 50000;
+    const abortable = (operation, signal) => new Promise((resolve, reject) => {
+        const aborted = () => reject(new Error('workspace-aborted'));
+        const cleanup = () => signal.removeEventListener('abort', aborted);
+        Promise.resolve(operation).then(value => {
+            cleanup();
+            if (signal.aborted) aborted(); else resolve(value);
+        }, error => { cleanup(); reject(error); });
+        if (signal.aborted) aborted();
+        else signal.addEventListener('abort', aborted, { once: true });
+    });
     const textElement = (tag, className, text) => {
         const element = document.createElement(tag);
         element.className = className;
@@ -157,9 +167,9 @@
             const url = new URL(location.pathname, location.origin);
             url.searchParams.set('handler', 'Workspace');
             if (requested) url.searchParams.set('tenantId', requested);
-            const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: requestController.signal });
+            const response = await abortable(fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: requestController.signal }), requestController.signal);
             if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) throw new Error('workspace');
-            const data = await response.json();
+            const data = await abortable(response.json(), requestController.signal);
             if (requestController.signal.aborted) throw new Error('workspace-aborted');
             if (id === requestId) render(data);
         } catch (error) {
