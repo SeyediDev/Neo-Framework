@@ -653,3 +653,10 @@ products/Fanasa.AccessManagement/tests/Organization.Tests/PipEducationalJourneyT
 products/Fanasa.AccessManagement/tests/Organization.Tests/PipHrOAuthTests.cs -text
 products/Fanasa.AccessManagement/tests/Organization.Tests/PipOperatorTests.cs -text
 products/Fanasa.AccessManagement/tests/Organization.Tests/PipSchema2Tests.cs -text
+/deploy/fanasa-organization-hr/hr-read-host-v3-r7/** -text
+/products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/BillingLifecycle.cs -text
+/products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/BillingLifecycleApi.cs -text
+/products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerBillingAuthorization.cs -text
+/products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ExactBillingDecimalConverter.cs -text
+/products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Billing.cshtml.cs -text
+/products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/billing-exact.js -text

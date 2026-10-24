@@ -241,6 +241,17 @@ class Hr3GateTests(unittest.TestCase):
 
 
 class SourceCompletenessTests(unittest.TestCase):
+    def test_selected_financial_successor_retains_the_frozen_predecessor(self):
+        self.assertEqual(MODULE.HR3_PACKAGE, Path("deploy/fanasa-organization-hr/hr-read-host-v3-r7"))
+        manifest_bytes = (ACTIVE_PACKAGE / "SOURCE-PACKAGE.json").read_bytes()
+        self.assertEqual(digest(manifest_bytes), "1e6dfad8a2d5626e555b42c1a402f60cbcf9a001d7156fcb5e537ade660a16a0")
+        manifest = json.loads(manifest_bytes)
+        previous = {"directory": "hr-read-host-v3-r6",
+                    "manifestSha256": "4cdfe260b6706bd33f857288b76f58867ce0d227df7dd5d29c2b49b1ec8af585"}
+        self.assertEqual(manifest["previousSourcePackage"], previous)
+        self.assertEqual(digest((ACTIVE_PACKAGE.parent / previous["directory"] / "SOURCE-PACKAGE.json").read_bytes()),
+                         previous["manifestSha256"])
+
     def test_only_named_sealed_receipt_logs_participate_in_source_identity(self):
         receipts = {"deploy/fanasa-organization-hr/hr-read-profile-v3/contract-policy/original-regression.log": b"sealed profile receipt\n",
                     "deploy/fanasa-organization-hr/hr-read-pdp-v3/verification.log": b"sealed PDP receipt\n",
@@ -286,6 +297,11 @@ class SourceCompletenessTests(unittest.TestCase):
         self.assertTrue((package / "SOURCE-PACKAGE.json").is_file(), "the active CI candidate must be present; no fallback to old pins")
         manifest = json.loads((package / "SOURCE-PACKAGE.json").read_text(encoding="utf-8"))
         packages = [(package, manifest)]
+        previous = manifest["previousSourcePackage"]
+        previous_root = package.parent / previous["directory"]
+        previous_bytes = (previous_root / "SOURCE-PACKAGE.json").read_bytes()
+        self.assertEqual(digest(previous_bytes), previous["manifestSha256"])
+        packages.append((previous_root, json.loads(previous_bytes)))
         for dependency in manifest["dependencies"]:
             dependency_root = package.parent / dependency["directory"]
             packages.append((dependency_root, json.loads((dependency_root / "SOURCE-PACKAGE.json").read_text(encoding="utf-8"))))

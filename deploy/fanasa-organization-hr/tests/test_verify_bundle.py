@@ -184,7 +184,8 @@ class ArchiveTests(unittest.TestCase):
                 self.assertFalse((root / "extracted").exists())
 
     def test_rejects_missing_required_suite_and_changed_log(self):
-        new_suites = {"tests-Organization.Calendar.Tests", "tests-Organization.Temporal.Tests", "tests-organization-temporal-ui"}
+        new_suites = {"tests-Organization.Calendar.Tests", "tests-Organization.Temporal.Tests", "tests-organization-temporal-ui",
+                      "tests-PaygMetering.Tests", "tests-BillingLifecycle.Tests", "tests-Billing.Api.Tests"}
         for args in [{"omit_suite": suite} for suite in sorted(MODULE.SUITES | new_suites)] + [{"bad_log": True}]:
             with self.subTest(args=args), tempfile.TemporaryDirectory() as temp:
                 archive, receipt = fixture(Path(temp), **args)

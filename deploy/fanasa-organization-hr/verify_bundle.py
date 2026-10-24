@@ -19,6 +19,7 @@ MIN_ORGANIZATION_UI_TESTS = 44
 SUITES = {"tests-Organization.Hr.Tests", "tests-Organization.Bearer.Tests", "tests-Organization.Tests",
           "tests-Organization.Calendar.Tests", "tests-Organization.Temporal.Tests",
           "tests-ConsumerApplicationCatalog.Tests", "tests-PublishedCatalog.Tests", "tests-ConsumerUsage.Api.Tests",
+          "tests-PaygMetering.Tests", "tests-BillingLifecycle.Tests", "tests-Billing.Api.Tests",
           "tests-Workbench.Boundary.Tests", "tests-ProductRegistration.Tests", "tests-native-workbench",
           "tests-organization-temporal-ui"}
 REPOSITORIES = {"https://github.com/SeyediDev/Neo-Framework.git",
@@ -181,7 +182,7 @@ def verify(archive: Path, expected_hash: str | None, expected_release: str | Non
             gates[name] = gate
         executable_suites = SUITES - {"tests-native-workbench", "tests-organization-temporal-ui"}
         if not SUITES.issubset(gates) or any(type(gates[name].get("passedChecks")) is not int or gates[name]["passedChecks"] < 1 for name in executable_suites):
-            raise ValueError("All required HR/organization/calendar/temporal/bearer/boundary/product-registration suites must have passing checks.")
+            raise ValueError("All required HR/organization/calendar/temporal/bearer/boundary/product-registration/financial suites must have passing checks.")
         native_counts = [gates["tests-native-workbench"].get(field) for field in ("passedTests", "failedTests", "skippedTests")]
         if any(type(count) is not int for count in native_counts) or native_counts[0] < 15 or native_counts[1] != 0 or native_counts[2] != 0:
             raise ValueError("Native workbench receipt requires at least 15 passing tests and zero failures or skips.")

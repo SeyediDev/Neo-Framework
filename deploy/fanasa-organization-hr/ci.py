@@ -20,10 +20,11 @@ WEB = Path("products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fan
 ENGINE = UI.parent / "src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj"
 WORKBENCH = UI / "server/Fanasa.ContractPolicy.Workbench.csproj"
 PROBE = UI / "server/tests/DatabaseFreshness.Probe/DatabaseFreshness.Probe.csproj"
-HR3_PACKAGE = Path("deploy/fanasa-organization-hr/hr-read-host-v3-r6")
+HR3_PACKAGE = Path("deploy/fanasa-organization-hr/hr-read-host-v3-r7")
 SUITES = ["Organization.Hr.Tests", "Organization.Bearer.Tests", "Organization.Tests", "Organization.Calendar.Tests",
           "Organization.Temporal.Tests", "ConsumerApplicationCatalog.Tests", "PublishedCatalog.Tests",
-          "ConsumerUsage.Api.Tests", "Workbench.Boundary.Tests", "ProductRegistration.Tests"]
+          "ConsumerUsage.Api.Tests", "PaygMetering.Tests", "BillingLifecycle.Tests", "Billing.Api.Tests",
+          "Workbench.Boundary.Tests", "ProductRegistration.Tests"]
 SOURCE_PATHS = ["Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props", "global.json", "NuGet.config",
                 "products/Fanasa.AccessManagement/Directory.Build.props", "products/Fanasa.AccessManagement/Directory.Build.targets",
                 "products/Fanasa.AccessManagement/Directory.Packages.props", "products/Fanasa.AccessManagement/Fanasa.AccessManagement.slnx",

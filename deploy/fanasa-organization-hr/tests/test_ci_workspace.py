@@ -157,7 +157,8 @@ class WorkspaceTests(unittest.TestCase):
 
     def test_every_required_gate_and_the_isolation_receipt_are_mandatory(self):
         evidence = self.evidence()
-        for name in sorted(MODULE.REQUIRED_TEST_GATES):
+        financial_gates = {"tests-PaygMetering.Tests", "tests-BillingLifecycle.Tests", "tests-Billing.Api.Tests"}
+        for name in sorted(MODULE.REQUIRED_TEST_GATES | financial_gates):
             changed = copy.deepcopy(evidence)
             changed["gates"] = [gate for gate in changed["gates"] if gate["name"] != name]
             with self.subTest(missing=name), self.assertRaises(RuntimeError):
@@ -170,6 +171,47 @@ class WorkspaceTests(unittest.TestCase):
         evidence["gates"].append(copy.deepcopy(evidence["gates"][0]))
         with self.assertRaises(RuntimeError):
             MODULE.validate_test_evidence(evidence, self.output, self.source)
+
+    def test_financial_suites_restore_build_and_execute_the_built_assembly(self):
+        # Compile/run processes are synthetic; exercise the actual orchestration up to
+        # the first engine step without manufacturing a successful release receipt.
+        for suite in MODULE.SUITES:
+            for filename, data in [(suite + ".csproj", b"<Project />\n"), ("Program.cs", b"// synthetic test\n")]:
+                relative = f"products/Fanasa.AccessManagement/tests/{suite}/{filename}"
+                self.write(self.repository, relative, data)
+                self.source["files"].append({"path": relative, "sha256": digest(data)})
+        self.source["files"].sort(key=lambda item: item["path"])
+        encoded = json.dumps(self.source["files"], sort_keys=True, separators=(",", ":")).encode()
+        self.source["snapshotSha256"] = digest(encoded)
+        calls = []
+        def run(command, output, name, **kwargs):
+            if name == "restore-" + MODULE.ENGINE.stem:
+                raise RuntimeError("stop-after-executable-suites")
+            calls.append((name, command))
+            if command[:2] == ["dotnet", "build"]:
+                project = Path(command[2])
+                self.write(kwargs["cwd"], project.parent / "bin/Release/net10.0" / (project.stem + ".dll"), b"synthetic assembly")
+            content = b"PASS synthetic executed check\n"
+            log = self.write(output, name + ".log", content)
+            return {"name": name, "log": log.name, "logSha256": digest(content), "exitCode": 0}
+        args = argparse.Namespace(output=self.output, source_commit=SHA, allow_working_tree=False, cached_restore=False)
+        with patch.object(MODULE, "ROOT", self.repository), patch.object(MODULE, "source_identity", return_value=self.source), \
+                patch.object(MODULE, "capture", side_effect=lambda command: "10.0.401" if command[0] == "dotnet" else "v24.0.0"), \
+                patch.object(MODULE, "run", side_effect=run):
+            with self.assertRaisesRegex(RuntimeError, "stop-after-executable-suites"):
+                MODULE.verify(args)
+        evidence = json.loads((self.output / "verification.json").read_text(encoding="utf-8"))
+        self.assertEqual(evidence["status"], "failed")
+        names = [name for name, _ in calls]
+        for suite in ["PaygMetering.Tests", "BillingLifecycle.Tests", "Billing.Api.Tests"]:
+            with self.subTest(suite=suite):
+                restore, build, execute = [names.index(prefix + suite) for prefix in ["restore-", "build-", "tests-"]]
+                self.assertLess(restore, build)
+                self.assertLess(build, execute)
+                assembly = Path("products/Fanasa.AccessManagement/tests") / suite / "bin/Release/net10.0" / (suite + ".dll")
+                self.assertEqual(calls[execute][1], ["dotnet", str(assembly)])
+                gate = next(gate for gate in evidence["gates"] if gate["name"] == "tests-" + suite)
+                self.assertEqual(gate["passedChecks"], 1)
 
     def test_gate_logs_and_integer_counters_cannot_be_relaxed(self):
         evidence = self.evidence()
