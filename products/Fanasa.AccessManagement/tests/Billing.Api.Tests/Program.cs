@@ -73,6 +73,15 @@ await using (var f = await Fixture.Start())
         Check(snapshot==f.Snapshot(),item.Name+" has no financial effect");
     }
     using(var cross=await Summary(f.Token(),f.OtherConsumer)) Check(cross.StatusCode==HttpStatusCode.Forbidden,"cross tenant denied");
+    var beforeEmptyConsumer=f.Snapshot();
+    using(var empty=await Summary(f.Token(),Guid.Empty))
+    {
+        Check(empty.StatusCode==HttpStatusCode.BadRequest,"empty consumer returns 400 (actual "+(int)empty.StatusCode+")");
+        Check(empty.Headers.CacheControl?.NoStore==true,"empty consumer response is no-store");
+        Check(beforeEmptyConsumer==f.Snapshot(),"empty consumer has no financial effect");
+    }
+    using(var anonymousEmpty=await Summary(null,Guid.Empty))
+        Check(anonymousEmpty.StatusCode==HttpStatusCode.Unauthorized,"empty consumer does not bypass bearer authentication");
     using(var input=await Summary(f.Token(),query:"?subject=forged")) Check(input.StatusCode==HttpStatusCode.BadRequest,"subject input rejected");
     using(var ready=await Summary(f.Token()))
     {

@@ -80,6 +80,8 @@ public sealed class ConsumerAccountApi(FabricDatabase database, AccountingStore 
         if (!configuration.GetValue<bool>("ConsumerUsageReport:Enabled") || !Label(client) || !Label(product)
             || !Label(scope) || scope!.Any(char.IsWhiteSpace))
             return StatusCode(503, new { error = "Account report is unavailable." });
+        if (consumerTenantId == Guid.Empty)
+            return BadRequest(new { error = "A nonempty consumer tenant ID is required." });
         if (Request.Query.Count != 0 || Request.Headers.ContainsKey("X-Subject") || Request.Headers.ContainsKey("X-User-Id"))
             return BadRequest(new { error = "This account read accepts no subject or query parameters." });
         var boundary = new ConsumerBillingAuthorization(HttpContext, access, registry, clock);

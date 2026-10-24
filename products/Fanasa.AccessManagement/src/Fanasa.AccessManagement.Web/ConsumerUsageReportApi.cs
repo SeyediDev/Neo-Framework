@@ -58,6 +58,9 @@ public sealed class ConsumerUsageReportApi(
             || scope!.Any(char.IsWhiteSpace))
             return Unavailable();
 
+        if (consumerTenantId == Guid.Empty)
+            return BadRequest(new { error = "A nonempty consumer tenant ID is required." });
+
         if (Request.Query.Count != 2
             || Request.Query.Keys.Any(x => x is not ("from" or "to"))
             || Request.Headers.ContainsKey("X-Subject")

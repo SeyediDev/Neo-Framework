@@ -88,6 +88,10 @@ await using (var f = await Fixture.Start())
         f.Token(extra: [new Claim("active", "false")]));
     await Denied("cross-consumer request", HttpStatusCode.Forbidden,
         f.Token(), f.OtherConsumer);
+    await Denied("empty consumer identifier", HttpStatusCode.BadRequest,
+        f.Token(), Guid.Empty);
+    await Denied("anonymous empty consumer identifier", HttpStatusCode.Unauthorized,
+        consumer: Guid.Empty);
     await Denied("forged subject header", HttpStatusCode.BadRequest,
         f.Token(), forgedSubject: true);
 

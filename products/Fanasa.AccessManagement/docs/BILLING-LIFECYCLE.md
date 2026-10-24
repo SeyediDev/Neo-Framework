@@ -47,6 +47,8 @@ Credit note به یک charge موجود همان consumer و، در دورهٔ �
 | POST /api/accounting/v1/tenants/{tenant}/invoices | Cookie، CSRF و billing.write زنده در همان writer |
 | POST /api/accounting/v1/tenants/{tenant}/credit-notes | همان مرز مالی؛ اصلاح محدود و قابل حسابرسی |
 
+در دو GET مصرف‌کننده، شناسهٔ تمام‌صفر با تنظیمات معتبر HTTP 400 و no-store می‌دهد؛ دادهٔ مالی خوانده یا تغییر نمی‌شود. احراز Bearer پیش از controller برقرار است و درخواست ناشناس همچنان 401 می‌گیرد. feature خاموش یا تنظیمات ناقص، پیش از بررسی ورودی 503 می‌دهد.
+
 بدنهٔ صدور: ExpectedRevision، Key، Period به شکل yyyy-MM و Reference.
 بدنهٔ اصلاح: ExpectedRevision، Key، ChargeId، InvoiceId یا null، Amount دقیق، Reason و Reference.
 CSRF در X-CSRF-TOKEN ارسال می‌شود. PlatformAdmin به‌تنهایی مجوز مالی tenant نمی‌دهد.
