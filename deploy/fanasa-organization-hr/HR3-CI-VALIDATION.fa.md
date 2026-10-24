@@ -1,6 +1,6 @@
 # گیت سازگاری HR3 در CI توسعه
 
-بستهٔ فعال در `ci.py:HR3_PACKAGE` اکنون `hr-read-host-v3-r7` است. بسته‌های اولیه تا r6 و pinهای تاریخی دست‌نخورده‌اند. r7 ورودی‌های میزبان پس از ادغام مالی را با predecessor ثابت r6 ثبت می‌کند؛ کد C#/project/targets بسته با r6 یکسان است. محدودیت PIP بومی حفظ می‌شود: lease شاهد از `Pip.FreshUntil` عبور نمی‌کند و provenance چندمنبعی که در `AccessDecision.Pip` قابل نمایش کامل نیست، بسته رد می‌شود. وضعیت انتخاب محلی **reviewed-local-ready-for-ci** است؛ اجرای موفق GitLab برای این سورس هنوز ادعا نمی‌شود. نتیجهٔ تازهٔ actual-host و Linux filesystem، hash رسیدها و محدودیت audit محلی در [گزارش r7](HR3-R7-LOCAL-INTEGRATION.fa.md) ثبت شده‌اند؛ بخش r5 پایین صرفاً شاهد تاریخی است.
+بستهٔ انتخاب‌شده در `ci.py:HR3_PACKAGE` اکنون `hr-read-host-v3-r8` است. predecessor ثابت r7 و pinهای تاریخی بازنویسی نشده‌اند. r8 فقط hash دو controller مصرف/حساب را برای رد UUID تمام‌صفر به‌روز می‌کند؛ موجودی ۱۴۸ مسیر میزبان ثابت و کد C#/project/targets بسته با r7 یکسان است. محدودیت PIP بومی حفظ می‌شود: lease شاهد از `Pip.FreshUntil` عبور نمی‌کند و provenance چندمنبعی که در `AccessDecision.Pip` قابل نمایش کامل نیست، بسته رد می‌شود. این انتخاب محلی است؛ پذیرش actual-host و CI باید از رسید تازهٔ متصل به مهر r8 خوانده شود و موفقیت گذشته به آن منتقل نمی‌شود. رسیدهای همین مهر در [گزارش r8](HR3-R8-LOCAL-INTEGRATION.fa.md) تفکیک می‌شوند؛ [گزارش r7](HR3-R7-LOCAL-INTEGRATION.fa.md) و بخش r5 پایین صرفاً شواهد تاریخی‌اند.
 
 ## ترتیب اجرای اجباری
 
@@ -14,11 +14,11 @@ python3 deploy/fanasa-organization-hr/ci.py validate-hr3 \
 گیت‌ها ترتیبی‌اند:
 
 ```sh
-python3 deploy/fanasa-organization-hr/hr-read-host-v3-r7/verify-package.py --repository "$CI_PROJECT_DIR"
-sh deploy/fanasa-organization-hr/hr-read-host-v3-r7/test-host.sh "$CI_PROJECT_DIR"
+python3 deploy/fanasa-organization-hr/hr-read-host-v3-r8/verify-package.py --repository "$CI_PROJECT_DIR"
+sh deploy/fanasa-organization-hr/hr-read-host-v3-r8/test-host.sh "$CI_PROJECT_DIR"
 ```
 
-گیت اول، ۳۲ فایل بسته، predecessor ثابت r6، ۱۱۱ فایل دو dependency ثابت و تمام **۱۴۸ ورودی میزبان** را byte به byte مقایسه می‌کند. افزودن، حذف یا تغییر هر ورودی Web/UI/PCC در scope ثابت، اجرای build را پیش از شروع متوقف می‌کند؛ manifest خودکار refresh نمی‌شود. گیت دوم ۱۳ suite کامل را در artifact تازه و ایزوله اجرا می‌کند. هویت کامل سورس پیش و پس از آزمون باید یکسان بماند. نبود بسته یا شکست فرمان، job را ناموفق می‌کند. `tests/test_ci_hr3.py` انتخاب دقیق r7، pin ر6 و حضور تمام فایل‌های predecessor در هویت سورس را نیز کنترل می‌کند؛ fallback تاریخی ندارد.
+گیت اول، ۳۲ فایل بسته، predecessor ثابت r7، ۱۱۱ فایل دو dependency ثابت و تمام **۱۴۸ ورودی میزبان** را byte به byte مقایسه می‌کند. افزودن، حذف یا تغییر هر ورودی Web/UI/PCC در scope ثابت، اجرای build را پیش از شروع متوقف می‌کند؛ manifest خودکار refresh نمی‌شود. گیت دوم ۱۳ suite کامل را در artifact تازه و ایزوله اجرا می‌کند. هویت کامل سورس پیش و پس از آزمون باید یکسان بماند. نبود بسته یا شکست فرمان، job را ناموفق می‌کند. `tests/test_ci_hr3.py` انتخاب دقیق r8، pin ر7 و حضور تمام فایل‌های predecessor در هویت سورس را نیز کنترل می‌کند؛ fallback تاریخی ندارد.
 
 تنظیمات محلی/محیطی از هویت سورس خارج‌اند؛ `appsettings.json` پایه داخل آن است. targets میزبان، تنظیمات محیطی را از خروجی build/publish نیز حذف می‌کند. مرحلهٔ `verify-package` پس از موفقیت `validate-host` آغاز می‌شود؛ مسیر عبور با `needs` یا `allow_failure` وجود ندارد. هر job با `GIT_STRATEGY: clone` checkout تازه دریافت می‌کند.
 
@@ -43,7 +43,7 @@ host-inventory-before/after.json: afc7ffd5d4b8ac440dac8d31a411ca773ad8877849b0d6
 ```powershell
 python -B -m unittest discover -s deploy/fanasa-organization-hr/tests -p 'test_*.py' -v
 python -B -m unittest discover -s deploy/fanasa-organization-hr/oci/tests -p 'test_*.py' -v
-python -B -m unittest discover -s deploy/fanasa-organization-hr/hr-read-host-v3-r7/tests -p 'test_*.py' -v
+python -B -m unittest discover -s deploy/fanasa-organization-hr/hr-read-host-v3-r8/tests -p 'test_*.py' -v
 ```
 
 آزمون CI ترتیب گیت‌ها، توقف پیش از build هنگام drift، source تغییرکرده حین آزمون، enumeration کامل بستهٔ فعال و ترتیب stageها را بررسی می‌کند. فرایند .NET در آزمون Python شبیه‌سازی می‌شود؛ نتیجهٔ ۹۰۸ از اجرای مستقل واقعی بالا است. نتایج اجرای نهایی Python/OCI و hash لاگ‌ها در رسید محلی ثبت می‌شوند.

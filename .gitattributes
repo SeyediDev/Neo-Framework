@@ -660,3 +660,4 @@ products/Fanasa.AccessManagement/tests/Organization.Tests/PipSchema2Tests.cs -te
 /products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ExactBillingDecimalConverter.cs -text
 /products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/Billing.cshtml.cs -text
 /products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/wwwroot/js/billing-exact.js -text
+/deploy/fanasa-organization-hr/hr-read-host-v3-r8/** -text

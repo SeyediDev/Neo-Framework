@@ -20,7 +20,7 @@ WEB = Path("products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fan
 ENGINE = UI.parent / "src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj"
 WORKBENCH = UI / "server/Fanasa.ContractPolicy.Workbench.csproj"
 PROBE = UI / "server/tests/DatabaseFreshness.Probe/DatabaseFreshness.Probe.csproj"
-HR3_PACKAGE = Path("deploy/fanasa-organization-hr/hr-read-host-v3-r7")
+HR3_PACKAGE = Path("deploy/fanasa-organization-hr/hr-read-host-v3-r8")
 SUITES = ["Organization.Hr.Tests", "Organization.Bearer.Tests", "Organization.Tests", "Organization.Calendar.Tests",
           "Organization.Temporal.Tests", "ConsumerApplicationCatalog.Tests", "PublishedCatalog.Tests",
           "ConsumerUsage.Api.Tests", "PaygMetering.Tests", "BillingLifecycle.Tests", "Billing.Api.Tests",

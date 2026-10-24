@@ -241,13 +241,13 @@ class Hr3GateTests(unittest.TestCase):
 
 
 class SourceCompletenessTests(unittest.TestCase):
-    def test_selected_financial_successor_retains_the_frozen_predecessor(self):
-        self.assertEqual(MODULE.HR3_PACKAGE, Path("deploy/fanasa-organization-hr/hr-read-host-v3-r7"))
+    def test_selected_consumer_input_successor_retains_the_frozen_predecessor(self):
+        self.assertEqual(MODULE.HR3_PACKAGE, Path("deploy/fanasa-organization-hr/hr-read-host-v3-r8"))
         manifest_bytes = (ACTIVE_PACKAGE / "SOURCE-PACKAGE.json").read_bytes()
-        self.assertEqual(digest(manifest_bytes), "1e6dfad8a2d5626e555b42c1a402f60cbcf9a001d7156fcb5e537ade660a16a0")
+        self.assertEqual(digest(manifest_bytes), "a6e22c79fc1e8c99c0606a24bb89fe4ca4be3e8e7b4f18cd7c31537076440ba4")
         manifest = json.loads(manifest_bytes)
-        previous = {"directory": "hr-read-host-v3-r6",
-                    "manifestSha256": "4cdfe260b6706bd33f857288b76f58867ce0d227df7dd5d29c2b49b1ec8af585"}
+        previous = {"directory": "hr-read-host-v3-r7",
+                    "manifestSha256": "1e6dfad8a2d5626e555b42c1a402f60cbcf9a001d7156fcb5e537ade660a16a0"}
         self.assertEqual(manifest["previousSourcePackage"], previous)
         self.assertEqual(digest((ACTIVE_PACKAGE.parent / previous["directory"] / "SOURCE-PACKAGE.json").read_bytes()),
                          previous["manifestSha256"])
