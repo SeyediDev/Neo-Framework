@@ -59,7 +59,7 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
                 {
                     data = await journeys.GetAsync(subject, ActiveOrganizationId.Value, cancellationToken);
                     if (data.OrganizationId != ActiveOrganizationId || !string.Equals(data.Subject, subject, StringComparison.Ordinal))
-                        data = new([], [], [], WorkspaceUsage.Unavailable, Guid.Empty, "");
+                        data = new([], [], [], WorkspaceUsage.Unavailable, Guid.Empty, "", WorkspaceJourneyStatus.Unavailable);
                     else
                         data = data with
                         {
@@ -69,10 +69,14 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
                                 && string.Equals(x.SubmittedBySubject, subject, StringComparison.Ordinal))
                                 .Select(x => x with { Url = IndexModel.SafeProductUrl(x.Url) ?? "" }).ToArray()
                         };
+                    // A report can be available independently of request/publication history.
+                    // Neither preview mode nor a ready financial report proves journey readiness.
+                    if (data.Status != WorkspaceJourneyStatus.Ready)
+                        data = data with { Catalog = [], Requests = [], Publications = [] };
                 }
                 catch (Exception ex) when (ex is HttpRequestException or JsonException || ex is OperationCanceledException && !cancellationToken.IsCancellationRequested)
                 {
-                    data = new([], [], [], WorkspaceUsage.Unavailable, Guid.Empty, "");
+                    data = new([], [], [], WorkspaceUsage.Unavailable, Guid.Empty, "", WorkspaceJourneyStatus.Unavailable);
                 }
             }
             Message = Status switch
@@ -94,7 +98,7 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
             subjectKey, ActiveOrganizationId, Organizations, ActiveOrganizationName, status, Message, IsAdmin,
             data.Catalog, active, data.Requests, data.Publications, data.Usage, WorkspaceCenters.All,
             ServiceCatalogPresentation.Create(await published, Status, ActiveOrganizationId, authorizedProducts), AccountingUrl,
-            OrganizationPlaceholder), JsonOptions);
+            OrganizationPlaceholder, JsonNamingPolicy.CamelCase.ConvertName(data.Status.ToString())), JsonOptions);
     }
 
     public async Task<IActionResult> OnGetSnapshotAsync(Guid? tenantId, CancellationToken cancellationToken)

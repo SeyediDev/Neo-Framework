@@ -50,6 +50,7 @@ static class WorkspaceTests
         Check(page.Response.Headers.CacheControl == "no-store", "personal data is not cached");
         Check(source.Calls == 1 && source.Subject == "private-subject" && source.Organization == orgA.Id, "journey reader receives trusted subject and verified consumer organization");
         Check(json.GetProperty("activeServices").GetArrayLength() == 1 && producer != orgA.Id, "authorized products from another producer remain visible");
+        Check(json.GetProperty("journeyStatus").GetString() == "ready", "validated preview explicitly reports received history");
         Check(!page.BootstrapJson.Contains("private-subject") && json.GetProperty("subjectKey").GetString()!.Length == 64, "storage key hides raw identity");
         Check(!page.BootstrapJson.Contains("</script>") && json.GetProperty("activeServices")[0].GetProperty("name").GetString() == product.DisplayName, "bootstrap cannot terminate JSON script element");
         Check(json.GetProperty("requests").GetArrayLength() == 1 && json.GetProperty("publications").GetArrayLength() == 1, "foreign organization requests and publications excluded");
@@ -70,6 +71,7 @@ static class WorkspaceTests
         await page.OnGetAsync(Guid.NewGuid(), default);
         json = Bootstrap(page);
         Check(page.ActiveOrganizationId is null && json.GetProperty("catalog").GetArrayLength() == 0 && json.GetProperty("activeServices").GetArrayLength() == 0 && source.Calls == oldCalls, "tampered organization cannot load journey or products");
+        Check(json.GetProperty("journeyStatus").GetString() != "ready", "unverified organization cannot report successful empty history");
         await page.OnGetAsync(orgB.Id, default);
         Check(page.Status == CatalogStatus.Unavailable && Bootstrap(page).GetProperty("activeServices").GetArrayLength() == 0 && source.Calls == oldCalls, "wrong consumer product envelope cannot load journey");
         page.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
@@ -79,6 +81,7 @@ static class WorkspaceTests
         await production.OnGetAsync(orgA.Id, default);
         json = Bootstrap(production);
         Check(json.GetProperty("mode").GetString() == "connected" && !production.IsAdmin, "production never enables synthetic review");
+        Check(json.GetProperty("journeyStatus").GetString() == "notConnected", "production provider distinguishes disconnected history from a received empty list");
         Check(json.GetProperty("catalog").GetArrayLength() == 0 && json.GetProperty("requests").GetArrayLength() == 0 && json.GetProperty("usage").GetProperty("status").GetString() == "notConnected", "missing central contracts stay explicit, never fake zero consumption");
         Check(json.GetProperty("activeServices").GetArrayLength() == 1, "production retains authorized service launches");
         var accountingUrl = "https://control.example.test/pcc/Accounting?tenant=" + orgA.Id;
@@ -111,6 +114,36 @@ static class WorkspaceTests
         await mismatched.OnGetAsync(orgA.Id, default);
         json = Bootstrap(mismatched);
         Check(json.GetProperty("catalog").GetArrayLength() == 0 && json.GetProperty("usage").GetProperty("status").GetString() == "unavailable", "wrong usage envelope rejects every journey datum");
+        Check(json.GetProperty("journeyStatus").GetString() == "unavailable", "mismatched envelope reports failed history rather than empty success");
+        foreach (var status in new[] { WorkspaceJourneyStatus.NotConnected, WorkspaceJourneyStatus.Unavailable })
+        {
+            var disconnected = Model(reader, new JourneyStub(orgA.Id, orgB.Id, status: status));
+            await disconnected.OnGetAsync(orgA.Id, default);
+            var disconnectedJson = Bootstrap(disconnected);
+            Check(disconnectedJson.GetProperty("requests").GetArrayLength() == 0
+                && disconnectedJson.GetProperty("publications").GetArrayLength() == 0
+                && disconnectedJson.GetProperty("catalog").GetArrayLength() == 0,
+                status + " discards stale personal history without an explicit ready result");
+            Check(disconnectedJson.GetProperty("activeServices").GetArrayLength() == 1
+                && disconnectedJson.GetProperty("usage").GetProperty("status").GetString() == "ready",
+                status + " does not erase independently validated services or a separate usage report");
+        }
+        var receivedEmpty = Model(reader, new EmptyJourneyStub());
+        await receivedEmpty.OnGetAsync(orgA.Id, default);
+        var receivedEmptyJson = Bootstrap(receivedEmpty);
+        Check(receivedEmptyJson.GetProperty("journeyStatus").GetString() == "ready"
+            && receivedEmptyJson.GetProperty("requests").GetArrayLength() == 0
+            && receivedEmptyJson.GetProperty("publications").GetArrayLength() == 0,
+            "received empty history explicitly succeeds without a financial report");
+        Check(receivedEmptyJson.GetProperty("usage").GetProperty("status").GetString() == "notConnected",
+            "history readiness never asserts financial readiness");
+        var failedJourney = Model(reader, new FailedJourneyStub());
+        await failedJourney.OnGetAsync(orgA.Id, default);
+        var failedJourneyJson = Bootstrap(failedJourney);
+        Check(failedJourneyJson.GetProperty("journeyStatus").GetString() == "unavailable" && JourneyHidden(failedJourneyJson),
+            "journey transport failure has no successful empty history");
+        Check(failedJourneyJson.GetProperty("activeServices").GetArrayLength() == 1,
+            "journey transport failure preserves independently authorized products");
         var wrongSubject = Model(reader, new JourneyStub(orgA.Id, orgB.Id, "another-subject"));
         await wrongSubject.OnGetAsync(orgA.Id, default);
         json = Bootstrap(wrongSubject);
@@ -231,7 +264,20 @@ static class WorkspaceTests
         public int Calls { get; private set; }
         public Task<ServiceDiscovery> GetAsync(CancellationToken cancellationToken) { Calls++; return Task.FromResult(data); }
     }
-    private sealed class JourneyStub(Guid envelope, Guid foreign, string? envelopeSubject = null) : IWorkspaceJourneySource
+    private sealed class EmptyJourneyStub : IWorkspaceJourneySource
+    {
+        public bool IsSyntheticPreview => true;
+        public Task<WorkspaceJourneyData> GetAsync(string subject, Guid organizationId, CancellationToken cancellationToken)
+            => Task.FromResult(new WorkspaceJourneyData([], [], [], WorkspaceUsage.NotConnected, organizationId, subject, WorkspaceJourneyStatus.Ready));
+    }
+    private sealed class FailedJourneyStub : IWorkspaceJourneySource
+    {
+        public bool IsSyntheticPreview => false;
+        public Task<WorkspaceJourneyData> GetAsync(string subject, Guid organizationId, CancellationToken cancellationToken)
+            => throw new HttpRequestException("Synthetic journey transport failure");
+    }
+    private sealed class JourneyStub(Guid envelope, Guid foreign, string? envelopeSubject = null,
+        WorkspaceJourneyStatus status = WorkspaceJourneyStatus.Ready) : IWorkspaceJourneySource
     {
         public bool IsSyntheticPreview => true;
         public int Calls { get; private set; }
@@ -253,7 +299,7 @@ static class WorkspaceTests
             OwnPublicationId = publications[0].Id;
             return Task.FromResult(new WorkspaceJourneyData([new("work", "work", "کار", "fanasa.rayan", "توضیح", [])],
                 requests, publications,
-                new("ready", "مهر ۱۴۰۵", "2026-10-12T10:00:00Z", "IRR", "9007199254740993.0100", []), envelope, envelopeSubject ?? subject));
+                new("ready", "مهر ۱۴۰۵", "2026-10-12T10:00:00Z", "IRR", "9007199254740993.0100", []), envelope, envelopeSubject ?? subject, status));
         }
     }
 }

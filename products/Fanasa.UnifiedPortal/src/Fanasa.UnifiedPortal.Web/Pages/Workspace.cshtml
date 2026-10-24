@@ -73,13 +73,13 @@
         <div class="workspace-notice" id="requests-connection-notice" hidden="@(Model.IsPreview)"><p>سابقهٔ درخواست‌ها در دسترس نیست.</p></div>
         <div class="workspace-tools"><div class="workspace-field"><label for="request-status">وضعیت درخواست</label><select id="request-status"><option value="">همهٔ وضعیت‌ها</option><option value="pending">در انتظار بررسی</option><option value="approved">تأییدشده</option><option value="rejected">ردشده</option></select></div></div>
         <div class="workspace-list" id="request-list"></div>
-        <div class="workspace-empty" id="requests-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4H5v17h14V4h-3"/><rect x="8" y="2" width="8" height="5" rx="1.5"/><path d="M8 12h8M8 16h5"/></svg></span><h3>درخواستی برای نمایش وجود ندارد</h3><p>پس از ثبت درخواست، مراحل بررسی و نتیجهٔ آن در اینجا نمایش داده می‌شود.</p><button class="button button-secondary" type="button" data-workspace-tab="catalog">رفتن به کاتالوگ خدمات <span aria-hidden="true">←</span></button></div>
+        <div class="workspace-empty" id="requests-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4H5v17h14V4h-3"/><rect x="8" y="2" width="8" height="5" rx="1.5"/><path d="M8 12h8M8 16h5"/></svg></span><h3>سابقهٔ درخواست‌ها دریافت نشده است</h3><p>وضعیت این بخش پس از دریافت پاسخ معتبر مشخص می‌شود.</p><button class="button button-secondary" type="button" data-workspace-tab="catalog">رفتن به کاتالوگ خدمات <span aria-hidden="true">←</span></button></div>
     </section>
 
     <section class="workspace-panel-body" id="panel-services" role="tabpanel" aria-labelledby="tab-services" data-workspace-panel="services" hidden>
         <div class="workspace-panel-heading"><h2>سرویس‌های فعال</h2><a class="workspace-inline-link" href="/#workspace">پنجرهٔ سامانه‌ها <span aria-hidden="true">←</span></a></div>
         <div class="workspace-grid" id="active-services"></div>
-        <div class="workspace-empty" id="services-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span><h3>سرویس فعالی برای این حساب نمایش داده نشده است</h3><p>سازمان انتخاب‌شده و دسترسی خود را بررسی کنید. فعال‌شدن سرویس به دسترسی معتبر همان سازمان وابسته است.</p></div>
+        <div class="workspace-empty" id="services-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span><h3>سرویس‌های فعال دریافت نشده است</h3><p>خالی‌بودن این بخش پیش از دریافت اطلاعات، وضعیت دسترسی سازمان را مشخص نمی‌کند.</p></div>
     </section>
 
     <section class="workspace-panel-body" id="panel-usage" role="tabpanel" aria-labelledby="tab-usage" data-workspace-panel="usage" hidden>
@@ -108,7 +108,7 @@
                 <p class="workspace-form-message" id="publish-message" role="status" aria-live="polite"></p>
             </div>
         </div>
-        <section class="workspace-publication-history" aria-labelledby="publication-title"><h3 id="publication-title">درخواست‌های عرضهٔ من</h3><div class="workspace-list" id="publication-list"></div><div class="workspace-empty" id="publications-empty"><h3>درخواست عرضه‌ای برای نمایش وجود ندارد</h3><p>پس از ارسال درخواست، نتیجهٔ بررسی سرویس در اینجا نمایش داده می‌شود.</p></div></section>
+        <section class="workspace-publication-history" aria-labelledby="publication-title"><h3 id="publication-title">درخواست‌های عرضهٔ من</h3><div class="workspace-list" id="publication-list"></div><div class="workspace-empty" id="publications-empty"><h3>سابقهٔ عرضهٔ سرویس دریافت نشده است</h3><p>وضعیت این بخش پس از دریافت پاسخ معتبر مشخص می‌شود.</p></div></section>
     </section>
 
     @if (Model.IsAdmin)
@@ -116,7 +116,7 @@
         <section class="workspace-panel-body" id="panel-review" role="tabpanel" aria-labelledby="tab-review" data-workspace-panel="review" hidden>
             <div class="workspace-panel-heading"><h2>بررسی درخواست‌ها</h2></div>
             <div class="workspace-tools"><div class="workspace-field"><label for="review-status">وضعیت بررسی</label><select id="review-status"><option value="pending">در انتظار بررسی</option><option value="">همهٔ وضعیت‌ها</option><option value="approved">تأییدشده</option><option value="rejected">ردشده</option></select></div></div>
-            <div class="workspace-list" id="review-list"></div><div class="workspace-empty" id="review-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/></svg></span><h3>درخواستی برای بررسی وجود ندارد</h3><p>درخواست‌های مربوط به سازمان انتخاب‌شده، پس از دریافت در اینجا نمایش داده می‌شوند.</p></div>
+            <div class="workspace-list" id="review-list"></div><div class="workspace-empty" id="review-empty"><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/></svg></span><h3>درخواست‌های قابل بررسی دریافت نشده است</h3><p>وضعیت این بخش پس از دریافت پاسخ معتبر مشخص می‌شود.</p></div>
         </section>
     }
 

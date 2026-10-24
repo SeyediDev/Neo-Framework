@@ -10,13 +10,16 @@ public interface IWorkspaceJourneySource
     Task<WorkspaceJourneyData> GetAsync(string subject, Guid organizationId, CancellationToken cancellationToken);
 }
 
+public enum WorkspaceJourneyStatus { NotConnected, Ready, Unavailable }
+
 public sealed record WorkspaceJourneyData(
     IReadOnlyList<WorkspaceOffer> Catalog,
     IReadOnlyList<WorkspaceRequest> Requests,
     IReadOnlyList<WorkspacePublication> Publications,
     WorkspaceUsage Usage,
     Guid OrganizationId,
-    string Subject);
+    string Subject,
+    WorkspaceJourneyStatus Status = WorkspaceJourneyStatus.NotConnected);
 
 public sealed record WorkspaceOffer(string Id, string Key, string Name, string Center, string Description,
     IReadOnlyList<WorkspacePlan> Plans, string Status = "available");
@@ -44,7 +47,7 @@ public sealed record WorkspaceBootstrap(string Mode, string SubjectKey, Guid? Or
     IReadOnlyList<WorkspacePublication> Publications, WorkspaceUsage Usage,
     IReadOnlyList<WorkspaceCenter>? Centers = null,
     ServiceCatalogPresentation? PublishedCatalog = null, string? AccountingUrl = null,
-    string? OrganizationPlaceholder = null);
+    string? OrganizationPlaceholder = null, string? JourneyStatus = null);
 
 public static class WorkspaceCenters
 {

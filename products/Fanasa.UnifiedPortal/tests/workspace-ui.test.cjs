@@ -6,7 +6,7 @@ const orgA = '11111111-1111-4111-8111-111111111111';
 const orgB = '22222222-2222-4222-8222-222222222222';
 function bootstrap(overrides = {}) {
     return { mode: 'synthetic-preview', subjectKey: 'a'.repeat(64), organizationId: orgA, isAdmin: false,
-        organizations: [{ id: orgA, name: 'اول' }, { id: orgB, name: 'دوم' }], catalogStatus: 'ready',
+        organizations: [{ id: orgA, name: 'اول' }, { id: orgB, name: 'دوم' }], catalogStatus: 'ready', journeyStatus: 'ready',
         centers: [{ id: 'fanasa.rayan', name: 'رایان', logo: '/brand/center-rayan-mark-color.svg' }],
         catalog: [{ id: 'service', key: 'service', name: 'کار سازمانی', center: 'fanasa.rayan', description: 'اجرای کارهای سازمان', status: 'available',
             plans: [{ id: 'monthly', name: 'ماهانه', amount: '9007199254740993.0100', currency: 'IRR', quota: '1000' }] }],
@@ -30,6 +30,63 @@ test('organization prompt is supplied by the shared server presentation, not inf
 test('missing organization prompt never implies an empty membership or asks for an impossible selection', () => {
     for (const value of [undefined, null, {}, { organizationPlaceholder: '' }, { organizationPlaceholder: '  ' }, { organizationPlaceholder: 0 }])
         assert.equal(ui.organizationPrompt(value), 'فهرست سازمان‌ها دریافت نشده است');
+});
+
+for (const section of ['services', 'requests', 'publications', 'review']) {
+    test(section + ': loading, reader failure, sign-in and organization selection are not successful empty lists', () => {
+        for (const [overrides, status] of [
+            [{ workspaceLoading: true }, 'loading'],
+            [{ catalogStatus: 'unavailable' }, 'unavailable'],
+            [{ catalogStatus: 'forbidden' }, 'unavailable'],
+            [{ catalogStatus: 'notConfigured' }, 'unavailable'],
+            [{ catalogStatus: 'signInRequired' }, 'signInRequired'],
+            [{ organizationId: null }, 'organizationRequired'],
+            [{ organizationId: '00000000-0000-0000-0000-000000000000' }, 'organizationRequired']
+        ]) {
+            const feedback = ui.sectionFeedback(bootstrap(overrides), section, true);
+            assert.equal(feedback.status, status);
+            assert.equal(feedback.ready, false);
+            assert.ok(feedback.title);
+            assert.ok(feedback.description);
+        }
+        assert.equal(ui.sectionFeedback(undefined, section).ready, false);
+        assert.equal(ui.sectionFeedback(bootstrap(), section).status, 'ready');
+    });
+}
+
+test('unknown or missing journey readiness cannot be inferred from preview mode, a financial report or a filter', () => {
+    for (const journeyStatus of [undefined, null, '', 'Ready', 'ready ', 'unavailable', 'notConnected']) {
+        const data = bootstrap({ journeyStatus, usage: { status: 'ready', totalAmount: '0', items: [] } });
+        for (const section of ['requests', 'publications', 'review']) {
+            const feedback = ui.sectionFeedback(data, section, true);
+            assert.equal(feedback.ready, false);
+            assert.equal(feedback.status, journeyStatus === 'notConnected' ? 'notConnected' : 'unavailable');
+        }
+        assert.equal(ui.sectionFeedback(data, 'services').ready, true);
+    }
+});
+
+test('received empty history is distinct from disconnected history and filtered-out results', () => {
+    for (const section of ['requests', 'publications', 'review']) {
+        const empty = ui.sectionFeedback(bootstrap(), section);
+        const disconnected = ui.sectionFeedback(bootstrap({ mode: 'connected', journeyStatus: 'notConnected' }), section);
+        assert.equal(empty.ready, true);
+        assert.notEqual(empty.title, disconnected.title);
+        assert.notEqual(empty.description, disconnected.description);
+        assert.equal(disconnected.ready, false);
+    }
+    for (const section of ['requests', 'review'])
+        assert.notEqual(ui.sectionFeedback(bootstrap(), section).title, ui.sectionFeedback(bootstrap(), section, true).title);
+});
+
+test('every unknown or unavailable journey remains read-only even in synthetic preview', () => {
+    for (const journeyStatus of [undefined, null, 'notConnected', 'unavailable', 'unknown']) {
+        const session = ui.createPreviewSession(bootstrap({ journeyStatus, isAdmin: true }), options());
+        assert.throws(() => session.request(draft));
+        assert.throws(() => session.publish(publication));
+        assert.throws(() => session.reviewRequest('id', 'approved'));
+        assert.throws(() => session.reviewPublication('id', 'approved'));
+    }
 });
 
 test('published descriptions never grant entry and only approved safe actions are offered', () => {
@@ -191,4 +248,91 @@ test('catalog search normalizes Persian and Arabic variants with center filter',
     assert.equal(ui.selectCatalog(entries, 'كار', 'fanasa.rayan')[0].id, 'one');
     assert.equal(ui.selectCatalog(entries, 'كار', 'fanasa.dana').length, 0);
     assert.equal(ui.selectCatalog(entries, 'unknown', '').length, 0);
+});
+
+// Execute the shipped renderer against an in-memory DOM model. This verifies
+// state/control wiring, not browser layout, SSO or a live central connection.
+function renderWorkspace(data) {
+    const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
+    class Element {
+        constructor(tag = 'div') {
+            this.tag = tag; this.children = []; this.parts = new Map(); this.listeners = {};
+            this.attributes = {}; this.dataset = {}; this.value = ''; this.textContent = '';
+            this.hidden = false; this.disabled = false; this.classList = { add() {}, remove() {} };
+        }
+        get options() { return this.children; }
+        append(...items) { for (const item of items) { item.parentElement = this; this.children.push(item); } }
+        replaceChildren(...items) { this.children = []; this.append(...items); }
+        add(item) { this.append(item); }
+        remove(index) { this.children.splice(index, 1); }
+        addEventListener(type, callback) { this.listeners[type] = callback; }
+        setAttribute(key, value) { this.attributes[key] = value; }
+        getAttribute(key) { return this.attributes[key]; }
+        removeAttribute(key) { delete this.attributes[key]; }
+        querySelector(selector) {
+            if (!this.parts.has(selector)) this.parts.set(selector, new Element(selector));
+            return this.parts.get(selector);
+        }
+        querySelectorAll() { return []; }
+        reset() {}
+        focus() {}
+        close() { this.open = false; }
+    }
+    const elements = new Map();
+    const get = id => {
+        if (!elements.has(id)) elements.set(id, new Element());
+        return elements.get(id);
+    };
+    const tabs = ['catalog', 'requests', 'services', 'usage', 'publish', 'review'].map(name => {
+        const tab = get('tab-' + name); tab.dataset.workspaceTab = name; return tab;
+    });
+    const panels = tabs.map(tab => {
+        const panel = get('panel-' + tab.dataset.workspaceTab); panel.dataset.workspacePanel = tab.dataset.workspaceTab; return panel;
+    });
+    get('service-workspace').querySelectorAll = selector => selector === '.workspace-tabs [role=tab]' ? tabs : panels;
+    for (const id of ['catalog-center', 'publish-center', 'workspace-tenant', 'usage-period']) get(id).append(new Element('option'));
+    get('publish-form').append(get('publish-submit'));
+    get('workspace-bootstrap').textContent = JSON.stringify(data);
+    const source = fs.readFileSync(path.join(__dirname, '../src/Fanasa.UnifiedPortal.Web/wwwroot/workspace.js'), 'utf8');
+    let loader;
+    vm.runInNewContext(source, {
+        URL, Intl, structuredClone, location: new URL('http://workspace.test/Workspace#requests'),
+        history: { replaceState() {} }, window: { addEventListener() {}, sessionStorage: memory() },
+        document: { getElementById: get, createElement: tag => new Element(tag) },
+        Option: class extends Element { constructor(text, value) { super('option'); this.textContent = text; this.value = value; } },
+        FanasaWorkspaceTransport: { createLoader(options) { loader = options; return { load() {} }; } }
+    }, { timeout: 5000 });
+    assert.equal(get('service-workspace').dataset.ready, 'true');
+    return { get, loader };
+}
+
+test('shipped renderer keeps disconnected history unknown even beside received services and ready usage', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected', journeyStatus: 'notConnected' }));
+    assert.equal(app.get('active-services').children.length, 1);
+    assert.equal(app.get('requests-connection-notice').hidden, false);
+    assert.equal(app.get('request-status').disabled, true);
+    assert.match(app.get('requests-empty').querySelector('h3').textContent, /در دسترس نیست/);
+    assert.match(app.get('publications-empty').querySelector('h3').textContent, /در دسترس نیست/);
+    assert.equal(app.get('workspace-requests-count').textContent, '—');
+    assert.equal(app.get('workspace-publish-count').textContent, '—');
+    assert.equal(app.get('workspace-consumption-amount').textContent, '9,007,199,254,740,993.0100');
+});
+
+test('shipped renderer clears prior cards on refresh and cannot present a failure as empty success', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected', journeyStatus: 'ready' }));
+    assert.equal(app.get('active-services').children.length, 1);
+    assert.equal(app.get('request-status').disabled, false);
+    assert.equal(app.get('requests-connection-notice').hidden, true);
+    assert.match(app.get('requests-empty').querySelector('h3').textContent, /هنوز درخواستی ثبت نکرده/);
+    app.loader.onStart();
+    assert.equal(app.get('active-services').children.length, 0);
+    assert.equal(app.get('request-list').children.length, 0);
+    assert.equal(app.get('request-status').disabled, true);
+    assert.match(app.get('services-empty').querySelector('h3').textContent, /در حال دریافت/);
+    app.loader.onError(true);
+    app.loader.onEnd();
+    assert.match(app.get('services-empty').querySelector('h3').textContent, /دریافت نشده/);
+    assert.doesNotMatch(app.get('requests-empty').querySelector('h3').textContent, /ثبت نکرده/);
+    assert.equal(app.get('workspace-requests-count').textContent, '—');
+    assert.equal(app.get('workspace-refresh').disabled, false);
 });

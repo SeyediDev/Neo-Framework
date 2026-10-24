@@ -118,7 +118,7 @@
         if (preview) try { scope = storageScope(base); } catch { warning = 'سازمان خود را انتخاب کنید.'; }
         function ensurePreview() {
             if (!preview) throw new Error('این اقدام در اتصال واقعی فعال نیست؛ هیچ درخواست یا دسترسی واقعی تغییر نمی‌کند.');
-            if (base.catalogStatus !== 'ready') throw new Error('فضای کار سازمان دریافت نشده است. پیش از اقدام، سازمان را انتخاب و صفحه را تازه کنید.');
+            if (!sectionFeedback(base, 'requests').ready) throw new Error('فضای کار سازمان دریافت نشده است. پیش از اقدام، سازمان را انتخاب و صفحه را تازه کنید.');
             storageScope(base);
         }
         function ownEntity(item) { return item && item.organizationId === base.organizationId; }
@@ -145,7 +145,7 @@
         }
         function snapshot() {
             const activeServices = clone(base.activeServices || []);
-            if (preview && scope && base.catalogStatus === 'ready') for (const request of state.requests.filter(item => ownEntity(item) && item.status === 'approved')) {
+            if (preview && scope && sectionFeedback(base, 'requests').ready) for (const request of state.requests.filter(item => ownEntity(item) && item.status === 'approved')) {
                 const service = (base.catalog || []).find(item => item.id === request.serviceId);
                 if (service && !activeServices.some(item => item.key === service.key)) activeServices.push({ id: service.id, key: service.key,
                     name: service.name, center: service.center, url: null, simulated: true });
@@ -207,8 +207,34 @@
         const prompt = data?.organizationPlaceholder;
         return typeof prompt === 'string' && prompt.trim() ? prompt : 'فهرست سازمان‌ها دریافت نشده است';
     }
+    function sectionFeedback(data, section, filtered = false) {
+        const names = { services: 'سرویس‌های فعال', requests: 'سابقهٔ درخواست‌ها', publications: 'سابقهٔ عرضهٔ سرویس', review: 'درخواست‌های قابل بررسی' };
+        const name = names[section] || 'اطلاعات این بخش';
+        const result = (status, title, description) => ({ status, ready: status === 'ready', title, description });
+        if (data?.workspaceLoading === true)
+            return result('loading', 'در حال دریافت ' + name + '…', 'اطلاعات قبلی تا دریافت پاسخ معتبر نمایش داده نمی‌شود.');
+        if (data?.catalogStatus === 'signInRequired')
+            return result('signInRequired', 'برای مشاهدهٔ ' + name + ' وارد شوید', 'نشست خود را با ورود دوباره تازه کنید.');
+        if (data?.catalogStatus !== 'ready')
+            return result('unavailable', name + ' دریافت نشده است', 'اطلاعات سازمان یا دسترسی آن دریافت نشد. دوباره تازه‌سازی کنید.');
+        if (!isOrganization(data.organizationId))
+            return result('organizationRequired', 'سازمان فعالی انتخاب نشده است', data.organizations?.length
+                ? 'یک سازمان قابل‌دسترسی از فهرست انتخاب کنید.' : 'هنوز عضویت سازمانی برای این حساب دریافت نشده است.');
+        if (section !== 'services' && data.journeyStatus !== 'ready')
+            return result(data.journeyStatus === 'notConnected' ? 'notConnected' : 'unavailable', name + ' در دسترس نیست',
+                data.journeyStatus === 'notConnected'
+                    ? 'دریافت این سابقه هنوز فعال نیست؛ خالی‌بودن این بخش به معنی نداشتن درخواست نیست.'
+                    : 'دریافت این سابقه کامل نشد. دوباره تازه‌سازی کنید.');
+        const titles = { services: 'سرویس فعالی برای این سازمان وجود ندارد',
+            requests: filtered ? 'درخواستی با این وضعیت پیدا نشد' : 'هنوز درخواستی ثبت نکرده‌اید',
+            publications: 'هنوز درخواست عرضه‌ای ثبت نکرده‌اید',
+            review: filtered ? 'درخواستی با این وضعیت برای بررسی پیدا نشد' : 'درخواستی برای بررسی وجود ندارد' };
+        return result('ready', titles[section] || name + ' خالی است', section === 'services'
+            ? 'خدمات قابل درخواست را در کاتالوگ ببینید؛ ورود به هر سامانه نیازمند دسترسی معتبر همین سازمان است.'
+            : filtered ? 'فیلتر وضعیت را تغییر دهید تا دیگر درخواست‌ها را ببینید.' : 'پس از ثبت درخواست، سابقه و نتیجهٔ بررسی در این بخش نمایش داده می‌شود.');
+    }
     const exported = { parseBootstrapJson, decimalText, formatDecimal, safeServiceUrl, storageScope, organizationPrompt,
-        validateRequestDraft, validatePublicationDraft, selectCatalog, publishedActions, createPreviewSession };
+        sectionFeedback, validateRequestDraft, validatePublicationDraft, selectCatalog, publishedActions, createPreviewSession };
     if (typeof module !== 'undefined' && module.exports) module.exports = exported;
     if (typeof document === 'undefined') return;
     const root = document.getElementById('service-workspace'); if (!root) return;
@@ -377,22 +403,31 @@
     }
     function renderRequests() {
         const data = session.snapshot(), filter = ui['request-status'].value;
-        const requests = data.requests.filter(item => item.organizationId === bootstrap.organizationId && (!filter || item.status === filter));
+        const feedback = sectionFeedback(bootstrap, 'requests', !!filter);
+        const requests = feedback.ready ? data.requests.filter(item => item.organizationId === bootstrap.organizationId && (!filter || item.status === filter)) : [];
+        ui['request-status'].disabled = !feedback.ready;
+        const notice = get('requests-connection-notice');
+        notice.hidden = feedback.ready; notice.querySelector('p').textContent = feedback.description;
         ui['request-list'].replaceChildren(); for (const item of requests.slice().reverse()) ui['request-list'].append(trackingCard(item, 'request', false));
-        showEmpty('requests-empty', requests.length > 0, filter ? 'درخواستی با این وضعیت وجود ندارد' : 'درخواستی برای نمایش وجود ندارد', 'درخواست‌های همین سازمان و نتیجهٔ بررسی آن‌ها در این بخش نمایش داده می‌شود.');
-        const publications = data.publications.filter(item => item.organizationId === bootstrap.organizationId);
+        showEmpty('requests-empty', requests.length > 0, feedback.title, feedback.description);
+        const publicationFeedback = sectionFeedback(bootstrap, 'publications');
+        const publications = publicationFeedback.ready ? data.publications.filter(item => item.organizationId === bootstrap.organizationId) : [];
         ui['publication-list'].replaceChildren(); for (const item of publications.slice().reverse()) ui['publication-list'].append(trackingCard(item, 'publication', false));
-        ui['publications-empty'].hidden = publications.length > 0;
+        showEmpty('publications-empty', publications.length > 0, publicationFeedback.title, publicationFeedback.description);
         if (ui['review-list']) {
-            const reviewFilter = ui['review-status'].value, reviewItems = [...data.requests.map(item => ({ ...item, kind: 'request' })), ...data.publications.map(item => ({ ...item, kind: 'publication' }))]
-                .filter(item => item.organizationId === bootstrap.organizationId && (!reviewFilter || item.status === reviewFilter));
-            ui['review-list'].replaceChildren(); if (bootstrap.isAdmin === true) for (const item of reviewItems.slice().reverse()) ui['review-list'].append(trackingCard(item, item.kind, true));
-            ui['review-empty'].hidden = bootstrap.isAdmin === true && reviewItems.length > 0;
+            const reviewFilter = ui['review-status'].value, reviewFeedback = sectionFeedback(bootstrap, 'review', !!reviewFilter);
+            const reviewItems = reviewFeedback.ready && bootstrap.isAdmin === true
+                ? [...data.requests.map(item => ({ ...item, kind: 'request' })), ...data.publications.map(item => ({ ...item, kind: 'publication' }))]
+                    .filter(item => item.organizationId === bootstrap.organizationId && (!reviewFilter || item.status === reviewFilter)) : [];
+            ui['review-status'].disabled = !reviewFeedback.ready || bootstrap.isAdmin !== true;
+            ui['review-list'].replaceChildren(); for (const item of reviewItems.slice().reverse()) ui['review-list'].append(trackingCard(item, item.kind, true));
+            showEmpty('review-empty', reviewItems.length > 0, reviewFeedback.title, reviewFeedback.description);
         }
     }
     function renderServices() {
         const data = session.snapshot(); ui['active-services'].replaceChildren();
-        for (const service of data.activeServices) {
+        const feedback = sectionFeedback(bootstrap, 'services'), services = feedback.ready ? data.activeServices : [];
+        for (const service of services) {
             const card = node('article', 'workspace-service-card'), top = node('div', 'workspace-card-top');
             top.append(serviceMark(service.center), node('span', 'workspace-status-pill is-active', 'فعال'));
             card.append(top, node('h3', '', service.name), node('p', 'workspace-service-description', centerName(service.center)));
@@ -401,7 +436,7 @@
             else footer.append(node('small', '', 'ورود به سرویس در دسترس نیست.'));
             card.append(footer); ui['active-services'].append(card);
         }
-        ui['services-empty'].hidden = data.activeServices.length > 0;
+        showEmpty('services-empty', services.length > 0, feedback.title, feedback.description);
     }
     function renderUsage() {
         const usage = bootstrap.usage, ready = usage?.status === 'ready';
@@ -429,8 +464,9 @@
     function renderMetrics() {
         const data = session.snapshot(), usage = data.usage, scoped = bootstrap.catalogStatus === 'ready' && isOrganization(bootstrap.organizationId);
         ui['workspace-services-count'].textContent = scoped ? countFormat.format(data.activeServices.length) : '—';
-        ui['workspace-requests-count'].textContent = preview && scoped ? countFormat.format(data.requests.filter(item => item.organizationId === bootstrap.organizationId && item.status === 'pending').length) : '—';
-        ui['workspace-publish-count'].textContent = preview && scoped ? countFormat.format(data.publications.filter(item => item.organizationId === bootstrap.organizationId).length) : '—';
+        const journeyReady = scoped && sectionFeedback(bootstrap, 'requests').ready;
+        ui['workspace-requests-count'].textContent = journeyReady ? countFormat.format(data.requests.filter(item => item.organizationId === bootstrap.organizationId && item.status === 'pending').length) : '—';
+        ui['workspace-publish-count'].textContent = journeyReady ? countFormat.format(data.publications.filter(item => item.organizationId === bootstrap.organizationId).length) : '—';
         ui['workspace-consumption-amount'].textContent = usage?.status === 'ready' ? amount(usage.totalAmount) : '—';
         ui['workspace-consumption-caption'].textContent = usage?.status === 'ready' ? currency(usage.currency) + ' · ' + usage.periodLabel
             : 'گزارش مصرف در دسترس نیست';
@@ -528,7 +564,7 @@
         bootstrap = data; preview = data.mode === 'synthetic-preview';
         let storage = null; if (preview) try { storage = window.sessionStorage; } catch { /* Preview stays in memory. */ }
         session = createPreviewSession(bootstrap, { storage });
-        try { writesAllowed = preview && bootstrap.catalogStatus === 'ready' && !!storageScope(bootstrap); } catch { writesAllowed = false; }
+        try { writesAllowed = preview && sectionFeedback(bootstrap, 'requests').ready && !!storageScope(bootstrap); } catch { writesAllowed = false; }
         setFormEnabled(ui['publish-form'], writesAllowed); setFormEnabled(ui['service-request-form'], false);
         centerOptions(); renderAll();
     }
@@ -542,7 +578,7 @@
             for (const dialog of [ui['service-request-dialog'], ui['request-detail-dialog']]) if (dialog.open) dialog.close();
             requestDraft = null; publicationDraftId = null; requestSubmitted = publicationSubmitted = false;
             ui['publish-form'].reset();
-            installSnapshot({ ...bootstrap, catalogStatus: 'unavailable', organizationId: null, organizationName: '',
+            installSnapshot({ ...bootstrap, workspaceLoading: true, journeyStatus: 'unavailable', catalogStatus: 'unavailable', organizationId: null, organizationName: '',
                 catalog: [], activeServices: [], requests: [], publications: [], accountingUrl: null,
                 usage: { status: 'unavailable', items: [], totalAmount: '' }, publishedCatalog: { status: 'Unavailable', services: [], message: 'در حال دریافت کاتالوگ…' } });
             message('در حال دریافت اطلاعات سازمان و خدمات…');
@@ -557,6 +593,7 @@
             message(data.message);
         },
         onError(timedOut) {
+            installSnapshot({ ...bootstrap, workspaceLoading: false });
             if (organization.options[0]) organization.options[0].textContent = 'دریافت فهرست کامل نشد؛ دوباره تلاش کنید';
             message(timedOut ? 'دریافت اطلاعات بیش از حد طول کشید. دوباره تلاش کنید.' : 'اطلاعات دریافت نشد. دوباره تلاش کنید یا وارد حساب شوید.', 'error');
         },

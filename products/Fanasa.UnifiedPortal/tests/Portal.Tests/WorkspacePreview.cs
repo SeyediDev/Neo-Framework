@@ -221,7 +221,7 @@ sealed class SyntheticWorkspaceJourneySource : IWorkspaceJourneySource
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (!WorkspacePreview.IsMember(subject, organizationId))
-            return Task.FromResult(new WorkspaceJourneyData([], [], [], new("forbidden", "", "", "IRR", "0", []), organizationId, subject));
+            return Task.FromResult(new WorkspaceJourneyData([], [], [], WorkspaceUsage.Unavailable, organizationId, subject, WorkspaceJourneyStatus.Unavailable));
         var isAftab = organizationId == WorkspacePreview.ConsumerA;
         var plans = new WorkspacePlan[]
         {
@@ -262,6 +262,6 @@ sealed class SyntheticWorkspaceJourneySource : IWorkspaceJourneySource
                    new("organization-fabric", "ساختار سازمانی", "24", "رویداد", "2880000", "۱٬۰۰۰ رویداد")]
                 : [new("document-insights", "تحلیل اسناد", "30", "فراخوان", "360000", "۵۰۰ فراخوان"),
                    new("service-automation", "خودکارسازی خدمات", "150", "اجرا", "1800000", "۱٬۰۰۰ اجرا")]);
-        return Task.FromResult(new WorkspaceJourneyData(catalog, requests, publications, usage, organizationId, subject));
+        return Task.FromResult(new WorkspaceJourneyData(catalog, requests, publications, usage, organizationId, subject, WorkspaceJourneyStatus.Ready));
     }
 }
