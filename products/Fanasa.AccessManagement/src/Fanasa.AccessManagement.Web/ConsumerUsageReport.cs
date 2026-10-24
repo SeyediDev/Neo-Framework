@@ -86,6 +86,7 @@ public sealed class ConsumerUsageReportStore(FabricDatabase database, TimeProvid
                 || account.Currency is not ("IRR" or "USD" or "EUR") || account.Entries is null)
                 throw new InvalidDataException();
 
+            if (account.Entries.Any(x => x?.Kind == "credit-note")) BillingBalance.Validate(account, consumer);
             var ids = new HashSet<Guid>();
             var keys = new HashSet<(string Kind, string Key)>();
             var aggregates = new Dictionary<Group, Aggregate>();
@@ -96,7 +97,7 @@ public sealed class ConsumerUsageReportStore(FabricDatabase database, TimeProvid
                 RequireProperties(rows[index++], "Id", "Key", "Kind", "Quantity", "Amount", "At");
                 if (entry is null || entry.Id == Guid.Empty || !ids.Add(entry.Id)
                     || !Label(entry.Key) || !Label(entry.Kind) || !keys.Add((entry.Kind, entry.Key))
-                    || entry.At.Offset != TimeSpan.Zero || entry.Kind is not ("usage" or "credit" or "payment" or "receipt"))
+                    || entry.At.Offset != TimeSpan.Zero || entry.Kind is not ("usage" or "credit" or "credit-note" or "payment" or "receipt"))
                     throw new InvalidDataException();
                 if (entry.Kind != "usage") continue;
                 RequireProperties(rows[index - 1], "ProductKey", "Metric");

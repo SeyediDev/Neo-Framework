@@ -125,7 +125,7 @@ public static class ConsumerUsageReportProjection
         value.TimeOfDay == TimeSpan.Zero ? "yyyy/MM/dd" : "yyyy/MM/dd HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
     private static bool Label(string? value) => !string.IsNullOrWhiteSpace(value) && value.Length <= 200
         && !value.Any(char.IsControl);
-    private static decimal ExactDecimal(string? text)
+    internal static decimal ExactDecimal(string? text)
     {
         if (text is null || text.Length > 64 || !PlainDecimal.IsMatch(text)
             || !decimal.TryParse(text, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var value))
@@ -138,7 +138,7 @@ public static class ConsumerUsageReportProjection
             throw new InvalidDataException();
         return value;
     }
-    private static BigInteger MoneyUnits(string? text, int minorScale)
+    internal static BigInteger MoneyUnits(string? text, int minorScale)
     {
         var (coefficient, scale) = DecimalParts(ExactDecimal(text));
         while (scale > minorScale && coefficient % 10 == 0) { coefficient /= 10; scale--; }

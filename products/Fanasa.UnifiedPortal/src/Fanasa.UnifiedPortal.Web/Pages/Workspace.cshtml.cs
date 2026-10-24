@@ -10,7 +10,7 @@ namespace Fanasa.UnifiedPortal.Web.Pages;
 
 [Authorize]
 public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJourneySource journeys,
-    IConfiguration configuration, IServiceDiscoveryClient? discovery = null) : PageModel
+    IConfiguration configuration, IServiceDiscoveryClient? discovery = null, IWorkspaceConsumerBillingReader? billing = null) : PageModel
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
     public IReadOnlyCollection<PlatformOrganizationView> Organizations { get; private set; } = [];
@@ -39,6 +39,7 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
         IReadOnlyList<WorkspaceActiveService> active = [];
         IReadOnlyCollection<PlatformProductView> authorizedProducts = [];
         WorkspaceJourneyData data = new([], [], [], WorkspaceUsage.NotConnected, Guid.Empty, "");
+        WorkspaceConsumerBilling financial = new("notConfigured", null, null);
         Message = "برای مشاهده خدمات سازمان وارد حساب شوید.";
         if (!string.IsNullOrWhiteSpace(subject))
         {
@@ -78,6 +79,13 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
                 {
                     data = new([], [], [], WorkspaceUsage.Unavailable, Guid.Empty, "", WorkspaceJourneyStatus.Unavailable);
                 }
+                if (!IsPreview && billing is not null)
+                {
+                    financial = await billing.ReadAsync(subject, ActiveOrganizationId.Value, cancellationToken);
+                    if (financial.Usage is { } usage && usage.OrganizationId != ActiveOrganizationId
+                        || financial.Account is { } account && account.OrganizationId != ActiveOrganizationId)
+                        financial = new("unavailable", null, null);
+                }
             }
             Message = Status switch
             {
@@ -98,7 +106,8 @@ public sealed class WorkspaceModel(IPlatformCatalogClient catalog, IWorkspaceJou
             subjectKey, ActiveOrganizationId, Organizations, ActiveOrganizationName, status, Message, IsAdmin,
             data.Catalog, active, data.Requests, data.Publications, data.Usage, WorkspaceCenters.All,
             ServiceCatalogPresentation.Create(await published, Status, ActiveOrganizationId, authorizedProducts), AccountingUrl,
-            OrganizationPlaceholder, JsonNamingPolicy.CamelCase.ConvertName(data.Status.ToString())), JsonOptions);
+            OrganizationPlaceholder, JsonNamingPolicy.CamelCase.ConvertName(data.Status.ToString()),
+            financial.Usage, financial.Account, financial.Status), JsonOptions);
     }
 
     public async Task<IActionResult> OnGetSnapshotAsync(Guid? tenantId, CancellationToken cancellationToken)

@@ -11,6 +11,13 @@ builder.Services.AddFanasaPlatformHttpClients();
 builder.Services.AddScoped<IPlatformCatalogClient, PlatformCatalogClient>();
 builder.Services.AddScoped<IServiceDiscoveryClient, ServiceDiscoveryClient>();
 builder.Services.AddScoped<IWorkspaceJourneySource, NotConnectedWorkspaceJourneySource>();
+// Disabled by default. Human financial reads use only the explicitly approved Gateway.
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton(ConsumerBillingOptions.Read(builder.Configuration));
+builder.Services.AddSingleton<ConsumerBillingSessionVault>();
+builder.Services.AddScoped<IConsumerUsageHumanCredentialProvider, SessionConsumerUsageCredentialProvider>();
+builder.Services.AddScoped<IWorkspaceConsumerBillingReader, GatewayWorkspaceConsumerBillingReader>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -24,6 +31,7 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.LoginPath = "/login";
     options.LogoutPath = "/logout";
+    options.Events.OnSigningOut = ConsumerBillingOidc.PurgeAsync;
 })
 .AddOpenIdConnect(options =>
 {
@@ -37,6 +45,7 @@ builder.Services.AddAuthentication(options =>
     options.UsePkce = true;
     options.RequireHttpsMetadata = !isDevelopment;
     options.SaveTokens = false;
+    options.Events.OnTokenValidated = ConsumerBillingOidc.CaptureAsync;
     // Identify the client during logout without retaining tokens in the cookie.
     options.Events.OnRedirectToIdentityProviderForSignOut = context =>
     {

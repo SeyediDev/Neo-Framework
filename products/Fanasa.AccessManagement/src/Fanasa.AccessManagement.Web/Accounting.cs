@@ -6,14 +6,17 @@ using Fanasa.AccessManagement.Web.Metering;
 namespace Fanasa.AccessManagement.Web.Accounting;
 
 public sealed record Tariff(string ProductKey, string Metric, decimal UnitPrice);
-public sealed record LedgerEntry(Guid Id, string Key, string Kind, string? ProductKey, string? Metric, decimal Quantity, decimal Amount, DateTimeOffset At, string Actor, string Reference, Guid? InvoiceId = null, decimal? UnitPrice = null, DateTimeOffset? UsageOccurredAt = null);
-public sealed record Invoice(Guid Id, string Period, decimal Amount, DateTimeOffset IssuedAt);
+public sealed record LedgerEntry(Guid Id, string Key, string Kind, string? ProductKey, string? Metric, decimal Quantity, decimal Amount, DateTimeOffset At, string Actor, string Reference, Guid? InvoiceId = null, decimal? UnitPrice = null, DateTimeOffset? UsageOccurredAt = null, Guid? RelatedEntryId = null, string? Reason = null);
+public sealed record Invoice(Guid Id, string Period, decimal Amount, DateTimeOffset IssuedAt,
+    string? Currency = null, DateTimeOffset? From = null, DateTimeOffset? To = null,
+    BillingInvoiceLine[]? Lines = null, long? SourceRevision = null, string? Actor = null,
+    string? Reference = null, string? ContentHash = null, string Basis = "posted-ledger");
 public sealed record BillingAccount(Guid TenantId, long Revision, string Mode, string Currency, decimal CreditLimit, Tariff[] Tariffs, LedgerEntry[] Entries, Invoice[] Invoices);
-public sealed record BillingCommand(long ExpectedRevision, string Operation, string Key, string? Mode, string? Currency, decimal CreditLimit, string? ProductKey, string? Metric, decimal UnitPrice, decimal Quantity, decimal Amount, string Reference, string? Period, Guid? InvoiceId);
+public sealed record BillingCommand(long ExpectedRevision, string Operation, string Key, string? Mode, string? Currency, [property: System.Text.Json.Serialization.JsonConverter(typeof(ExactBillingDecimalConverter))] decimal CreditLimit, string? ProductKey, string? Metric, [property: System.Text.Json.Serialization.JsonConverter(typeof(ExactBillingDecimalConverter))] decimal UnitPrice, [property: System.Text.Json.Serialization.JsonConverter(typeof(ExactBillingDecimalConverter))] decimal Quantity, [property: System.Text.Json.Serialization.JsonConverter(typeof(ExactBillingDecimalConverter))] decimal Amount, string Reference, string? Period, Guid? InvoiceId);
 public sealed record AccountView(BillingAccount Account, decimal WalletBalance, decimal Outstanding, decimal AvailableCredit);
 
 // Durable single-host ledger; no gateway or general-ledger integration is implied.
-public sealed class AccountingStore(string directory, IAccessManagement access, TimeProvider? timeProvider = null, FabricDatabase? database = null)
+public sealed partial class AccountingStore(string directory, IAccessManagement access, TimeProvider? timeProvider = null, FabricDatabase? database = null)
 {
     public FabricDatabase? Database => database;
     private readonly object gate = new();
@@ -24,8 +27,10 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
         {
             if (!access.GetTenants().Any(x => x.Id == tenant && x.IsActive)) throw new KeyNotFoundException();
             var path = PathFor(tenant);
-            var account = database is not null ? database.Read<BillingAccount>("accounting", tenant.ToString()) ?? new(tenant, 0, "payg", "IRR", 0, [], [], [])
-                : File.Exists(path) ? JsonSerializer.Deserialize<BillingAccount>(File.ReadAllText(path)) ?? throw new InvalidDataException() : new(tenant, 0, "payg", "IRR", 0, [], [], []);
+            var stored = database is not null ? database.ReadDocument("accounting", tenant.ToString())?.Json
+                : File.Exists(path) ? File.ReadAllText(path) : null;
+            var account = stored is null ? new BillingAccount(tenant, 0, "payg", "IRR", 0, [], [], []) : BillingBalance.Deserialize(stored);
+            BillingBalance.Validate(account, tenant);
             return View(account);
         }
     }
@@ -62,17 +67,21 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
                     throw new MeasuredAccountingException("Insufficient wallet balance for completed usage.");
                 if (account.Mode == "postpaid" && amount > view.AvailableCredit)
                     throw new MeasuredAccountingException("Insufficient postpaid credit for completed usage.");
-                var now = (timeProvider ?? TimeProvider.System).GetUtcNow();
+                var now = (timeProvider ?? TimeProvider.System).GetUtcNow().ToUniversalTime();
                 var entry = new LedgerEntry(UsageEventV1.StableGuid(usage.BusinessKey + ":charge"), usage.BusinessKey, "usage", usage.ProductKey,
                     usage.Meter.Id, usage.Quantity, amount, now, usage.Operation.ActorId, usage.Evidence.Reference,
                     UnitPrice: usage.UnitPrice, UsageOccurredAt: usage.OccurredAt);
                 var marker = new LedgerEntry(UsageEventV1.StableGuid(usage.BusinessKey + ":receipt"), usage.BusinessKey, "receipt", null, null,
                     0, 0, now, usage.Operation.ActorId, fingerprint);
-                account = account with { Revision = account.Revision + 1, Entries = [.. account.Entries, entry, marker] };
+                account = account with { Revision = checked(account.Revision + 1), Entries = [.. account.Entries, entry, marker] };
+                BillingBalance.Validate(account, usage.ConsumerTenantId);
+                try { BillingBalance.EnsureWriteCapacity(account); }
+                catch (InvalidOperationException error) { throw new MeasuredAccountingException(error.Message); }
+                var result = View(account);
                 database.Put("accounting", usage.ConsumerTenantId.ToString(), account);
                 database.Emit($"accounting:{usage.ConsumerTenantId}:{account.Revision}", "AccountingChanged",
                     new { TenantId = usage.ConsumerTenantId, account.Revision, Operation = "measured-usage", Key = usage.BusinessKey }, now);
-                return View(account);
+                return result;
             }
         });
     }
@@ -81,25 +90,25 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
         lock (gate)
         {
             var view = Read(tenant); var account = view.Account;
-            if (command.Key?.StartsWith("measured:", StringComparison.Ordinal) == true)
+            if (command.Key?.StartsWith("measured:", StringComparison.Ordinal) == true || command.Key?.StartsWith("billing-note:", StringComparison.Ordinal) == true)
                 throw new ArgumentException("Measured ledger identities are reserved for trusted typed intake.");
-            if (string.IsNullOrWhiteSpace(command.Key) || command.Key.Length > 200 || string.IsNullOrWhiteSpace(command.Reference) || command.Reference.Length > 1000 || string.IsNullOrWhiteSpace(actor)) throw new ArgumentException("کلید یکتا، عامل و مرجع الزامی است.");
+            if (!BillingBalance.Label(command.Key) || !BillingBalance.Label(command.Reference, 1000) || !BillingBalance.Label(actor)) throw new ArgumentException("کلید یکتا، عامل و مرجع الزامی است.");
             // Store the exact request without its concurrency token for safe retries.
             var fingerprint = JsonSerializer.Serialize(command with { ExpectedRevision = 0 });
-            var receipts = account.Entries.Where(x => x.Kind == "receipt").ToDictionary(x => x.Key, x => x.Reference);
-            if (receipts.TryGetValue(command.Key, out var previous))
-            { if (previous != fingerprint) throw new InvalidOperationException("کلید تکراری با درخواست متفاوت."); return view; }
+            var receipts = account.Entries.Where(x => x.Kind == "receipt").ToDictionary(x => x.Key);
+            if (receipts.TryGetValue(command.Key!, out var previous))
+            { if (previous.Reference != fingerprint || previous.Actor != actor) throw new InvalidOperationException("کلید تکراری با درخواست یا عامل متفاوت."); return view; }
             if (account.Revision != command.ExpectedRevision) throw new InvalidOperationException("حساب تغییر کرده است؛ دوباره بارگذاری کنید.");
             var tariffs = account.Tariffs.ToList(); var entries = account.Entries.ToList(); var invoices = account.Invoices.ToList();
-            var now = (timeProvider ?? TimeProvider.System).GetUtcNow();
+            var now = (timeProvider ?? TimeProvider.System).GetUtcNow().ToUniversalTime();
             switch (command.Operation)
             {
                 case "configure":
-                    if (command.Mode is not ("payg" or "postpaid") || command.Currency is not ("IRR" or "USD" or "EUR") || command.CreditLimit < 0) throw new ArgumentException("مدل، ارز یا سقف اعتبار معتبر نیست.");
+                    if (command.Mode is not ("payg" or "postpaid") || command.Currency is not ("IRR" or "USD" or "EUR") || !BillingBalance.ValidMoney(command.CreditLimit, command.Currency)) throw new ArgumentException("مدل، ارز یا سقف اعتبار معتبر نیست.");
                     var activePlans = access.GetSubscriptions(tenant).Where(x => x.Status == "active" && (!x.RenewsAt.HasValue || x.RenewsAt > now))
                         .Select(x => access.GetPlans(x.ProductKey).Single(p => p.Id == x.PricingPlanId)).ToArray();
                     if (activePlans.Any(x => x.BillingMode != command.Mode || x.Currency != command.Currency)) throw new ArgumentException("مدل و ارز حساب باید با اشتراک‌های فعال سازگار باشند.");
-                    if (account.Entries.Any(x => x.Kind != "receipt") && (command.Currency != account.Currency || command.Mode != account.Mode)) throw new ArgumentException("مدل یا ارز حساب دارای تراکنش قابل تغییر نیست.");
+                    if ((account.Entries.Any(x => x.Kind != "receipt") || account.Invoices.Length > 0) && (command.Currency != account.Currency || command.Mode != account.Mode)) throw new ArgumentException("مدل یا ارز حساب دارای تراکنش یا صورتحساب قابل تغییر نیست.");
                     if (database is not null && (command.Currency != account.Currency || command.Mode != account.Mode)
                         && database.All<Fanasa.AccessManagement.Web.Payments.PaymentIntent>("payment").Any(x => x.TenantId == tenant && Fanasa.AccessManagement.Web.Payments.ZarinpalPayments.ReservesBalance(x)))
                         throw new InvalidOperationException("تا تعیین تکلیف پرداخت‌های باز، مدل یا ارز حساب قابل تغییر نیست.");
@@ -114,7 +123,8 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
                 case "usage":
                     if (command.Quantity <= 0) throw new ArgumentException("مقدار مصرف باید مثبت باشد.");
                     var tariff = tariffs.SingleOrDefault(x => x.ProductKey == command.ProductKey && x.Metric == command.Metric) ?? throw new ArgumentException("تعرفه شاخص ثبت نشده است.");
-                    var cost = decimal.Round(checked(command.Quantity * tariff.UnitPrice), account.Currency == "IRR" ? 0 : 2, MidpointRounding.AwayFromZero);
+                    if (account.Invoices.Any(x => x.Period == BillingBalance.Period(now))) throw new InvalidOperationException("دوره مصرف بسته شده است؛ ثبت عطف‌به‌ماسبق مجاز نیست.");
+                    var cost = BillingBalance.Charge(command.Quantity, tariff.UnitPrice, account.Currency);
                     if (account.Mode == "payg" && cost > view.WalletBalance) throw new InvalidOperationException("موجودی برای مصرف کافی نیست.");
                     if (account.Mode == "postpaid" && cost > view.AvailableCredit) throw new InvalidOperationException("سقف اعتبار پس‌پرداخت کافی نیست.");
                     entries.Add(new(Guid.NewGuid(), command.Key, "usage", command.ProductKey, command.Metric, command.Quantity, cost, now, actor, command.Reference, UnitPrice: tariff.UnitPrice));
@@ -124,40 +134,43 @@ public sealed class AccountingStore(string directory, IAccessManagement access, 
                     entries.Add(new(Guid.NewGuid(), command.Key, "credit", null, null, 0, command.Amount, now, actor, command.Reference));
                     break;
                 case "invoice":
-                    if (!DateTimeOffset.TryParseExact(command.Period + "-01", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out var start) || start >= new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, TimeSpan.Zero)) throw new ArgumentException("فقط دوره ماهانه پایان‌یافته قابل صدور است.");
-                    if (invoices.Any(x => x.Period == command.Period)) throw new InvalidOperationException("صورتحساب این دوره صادر شده است.");
-                    var amount = entries.Where(x => x.Kind == "usage" && (x.UsageOccurredAt ?? x.At) >= start && (x.UsageOccurredAt ?? x.At) < start.AddMonths(1)).Sum(x => x.Amount);
-                    invoices.Add(new(Guid.NewGuid(), command.Period!, amount, now));
+                    invoices.Add(CreateInvoice(account, command.Period, now, actor, command.Reference));
                     break;
                 case "payment":
                     if (account.Mode != "postpaid") throw new ArgumentException("تسویه صورتحساب برای پس‌پرداخت است.");
                     var invoice = invoices.SingleOrDefault(x => x.Id == command.InvoiceId) ?? throw new KeyNotFoundException();
-                    var remaining = invoice.Amount - entries.Where(x => x.Kind == "payment" && x.InvoiceId == invoice.Id).Sum(x => x.Amount);
+                    var remaining = BillingBalance.Subtract(BillingBalance.InvoiceRemaining(account, invoice.Id), ReservedPayments(tenant, invoice.Id, command.Key));
                     if (command.Amount <= 0 || command.Amount > remaining || decimal.Round(command.Amount, account.Currency == "IRR" ? 0 : 2) != command.Amount) throw new ArgumentException("مبلغ تسویه معتبر نیست.");
                     entries.Add(new(Guid.NewGuid(), command.Key, "payment", null, null, 0, command.Amount, now, actor, command.Reference, invoice.Id));
                     break;
                 default: throw new ArgumentException("عملیات حسابداری ناشناخته است.");
             }
             entries.Add(new(Guid.NewGuid(), command.Key, "receipt", null, null, 0, 0, now, actor, fingerprint));
-            account = account with { Revision = account.Revision + 1, Tariffs = tariffs.ToArray(), Entries = entries.ToArray(), Invoices = invoices.ToArray() };
+            account = account with { Revision = checked(account.Revision + 1), Tariffs = tariffs.ToArray(), Entries = entries.ToArray(), Invoices = invoices.ToArray() };
+            BillingBalance.Validate(account, tenant);
+            BillingBalance.EnsureWriteCapacity(account);
+            var result = View(account);
             if (database is not null)
             {
                 database.Put("accounting", tenant.ToString(), account);
                 database.Emit($"accounting:{tenant}:{account.Revision}", "AccountingChanged", new { TenantId = tenant, account.Revision, command.Operation, command.Key }, now);
-                return View(account);
+                return result;
             }
             var path = PathFor(tenant); Directory.CreateDirectory(Path.GetDirectoryName(path)!); var temporary = path + "." + Guid.NewGuid() + ".tmp";
             try { using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { JsonSerializer.Serialize(stream, account); stream.Flush(true); } File.Move(temporary, path, true); }
             finally { if (File.Exists(temporary)) File.Delete(temporary); }
-            return View(account);
+            return result;
         }
     }
     private static AccountView View(BillingAccount account)
     {
-        var usage = account.Entries.Where(x => x.Kind == "usage").Sum(x => x.Amount);
-        var credits = account.Entries.Where(x => x.Kind == "credit").Sum(x => x.Amount);
-        var paid = account.Entries.Where(x => x.Kind == "payment").Sum(x => x.Amount);
-        var debt = account.Mode == "postpaid" ? usage - paid : 0;
-        return new(account, account.Mode == "payg" ? credits - usage : 0, debt, account.Mode == "postpaid" ? account.CreditLimit - debt : 0);
+        var usage = BillingBalance.Sum(account.Entries.Where(x => x.Kind == "usage").Select(x => x.Amount));
+        var credits = BillingBalance.Sum(account.Entries.Where(x => x.Kind == "credit").Select(x => x.Amount));
+        var notes = BillingBalance.Sum(account.Entries.Where(x => x.Kind == "credit-note").Select(x => x.Amount));
+        var paid = BillingBalance.Sum(account.Entries.Where(x => x.Kind == "payment").Select(x => x.Amount));
+        var net = BillingBalance.Subtract(usage, notes);
+        var debt = account.Mode == "postpaid" ? BillingBalance.Subtract(net, paid) : 0;
+        return new(account, account.Mode == "payg" ? BillingBalance.Subtract(credits, net) : 0, debt,
+            account.Mode == "postpaid" ? BillingBalance.Subtract(account.CreditLimit, debt) : 0);
     }
 }

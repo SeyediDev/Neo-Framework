@@ -112,6 +112,12 @@ try
     UsageHttpTransportTests.Run(directory, Check);
     UsageReconciliationTests.Run(directory, Check);
     ZarinpalTests.Run(directory, Check);
+    if (args.Contains("--financial-regression", StringComparer.Ordinal))
+    {
+        RecoveryTests.Run(directory, Check);
+        Console.WriteLine($"{count} financial regression checks passed.");
+        return;
+    }
     FabricStartupTests.Run(directory, Check);
     RecoveryTests.Run(directory, Check);
     AuditTests.Run(directory, Check);

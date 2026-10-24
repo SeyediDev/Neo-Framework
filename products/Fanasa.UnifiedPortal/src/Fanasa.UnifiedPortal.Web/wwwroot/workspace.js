@@ -439,6 +439,26 @@
         showEmpty('services-empty', services.length > 0, feedback.title, feedback.description);
     }
     function renderUsage() {
+        if (!preview) {
+            for (const id of ['workspace-usage-heading', 'usage-summary', 'usage-table-container', 'usage-empty', 'usage-table-note', 'usage-connection-notice']) {
+                const element = get(id); if (element) element.hidden = true;
+            }
+            const reports = get('consumer-billing-reports');
+            const scoped = bootstrap.workspaceLoading !== true && bootstrap.catalogStatus === 'ready' && isOrganization(bootstrap.organizationId);
+            const usage = scoped && bootstrap.consumerUsage?.organizationId === bootstrap.organizationId ? bootstrap.consumerUsage : null;
+            const account = scoped && bootstrap.consumerAccount?.organizationId === bootstrap.organizationId ? bootstrap.consumerAccount : null;
+            const hasReports = !!usage || !!account;
+            if (reports) reports.hidden = !hasReports;
+            const status = get('consumer-billing-status');
+            if (status) {
+                const messages = { notConfigured: 'گزارش حساب در دسترس نیست.', signInRequired: 'برای مشاهدهٔ حساب دوباره وارد شوید.', forbidden: 'دسترسی مشاهدهٔ حساب ندارید.', unavailable: 'دریافت گزارش کامل نشد.' };
+                status.textContent = messages[bootstrap.billingReadStatus] || (hasReports ? '' : 'گزارش حساب در دسترس نیست.'); status.hidden = !status.textContent;
+            }
+            if (!hasReports) { get('consumer-usage-report')?.replaceChildren(); get('consumer-account-report')?.replaceChildren(); return; }
+            globalThis.FanasaConsumerUsageReport?.renderUsageReport(get('consumer-usage-report'), usage, bootstrap.organizationId);
+            globalThis.FanasaConsumerBilling?.renderConsumerAccount(get('consumer-account-report'), account, bootstrap.organizationId);
+            return;
+        }
         const usage = bootstrap.usage, ready = usage?.status === 'ready';
         ui['usage-summary'].replaceChildren(); ui['usage-rows'].replaceChildren();
         ui['usage-table-container'].hidden = !ready || usage.items.length === 0; ui['usage-empty'].hidden = ready && usage.items.length > 0;
@@ -462,13 +482,15 @@
         ui['usage-table-note'].textContent = '';
     }
     function renderMetrics() {
-        const data = session.snapshot(), usage = data.usage, scoped = bootstrap.catalogStatus === 'ready' && isOrganization(bootstrap.organizationId);
+        const data = session.snapshot(), scoped = bootstrap.workspaceLoading !== true && bootstrap.catalogStatus === 'ready' && isOrganization(bootstrap.organizationId);
+        const usage = preview ? data.usage : scoped && bootstrap.consumerUsage?.organizationId === bootstrap.organizationId ? bootstrap.consumerUsage : null;
+        const usageReady = scoped && usage?.status === 'ready';
         ui['workspace-services-count'].textContent = scoped ? countFormat.format(data.activeServices.length) : '—';
         const journeyReady = scoped && sectionFeedback(bootstrap, 'requests').ready;
         ui['workspace-requests-count'].textContent = journeyReady ? countFormat.format(data.requests.filter(item => item.organizationId === bootstrap.organizationId && item.status === 'pending').length) : '—';
         ui['workspace-publish-count'].textContent = journeyReady ? countFormat.format(data.publications.filter(item => item.organizationId === bootstrap.organizationId).length) : '—';
-        ui['workspace-consumption-amount'].textContent = usage?.status === 'ready' ? amount(usage.totalAmount) : '—';
-        ui['workspace-consumption-caption'].textContent = usage?.status === 'ready' ? currency(usage.currency) + ' · ' + usage.periodLabel
+        ui['workspace-consumption-amount'].textContent = usageReady ? amount(usage.totalAmount) : '—';
+        ui['workspace-consumption-caption'].textContent = usageReady ? currency(usage.currency) + ' · ' + usage.periodLabel
             : 'گزارش مصرف در دسترس نیست';
     }
     function renderAll() {
@@ -580,6 +602,7 @@
             ui['publish-form'].reset();
             installSnapshot({ ...bootstrap, workspaceLoading: true, journeyStatus: 'unavailable', catalogStatus: 'unavailable', organizationId: null, organizationName: '',
                 catalog: [], activeServices: [], requests: [], publications: [], accountingUrl: null,
+                consumerUsage: null, consumerAccount: null, billingReadStatus: 'unavailable',
                 usage: { status: 'unavailable', items: [], totalAmount: '' }, publishedCatalog: { status: 'Unavailable', services: [], message: 'در حال دریافت کاتالوگ…' } });
             message('در حال دریافت اطلاعات سازمان و خدمات…');
         },

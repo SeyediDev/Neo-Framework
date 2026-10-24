@@ -61,10 +61,11 @@ static class ZarinpalTests
         post.Complete(installment.Id, installment.Authority!, "OK", default).GetAwaiter().GetResult();
         check(postBilling.Read(other).Outstanding == 2000, "gateway partial postpaid settlement restores credit");
         var conflict = Post("local-failure", 2000);
-        postBilling.Execute(other, B("payment", "manual") with { Amount = 2000, InvoiceId = invoice.Id }, "test");
-        Reject<ArgumentException>(() => post.Complete(conflict.Id, conflict.Authority!, "OK", default).GetAwaiter().GetResult(), "local settlement conflict does not lose verified payment");
-        check(post.Get(conflict.Id).State == "verified" && post.Get(conflict.Id).RefId.HasValue, "verified unapplied payment retained for reconciliation");
-        check(post.Reconcile(other, conflict.Id, "finance", default).GetAwaiter().GetResult().State == "verified" && ZarinpalPayments.ReservesBalance(post.Get(conflict.Id)), "reversal of verified payment requires financial review without silent release");
+        Reject<ArgumentException>(() => postBilling.Execute(other, B("payment", "manual") with { Amount = 2000, InvoiceId = invoice.Id }, "test"), "manual settlement cannot consume funds reserved by a pending gateway intent");
+        check(post.Complete(conflict.Id, conflict.Authority!, "OK", default).GetAwaiter().GetResult().State == "paid"
+            && postBilling.Read(other).Outstanding == 0, "gateway settlement excludes its own reservation and completes exactly once");
+        check(post.Reconcile(other, conflict.Id, "finance", default).GetAwaiter().GetResult().State == "paid"
+            && !ZarinpalPayments.ReservesBalance(post.Get(conflict.Id)), "reversal after applied invoice payment requires review without silently rewriting ledger");
         check(service.Reconcile(tenant, first.Id, "finance", default).GetAwaiter().GetResult().State == "paid" && billing.Read(tenant).WalletBalance == 2000, "reversal after ledger credit cannot silently rewrite wallet");
         Reject<KeyNotFoundException>(() => service.Reconcile(other, first.Id, "finance", default).GetAwaiter().GetResult(), "payment reconciliation rejects foreign tenant");
         var inquiryPayment = Begin("inquiry"); fake.Status = "IN_BANK"; verifies = fake.Verifies;

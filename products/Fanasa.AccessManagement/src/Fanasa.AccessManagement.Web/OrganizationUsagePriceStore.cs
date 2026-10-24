@@ -84,7 +84,7 @@ public sealed class OrganizationUsagePriceStore(FabricDatabase database, IAccess
             || rate.EffectiveFrom.Offset != TimeSpan.Zero || rate.EffectiveTo.Offset != TimeSpan.Zero
             || rate.EffectiveFrom >= rate.EffectiveTo || rate.Currency is not ("IRR" or "USD" or "EUR")
             || rate.MinorUnitScale != (rate.Currency == "IRR" ? 0 : 2)
-            || rate.Rounding != "away-from-zero" || rate.BillingMode != "postpaid")
+            || rate.Rounding != "away-from-zero" || rate.BillingMode is not ("payg" or "postpaid"))
             throw new ArgumentException("Organization price reference or rate snapshot is invalid.");
     }
     private static void RequireReference(string priceId, int priceVersion)

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/ConsumerBillingSession.cs" Link="ConsumerBillingSession.cs" />
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/ConsumerUsageReportProjection.cs" Link="ConsumerUsageReportProjection.cs" />
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/ConsumerUsageReportClient.cs" Link="ConsumerUsageReportClient.cs" />
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/ConsumerAccountProjection.cs" Link="ConsumerAccountProjection.cs" />
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/ConsumerAccountHttpResponse.cs" Link="ConsumerAccountHttpResponse.cs" />
+    <Compile Include="../../src/Fanasa.UnifiedPortal.Web/WorkspaceConsumerBilling.cs" Link="WorkspaceConsumerBilling.cs" />
+  </ItemGroup>
+</Project>

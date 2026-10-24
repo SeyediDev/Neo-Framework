@@ -10,6 +10,7 @@ public sealed class AccountingModel(IAccessManagement access, Fanasa.AccessManag
     public Tenant[] Tenants { get; private set; } = [];
     public Guid? SelectedTenant { get; private set; }
     public bool CanWrite { get; private set; }
+    public string RequestScope => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes((User.FindFirst("sub")?.Value ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "") + ":" + (User.FindFirst("sid")?.Value ?? "") + ":" + SelectedTenant)));
     public void OnGet(Guid? tenant)
     {
         Tenants = access.GetTenants().Where(x => x.IsActive && TenantAuthorization.Allows(User, x.Id, "billing.read")).ToArray();

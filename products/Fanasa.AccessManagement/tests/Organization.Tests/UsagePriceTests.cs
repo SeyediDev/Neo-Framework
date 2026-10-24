@@ -71,8 +71,12 @@ static class UsagePriceTests
             "usage price interval timestamps require UTC");
         Reject<ArgumentException>(() => store.Publish("invalid-rate", 1, rate with { RateId = "invalid-rate", RateVersion = 1, Currency = "USD", MinorUnitScale = 0 }, "publisher", "currency scale"), check,
             "usage price scale must match currency");
-        Reject<ArgumentException>(() => store.Publish("invalid-rate", 1, rate with { RateId = "invalid-rate", RateVersion = 1, BillingMode = "payg" }, "publisher", "unsupported mode"), check,
-            "usage price pilot rejects unsupported billing mode");
+        var prepaidRate = rate with { RateId = "payg-rate", RateVersion = 1, BillingMode = "payg" };
+        store.Publish("payg-rate", 1, prepaidRate, "publisher", "explicit payg rate");
+        check(store.Resolve("payg-rate", 1, owner, rate.EffectiveFrom) == prepaidRate,
+            "usage price retains an explicit immutable PAYG rate");
+        Reject<ArgumentException>(() => store.Publish("invalid-rate", 1, rate with { RateId = "invalid-rate", RateVersion = 1, BillingMode = "unsupported" }, "publisher", "unsupported mode"), check,
+            "usage price rejects unknown billing modes");
         Reject<ArgumentException>(() => store.Publish("invalid-rate", 1, rate with { RateId = "invalid-rate", RateVersion = 1, UnitPrice = "-12" }, "publisher", "negative price"), check,
             "usage price decimal cannot be negative");
         Reject<ArgumentException>(() => store.Publish("invalid-rate", 1, rate with { RateId = "invalid-rate", RateVersion = 1, UnitPrice = "12.1234567" }, "publisher", "precision"), check,

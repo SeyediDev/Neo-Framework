@@ -1,0 +1,20 @@
+{
+  "verifiedAtUtc": "2026-10-24T07:07:51.992Z",
+  "browser": "155.0.8059.82",
+  "checks": [
+    "RTL geometry and exact large money at 1440",
+    "RTL geometry and exact large money at 390",
+    "RTL geometry and exact large money at 320",
+    "old account and usage cleared on scope change",
+    "PAYG statement exposes no due or payment action",
+    "recorded zero and absent report remain distinct",
+    "untrusted names stay text and no external requests or page errors occur"
+  ],
+  "pageErrors": [],
+  "network": [],
+  "screenshots": [
+    "billing-report-1440.png",
+    "billing-report-390.png",
+    "billing-report-320.png"
+  ]
+}

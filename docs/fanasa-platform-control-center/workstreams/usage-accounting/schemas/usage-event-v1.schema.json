@@ -263,9 +263,7 @@
         "rounding": {
           "const": "away-from-zero"
         },
-        "billingMode": {
-          "const": "postpaid"
-        }
+        "billingMode": { "enum": ["payg", "postpaid"] }
       }
     },
     "outcome": {

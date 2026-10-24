@@ -295,19 +295,44 @@ function renderWorkspace(data) {
     get('workspace-bootstrap').textContent = JSON.stringify(data);
     const source = fs.readFileSync(path.join(__dirname, '../src/Fanasa.UnifiedPortal.Web/wwwroot/workspace.js'), 'utf8');
     let loader;
+    const financialCalls = [];
+    function financialRenderer(kind) {
+        return (container, report, expectedOrganizationId) => {
+            container.replaceChildren();
+            financialCalls.push({ kind, report, expectedOrganizationId });
+            if (report?.organizationId === expectedOrganizationId) {
+                const row = new Element('financial-report'); row.textContent = report.totalAmount || report.walletBalance || '';
+                container.append(row);
+            }
+        };
+    }
     vm.runInNewContext(source, {
         URL, Intl, structuredClone, location: new URL('http://workspace.test/Workspace#requests'),
         history: { replaceState() {} }, window: { addEventListener() {}, sessionStorage: memory() },
         document: { getElementById: get, createElement: tag => new Element(tag) },
         Option: class extends Element { constructor(text, value) { super('option'); this.textContent = text; this.value = value; } },
+        FanasaConsumerUsageReport: { renderUsageReport: financialRenderer('usage') },
+        FanasaConsumerBilling: { renderConsumerAccount: financialRenderer('account') },
         FanasaWorkspaceTransport: { createLoader(options) { loader = options; return { load() {} }; } }
     }, { timeout: 5000 });
     assert.equal(get('service-workspace').dataset.ready, 'true');
-    return { get, loader };
+    return { get, loader, financialCalls };
+}
+
+function consumerUsage(overrides = {}) {
+    return { organizationId: orgA, status: 'ready', from: '2026-10-01T00:00:00Z', to: '2026-10-24T12:00:00Z',
+        periodLabel: 'دورهٔ گزارش', asOf: '2026-10-24T12:00:00Z', currency: 'USD', totalAmount: '9007199254740993.0100', basis: 'posted-ledger',
+        items: [{ productKey: 'service', name: 'خدمت', meterId: 'requests', meterVersion: '1', unit: 'request', quantity: '1', amount: '9007199254740993.0100', chargeCount: 1 }], ...overrides };
+}
+
+function consumerAccount(overrides = {}) {
+    return { organizationId: orgA, status: 'ready', asOf: '2026-10-24T12:00:00Z', mode: 'payg', currency: 'USD',
+        walletBalance: '10.00', outstanding: '0', availableCredit: '0', invoices: [], ...overrides };
 }
 
 test('shipped renderer keeps disconnected history unknown even beside received services and ready usage', () => {
-    const app = renderWorkspace(bootstrap({ mode: 'connected', journeyStatus: 'notConnected' }));
+    const app = renderWorkspace(bootstrap({ mode: 'connected', journeyStatus: 'notConnected', consumerUsage: consumerUsage(),
+        consumerAccount: consumerAccount(), billingReadStatus: 'ready' }));
     assert.equal(app.get('active-services').children.length, 1);
     assert.equal(app.get('requests-connection-notice').hidden, false);
     assert.equal(app.get('request-status').disabled, true);
@@ -316,23 +341,54 @@ test('shipped renderer keeps disconnected history unknown even beside received s
     assert.equal(app.get('workspace-requests-count').textContent, '—');
     assert.equal(app.get('workspace-publish-count').textContent, '—');
     assert.equal(app.get('workspace-consumption-amount').textContent, '9,007,199,254,740,993.0100');
+    assert.equal(app.get('consumer-usage-report').children.length, 1);
 });
 
 test('shipped renderer clears prior cards on refresh and cannot present a failure as empty success', () => {
-    const app = renderWorkspace(bootstrap({ mode: 'connected', journeyStatus: 'ready' }));
+    const app = renderWorkspace(bootstrap({ mode: 'connected', journeyStatus: 'ready', consumerUsage: consumerUsage(),
+        consumerAccount: consumerAccount(), billingReadStatus: 'ready' }));
     assert.equal(app.get('active-services').children.length, 1);
     assert.equal(app.get('request-status').disabled, false);
     assert.equal(app.get('requests-connection-notice').hidden, true);
     assert.match(app.get('requests-empty').querySelector('h3').textContent, /هنوز درخواستی ثبت نکرده/);
+    assert.equal(app.get('workspace-consumption-amount').textContent, '9,007,199,254,740,993.0100');
+    assert.equal(app.get('consumer-account-report').children.length, 1);
     app.loader.onStart();
     assert.equal(app.get('active-services').children.length, 0);
     assert.equal(app.get('request-list').children.length, 0);
     assert.equal(app.get('request-status').disabled, true);
     assert.match(app.get('services-empty').querySelector('h3').textContent, /در حال دریافت/);
+    assert.equal(app.get('workspace-consumption-amount').textContent, '—');
+    assert.equal(app.get('consumer-usage-report').children.length, 0);
+    assert.equal(app.get('consumer-account-report').children.length, 0);
+    assert.equal(app.get('consumer-billing-reports').hidden, true);
     app.loader.onError(true);
     app.loader.onEnd();
     assert.match(app.get('services-empty').querySelector('h3').textContent, /دریافت نشده/);
     assert.doesNotMatch(app.get('requests-empty').querySelector('h3').textContent, /ثبت نکرده/);
     assert.equal(app.get('workspace-requests-count').textContent, '—');
+    assert.equal(app.get('workspace-consumption-amount').textContent, '—');
+    assert.equal(app.get('consumer-usage-report').children.length, 0);
+    assert.equal(app.get('consumer-account-report').children.length, 0);
     assert.equal(app.get('workspace-refresh').disabled, false);
+});
+
+test('financial summary is hidden for untrusted scope, loading or a foreign consumer even with a stale ready report', () => {
+    for (const overrides of [{ catalogStatus: 'unavailable' }, { organizationId: null }, { workspaceLoading: true },
+        { consumerUsage: consumerUsage({ organizationId: orgB }), consumerAccount: consumerAccount({ organizationId: orgB }) }]) {
+        const app = renderWorkspace(bootstrap({ mode: 'connected', consumerUsage: consumerUsage(), consumerAccount: consumerAccount(),
+            billingReadStatus: 'ready', ...overrides }));
+        assert.equal(app.get('workspace-consumption-amount').textContent, '—');
+        assert.equal(app.get('consumer-usage-report').children.length, 0);
+        assert.equal(app.get('consumer-account-report').children.length, 0);
+        assert.equal(app.get('consumer-billing-reports').hidden, true);
+    }
+});
+
+test('connected mode never promotes legacy preview usage into an authorized financial report', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected', consumerUsage: null, consumerAccount: null, billingReadStatus: 'notConfigured' }));
+    assert.equal(app.get('workspace-consumption-amount').textContent, '—');
+    assert.equal(app.get('consumer-usage-report').children.length, 0);
+    assert.equal(app.get('consumer-account-report').children.length, 0);
+    assert.equal(app.get('consumer-billing-reports').hidden, true);
 });

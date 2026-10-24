@@ -5,6 +5,7 @@
     var mode = Model.IsPreview ? "synthetic-preview" : "connected";
 }
 <link rel="stylesheet" href="~/workspace.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/consumer-usage-report.css" asp-append-version="true" />
 
 <div class="service-workspace" id="service-workspace" data-mode="@mode" data-is-admin="@(Model.IsAdmin ? "true" : "false")">
     <header class="workspace-heading">
@@ -83,10 +84,12 @@
     </section>
 
     <section class="workspace-panel-body" id="panel-usage" role="tabpanel" aria-labelledby="tab-usage" data-workspace-panel="usage" hidden>
-        <div class="workspace-panel-heading"><h2>مصرف سازمان</h2><div class="workspace-field"><label for="usage-period">دورهٔ گزارش</label><select id="usage-period"><option value="current">این ماه</option><option value="previous">ماه قبل</option></select></div></div>
+        <div id="workspace-usage-heading" class="workspace-panel-heading"><h2>مصرف سازمان</h2><div class="workspace-field"><label for="usage-period">دورهٔ گزارش</label><select id="usage-period"><option value="current">این ماه</option><option value="previous">ماه قبل</option></select></div></div>
+        <p id="consumer-billing-status" role="status" aria-live="polite" hidden></p>
+        <div id="consumer-billing-reports" hidden><div id="consumer-usage-report"></div><div id="consumer-account-report"></div></div>
         <div class="workspace-notice" id="usage-connection-notice" hidden="@(Model.IsPreview)"><p>گزارش مصرف در دسترس نیست.</p></div>
-        <p class="workspace-table-note" id="central-accounting-note" hidden="@(Model.AccountingUrl is null)">برای مشاهدهٔ گردش حساب و صورتحساب واقعی به مرکز راهبری بروید و سازمان موردنظر را از حساب‌های مجاز خود انتخاب کنید.</p>
-        <a class="button button-secondary" id="central-accounting-link" href="@Model.AccountingUrl" hidden="@(Model.AccountingUrl is null)">مشاهدهٔ حساب‌های مجاز در مرکز راهبری <span aria-hidden="true">←</span></a>
+        <p class="workspace-table-note" id="central-accounting-note" hidden="@(Model.AccountingUrl is null)">گردش حساب و عملیات مالی</p>
+        <a class="button button-secondary" id="central-accounting-link" href="@Model.AccountingUrl" hidden="@(Model.AccountingUrl is null)">حساب سازمان <span aria-hidden="true">←</span></a>
         <div class="workspace-usage-summary" id="usage-summary"></div>
         <div class="workspace-table-container" id="usage-table-container"><table class="workspace-table"><thead><tr><th scope="col">سرویس</th><th scope="col">شاخص مصرف</th><th scope="col">مقدار مصرف</th><th scope="col">هزینهٔ ثبت‌شده</th><th scope="col">دوره</th></tr></thead><tbody id="usage-rows"></tbody></table></div>
         <div class="workspace-empty" id="usage-empty" hidden><span class="workspace-empty-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 3v17h17M8 16v-5M13 16V7M18 16v-8"/></svg></span><h3>گزارش مصرفی برای نمایش وجود ندارد</h3><p>پس از اتصال گزارش و ثبت مصرف، مقدار و هزینهٔ خدمات این سازمان در این بخش نمایش داده می‌شود.</p></div>
@@ -142,4 +145,6 @@
 </div>
 <script id="workspace-bootstrap" type="application/json">@Html.Raw(Model.BootstrapJson)</script>
 <script src="~/workspace-transport.js" asp-append-version="true" defer></script>
+<script src="~/consumer-usage-report.js" asp-append-version="true" defer></script>
+<script src="~/consumer-billing.js" asp-append-version="true" defer></script>
 <script src="~/workspace.js" asp-append-version="true" defer></script>

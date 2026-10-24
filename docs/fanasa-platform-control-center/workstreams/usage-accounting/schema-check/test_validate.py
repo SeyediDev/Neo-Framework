@@ -78,8 +78,14 @@ class UsageEventTests(unittest.TestCase):
                 self.rejected(path, value)
 
     def test_exact_enum_and_boundary_values(self):
-        for path, value in [(("environment",), "sandbox"), (("rateSnapshot", "currency"), "irr"), (("rateSnapshot", "billingMode"), "payg"), (("rateSnapshot", "rounding"), "bankers"), (("producer", "kind"), "gateway-log"), (("outcome",), "unknown"), (("operation", "billableBoundary"), "gateway-admitted/v1")]:
+        for path, value in [(("environment",), "sandbox"), (("rateSnapshot", "currency"), "irr"), (("rateSnapshot", "billingMode"), "prepaid"), (("rateSnapshot", "rounding"), "bankers"), (("producer", "kind"), "gateway-log"), (("outcome",), "unknown"), (("operation", "billableBoundary"), "gateway-admitted/v1")]:
             self.rejected(path, value)
+
+    def test_both_supported_billing_modes(self):
+        for mode in ("payg", "postpaid"):
+            event = deepcopy(self.event)
+            event["rateSnapshot"]["billingMode"] = mode
+            self.validator.validate(event)
 
     def test_decimal_string_grammar_and_bounds(self):
         for value in (12, -12, "-1", "+1", "01", "1e3", "NaN", ".5", "1.", "1.1234567", "1000000000000000000", " 12"):

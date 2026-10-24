@@ -285,7 +285,7 @@ public sealed class OrganizationUsageMetering : IUsageSnapshotValidator
             && x.TenantId == consumer && x.ProductKey == ProductKey && x.Status == "active" && x.StartedAt <= now
             && (!x.RenewsAt.HasValue || x.RenewsAt > now) && x.PricingPlanId == links[0].CentralPricingPlanId).Take(2).ToArray();
         var plans = access.GetPlans(ProductKey).Where(x => x.Id == links[0].CentralPricingPlanId && x.ProductKey == ProductKey
-            && x.IsActive && x.BillingMode == "postpaid").Take(2).ToArray();
+            && x.IsActive && x.BillingMode is "payg" or "postpaid").Take(2).ToArray();
         if (subscriptions.Length != 1 || plans.Length != 1)
             throw new UnauthorizedAccessException("The explicitly linked central subscription/plan is not uniquely active.");
         return new(projection, owner, plans[0].Key, plans[0].Currency, plans[0].BillingMode);
@@ -324,7 +324,7 @@ public sealed class OrganizationUsageMetering : IUsageSnapshotValidator
             Required(rate, "UnitPrice"), Required(rate, "Currency"), Int(rate, "MinorUnitScale"), Required(rate, "Rounding"), Required(rate, "BillingMode"));
         _ = UsageEventV1.ParseDecimal(snapshot.UnitPrice);
         if (snapshot.EffectiveFrom >= snapshot.EffectiveTo || snapshot.Currency is not ("IRR" or "USD" or "EUR")
-            || snapshot.MinorUnitScale != (snapshot.Currency == "IRR" ? 0 : 2) || snapshot.Rounding != "away-from-zero" || snapshot.BillingMode != "postpaid")
+            || snapshot.MinorUnitScale != (snapshot.Currency == "IRR" ? 0 : 2) || snapshot.Rounding != "away-from-zero" || snapshot.BillingMode is not ("payg" or "postpaid"))
             throw new ArgumentException("Trusted usage rate snapshot is invalid.");
         var reference = Required(section, "PricingReference");
         if (reference != snapshot.RateId) throw new ArgumentException("PricingReference must identify this immutable rate ID.");

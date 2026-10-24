@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Fanasa.AccessManagement.Web.Accounting;
 
 namespace Fanasa.AccessManagement.Web.Metering;
 
@@ -24,7 +25,7 @@ public sealed record UsageEventV1(string SchemaVersion, Guid EventId, DateTimeOf
     [JsonIgnore] internal OrganizationUsageAdmission? InvocationProof { get; init; }
     [JsonIgnore] public decimal Quantity => ParseDecimal(Meter.Quantity);
     [JsonIgnore] public decimal UnitPrice => ParseDecimal(RateSnapshot.UnitPrice);
-    [JsonIgnore] public decimal Amount => decimal.Round(checked(Quantity * UnitPrice), RateSnapshot.MinorUnitScale, MidpointRounding.AwayFromZero);
+    [JsonIgnore] public decimal Amount => BillingBalance.Charge(Quantity, UnitPrice, RateSnapshot.Currency);
     [JsonIgnore] public string EventKey => "event:v1:" + Hash(JsonSerializer.Serialize(new[] { Producer.Id, Environment, ConsumerTenantId.ToString("D"), EventId.ToString("D") }));
     [JsonIgnore] public string BusinessKey => "measured:v1:" + Hash(JsonSerializer.Serialize(new[]
         { Environment, ConsumerTenantId.ToString("D"), ProductKey, Operation.Version, Operation.Id, Operation.BillableBoundary, Meter.Id, Meter.Version }));
@@ -62,7 +63,7 @@ public sealed record UsageEventV1(string SchemaVersion, Guid EventId, DateTimeOf
             throw new ArgumentException("UsageEvent producer, operation, evidence or meter is invalid.");
         if (RateSnapshot.RateVersion < 1 || RateSnapshot.Currency is not ("IRR" or "USD" or "EUR")
             || RateSnapshot.MinorUnitScale != (RateSnapshot.Currency == "IRR" ? 0 : 2)
-            || RateSnapshot.Rounding != "away-from-zero" || RateSnapshot.BillingMode != "postpaid")
+            || RateSnapshot.Rounding != "away-from-zero" || RateSnapshot.BillingMode is not ("payg" or "postpaid"))
             throw new ArgumentException("UsageEvent rate snapshot is invalid.");
         Utc(OccurredAt); Utc(ProducedAt); Utc(Operation.AcceptedAt); Utc(RateSnapshot.EffectiveFrom); Utc(RateSnapshot.EffectiveTo);
         if (Operation.AcceptedAt > OccurredAt || OccurredAt > ProducedAt || RateSnapshot.EffectiveFrom >= RateSnapshot.EffectiveTo

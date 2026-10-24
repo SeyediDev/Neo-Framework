@@ -114,9 +114,9 @@ public sealed class ZarinpalPayments(FabricDatabase database, AccountingStore ac
             if (account.Mode == "postpaid")
             {
                 var invoice = account.Invoices.SingleOrDefault(x => x.Id == invoiceId) ?? throw new ArgumentException("صورتحساب معتبر انتخاب کنید.");
-                var paid = account.Entries.Where(x => x.Kind == "payment" && x.InvoiceId == invoiceId).Sum(x => x.Amount);
-                var reserved = database.All<PaymentIntent>("payment").Where(x => x.TenantId == tenant && x.InvoiceId == invoiceId && ReservesBalance(x)).Sum(x => (decimal)x.Amount);
-                if (amount > invoice.Amount - paid - reserved) throw new InvalidOperationException("مبلغ از مانده آزاد صورتحساب بیشتر است؛ درخواست پرداخت باز را بررسی کنید.");
+                var remaining = BillingBalance.InvoiceRemaining(account, invoice.Id);
+                var reserved = BillingBalance.Sum(database.All<PaymentIntent>("payment").Where(x => x.TenantId == tenant && x.InvoiceId == invoiceId && ReservesBalance(x)).Select(x => (decimal)x.Amount));
+                if (amount > BillingBalance.Subtract(remaining, reserved)) throw new InvalidOperationException("مبلغ از مانده آزاد صورتحساب بیشتر است؛ درخواست پرداخت باز را بررسی کنید.");
             }
             else if (invoiceId.HasValue) throw new ArgumentException("شارژ کیف اعتبار به صورتحساب نیاز ندارد.");
             var next = new PaymentIntent(Guid.NewGuid(), tenant, actor, requestId, checked((long)amount), invoiceId,
