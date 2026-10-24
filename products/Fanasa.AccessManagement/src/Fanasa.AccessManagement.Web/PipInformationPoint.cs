@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Fanasa.AccessManagement.Web.Application.Tenancy;
 using Fanasa.AccessManagement.Web.Persistence;
 
@@ -38,7 +39,8 @@ public sealed record PipAttributeSnapshot(
     DateTimeOffset ObservedAt,
     DateTimeOffset FreshUntil,
     string ContentHash,
-    string Provenance, long Generation = 1);
+    string Provenance, long Generation = 1,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DateTimeOffset? ValidUntil = null);
 
 public sealed record PipSyncRun(
     Guid Id,
@@ -49,7 +51,7 @@ public sealed record PipSyncRun(
     DateTimeOffset StartedAt,
     DateTimeOffset CompletedAt,
     string? SnapshotHash,
-    string? Error, string Actor = "pip-worker", string Reason = "scheduled-sync");
+    string? Error, string Actor = "pip-worker", string Reason = "scheduled-sync", long SourceGeneration = 0);
 
 public sealed record PipLookup(PipAttributeSnapshot? Snapshot, string Status, string? Error = null)
 {
@@ -90,7 +92,8 @@ public sealed record PipFetchedSnapshot(
     string SourceVersion,
     string? Etag,
     DateTimeOffset ObservedAt,
-    string ContentHash);
+    string ContentHash,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DateTimeOffset? ValidUntil = null);
 
 /// <summary>Fabric-backed PIP catalog and snapshot store. Every read is tenant-scoped.</summary>
 public sealed partial class PipStore(FabricDatabase database, PersistentAccessManagement access) : IPolicyInformationPoint
@@ -163,9 +166,10 @@ public sealed partial class PipStore(FabricDatabase database, PersistentAccessMa
                 var snapshot = database.Read<PipAttributeSnapshot>(SnapshotDocumentKind, SnapshotKey(tenantId, subject, source.Id));
                 if (snapshot is null) return new(null, "missing", "no-snapshot");
                 ValidateSnapshot(new(snapshot.TenantId, snapshot.Subject, snapshot.SchemaVersion, snapshot.Attributes,
-                    snapshot.SourceVersion, snapshot.Etag, snapshot.ObservedAt, snapshot.ContentHash), source, now);
+                    snapshot.SourceVersion, snapshot.Etag, snapshot.ObservedAt, snapshot.ContentHash, snapshot.ValidUntil), source, now);
                 if (snapshot.SourceId != source.Id || snapshot.TenantId != tenantId || snapshot.Subject != subject || snapshot.Generation != source.Generation
-                    || snapshot.FreshUntil != snapshot.ObservedAt.AddSeconds(source.MaxAgeSeconds)
+                    || snapshot.FreshUntil != FreshUntil(source, new(snapshot.TenantId, snapshot.Subject, snapshot.SchemaVersion, snapshot.Attributes,
+                        snapshot.SourceVersion, snapshot.Etag, snapshot.ObservedAt, snapshot.ContentHash, snapshot.ValidUntil))
                     || snapshot.Provenance != Provenance(source.Id, snapshot.SourceVersion)) return new(null, "invalid", "invalid-snapshot-metadata");
                 return snapshot.FreshUntil > now ? new(snapshot, "fresh") : new(snapshot, "stale", "snapshot-expired");
             }
@@ -176,10 +180,7 @@ public sealed partial class PipStore(FabricDatabase database, PersistentAccessMa
     }
     public PipAttributeSnapshot SaveSnapshot(PipSourceDefinition source, string expectedSubject, PipFetchedSnapshot fetched, DateTimeOffset now)
     {
-        ValidateSubject(expectedSubject);
-        if (fetched.TenantId != source.TenantId || fetched.Subject != expectedSubject) throw new InvalidDataException("External PIP response correlation failed.");
-        ValidateSnapshot(fetched, source, now);
-        if (fetched.ObservedAt.AddSeconds(source.MaxAgeSeconds) <= now) throw new InvalidDataException("External PIP response is already stale.");
+        ValidateFetchedSnapshot(source, expectedSubject, fetched, now);
         return database.Transaction(() =>
         {
             var current = ReadSource(source.TenantId, source.Id);
@@ -197,7 +198,7 @@ public sealed partial class PipStore(FabricDatabase database, PersistentAccessMa
                 throw new InvalidDataException("An older PIP observation cannot replace the current snapshot.");
             var snapshot = new PipAttributeSnapshot(source.Id, source.TenantId, fetched.Subject, fetched.SchemaVersion,
                 new Dictionary<string, string>(fetched.Attributes, StringComparer.Ordinal), fetched.SourceVersion, fetched.Etag,
-                fetched.ObservedAt, fetched.ObservedAt.AddSeconds(current.MaxAgeSeconds), fetched.ContentHash, Provenance(source.Id, fetched.SourceVersion), current.Generation);
+                fetched.ObservedAt, FreshUntil(current, fetched), fetched.ContentHash, Provenance(source.Id, fetched.SourceVersion), current.Generation, fetched.ValidUntil);
             database.Put(SourceDocumentKind, source.Id.ToString("D"), current with { LastSyncAt = now, LastSourceVersion = fetched.SourceVersion, LastEtag = null, Status = "healthy", LastError = null });
             database.Put(SnapshotDocumentKind, key, snapshot);
             database.Put("pip.version", versionKey, new PipVersionReceipt(fetched.ContentHash, fetched.ObservedAt));
@@ -219,14 +220,18 @@ public sealed partial class PipStore(FabricDatabase database, PersistentAccessMa
     });
     public void RecordRun(PipSyncRun run) => database.Transaction(() =>
     {
-        _ = ReadSource(run.TenantId, run.SourceId);
+        var source = ReadSource(run.TenantId, run.SourceId);
         ValidateSubject(run.Subject); AccessPolicyStore.Label(run.Actor, 200); AccessPolicyStore.Label(run.Reason, 1000);
-        if (run.Id == Guid.Empty || run.CompletedAt < run.StartedAt || run.CompletedAt.Offset != TimeSpan.Zero || run.StartedAt.Offset != TimeSpan.Zero)
+        if (run.Id == Guid.Empty || run.CompletedAt < run.StartedAt || run.CompletedAt.Offset != TimeSpan.Zero || run.StartedAt.Offset != TimeSpan.Zero
+            || run.SourceGeneration < 0 || run.SourceGeneration > source.Generation)
             throw new ArgumentException("Invalid synchronization receipt.");
         database.Put(SyncDocumentKind, run.Id.ToString("D"), run);
         var key = SnapshotKey(run.TenantId, run.Subject, run.SourceId);
         var previous = database.Read<PipSyncRun>("pip.checkpoint", key);
-        if (previous is null || run.CompletedAt >= previous.CompletedAt) database.Put("pip.checkpoint", key, run);
+        // Keep superseded runs in history, but they cannot suppress refresh or overwrite a new generation's checkpoint.
+        var currentGeneration = run.SourceGeneration == source.Generation || source.Educational && run.SourceGeneration == 0;
+        if (currentGeneration && (previous is null || previous.SourceGeneration != run.SourceGeneration || run.CompletedAt >= previous.CompletedAt))
+            database.Put("pip.checkpoint", key, run);
         database.Emit("pip-run:" + run.Id, "PipSyncCompleted", run, run.CompletedAt); return true;
     });
     public PipSyncRun[] ListRuns(Guid tenantId, Guid sourceId, int take = 50)
@@ -244,7 +249,7 @@ public sealed partial class PipStore(FabricDatabase database, PersistentAccessMa
     private static void ValidateSubject(string subject) { AccessPolicyStore.Label(subject, 200); if (subject.Any(char.IsControl)) throw new ArgumentException("Invalid PIP subject."); }
     private static void ValidateLimits(int schemaVersion, int maxAgeSeconds, int timeoutSeconds, int maxResponseBytes)
     {
-        if (schemaVersion != 1 || maxAgeSeconds is < 1 or > 86400 || timeoutSeconds is < 1 or > 120 || maxResponseBytes is < 1024 or > 10 * 1024 * 1024)
+        if (schemaVersion is not (1 or 2) || maxAgeSeconds is < 1 or > 86400 || timeoutSeconds is < 1 or > 120 || maxResponseBytes is < 1024 or > 10 * 1024 * 1024)
             throw new ArgumentException("Invalid PIP source limits.");
     }
     internal static void ValidateEndpoint(string endpoint, string allowedHost)
@@ -258,6 +263,18 @@ public sealed partial class PipStore(FabricDatabase database, PersistentAccessMa
     }
     private static string SnapshotKey(Guid tenantId, string subject, Guid sourceId) => $"{tenantId:D}:{sourceId:D}:{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(subject))).ToLowerInvariant()}";
     private static string Provenance(Guid source, string version) => $"pip://{source:D}/{Uri.EscapeDataString(version)}";
+    public static DateTimeOffset FreshUntil(PipSourceDefinition source, PipFetchedSnapshot fetched)
+    {
+        var ttl = fetched.ObservedAt.AddSeconds(source.MaxAgeSeconds);
+        return fetched.ValidUntil is { } deadline && deadline < ttl ? deadline : ttl;
+    }
+    public static void ValidateFetchedSnapshot(PipSourceDefinition source, string expectedSubject, PipFetchedSnapshot fetched, DateTimeOffset now)
+    {
+        ValidateSubject(expectedSubject);
+        if (fetched.TenantId != source.TenantId || fetched.Subject != expectedSubject) throw new InvalidDataException("External PIP response correlation failed.");
+        ValidateSnapshot(fetched, source, now);
+        if (FreshUntil(source, fetched) <= now) throw new InvalidDataException("External PIP response is already stale.");
+    }
     private static void ValidateSnapshot(PipFetchedSnapshot fetched, PipSourceDefinition source, DateTimeOffset now)
     {
         ValidateLimits(source.SchemaVersion, source.MaxAgeSeconds, source.TimeoutSeconds, source.MaxResponseBytes);
@@ -265,17 +282,21 @@ public sealed partial class PipStore(FabricDatabase database, PersistentAccessMa
         if (source.Generation < 1 || fetched.TenantId != source.TenantId || fetched.SchemaVersion != source.SchemaVersion || string.IsNullOrWhiteSpace(fetched.SourceVersion)
             || fetched.SourceVersion.Length > 200 || fetched.SourceVersion.Any(char.IsControl) || fetched.ObservedAt.Offset != TimeSpan.Zero
             || fetched.ObservedAt > now || fetched.ObservedAt == DateTimeOffset.MinValue) throw new InvalidDataException("Invalid PIP response metadata.");
+        if (fetched.SchemaVersion == 1 && fetched.ValidUntil is not null
+            || fetched.SchemaVersion == 2 && (fetched.ValidUntil is not { } deadline || deadline.Offset != TimeSpan.Zero || deadline <= fetched.ObservedAt))
+            throw new InvalidDataException("PIP schema 2 requires an explicit UTC deadline after observation; schema 1 cannot carry a deadline.");
         PipSchema.ValidateAttributes(source, fetched.Attributes);
-        var hash = HashAttributes(fetched.TenantId, fetched.Subject, fetched.SchemaVersion, fetched.Attributes, fetched.SourceVersion, fetched.ObservedAt);
+        var hash = HashAttributes(fetched.TenantId, fetched.Subject, fetched.SchemaVersion, fetched.Attributes, fetched.SourceVersion, fetched.ObservedAt, fetched.ValidUntil);
         if (hash != fetched.ContentHash) throw new InvalidDataException("PIP content hash mismatch.");
     }
-    public static string HashAttributes(Guid tenantId, string subject, int schemaVersion, IReadOnlyDictionary<string, string> attributes, string sourceVersion, DateTimeOffset observedAt)
+    public static string HashAttributes(Guid tenantId, string subject, int schemaVersion, IReadOnlyDictionary<string, string> attributes, string sourceVersion, DateTimeOffset observedAt, DateTimeOffset? validUntil = null)
     {
         using var stream = new MemoryStream();
         using (var writer = new Utf8JsonWriter(stream))
         {
             writer.WriteStartArray(); writer.WriteStringValue(tenantId.ToString("D")); writer.WriteStringValue(subject); writer.WriteNumberValue(schemaVersion);
             writer.WriteStringValue(sourceVersion); writer.WriteStringValue(observedAt.ToString("O", System.Globalization.CultureInfo.InvariantCulture));
+            if (schemaVersion == 2) writer.WriteStringValue(validUntil?.ToString("O", System.Globalization.CultureInfo.InvariantCulture));
             writer.WriteStartObject(); foreach (var pair in attributes.OrderBy(x => x.Key, StringComparer.Ordinal)) writer.WriteString(pair.Key, pair.Value);
             writer.WriteEndObject(); writer.WriteEndArray();
         }
@@ -311,7 +332,7 @@ public sealed class PipSyncService(PipStore store, IPipExternalConnector connect
                     throw new InvalidDataException("Not-modified response has no fresh correlated snapshot.");
                 snapshot = current.Snapshot;
                 store.SaveSnapshot(source, subject, new(snapshot.TenantId, subject, snapshot.SchemaVersion, snapshot.Attributes, snapshot.SourceVersion,
-                    snapshot.Etag, snapshot.ObservedAt, snapshot.ContentHash), clock.GetUtcNow());
+                    snapshot.Etag, snapshot.ObservedAt, snapshot.ContentHash, snapshot.ValidUntil), clock.GetUtcNow());
                 return Complete("not-modified", snapshot.ContentHash, null);
             }
             return Complete("succeeded", snapshot.ContentHash, null);
@@ -327,7 +348,7 @@ public sealed class PipSyncService(PipStore store, IPipExternalConnector connect
         finally { store.ReleaseLease(tenantId, sourceId, subject, runId); }
         PipSyncRun Complete(string status, string? hash, string? error)
         {
-            var run = new PipSyncRun(runId, sourceId, tenantId, subject, status, started, clock.GetUtcNow(), hash, error, actor, reason);
+            var run = new PipSyncRun(runId, sourceId, tenantId, subject, status, started, clock.GetUtcNow(), hash, error, actor, reason, source.Generation);
             store.RecordRun(run); return run;
         }
     }

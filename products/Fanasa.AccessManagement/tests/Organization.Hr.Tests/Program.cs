@@ -11,6 +11,7 @@ using Fanasa.AccessManagement.Web.Api;
 using Fanasa.AccessManagement.Web.Application.Access;
 using Fanasa.AccessManagement.Web.Application.Tenancy;
 using Fanasa.AccessManagement.Web.Domain.Access;
+using Fanasa.AccessManagement.Web.Governance;
 using Fanasa.AccessManagement.Web.Metering;
 using Fanasa.AccessManagement.Web.Organization;
 using Fanasa.AccessManagement.Web.Persistence;
@@ -39,6 +40,13 @@ void Check(bool condition, string label)
 {
     if (!condition) throw new Exception("FAILED: " + label);
     checks++; Console.WriteLine("PASS: " + label);
+}
+
+if (args.Contains("--pip-attributes", StringComparer.Ordinal))
+{
+    await PipHrBoundaryTests.RunAsync(Check);
+    Console.WriteLine($"PASS: {checks} HR attribute checks");
+    return;
 }
 
 await using (var fixture = await SyntheticHrHost.Start())
@@ -291,6 +299,7 @@ await using (var metered = await SyntheticHrHost.Start(metering: true))
     Check(response.StatusCode == HttpStatusCode.Forbidden && metered.Snapshot() == before,
         "enabled measured unit.save profile cannot be bypassed through HR command route");
 }
+await PipHrBoundaryTests.RunAsync(Check);
 Console.WriteLine($"{checks} synthetic HR TLS/JWT/HTTP checks passed.");
 
 // Only Store is delayed; the production authorization boundary reads the real durable adapter.
@@ -345,6 +354,8 @@ sealed class SyntheticStoreBarrier(IAccessManagement inner, FabricDatabase datab
 
 sealed class SyntheticHrHost : IAsyncDisposable
 {
+    public const string AttributeScope = "synthetic.organization.hr.attributes.read";
+    public const string AttributeClientId = "synthetic-pip-reader";
     public const string ReadScope = "synthetic.organization.hr.read";
     public const string WriteScope = "synthetic.organization.hr.write";
     private const string Issuer = "https://synthetic-idp.invalid/realms/fanasa";
@@ -372,6 +383,12 @@ sealed class SyntheticHrHost : IAsyncDisposable
     public Guid OtherTenant { get; }
     public string ServiceSubject { get; } = Guid.NewGuid().ToString("D");
     public string HumanSubject { get; } = Guid.NewGuid().ToString("D");
+    public string AttributeServiceSubject { get; } = Guid.NewGuid().ToString("D");
+    public TenantUser? AttributeServiceMember { get; }
+    public ProductClient? AttributeRegisteredClient { get; }
+    public AttributeTestClock AttributeClock { get; } = new();
+    public PipStore? AttributePip { get; }
+    public AccessPolicyStore? AttributePolicies { get; }
     public TenantUser ServiceMember { get; }
     public ProductClient RegisteredClient { get; }
     public OrganizationHrOptions Options { get; }
@@ -417,6 +434,23 @@ sealed class SyntheticHrHost : IAsyncDisposable
         Access.AddUser(new(Tenant, HumanSubject, "Synthetic human")); RestoreGrants();
         var plan = Access.RegisterPlan(new("organization-fabric", "synthetic-hr", "Synthetic HR subscription", "postpaid", "IRR", 0, 0));
         Access.Subscribe(new(Tenant, "organization-fabric", plan.Id, 10));
+        var attributeOptions = new OrganizationHrAttributeOptions();
+        if (mode == "attributes")
+        {
+            AttributeRegisteredClient = Access.RegisterClient(product.Id, new(AttributeClientId, "Synthetic PIP reader", "confidential", [], [AttributeScope]));
+            AttributeServiceMember = Access.AddUser(new(Tenant, AttributeServiceSubject, "Synthetic PIP service"));
+            Access.SetGrant(new(Tenant, AttributeServiceSubject, "organization.read", null), "synthetic-test", "synthetic PIP grant");
+            attributeOptions.Readers = [new() { ClientId = AttributeClientId, ServiceSubject = AttributeServiceSubject, Scope = AttributeScope, TenantIds = [Tenant] }];
+            AttributePip = new(Database, Access);
+            AttributePolicies = new(Database, Access, null, AttributePip);
+            builder.Services.AddSingleton(new TemporalAccessGate(new() { Enabled = true, TenantIds = [Tenant] }, AttributePolicies, AttributeClock));
+            builder.Services.AddScoped<TemporalAccessFilter>();
+            builder.Services.Configure<Microsoft.AspNetCore.Mvc.MvcOptions>(options => options.Filters.AddService<TemporalAccessFilter>());
+        }
+        builder.Services.AddSingleton(attributeOptions);
+        builder.Services.AddSingleton<TimeProvider>(AttributeClock);
+        builder.Services.AddSingleton<OrganizationHrAttributeBoundary>();
+        builder.Services.AddSingleton<OrganizationHrAttributeProjector>();
         if (metering)
         {
             const string prefix = "UsageMetering:Organization:Bindings:0:";
@@ -439,7 +473,7 @@ sealed class SyntheticHrHost : IAsyncDisposable
         }
         var usage = new OrganizationUsageMetering(builder.Configuration, Access, registry);
         StoreBarrier = new SyntheticStoreBarrier(Access, Database);
-        Store = new OrganizationStore(directory, StoreBarrier, true, Database);
+        Store = new OrganizationStore(directory, StoreBarrier, mode != "attributes", Database);
         builder.Services.AddSingleton(registry); builder.Services.AddSingleton(Database); builder.Services.AddSingleton(Access);
         builder.Services.AddSingleton(usage); builder.Services.AddSingleton(Store);
         builder.Services.AddControllers().AddApplicationPart(typeof(OrganizationHrApi).Assembly);
@@ -541,6 +575,23 @@ sealed class SyntheticHrHost : IAsyncDisposable
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         return (otherCertificate ? otherClient : gatewayClient).SendAsync(request);
     }
+    public string AttributeToken(string? issuer = null, string? audience = null, string? subject = null, string? client = null,
+        string? scope = null, bool badKey = false, bool expired = false, DateTime? expiresAt = null) => Token(issuer, audience,
+            subject ?? AttributeServiceSubject, client ?? AttributeClientId, scope ?? AttributeScope, badKey, expired, expiresAt: expiresAt);
+    public Task<HttpResponseMessage> Attributes(string? token, string? query = null, Guid? tenant = null,
+        bool gateway = true, bool forged = false, bool accessOnly = false)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/api/organization-hr/v1/tenants/{tenant ?? Tenant}/"
+            + (accessOnly ? "attributes-access" : "attributes") + (query ?? (accessOnly ? "" : "?subject=" + HumanSubject)));
+        if (token is not null) request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (forged) { request.Headers.Add("X-Forwarded-Client-Cert", Convert.ToBase64String(GatewayCertificate.RawData)); request.Headers.Add("X-Permission", "organization.read"); }
+        return (gateway ? gatewayClient : directClient).SendAsync(request);
+    }
+    public HttpPipExternalConnector AttributeConnector(PipTransportOptions transport, string bearer) =>
+        new(gatewayClient, AttributeClock, transport, new AttributeTokenResolver(bearer));
+    public string AttributeEndpoint => new Uri(gatewayClient.BaseAddress!, $"/api/organization-hr/v1/tenants/{Tenant}/attributes").AbsoluteUri;
+    private sealed class AttributeTokenResolver(string bearer) : IPipSecretResolver
+    { public ValueTask<string?> ResolveAsync(string? reference, CancellationToken cancellationToken = default) => ValueTask.FromResult<string?>(bearer); }
     public Task<HttpResponseMessage> GatewayAccess(string token, string operation, bool gateway)
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
@@ -599,4 +650,10 @@ sealed class SyntheticHrHost : IAsyncDisposable
             throw new InvalidOperationException("Synthetic cleanup escaped the temporary directory.");
         Directory.Delete(full, true);
     }
+}
+
+sealed class AttributeTestClock : TimeProvider
+{
+    public TimeSpan Offset { get; set; }
+    public override DateTimeOffset GetUtcNow() => DateTimeOffset.UtcNow + Offset;
 }

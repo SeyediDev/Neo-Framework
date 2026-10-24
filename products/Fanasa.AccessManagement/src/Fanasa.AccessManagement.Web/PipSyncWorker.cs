@@ -27,11 +27,10 @@ public sealed class PipSyncWorker(PipStore store, PipSyncService sync, TimeProvi
             .Where(source => source.Enabled && !source.Educational && source.PollIntervalSeconds > 0)
             .SelectMany(source => (source.SyncSubjects ?? []).Select(subject =>
             {
-                var last = store.Checkpoint(source.TenantId, source.Id, subject)?.CompletedAt;
-                var due = last is null || last > now ? DateTimeOffset.MinValue : last.Value.AddSeconds(source.PollIntervalSeconds);
-                return new ScheduledJob(source.TenantId, source.Id, subject, due);
+                var due = store.NextDueAt(source, subject, now);
+                return due.HasValue ? new ScheduledJob(source.TenantId, source.Id, subject, due.Value) : null;
             }))
-            .Where(job => job.DueAt <= now)
+            .Where(job => job is not null && job.DueAt <= now).Select(job => job!)
             .OrderBy(job => job.DueAt).ThenBy(job => job.TenantId).ThenBy(job => job.SourceId).ThenBy(job => job.Subject, StringComparer.Ordinal)
             .Take(50).ToArray();
         await Parallel.ForEachAsync(jobs, new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = cancellationToken }, async (job, token) =>

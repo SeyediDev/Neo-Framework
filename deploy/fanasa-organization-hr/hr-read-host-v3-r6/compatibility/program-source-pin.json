@@ -1,0 +1,11 @@
+{
+  "schema": "fanasa.hr3.host-source-pin/1",
+  "copySha256": "ab8ed8b12ba55a0efb778f91815a090fe6ee060052ff4294bff48377b410b52c",
+  "copy": "compatibility/Program.Hr3.cs",
+  "originalSha256": "e0309216dcbe36f0238a39e7895a592967bc1d01e4ba541db85f3b58600e02c2",
+  "originalPath": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Program.cs",
+  "changes": [
+    "Explicit optional PDP services before Build",
+    "Explicit optional PDP route; existing HR routes untouched"
+  ]
+}

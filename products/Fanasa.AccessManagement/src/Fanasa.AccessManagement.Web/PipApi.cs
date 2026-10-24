@@ -10,7 +10,8 @@ namespace Fanasa.AccessManagement.Web.Api;
 [ApiController, Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme), Route("api/governance/tenants/{tenantId:guid}/pip")]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOptions transport, TimeProvider clock,
-    TemplateOrganizationStore? examples = null, PipEducationalExample? educational = null) : ControllerBase
+    TemplateOrganizationStore? examples = null, PipEducationalExample? educational = null,
+    PipDiagnostics? diagnostics = null, PipEducationalJourney? journey = null) : ControllerBase
 {
     private bool Admin => User.Identity?.IsAuthenticated == true && User.HasClaim("permission", "platform.admin");
     private bool CanManage(Guid tenantId) => User.Identity?.IsAuthenticated == true && (Admin || TenantAuthorization.Allows(User, tenantId, "tenancy.manage"));
@@ -27,6 +28,10 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
     [HttpGet("sources")]
     public IActionResult Sources(Guid tenantId) => !CanManage(tenantId) ? Forbid() : Execute(() => store.ListSources(tenantId));
 
+    [HttpGet("overview")]
+    public IActionResult Overview(Guid tenantId) => !CanManage(tenantId) ? Forbid() : Execute(() => Diagnostics.Overview(tenantId));
+    private PipDiagnostics Diagnostics => diagnostics ?? throw new InvalidOperationException("PIP diagnostics service is unavailable.");
+
     [HttpPost("sources"), ValidateAntiForgeryToken]
     public IActionResult Register(Guid tenantId, RegisterPipSourceCommand command)
     {
@@ -34,7 +39,7 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
         return Execute(() =>
         {
             AccessPolicyStore.Label(command.Reason, 1000);
-            if (command.Enabled) transport.Authorize(tenantId, command.Endpoint, command.SecretReference);
+            if (command.Enabled) throw new ArgumentException("Save the source disabled, test its connection, and then enable it.");
             return store.Register(tenantId, command.Name, command.Endpoint, command.AllowedHost, command.SecretReference,
                 command.SchemaVersion, command.MaxAgeSeconds, command.TimeoutSeconds, command.MaxResponseBytes, command.Enabled,
                 command.Definitions, command.SyncSubjects, command.PollIntervalSeconds, Actor, command.Reason);
@@ -47,9 +52,7 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
         return Execute(() =>
         {
             AccessPolicyStore.Label(command.Reason, 1000);
-            var source = store.ReadSource(tenantId, sourceId);
-            if (command.Enabled) transport.Authorize(source);
-            return store.SetEnabled(tenantId, sourceId, command.Enabled, Actor, command.Reason);
+            return store.EnableAfterTest(tenantId, sourceId, command.Enabled, Actor, command.Reason, transport, clock.GetUtcNow());
         });
     }
     [HttpGet("sources/{sourceId:guid}/runs")]
@@ -59,6 +62,7 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
     public IActionResult Status(Guid tenantId, Guid sourceId, [FromQuery] string subject)
     {
         if (!CanManage(tenantId)) return Forbid();
+        if (diagnostics is not null) return Execute(() => diagnostics.Status(tenantId, sourceId, subject));
         return Execute(() =>
         {
             var source = store.ReadSource(tenantId, sourceId);
@@ -67,6 +71,15 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
                 result.Snapshot?.SourceVersion, result.Snapshot?.ContentHash, deploymentApproved = source.Educational || transport.IsAuthorized(source),
                 checkpoint = store.Checkpoint(tenantId, sourceId, subject) };
         });
+    }
+    [HttpPost("sources/{sourceId:guid}/test"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> Test(Guid tenantId, Guid sourceId, PipSyncCommand command, CancellationToken cancellationToken)
+    {
+        if (Guard(tenantId) is { } denied) return denied;
+        try { return Ok(await Diagnostics.TestAsync(tenantId, sourceId, command.Subject, Actor, command.Reason, cancellationToken)); }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (ArgumentException) { return BadRequest(new { errorCode = "invalid-test-request", error = "شخص و دلیل آزمون معتبر را وارد کنید." }); }
+        catch (InvalidOperationException) { return Conflict(new { errorCode = "test-not-available", error = "مجوز اتصال استقرار و وضعیت منبع را بررسی کنید؛ ممکن است آزمون دیگری در حال اجرا باشد." }); }
     }
     [HttpPost("sources/{sourceId:guid}/sync"), ValidateAntiForgeryToken]
     public async Task<IActionResult> Sync(Guid tenantId, Guid sourceId, PipSyncCommand command, CancellationToken cancellationToken)
@@ -86,6 +99,12 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
     {
         if (!Admin) return Forbid();
         return Execute(() => (educational ?? throw new InvalidOperationException("PIP educational service is unavailable.")).Ensure(tenantId, Actor, command.Reason));
+    }
+    [HttpPost("journey"), ValidateAntiForgeryToken]
+    public IActionResult Journey(Guid tenantId, PipExampleCommand command)
+    {
+        if (!Admin) return Forbid();
+        return Execute(() => (journey ?? throw new InvalidOperationException("PIP educational journey is unavailable.")).Ensure(tenantId, Actor, command.Reason));
     }
 }
 public sealed record RegisterPipSourceCommand(string Name, string Endpoint, string AllowedHost, string? SecretReference,

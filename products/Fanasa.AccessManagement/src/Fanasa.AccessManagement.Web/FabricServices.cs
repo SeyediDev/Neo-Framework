@@ -45,14 +45,29 @@ public static class FabricServices
         services.AddSingleton<TemplateOrganizationStore>();
         services.AddSingleton<Governance.PipStore>();
         services.AddSingleton<Governance.IPolicyInformationPoint>(sp => sp.GetRequiredService<Governance.PipStore>());
-        services.AddSingleton<Governance.IPipSecretResolver, Governance.ConfigurationPipSecretResolver>();
+        services.AddSingleton<Governance.ConfigurationPipSecretResolver>();
+        services.AddSingleton<Governance.IPipHttpClientProvider, Governance.PipHttpClientProvider>();
+        var pipOAuth = configuration.GetSection("Pip:OAuth").Get<Governance.PipOAuthOptions>() ?? new();
+        pipOAuth.Validate();
+        services.AddSingleton(pipOAuth);
+        services.AddSingleton<Governance.IPipSecretResolver, Governance.OAuthPipSecretResolver>();
         var pipTransport = configuration.GetSection("Pip:Transport").Get<Governance.PipTransportOptions>() ?? new();
         pipTransport.Validate();
+        pipOAuth.Validate(pipTransport);
         services.AddSingleton(pipTransport);
         services.AddHttpClient<Governance.IPipExternalConnector, Governance.HttpPipExternalConnector>(client => client.Timeout = Timeout.InfiniteTimeSpan)
-            .ConfigurePrimaryHttpMessageHandler(Governance.PipHttpTransport.CreateHandler);
+            .ConfigurePrimaryHttpMessageHandler(() => Governance.PipHttpTransport.CreateHandler());
         services.AddSingleton<Governance.PipSyncService>();
         services.AddSingleton<Governance.PipEducationalExample>();
+        services.AddSingleton<Governance.PipDiagnostics>();
+        services.AddSingleton<Governance.PipEducationalJourney>();
+        var hrAttributes = configuration.GetSection("Organization:HrAttributes").Get<Api.OrganizationHrAttributeOptions>() ?? new();
+        hrAttributes.Validate();
+        services.AddSingleton(hrAttributes);
+        services.AddSingleton<Api.OrganizationHrAttributeProjector>();
+        services.AddSingleton(sp => new Api.OrganizationHrAttributeBoundary(hrAttributes,
+            sp.GetService<OrganizationHrOptions>() ?? configuration.GetSection("Organization:HrApi").Get<OrganizationHrOptions>() ?? new(),
+            sp.GetRequiredService<PersistentAccessManagement>(), sp.GetRequiredService<Platform.PlatformRegistry>(), sp.GetRequiredService<TimeProvider>()));
         services.AddHostedService<Governance.PipSyncWorker>();
         // Policy authoring and simulation; runtime temporal restrictions are a separate explicit tenant opt-in.
         services.AddSingleton<Governance.AccessPolicyStore>();

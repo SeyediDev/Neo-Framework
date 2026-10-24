@@ -20,14 +20,15 @@ WEB = Path("products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fan
 ENGINE = UI.parent / "src/Fanasa.ContractPolicy/Fanasa.ContractPolicy.csproj"
 WORKBENCH = UI / "server/Fanasa.ContractPolicy.Workbench.csproj"
 PROBE = UI / "server/tests/DatabaseFreshness.Probe/DatabaseFreshness.Probe.csproj"
-HR3_PACKAGE = Path("deploy/fanasa-organization-hr/hr-read-host-v3-r5")
+HR3_PACKAGE = Path("deploy/fanasa-organization-hr/hr-read-host-v3-r6")
 SUITES = ["Organization.Hr.Tests", "Organization.Bearer.Tests", "Organization.Tests", "Organization.Calendar.Tests",
           "Organization.Temporal.Tests", "ConsumerApplicationCatalog.Tests", "PublishedCatalog.Tests",
           "ConsumerUsage.Api.Tests", "Workbench.Boundary.Tests", "ProductRegistration.Tests"]
 SOURCE_PATHS = ["Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props", "global.json", "NuGet.config",
                 "products/Fanasa.AccessManagement/Directory.Build.props", "products/Fanasa.AccessManagement/Directory.Build.targets",
                 "products/Fanasa.AccessManagement/Directory.Packages.props", "products/Fanasa.AccessManagement/Fanasa.AccessManagement.slnx",
-                "products/Fanasa.AccessManagement/global.json", "products/Fanasa.AccessManagement/docs/PRODUCT-REGISTRATION.md",
+                "products/Fanasa.AccessManagement/global.json", "products/Fanasa.AccessManagement/README.md", "products/Fanasa.AccessManagement/docs/PRODUCT-REGISTRATION.md",
+                "products/Fanasa.AccessManagement/docs/PIP-OPERATIONS.fa.md", "products/Fanasa.AccessManagement/docs/pip-educational-journey.md",
                 "products/Fanasa.AccessManagement/src", "products/Fanasa.AccessManagement/tests",
                 "docs/fanasa-platform-control-center/workstreams/contract-policy/implementation",
                 "docs/fanasa-platform-control-center/workstreams/contract-policy/schemas",
@@ -44,7 +45,7 @@ REPOSITORIES = {"https://github.com/SeyediDev/Neo-Framework.git",
                 "https://gitlab.fanasa.net.local/javadsayedi/organization-hr-api.git"}
 WORKSPACE_GENERATED = {"bin", "obj", ".runs", "__pycache__"}
 REQUIRED_TEST_GATES = {f"tests-{suite}" for suite in SUITES} | {"tests-native-workbench", "tests-organization-temporal-ui"}
-MIN_ORGANIZATION_UI_TESTS = 31
+MIN_ORGANIZATION_UI_TESTS = 44
 
 
 def sha256(path: Path) -> str:

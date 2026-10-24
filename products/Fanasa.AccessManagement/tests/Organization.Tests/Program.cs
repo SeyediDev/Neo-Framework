@@ -25,8 +25,22 @@ void Check(bool condition, string name) { if (!condition) throw new Exception(na
 void Reject<T>(Action action, string name) where T : Exception { try { action(); } catch (T) { Check(true, name); return; } throw new Exception("Expected rejection: " + name); }
 OrgCommand Command(string operation, long? revision = null) => new(revision ?? store.Read(tenant).Revision, operation, null, "واحد", "root", null, "department", null, 1, null, null, null, null, "آزمون تغییر");
 OrgState Run(OrgCommand command) => store.Execute(tenant, command, "actor");
+async Task RunPipOperational()
+{
+    PipOperatorTests.Run(directory, Check);
+    PipEducationalJourneyTests.Run(directory, Check);
+    PipDiagnosticsTests.Run(directory, Check);
+    await PipHrOAuthTests.RunAsync(Check);
+    PipSchema2Tests.Run(directory, Check);
+}
 try
 {
+    if (args.Contains("--pip-operational", StringComparer.Ordinal))
+    {
+        await RunPipOperational();
+        Console.WriteLine($"{count} checks passed.");
+        return;
+    }
     var first = Run(Command("unit.save")); var root = first.Units.Single().Id;
     var second = Run(Command("unit.save") with { Code = "child", ParentId = root }); var child = second.Units.Single(x => x.Code == "child").Id;
     Reject<ArgumentException>(() => Run(Command("unit.save") with { Id = root, ParentId = child }), "cycle rejected");
@@ -110,6 +124,7 @@ try
     PipSchedulingTests.Run(directory, Check);
     PipDatetimeTests.Run(Check);
     PipEducationalTests.Run(directory, Check);
+    await RunPipOperational();
     Console.WriteLine($"{count} checks passed.");
 }
 finally { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }

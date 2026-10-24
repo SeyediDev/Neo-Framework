@@ -79,7 +79,22 @@ def fixture(root):
             target.write_bytes(data)
         (dependency / "SOURCE-PACKAGE.json").write_bytes(manifest_bytes)
         dependencies.append({"directory": directory, "manifestSha256": pinned})
+    previous = PACKAGE_VERIFIER.PREVIOUS_PACKAGE
+    original = ACTIVE_PACKAGE.parent / previous["directory"]
+    previous_bytes = (original / "SOURCE-PACKAGE.json").read_bytes()
+    assert digest(previous_bytes) == previous["manifestSha256"]
+    declared = json.loads(previous_bytes)
+    destination = package.parent / previous["directory"]
+    destination.mkdir(parents=True)
+    for entry in declared["files"]:
+        target = destination / entry["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        data = (original / entry["path"]).read_bytes()
+        assert digest(data) == entry["sha256"]
+        target.write_bytes(data)
+    (destination / "SOURCE-PACKAGE.json").write_bytes(previous_bytes)
     manifest = {"schemaVersion": "fanasa.hr3.actual-host-source-package/1",
+                "previousSourcePackage": previous,
                 "operationalAcceptance": False, "liveHostRegistration": False, "runtimeDefault": "disabled",
                 "files": [{"path": name, "sha256": digest((package / name).read_bytes())}
                           for name in ("verify-package.py", "test-host.sh")],

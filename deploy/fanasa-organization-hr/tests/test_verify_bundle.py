@@ -54,7 +54,7 @@ def fixture(directory, extra=None, omit_suite=None, bad_log=False, temporal_ui_c
             gate.update({"passedTests": 15, "failedTests": 0, "skippedTests": 0}
                         if native_counts is None else native_counts)
         elif suite == "tests-organization-temporal-ui":
-            gate.update({"passedTests": 31, "failedTests": 0, "skippedTests": 0}
+            gate.update({"passedTests": 44, "failedTests": 0, "skippedTests": 0}
                         if temporal_ui_counts is None else temporal_ui_counts)
             if missing_log:
                 gate["log"] = "missing.log"
@@ -192,8 +192,8 @@ class ArchiveTests(unittest.TestCase):
                     MODULE.verify(archive, None, None, receipt)
 
     def test_rejects_temporal_ui_receipt_below_floor_failed_skipped_or_missing_counts(self):
-        valid = {"passedTests": 31, "failedTests": 0, "skippedTests": 0}
-        invalid = [dict(valid, passedTests=count) for count in [0, 20, 21, 30, 30.5, 31.0, True, False, "31", None]]
+        valid = {"passedTests": 44, "failedTests": 0, "skippedTests": 0}
+        invalid = [dict(valid, passedTests=count) for count in [0, 20, 21, 30, 31, 43, 43.5, 44.0, True, False, "44", None]]
         invalid += [dict(valid, failedTests=1), dict(valid, skippedTests=1),
                     dict(valid, failedTests=False), dict(valid, skippedTests="0")]
         invalid += [{name: value for name, value in valid.items() if name != missing} for missing in valid]
@@ -203,8 +203,8 @@ class ArchiveTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "temporal UI receipt"):
                     MODULE.verify(archive, None, None, receipt)
 
-    def test_organization_and_pip_ui_receipt_accepts_31_or_more_passes(self):
-        for count in [31, 32]:
+    def test_organization_and_pip_ui_receipt_accepts_44_or_more_passes(self):
+        for count in [44, 45]:
             with self.subTest(count=count), tempfile.TemporaryDirectory() as temp:
                 counts = {"passedTests": count, "failedTests": 0, "skippedTests": 0}
                 archive, receipt = fixture(Path(temp), temporal_ui_counts=counts)

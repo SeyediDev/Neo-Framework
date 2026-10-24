@@ -31,6 +31,11 @@ Keycloak نیست و هویت یا رمز عبور کاربر را ذخیره ن
 اجرای زنده به‌صورت پیش‌فرض خاموش است و فقط برای tenantهای مشخص و مجوزهای
 `organization.read` و `organization.write` قابل فعال‌سازی است.
 
+منابع PIP در پنل سازمان با مسیر «تعریف، آزمون قرارداد، فعال‌سازی، دریافت، بررسی هویت و شبیه‌سازی» مدیریت می‌شوند.
+[راهنمای عملیاتی PIP](docs/PIP-OPERATIONS.fa.md) و [نمونه‌های سازمان الگو](docs/pip-educational-journey.md)
+مرز تازگی داده، سیاست‌های پیش‌نویس و تفاوت آزمون اتصال با دادهٔ قابل استفاده در تصمیم را توضیح می‌دهند.
+خواندن صفات HR قرارداد نسخهٔ ۲ و هویت محدود دارد؛ تنظیم آن در [اتصال HR](../../deploy/fanasa-organization-hr/PIP-ATTRIBUTES.md) آمده است.
+
 ```powershell
 dotnet run --project products/Fanasa.AccessManagement/tests/Organization.Tests
 ```

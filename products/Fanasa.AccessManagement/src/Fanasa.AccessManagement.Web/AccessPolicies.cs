@@ -7,11 +7,11 @@ namespace Fanasa.AccessManagement.Web.Governance;
 public sealed record AccessPattern(Guid Id, string Name, string Template, string Permission, string Effect, Guid? RoleId, Guid? UnitId,
     DateTimeOffset? StartsAt, DateTimeOffset? EndsAt, int? UtcStartHour, int? UtcEndHour, string Status, string CreatedBy, string? PublishedBy, string Reason,
     Guid? CalendarId = null, string CalendarMode = "working-time", bool Enforce = false,
-    string? AttributeName = null, string? AttributeValue = null, Guid? PipSourceId = null, bool RequireFreshPip = true);
+    string? AttributeName = null, string? AttributeValue = null, Guid? PipSourceId = null, bool RequireFreshPip = true, string AttributeOperator = "equals");
 public sealed record PatternCommand(long ExpectedRevision, string Name, string Template, string Permission, string Effect, Guid? RoleId, Guid? UnitId,
     DateTimeOffset? StartsAt, DateTimeOffset? EndsAt, int? UtcStartHour, int? UtcEndHour, string Reason,
     Guid? CalendarId = null, string CalendarMode = "working-time", bool Enforce = false,
-    string? AttributeName = null, string? AttributeValue = null, Guid? PipSourceId = null, bool RequireFreshPip = true);
+    string? AttributeName = null, string? AttributeValue = null, Guid? PipSourceId = null, bool RequireFreshPip = true, string AttributeOperator = "equals");
 public sealed record PolicyState(Guid TenantId, long Revision, string Algorithm, AccessPattern[] Patterns);
 public sealed record PipDecisionEvidence(Guid SourceId, string Status, string? SourceVersion = null,
     DateTimeOffset? ObservedAt = null, DateTimeOffset? FreshUntil = null, string? Error = null);
@@ -40,6 +40,8 @@ public sealed class AccessPolicyStore(FabricDatabase database, PersistentAccessM
             throw new ArgumentException("A valid organizational role from the same organization is required.");
         if (command.Template == "member-window" && command.RoleId.HasValue) throw new ArgumentException("Member-window has no role condition.");
         if (command.Template == "member-window" && !command.StartsAt.HasValue && !command.EndsAt.HasValue && !command.UtcStartHour.HasValue && !command.CalendarId.HasValue) throw new ArgumentException("Member-window requires a time condition.");
+        if (command.AttributeOperator is not ("equals" or "not-equals") || command.Template != "attribute" && command.AttributeOperator != "equals")
+            throw new ArgumentException("Attribute operators are equals or not-equals and apply only to attribute patterns.");
         if (command.Template == "attribute")
         {
             Label(command.AttributeName, 100); Label(command.AttributeValue, 2000);
@@ -63,7 +65,7 @@ public sealed class AccessPolicyStore(FabricDatabase database, PersistentAccessM
         else if (command.CalendarMode != "working-time") throw new ArgumentException("Calendar mode requires a calendar.");
         if (command.UnitId.HasValue && chart?.Units.Any(x => x.Id == command.UnitId && x.Active) != true) throw new ArgumentException("Invalid unit condition.");
         if (state.Patterns.Length >= 200) throw new InvalidOperationException("Retain at most 200 pattern versions per tenant.");
-        var pattern = new AccessPattern(Guid.NewGuid(), command.Name.Trim(), command.Template, command.Permission, command.Effect, command.RoleId, command.UnitId, command.StartsAt, command.EndsAt, command.UtcStartHour, command.UtcEndHour, "draft", actor, null, command.Reason.Trim(), command.CalendarId, command.CalendarMode, command.Enforce, command.AttributeName?.Trim(), command.AttributeValue, command.PipSourceId, command.RequireFreshPip);
+        var pattern = new AccessPattern(Guid.NewGuid(), command.Name.Trim(), command.Template, command.Permission, command.Effect, command.RoleId, command.UnitId, command.StartsAt, command.EndsAt, command.UtcStartHour, command.UtcEndHour, "draft", actor, null, command.Reason.Trim(), command.CalendarId, command.CalendarMode, command.Enforce, command.AttributeName?.Trim(), command.AttributeValue, command.PipSourceId, command.RequireFreshPip, command.AttributeOperator);
         return Save(state with { Revision = state.Revision + 1, Patterns = [..state.Patterns, pattern] }, actor, "PolicyDrafted");
     });
     public PolicyState Transition(Guid tenant, Guid id, long revision, string operation, string actor, string reason) => database.Transaction(() =>
@@ -75,6 +77,7 @@ public sealed class AccessPolicyStore(FabricDatabase database, PersistentAccessM
             if (actor == pattern.CreatedBy) throw new InvalidOperationException("A different administrator must publish the pattern.");
             if (pattern.Template == "attribute")
             {
+                if (pattern.AttributeOperator is not ("equals" or "not-equals")) throw new InvalidOperationException("Review the PIP comparison operator before publication.");
                 if (pip is null || !pattern.PipSourceId.HasValue || !pattern.RequireFreshPip) throw new InvalidOperationException("PIP policy references must be reviewed before publication.");
                 var source = pip.ReadSource(tenant, pattern.PipSourceId.Value);
                 if (!source.Enabled) throw new InvalidOperationException("Enable and verify the PIP source before publication.");
@@ -143,6 +146,7 @@ public sealed class AccessPolicyStore(FabricDatabase database, PersistentAccessM
                 || pattern.UtcStartHour is < 0 or > 23 || pattern.UtcEndHour is < 0 or > 24
                 || pattern.UtcStartHour.HasValue && pattern.UtcStartHour == pattern.UtcEndHour
                 || pattern.CalendarMode is not ("working-time" or "non-holiday")
+                || pattern.AttributeOperator is not ("equals" or "not-equals") || pattern.Template != "attribute" && pattern.AttributeOperator != "equals"
                 || pattern.Template == "role" && !pattern.RoleId.HasValue
                 || pattern.Template == "member-window" && (pattern.RoleId.HasValue
                     || !pattern.StartsAt.HasValue && !pattern.EndsAt.HasValue && !pattern.UtcStartHour.HasValue && !pattern.CalendarId.HasValue)
@@ -184,7 +188,8 @@ public sealed class AccessPolicyStore(FabricDatabase database, PersistentAccessM
                         if (pattern.Effect == "Deny") errorDeny = true; else errorPermit = true;
                         continue;
                     }
-                    if (!PipSchema.ValuesEqual(definition, value, pattern.AttributeValue!)) continue;
+                    var equal = PipSchema.ValuesEqual(definition, value, pattern.AttributeValue!);
+                    if (pattern.AttributeOperator == "equals" ? !equal : equal) continue;
                 }
                 catch (Exception error) when (error is ArgumentException or InvalidDataException or KeyNotFoundException or InvalidOperationException)
                 {

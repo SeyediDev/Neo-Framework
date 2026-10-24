@@ -10,7 +10,8 @@ namespace Fanasa.AccessManagement.Web.Api;
 
 [ApiController, Authorize, Route("api/governance/tenants/{tenantId:guid}")]
 public sealed class GovernanceApi(AccessPolicyStore policies, IdentityLifecycle lifecycle, PersistentAccessManagement access, OrganizationStore organization, FabricDatabase database,
-    OrganizationCalendarStore? calendars = null, TemplateOrganizationStore? examples = null, TemporalAccessGate? temporalAccess = null, PipStore? pip = null) : ControllerBase
+    OrganizationCalendarStore? calendars = null, TemplateOrganizationStore? examples = null, TemporalAccessGate? temporalAccess = null, PipStore? pip = null,
+    PipDiagnostics? diagnostics = null) : ControllerBase
 {
     private bool Readable(Guid tenant) => Admin && examples?.IsTemplateTenant(tenant) == true
         || TenantAuthorization.Allows(User, tenant, "tenancy.read") && TenantAuthorization.Allows(User, tenant, "organization.read");
@@ -63,9 +64,27 @@ public sealed class GovernanceApi(AccessPolicyStore policies, IdentityLifecycle 
     public IActionResult Simulate(Guid tenantId, DecisionSimulation command)
     {
         if (!Readable(tenantId) || (!Admin && (command.Subject != OrgAuthorization.Subject(User) || command.IncludeDrafts))) return Forbid();
-        return Execute(() => new { simulation = true, enforced = false, includesDrafts = command.IncludeDrafts,
-            result = command.IncludeDrafts ? policies.EvaluateDraftsForSimulation(tenantId, command.Subject, command.Permission, command.At ?? DateTimeOffset.UtcNow)
-                : policies.Evaluate(tenantId, command.Subject, command.Permission, command.At ?? DateTimeOffset.UtcNow) });
+        return Execute(() => database.ReadSnapshot(() =>
+        {
+            var at = (command.At ?? DateTimeOffset.UtcNow).ToUniversalTime();
+            var result = command.IncludeDrafts ? policies.EvaluateDraftsForSimulation(tenantId, command.Subject, command.Permission, at)
+                : policies.Evaluate(tenantId, command.Subject, command.Permission, at);
+            var state = policies.Read(tenantId);
+            var canExplain = Admin || TenantAuthorization.Allows(User, tenantId, "tenancy.manage");
+            var candidates = canExplain ? state.Patterns.Where(x => x.Permission == command.Permission
+                && (x.Status == "published" || command.IncludeDrafts && x.Status == "draft")).ToArray() : [];
+            var sources = new List<object>();
+            if (diagnostics is not null)
+                foreach (var sourceId in candidates.Where(x => x.PipSourceId.HasValue).Select(x => x.PipSourceId!.Value).Distinct().Take(50))
+                    try { sources.Add(diagnostics.StatusAt(tenantId, sourceId, command.Subject, at)); }
+                    catch (KeyNotFoundException) { sources.Add(new { sourceId, status = "missing", usable = false, error = "source-not-found" }); }
+            return new { simulation = true, enforced = false, includesDrafts = command.IncludeDrafts, result,
+                explanation = new { evaluatedAt = at, policyRevision = state.Revision, algorithm = state.Algorithm,
+                    configurationOnly = true, historicalSnapshotsReconstructed = false,
+                    policies = candidates.Select(x => new { x.Id, x.Name, x.Template, x.Effect, x.Status, x.Enforce,
+                        x.AttributeName, x.AttributeValue, x.AttributeOperator, x.PipSourceId, x.CalendarId, x.CalendarMode,
+                        x.StartsAt, x.EndsAt, x.UtcStartHour, x.UtcEndHour, decisionReferenced = result.Policies.Contains(x.Id) }), sources } };
+        }));
     }
     [HttpPost("requests"), ValidateAntiForgeryToken]
     public IActionResult Submit(Guid tenantId, LifecycleCommand command)

@@ -60,7 +60,7 @@ class WorkspaceTests(unittest.TestCase):
             log = self.write(self.output, name + ".log", data)
             gate = {"name": name, "log": log.name, "logSha256": digest(data), "exitCode": 0}
             if name in {"tests-native-workbench", "tests-organization-temporal-ui"}:
-                gate.update(passedTests=15 if name == "tests-native-workbench" else 31, failedTests=0, skippedTests=0)
+                gate.update(passedTests=15 if name == "tests-native-workbench" else 44, failedTests=0, skippedTests=0)
             else:
                 gate["passedChecks"] = 1
             gates.append(gate)
@@ -144,13 +144,13 @@ class WorkspaceTests(unittest.TestCase):
     def test_complete_hash_bound_gate_receipts_pass(self):
         MODULE.validate_test_evidence(self.evidence(), self.output, self.source)
 
-    def test_organization_and_pip_ui_receipt_requires_31_integer_passes(self):
-        for count in [0, 20, 21, 30, 30.5, 31.0, True, False, "31", None]:
+    def test_organization_and_pip_ui_receipt_requires_44_integer_passes(self):
+        for count in [0, 20, 21, 30, 31, 43, 43.5, 44.0, True, False, "44", None]:
             evidence = self.evidence()
             next(g for g in evidence["gates"] if g["name"] == "tests-organization-temporal-ui")["passedTests"] = count
             with self.subTest(count=count), self.assertRaisesRegex(RuntimeError, "lacks passing checks"):
                 MODULE.validate_test_evidence(evidence, self.output, self.source)
-        for count in [31, 32]:
+        for count in [44, 45]:
             evidence = self.evidence()
             next(g for g in evidence["gates"] if g["name"] == "tests-organization-temporal-ui")["passedTests"] = count
             MODULE.validate_test_evidence(evidence, self.output, self.source)
@@ -195,7 +195,7 @@ class WorkspaceTests(unittest.TestCase):
                 if failure == "missing-gates":
                     evidence["gates"] = []
                 elif failure == "ui-below-floor":
-                    next(g for g in evidence["gates"] if g["name"] == "tests-organization-temporal-ui")["passedTests"] = 30
+                    next(g for g in evidence["gates"] if g["name"] == "tests-organization-temporal-ui")["passedTests"] = 43
                 else:
                     workspace = self.prepare()
                     (workspace / WEB / "Program.cs").write_bytes(b"tampered before publish")

@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Fanasa Organization HR Integration
-  version: 1.0.0
+  version: 1.1.0
   description: >-
     Chart integration with the existing PCC/Fabric store. Gateway-only upstream mTLS is
     enforced by the backend. These example hosts/scopes are a configuration contract,
@@ -13,6 +13,81 @@ servers:
         default: gateway.example.invalid
         description: Replace with the verified canonical Gateway host.
 paths:
+  /api/organization-hr/v1/tenants/{tenantId}/attributes:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      operationId: readOrganizationPolicyAttributes
+      description: >-
+        Read a fresh schema 2 observation of tenant membership and effective organization
+        assignments for one canonical Keycloak subject. These facts do not assert legal
+        employment. The dedicated deployment reader allowlist requires the exact client,
+        service subject, scope and tenant, an active registered client/service membership,
+        a live organization.read grant and an effective organization-fabric subscription.
+        The gateway mTLS peer and reader authority are checked before and after the shared
+        Fabric read snapshot. This bootstrap endpoint does not invoke the business policy
+        that depends on the attributes it supplies. Unknown or duplicate query fields are
+        rejected. The development gateway publishes this upstream route as
+        /development/organization-hr/v1/tenants/{tenantId}/attributes.
+      security:
+        - hrOAuth: [organization.hr.attributes.read]
+      parameters:
+        - name: subject
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/CanonicalUuid'
+          description: Exact canonical lowercase Keycloak subject of a known tenant member, including inactive members.
+        - name: tenantId
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/CanonicalUuid'
+          description: Optional PIP correlation field; when supplied it must equal the canonical route tenant ID.
+      responses:
+        '200':
+          description: >-
+            Fresh observation with a unique sourceVersion and authoritative UTC deadline.
+            Inactive members return false membership and zero assignments. No ETag or
+            not-modified response is used for this observation endpoint.
+          headers:
+            Cache-Control:
+              schema: {type: string, const: no-store}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HrAttributeEnvelope'
+              example:
+                schemaVersion: 2
+                tenantId: '11111111-1111-4111-8111-111111111111'
+                subject: '22222222-2222-4222-8222-222222222222'
+                sourceVersion: hr-r7-11111111111111111111111111111111
+                observedAt: '2026-10-24T10:00:00Z'
+                validUntil: '2026-10-24T10:00:20Z'
+                attributes:
+                  org.member.active: 'true'
+                  org.assignment.active: 'true'
+                  org.assignment.count: '1'
+                  org.unit.code: engineering
+                  org.position.code: engineer
+                  org.role.code: staff
+        '400': {description: 'Missing, noncanonical, mismatched, duplicate or undeclared query field.'}
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404': {description: Tenant or requested member not found.}
+        '429': {description: Gateway request limit exceeded; retry with backoff.}
+        '503':
+          description: Inconsistent authoritative HR data; an effective appointment references missing or inactive organization data.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [error]
+                properties:
+                  error: {type: string, const: hr-attributes-unavailable}
   /api/organization-hr/v1/tenants/{tenantId}/chart:
     parameters:
       - $ref: '#/components/parameters/TenantId'
@@ -106,6 +181,7 @@ components:
           scopes:
             organization.hr.read: Read an explicitly authorized tenant chart.
             organization.hr.write: Modify an explicitly authorized tenant chart.
+            organization.hr.attributes.read: Read current membership and assignment facts through an explicitly configured tenant reader identity.
   parameters:
     TenantId:
       name: tenantId
@@ -116,6 +192,64 @@ components:
     Unauthorized: {description: Missing or invalid signed service access token.}
     Forbidden: {description: 'Gateway trust, client, scope, service subject or current tenant authorization denied.'}
   schemas:
+    PipUtcTimestamp:
+      type: string
+      format: date-time
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]{1,7})?(?:Z|\+00:00)$'
+      description: Full ISO 8601 UTC timestamp with uppercase T/Z and optional 1-7 fractional digits; no inferred date or local offset.
+    PipBoolean:
+      type: string
+      enum: ['true', 'false']
+      description: A boolean attribute encoded as a canonical typed string.
+    HrAttributeEnvelope:
+      type: object
+      additionalProperties: false
+      required: [schemaVersion, tenantId, subject, sourceVersion, observedAt, validUntil, attributes]
+      properties:
+        schemaVersion: {type: integer, const: 2}
+        tenantId:
+          $ref: '#/components/schemas/CanonicalUuid'
+        subject:
+          $ref: '#/components/schemas/CanonicalUuid'
+        sourceVersion:
+          type: string
+          pattern: '^hr-r[0-9]+-[0-9a-f]{32}$'
+          maxLength: 200
+          description: Chart revision plus a unique observation ID, including when the chart revision has not changed.
+        observedAt:
+          $ref: '#/components/schemas/PipUtcTimestamp'
+          description: Observation time captured inside the shared Fabric read snapshot.
+        validUntil:
+          $ref: '#/components/schemas/PipUtcTimestamp'
+          description: >-
+            Exclusive deadline after observedAt, bounded by the configured observation
+            lifetime (5-300 seconds, default 60) and the next subject appointment start/end.
+            PIP freshness ends at min(validUntil, observedAt + source MaxAgeSeconds).
+            Schema 2 content hashes bind this value; 304 cannot extend it.
+        attributes:
+          $ref: '#/components/schemas/HrPolicyAttributes'
+    HrPolicyAttributes:
+      type: object
+      additionalProperties: false
+      required: [org.member.active, org.assignment.active, org.assignment.count]
+      description: >-
+        String-valued facts with declared types. Appointments are effective from From
+        inclusive until To exclusive, with active position/unit and valid role references.
+        Scalar unit/position/role codes are emitted only for exactly one effective assignment;
+        a position without a role omits org.role.code. Zero or multiple assignments never
+        select an arbitrary scalar claim. No employment-contract attribute is implied.
+      properties:
+        org.member.active:
+          $ref: '#/components/schemas/PipBoolean'
+        org.assignment.active:
+          $ref: '#/components/schemas/PipBoolean'
+        org.assignment.count:
+          type: string
+          pattern: '^(0|[1-9][0-9]*)$'
+          description: Nonnegative integer encoded as a string; zero for an inactive member.
+        org.unit.code: {type: string, minLength: 1, maxLength: 2000}
+        org.position.code: {type: string, minLength: 1, maxLength: 2000}
+        org.role.code: {type: string, minLength: 1, maxLength: 2000}
     CanonicalUuid:
       type: string
       format: uuid

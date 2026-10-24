@@ -64,7 +64,7 @@ public static class PipSchema
         };
     }
 
-    private static bool TryParseUtcDateTime(string value, out DateTimeOffset at)
+    public static bool TryParseUtcDateTime(string value, out DateTimeOffset at)
     {
         at = default;
         return Regex.IsMatch(value, "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,7})?(?:Z|\\+00:00)$", RegexOptions.CultureInvariant)
@@ -72,6 +72,6 @@ public static class PipSchema
             && at.Offset == TimeSpan.Zero;
     }
 
-    private static DateTimeOffset ParseUtcDateTime(string value) => TryParseUtcDateTime(value, out var at)
+    public static DateTimeOffset ParseUtcDateTime(string value) => TryParseUtcDateTime(value, out var at)
         ? at : throw new InvalidDataException("PIP datetime values require a full ISO 8601 date and explicit UTC timezone.");
 }

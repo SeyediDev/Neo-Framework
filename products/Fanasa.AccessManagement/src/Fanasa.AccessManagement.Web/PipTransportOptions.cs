@@ -1,5 +1,8 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Collections.Concurrent;
 
 namespace Fanasa.AccessManagement.Web.Governance;
 
@@ -19,6 +22,8 @@ public sealed class PipTransportOptions
             if (!seen.Add(binding.TenantId.ToString("D") + "|" + endpoint)) throw new InvalidOperationException("Duplicate PIP deployment binding.");
             if (binding.SecretReference is { } reference && (string.IsNullOrWhiteSpace(reference) || reference.Length > 200 || reference.Any(char.IsControl)))
                 throw new InvalidOperationException("Invalid PIP deployment secret reference.");
+            if (binding.CaFile is not null && (!Path.IsPathFullyQualified(binding.CaFile) || !File.Exists(binding.CaFile)))
+                throw new InvalidOperationException("PIP custom CA must be an existing absolute deployment-owned file.");
             if (binding.AllowedPrivateAddresses is null || binding.AllowedPrivateAddresses.Length > 32
                 || binding.AllowedPrivateAddresses.Any(x => !IPAddress.TryParse(x, out var address) || !PipAddressPolicy.IsPrivate(address)))
                 throw new InvalidOperationException("PIP private address exceptions must be exact RFC1918 or unique-local IP addresses.");
@@ -59,6 +64,26 @@ public sealed class PipEndpointBinding
     public string Endpoint { get; set; } = "";
     public string? SecretReference { get; set; }
     public string[] AllowedPrivateAddresses { get; set; } = [];
+    public string? CaFile { get; set; }
+}
+
+public interface IPipHttpClientProvider
+{
+    HttpClient GetClient(PipEndpointBinding binding);
+}
+
+/// <summary>One TLS policy per immutable deployment binding; custom roots never leak to another endpoint.</summary>
+public sealed class PipHttpClientProvider : IPipHttpClientProvider, IDisposable
+{
+    private readonly ConcurrentDictionary<string, Lazy<HttpClient>> clients = new(StringComparer.Ordinal);
+    public HttpClient GetClient(PipEndpointBinding binding)
+    {
+        var key = string.Join("|", binding.TenantId, PipTransportOptions.CanonicalEndpoint(binding.Endpoint), binding.SecretReference,
+            binding.CaFile, string.Join(",", binding.AllowedPrivateAddresses.Order(StringComparer.Ordinal)));
+        return clients.GetOrAdd(key, _ => new Lazy<HttpClient>(() => new HttpClient(PipHttpTransport.CreateHandler(binding.CaFile))
+            { Timeout = Timeout.InfiniteTimeSpan })).Value;
+    }
+    public void Dispose() { foreach (var client in clients.Values) if (client.IsValueCreated) client.Value.Dispose(); }
 }
 
 /// <summary>IP policy is evaluated on resolved addresses, and the checked address is also the address connected to.</summary>
@@ -107,8 +132,10 @@ public static class PipHttpTransport
 {
     internal static readonly HttpRequestOptionsKey<PipEndpointBinding> BindingKey = new("Pip.DeploymentBinding");
 
-    public static SocketsHttpHandler CreateHandler() => new()
+    public static SocketsHttpHandler CreateHandler(string? caFile = null)
     {
+        var handler = new SocketsHttpHandler
+        {
         AllowAutoRedirect = false,
         UseProxy = false,
         UseCookies = false,
@@ -116,8 +143,35 @@ public static class PipHttpTransport
         // HTTP/1.1 and no pooled reuse ensure each request's binding governs its DNS check and connection.
         PooledConnectionLifetime = TimeSpan.Zero,
         MaxResponseHeadersLength = 16,
-        ConnectCallback = ConnectAsync
-    };
+            ConnectCallback = ConnectAsync
+        };
+        // Also constrain the TLS stack's initial chain build before any custom callback executes.
+        handler.SslOptions.CertificateChainPolicy = new X509ChainPolicy
+        { DisableCertificateDownloads = true, RevocationMode = X509RevocationMode.NoCheck };
+        handler.SslOptions.CertificateChainPolicy.ApplicationPolicy.Add(new System.Security.Cryptography.Oid("1.3.6.1.5.5.7.3.1"));
+        if (caFile is not null)
+        {
+            // Capture certificate bytes, not an ambient request or mutable global trust setting.
+            using var configuredRoot = X509CertificateLoader.LoadCertificateFromFile(caFile);
+            var rootBytes = configuredRoot.RawData;
+            handler.SslOptions.RemoteCertificateValidationCallback = (_, certificate, peerChain, errors) =>
+            {
+                if (certificate is null || (errors & (SslPolicyErrors.RemoteCertificateNameMismatch | SslPolicyErrors.RemoteCertificateNotAvailable)) != 0) return false;
+                using var root = X509CertificateLoader.LoadCertificate(rootBytes);
+                using var leaf = new X509Certificate2(certificate);
+                using var chain = new X509Chain();
+                chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+                chain.ChainPolicy.CustomTrustStore.Add(root);
+                chain.ChainPolicy.DisableCertificateDownloads = true;
+                if (peerChain is not null)
+                    foreach (var element in peerChain.ChainElements.Cast<X509ChainElement>().Skip(1)) chain.ChainPolicy.ExtraStore.Add(element.Certificate);
+                chain.ChainPolicy.ApplicationPolicy.Add(new System.Security.Cryptography.Oid("1.3.6.1.5.5.7.3.1"));
+                chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+                return chain.Build(leaf);
+            };
+        }
+        return handler;
+    }
 
     private static async ValueTask<Stream> ConnectAsync(SocketsHttpConnectionContext context, CancellationToken cancellationToken)
     {

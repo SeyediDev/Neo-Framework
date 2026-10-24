@@ -15,7 +15,7 @@ MAX_FILES = 20000
 MAX_JSON = 4 * 1024 * 1024
 TOP_FILES = {"release-manifest.json", "ci-verification.json"}
 TOP_DIRECTORIES = {"web", "workbench", "evidence"}
-MIN_ORGANIZATION_UI_TESTS = 31
+MIN_ORGANIZATION_UI_TESTS = 44
 SUITES = {"tests-Organization.Hr.Tests", "tests-Organization.Bearer.Tests", "tests-Organization.Tests",
           "tests-Organization.Calendar.Tests", "tests-Organization.Temporal.Tests",
           "tests-ConsumerApplicationCatalog.Tests", "tests-PublishedCatalog.Tests", "tests-ConsumerUsage.Api.Tests",

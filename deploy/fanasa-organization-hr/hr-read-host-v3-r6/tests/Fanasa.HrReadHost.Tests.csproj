@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="$(Hr3RepositoryRoot)products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Fanasa.AccessManagement.Web.csproj" />
+    <Compile Include="$(Hr3PdpRoot)/tests/*.cs" Exclude="$(Hr3PdpRoot)/tests/Program.cs" Link="PdpRegression/%(Filename)%(Extension)" />
+    <None Include="$(Hr3ProfileRoot)/candidate/schemas/*.json" Link="Schemas/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(Hr3PdpRoot)/schemas/hr-read-pdp-*.schema.json" Link="Schemas/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

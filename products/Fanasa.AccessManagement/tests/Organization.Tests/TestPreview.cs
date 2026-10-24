@@ -66,8 +66,10 @@ static class TestPreview
         builder.Services.AddSingleton(new PipTransportOptions()); // No endpoint is approved; this fixture cannot fetch external data.
         builder.Services.AddSingleton<IPipSecretResolver, ConfigurationPipSecretResolver>();
         builder.Services.AddHttpClient<IPipExternalConnector, HttpPipExternalConnector>(client => client.Timeout = Timeout.InfiniteTimeSpan)
-            .ConfigurePrimaryHttpMessageHandler(PipHttpTransport.CreateHandler);
+            .ConfigurePrimaryHttpMessageHandler(() => PipHttpTransport.CreateHandler());
         builder.Services.AddSingleton<PipSyncService>();
+        builder.Services.AddSingleton<PipDiagnostics>();
+        builder.Services.AddSingleton<PipEducationalJourney>();
         builder.Services.AddSingleton<PipEducationalExample>();
         builder.Services.AddSingleton<Fanasa.AccessManagement.Web.Governance.AccessPolicyStore>();
         builder.Services.AddSingleton(TimeProvider.System);
@@ -86,6 +88,7 @@ static class TestPreview
         {
             var educational = app.Services.GetRequiredService<TemplateOrganizationStore>().Ensure("demo", "دادهٔ مصنوعی بررسی رابط PIP؛ فقط پایگاه دادهٔ موقت");
             app.Services.GetRequiredService<PipEducationalExample>().Ensure(educational.Tenant.Id, "demo", "بررسی رابط نمونهٔ PIP بدون انتشار سیاست");
+            app.Services.GetRequiredService<PipEducationalJourney>().Ensure(educational.Tenant.Id, "demo", "بررسی مسیرهای آموزشی با دادهٔ مصنوعی");
             Console.WriteLine("PIP_PREVIEW_ORGANIZATION=" + previewUrl + "/Organization?tenant=" + educational.Tenant.Id + "#organization-pip");
             Console.WriteLine("PIP_PREVIEW_GOVERNANCE=" + previewUrl + "/Governance?tenant=" + educational.Tenant.Id + "#decision-workbench");
         }

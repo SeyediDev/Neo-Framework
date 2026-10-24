@@ -6,7 +6,8 @@ using System.Text.Json;
 namespace Fanasa.AccessManagement.Web.Governance;
 
 /// <summary>Bounded HTTPS ingestion of a correlated, explicitly mapped external attribute envelope.</summary>
-public sealed class HttpPipExternalConnector(HttpClient http, TimeProvider clock, PipTransportOptions options, IPipSecretResolver? secrets = null) : IPipExternalConnector
+public sealed class HttpPipExternalConnector(HttpClient http, TimeProvider clock, PipTransportOptions options, IPipSecretResolver? secrets = null,
+    IPipHttpClientProvider? clients = null) : IPipExternalConnector
 {
     private static readonly HashSet<string> EnvelopeFields = new(StringComparer.Ordinal)
         { "schemaVersion", "tenantId", "subject", "sourceVersion", "observedAt", "attributes" };
@@ -17,7 +18,7 @@ public sealed class HttpPipExternalConnector(HttpClient http, TimeProvider clock
         AccessPolicyStore.Label(subject, 200);
         if (!source.Enabled) throw new InvalidOperationException("PIP source is disabled.");
         if (source.TimeoutSeconds is < 1 or > 120 || source.MaxResponseBytes is < 1024 or > 10 * 1024 * 1024
-            || source.MaxAgeSeconds is < 1 or > 86400 || source.SchemaVersion != 1)
+            || source.MaxAgeSeconds is < 1 or > 86400 || source.SchemaVersion is not (1 or 2))
             throw new InvalidOperationException("Invalid PIP transport limits.");
         var builder = new UriBuilder(PipTransportOptions.CanonicalEndpoint(source.Endpoint))
         {
@@ -53,7 +54,8 @@ public sealed class HttpPipExternalConnector(HttpClient http, TimeProvider clock
         }
         try
         {
-            using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
+            if (binding.CaFile is not null && clients is null) throw new InvalidOperationException("PIP custom trust requires the deployment client provider.");
+            using var response = await (clients?.GetClient(binding) ?? http).SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
             if (response.StatusCode == HttpStatusCode.NotModified)
             {
                 if (source.LastEtag is null) throw new InvalidDataException("Unsolicited PIP not-modified response.");
@@ -90,8 +92,8 @@ public sealed class HttpPipExternalConnector(HttpClient http, TimeProvider clock
         if (root.ValueKind != JsonValueKind.Object) throw new InvalidDataException("External PIP envelope must be an object.");
         var fields = new HashSet<string>(StringComparer.Ordinal);
         foreach (var field in root.EnumerateObject())
-            if (!EnvelopeFields.Contains(field.Name) || !fields.Add(field.Name)) throw new InvalidDataException("External PIP envelope has duplicate or undeclared fields.");
-        if (fields.Count != EnvelopeFields.Count) throw new InvalidDataException("External PIP envelope is incomplete.");
+            if (!(EnvelopeFields.Contains(field.Name) || source.SchemaVersion == 2 && field.Name == "validUntil") || !fields.Add(field.Name)) throw new InvalidDataException("External PIP envelope has duplicate or undeclared fields.");
+        if (fields.Count != EnvelopeFields.Count + (source.SchemaVersion == 2 ? 1 : 0)) throw new InvalidDataException("External PIP envelope is incomplete.");
         var schema = root.GetProperty("schemaVersion");
         if (schema.ValueKind != JsonValueKind.Number || !schema.TryGetInt32(out var schemaVersion) || schemaVersion != source.SchemaVersion)
             throw new InvalidDataException("External PIP schema version does not match the source contract.");
@@ -101,13 +103,9 @@ public sealed class HttpPipExternalConnector(HttpClient http, TimeProvider clock
             throw new InvalidDataException("External PIP response correlation failed.");
         var version = ReadString(root.GetProperty("sourceVersion"), 200);
         var observedText = ReadString(root.GetProperty("observedAt"), 40);
-        if ((!observedText.EndsWith('Z') && !observedText.EndsWith("+00:00", StringComparison.Ordinal))
-            || !DateTimeOffset.TryParseExact(observedText,
-                ["yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ss.FFFFFFF'Z'", "yyyy-MM-dd'T'HH:mm:sszzz", "yyyy-MM-dd'T'HH:mm:ss.FFFFFFFzzz"],
-                CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var observedAt) || observedAt.Offset != TimeSpan.Zero)
+        if (!PipSchema.TryParseUtcDateTime(observedText, out var observedAt))
             throw new InvalidDataException("External PIP observation must be an ISO 8601 timestamp with explicit UTC timezone.");
-        if (observedAt > clock.GetUtcNow()) throw new InvalidDataException("External PIP observation is in the future.");
-        if (observedAt.AddSeconds(source.MaxAgeSeconds) <= clock.GetUtcNow()) throw new InvalidDataException("External PIP response is already stale.");
+        DateTimeOffset? validUntil = source.SchemaVersion == 2 ? PipSchema.ParseUtcDateTime(ReadString(root.GetProperty("validUntil"), 40)) : null;
         if (etag is { Length: > 512 }) throw new InvalidDataException("External PIP cache validator is too long.");
         var raw = root.GetProperty("attributes");
         if (raw.ValueKind != JsonValueKind.Object) throw new InvalidDataException("External PIP attributes must be an object.");
@@ -122,8 +120,10 @@ public sealed class HttpPipExternalConnector(HttpClient http, TimeProvider clock
         }
         if (definitions.Any(x => x.Required && !values.ContainsKey(x.Name))) throw new InvalidDataException("External PIP response is missing a required attribute.");
         PipSchema.ValidateAttributes(source, values);
-        return new(tenantId, subject, schemaVersion, values, version, etag, observedAt,
-            PipStore.HashAttributes(tenantId, subject, schemaVersion, values, version, observedAt));
+        var fetched = new PipFetchedSnapshot(tenantId, subject, schemaVersion, values, version, etag, observedAt,
+            PipStore.HashAttributes(tenantId, subject, schemaVersion, values, version, observedAt, validUntil), validUntil);
+        PipStore.ValidateFetchedSnapshot(source, subject, fetched, clock.GetUtcNow());
+        return fetched;
     }
 
     private static string ReadString(JsonElement element, int maximum)
