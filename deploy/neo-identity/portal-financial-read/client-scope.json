@@ -1,0 +1,24 @@
+{
+  "name": "consumer.financial.read",
+  "description": "Human-session read access to consumer account and usage; tenant billing.read remains mandatory.",
+  "protocol": "openid-connect",
+  "attributes": {
+    "include.in.token.scope": "true",
+    "display.on.consent.screen": "true",
+    "consent.screen.text": "مشاهده حساب و گزارش مصرف سازمان در پنجره واحد"
+  },
+  "protocolMappers": [
+    {
+      "name": "portal-consumer-billing-audience",
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-audience-mapper",
+      "consentRequired": false,
+      "config": {
+        "included.custom.audience": "fanasa-access-management-web",
+        "access.token.claim": "true",
+        "id.token.claim": "false",
+        "introspection.token.claim": "false"
+      }
+    }
+  ]
+}

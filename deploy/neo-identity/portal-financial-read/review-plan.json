@@ -1,0 +1,82 @@
+{
+  "schema": "fanasa.sso.portal-financial-read.preparation.v1",
+  "status": "proposal-not-applied",
+  "runtimeChangesAuthorized": false,
+  "realm": "fanasa",
+  "existingClientId": "fanasa-unified-portal-web",
+  "createClient": false,
+  "createTenant": false,
+  "changeGrants": false,
+  "changeTrust": false,
+  "scopeAssignment": {
+    "name": "consumer.financial.read",
+    "type": "optional",
+    "realmDefault": false,
+    "assignedOnlyTo": ["fanasa-unified-portal-web"]
+  },
+  "preserveClient": {
+    "enabled": true,
+    "publicClient": true,
+    "standardFlowEnabled": true,
+    "serviceAccountsEnabled": false
+  },
+  "accessTokenContract": {
+    "iss": "https://sso.fanasa.net.local/realms/fanasa",
+    "audContains": "fanasa-access-management-web",
+    "azp": "fanasa-unified-portal-web",
+    "scopeContains": "consumer.financial.read",
+    "sub": "One nonempty lowercase D-format UUID; matches protected Portal login subject",
+    "sid": "One nonempty lowercase D-format UUID; matches protected Portal login session",
+    "auth_time": "One nonnegative integral NumericDate from authenticated session; auth_time <= now < exp",
+    "exp": "One integral NumericDate in the future; retain current issuer lifetime policy",
+    "nbf": "If present, one integral NumericDate no later than now",
+    "prohibited": ["client_credentials", "duplicate JSON claims", "user-editable identity/session claims", "hardcoded identity/session/time claims"]
+  },
+  "inheritedClaims": {
+    "sub": "Existing basic scope Subject mapper; no new mapper proposed",
+    "auth_time": "Existing basic scope User Session Note mapper AUTH_TIME -> auth_time, jsonType long; no duplicate mapper proposed",
+    "sid": "Keycloak session construction; no session_state alias or user attribute substitution",
+    "azp": "Keycloak issuing client; no mapper override",
+    "exp": "Keycloak expiration policy; no mapper override"
+  },
+  "portalEnvironmentProposal": {
+    "ConsumerBilling__Enabled": "false",
+    "ConsumerBilling__GatewayOrigin": "https://api.fanasa.net.local/",
+    "ConsumerBilling__Audience": "fanasa-access-management-web",
+    "ConsumerBilling__Scope": "consumer.financial.read"
+  },
+  "pccEnvironmentProposal": {
+    "ConsumerUsageReport__Enabled": "false",
+    "ConsumerUsageReport__PortalClientId": "fanasa-unified-portal-web",
+    "ConsumerUsageReport__Scope": "consumer.financial.read"
+  },
+  "centralRegistrationProposal": {
+    "productKeyProposal": "fanasa-unified-portal",
+    "displayName": "پنجره واحد فن‌آسا",
+    "canonicalUrl": "https://hub.fanasa.net.local/",
+    "ownerTenantId": null,
+    "primaryCapabilityCenter": null,
+    "actualProductId": null,
+    "selectedConsumerTenantId": null,
+    "state": "proposal-awaiting-approved-binding"
+  },
+  "coordinatorDraftReference": ".build/center-integration-20261025/FINANCIAL-ACTIVATION-DRAFT.json in fanasa-billing-integration-20261024 worktree; proposed names are not approvals",
+  "unresolved": ["selectedConsumerTenant", "approvedPortalProductKey", "ownerAndOfficialCenter", "deployedSourceRevision", "effectiveKeycloakMapperReview", "humanTokenAcceptance"],
+  "reviewBeforeActivation": [
+    "Confirm selected consumer tenant; do not infer it from membership.",
+    "Register Portal product and existing-client metadata through approved central admin flow.",
+    "Review effective basic sub/auth_time mappers and sid on actual installed Keycloak version.",
+    "Review directAccessGrantsEnabled, implicitFlowEnabled, token-exchange permissions and PKCE enforcement; observation does not establish these.",
+    "Review competing audience/claim mappers without altering unrelated scopes.",
+    "Approve scope creation/optional assignment and deployment separately.",
+    "Make Portal request configured optional financial scope only when configured and enabled.",
+    "Test human OIDC and negative authorization without exporting credentials."
+  ],
+  "keycloakSourceBaseline": "26.4.7 source reference only; installed version needs review",
+  "upstreamSources": [
+    "https://www.keycloak.org/docs/latest/server_admin/index.html#_client_scopes",
+    "https://raw.githubusercontent.com/keycloak/keycloak/26.4.7/services/src/main/java/org/keycloak/protocol/oidc/OIDCLoginProtocolFactory.java",
+    "https://raw.githubusercontent.com/keycloak/keycloak/26.4.7/services/src/main/java/org/keycloak/protocol/oidc/TokenManager.java",
+    "https://raw.githubusercontent.com/keycloak/keycloak/26.4.7/services/src/main/java/org/keycloak/protocol/oidc/mappers/AudienceProtocolMapper.java"
+  ]
+}
