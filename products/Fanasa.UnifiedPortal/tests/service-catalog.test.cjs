@@ -10,6 +10,7 @@ class Element {
     replaceChildren(...children) { this.children = []; this.append(...children); }
     addEventListener(type, action) { this.listeners[type] = action; }
     setAttribute(key, value) { this.attributes[key] = value; }
+    removeAttribute(key) { delete this.attributes[key]; }
     remove() { this.parent.children = this.parent.children.filter(x => x !== this); }
     querySelectorAll(selector) {
         const all = this.children.flatMap(child => [child, ...child.querySelectorAll('*')]);
@@ -18,7 +19,7 @@ class Element {
     querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
     click() { return this.listeners.click?.(); }
 }
-function setup(withWorkspace = false) {
+function setup(withWorkspace = false, { ignoresAbort = false } = {}) {
     const centers = ['fanasa.rayan', 'fanasa.cloud'].map(id => {
         const element = new Element('article');
         element.dataset = { center: id, centerSearch: id === 'fanasa.rayan' ? 'رایان ساخت' : 'ابر فن آسا' };
@@ -39,7 +40,7 @@ function setup(withWorkspace = false) {
         setTimeout: (fn, delay) => { timers.set(++counter, { fn, delay }); return counter; }, clearTimeout: id => timers.delete(id),
         fetch: (url, options) => new Promise((resolve, reject) => {
             requests.push({ url: String(url), options, resolve, reject });
-            options.signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+            if (!ignoresAbort) options.signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
         })
     };
     vm.runInNewContext(source, context);
@@ -119,4 +120,71 @@ test('anonymous refresh is no-store on home alias, bounded and retryable', async
     assert.equal(links(app, '.service-launch').length, 0);
     assert.equal(links(app, '.service-request').length, 1);
     assert.equal(app.refresh.disabled, false);
+});
+
+test('anonymous request that ignores abort releases retry and observes a late rejection', { timeout: 2000 }, async () => {
+    const app = setup(false, { ignoresAbort: true });
+    const first = app.refresh.click();
+    [...app.timers.values()][0].fn();
+    await first;
+    assert.equal(app.refresh.disabled, false);
+    assert.equal(app.timers.size, 0);
+    assert.match(app.status.textContent, /بیش از حد/);
+    const retry = app.refresh.click();
+    app.requests[0].reject(new Error('late offline failure'));
+    app.requests[1].resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({ serviceCatalog: payload('signInRequired') }) });
+    await retry;
+    assert.equal(app.requests.length, 2);
+    assert.equal(app.status.textContent, 'کاتالوگ منتشرشده');
+    assert.equal(links(app, '.service-request').length, 1);
+    assert.equal(app.refresh.disabled, false);
+});
+
+test('stalled anonymous body settles at deadline and cannot overwrite a newer catalog', { timeout: 2000 }, async () => {
+    const app = setup();
+    let started, finish;
+    const reading = new Promise(resolve => { started = resolve; });
+    const first = app.refresh.click();
+    app.requests[0].resolve({ ok: true, headers: { get: () => 'application/json' },
+        json: () => new Promise(resolve => { finish = resolve; started(); }) });
+    await reading;
+    [...app.timers.values()][0].fn();
+    await first;
+    assert.equal(app.refresh.disabled, false);
+    assert.equal(app.timers.size, 0);
+    const retry = app.refresh.click();
+    const current = payload('signInRequired', { displayName: 'خدمت تازه' });
+    app.requests[1].resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({ serviceCatalog: current }) });
+    await retry;
+    finish({ serviceCatalog: payload('allowed', { displayName: 'پاسخ قدیمی' }) });
+    await Promise.resolve(); await Promise.resolve();
+    assert.equal(links(app, '.service-launch').length, 0);
+    assert.equal(links(app, '.service-card')[0].children[0].textContent, 'خدمت تازه');
+    assert.equal(app.refresh.disabled, false);
+});
+
+test('catalog refresh button and busy feedback follow the shared authenticated refresh lifecycle', () => {
+    const app = setup(true);
+    app.api.render(payload('allowed'));
+    app.api.invalidate();
+    assert.equal(app.refresh.disabled, true);
+    assert.equal(app.status.attributes['aria-busy'], 'true');
+    assert.equal(links(app, '.service-launch').length, 0);
+    app.api.failed();
+    assert.equal(app.refresh.disabled, false);
+    assert.equal(app.status.attributes['aria-busy'], undefined);
+    app.api.invalidate();
+    app.api.render(payload('signInRequired'));
+    assert.equal(app.refresh.disabled, false);
+    assert.equal(app.status.attributes['aria-busy'], undefined);
+});
+
+test('repeated anonymous refresh clicks share one request until the first has finished', async () => {
+    const app = setup(), pending = app.refresh.click();
+    await app.refresh.click();
+    assert.equal(app.requests.length, 1);
+    app.requests[0].resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({ serviceCatalog: payload() }) });
+    await pending;
+    assert.equal(app.refresh.disabled, false);
+    assert.equal(app.timers.size, 0);
 });

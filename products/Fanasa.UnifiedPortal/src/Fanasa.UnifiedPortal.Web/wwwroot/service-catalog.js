@@ -3,6 +3,21 @@
     const status = document.getElementById('service-catalog-status');
     const refresh = document.getElementById('service-catalog-refresh');
     if (!status || !refresh) return;
+    const abortable = (operation, signal) => new Promise((resolve, reject) => {
+        const aborted = () => reject(new Error('catalog-aborted'));
+        const cleanup = () => signal.removeEventListener('abort', aborted);
+        Promise.resolve(operation).then(value => {
+            cleanup();
+            if (signal.aborted) aborted(); else resolve(value);
+        }, error => { cleanup(); reject(error); });
+        if (signal.aborted) aborted();
+        else signal.addEventListener('abort', aborted, { once: true });
+    });
+    const busy = value => {
+        refresh.disabled = value;
+        if (value) status.setAttribute('aria-busy', 'true');
+        else status.removeAttribute('aria-busy');
+    };
     const safeUrl = value => {
         try {
             const url = new URL(value);
@@ -40,6 +55,7 @@
             });
         });
         status.textContent = 'در حال بررسی کاتالوگ و دسترسی سازمان…';
+        busy(true);
     };
     const render = data => {
         const ready = data?.status === 'Ready' && Array.isArray(data.services);
@@ -72,9 +88,14 @@
             center.dataset.search = (center.dataset.centerSearch || '') + ' ' + services.map(item => item.displayName + ' ' + item.description).join(' ');
         });
         status.textContent = data?.message || 'کاتالوگ خدمات دریافت نشد؛ دوباره تلاش کنید.';
+        busy(false);
         globalThis.FanasaCenterFilter?.();
     };
-    const failed = () => { status.textContent = 'کاتالوگ یا دسترسی ورود دریافت نشد؛ دوباره تلاش کنید.'; };
+    const failed = (timedOut = false) => {
+        status.textContent = timedOut ? 'دریافت کاتالوگ بیش از حد طول کشید؛ دوباره تلاش کنید.'
+            : 'کاتالوگ یا دسترسی ورود دریافت نشد؛ دوباره تلاش کنید.';
+        busy(false);
+    };
     globalThis.FanasaServiceCatalog = { render, invalidate, failed };
 
     // Logged-in refresh uses the existing bounded workspace request. No second grant query.
@@ -90,16 +111,17 @@
         refresh.disabled = true;
         invalidate();
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 50000);
+        let timedOut = false;
+        const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, 50000);
         try {
             const url = new URL(location.pathname, location.origin);
             url.searchParams.set('handler', 'Workspace');
-            const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: controller.signal });
+            const response = await abortable(fetch(url, { credentials: 'same-origin', cache: 'no-store', signal: controller.signal }), controller.signal);
             if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) throw new Error('catalog');
-            const data = await response.json();
+            const data = await abortable(response.json(), controller.signal);
             if (controller.signal.aborted) throw new Error('aborted');
             render(data.serviceCatalog);
-        } catch { failed(); }
-        finally { clearTimeout(timeout); pending = false; refresh.disabled = false; }
+        } catch { failed(timedOut); }
+        finally { clearTimeout(timeout); pending = false; busy(false); }
     });
 })();

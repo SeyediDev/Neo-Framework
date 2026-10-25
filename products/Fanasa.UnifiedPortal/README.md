@@ -6,10 +6,13 @@
 صفحهٔ `/Workspace` مسیر انتخاب خدمت، درخواست استفاده، پیگیری، سرویس‌های فعال،
 مصرف سازمان و درخواست عرضهٔ سرویس توسط تولیدکننده را در یک فضای کار RTL ارائه
 می‌کند. ورود و انتخاب سازمان مجاز الزامی است. سرویس‌های فعال در اجرای واقعی از
-همان خوانندهٔ مرکزی محصولات دریافت می‌شوند؛ درخواست‌ها و مصرف تا فراهم‌شدن
-قرارداد مرکزی، وضعیت «متصل نیست» دارند و مقدار صفر یا ثبت موفق ساختگی نشان نمی‌دهند.
-تب مصرف در اجرای واقعی، پس از تأیید سازمان، لینک حساب‌های مجاز مرکز راهبری را
-نمایش می‌دهد؛ مقصد نشست انسانی و مجوز مالی را مستقل بررسی می‌کند. پاسخ آیندهٔ
+همان خوانندهٔ مرکزی محصولات دریافت می‌شوند؛ درخواست‌ها و عرضهٔ سرویس تا فراهم‌شدن
+قرارداد مرکزی، وضعیت «متصل نیست» دارند و ثبت موفق ساختگی نشان نمی‌دهند.
+خواندن مصرف، حساب و صورتحساب از Gateway پیاده و در سورس ادغام شده، ولی پیش‌فرض
+آن خاموش است. فقط پس از تنظیمات و مجوز مالی مصوب، نشست انسانی معتبر و سازمان
+تأییدشده دادهٔ دقیق نمایش داده می‌شود؛ تنظیمات خالی به معنای حساب صفر نیست.
+لینک حساب مرکز راهبری نیز پس از تأیید سازمان نمایش داده می‌شود؛ مقصد نشست
+انسانی و مجوز مالی را مستقل بررسی می‌کند. پاسخ آیندهٔ
 درخواست/عرضه باید به subject و سازمان نشست متصل باشد و ردیف‌های سابقهٔ «من» نیز
 مالکیت همان کاربر را داشته باشند؛ شناسهٔ خام مالک به مرورگر ارسال نمی‌شود.
 
@@ -56,6 +59,15 @@ dotnet run --project products/Fanasa.UnifiedPortal/tests/Portal.Tests -c Release
 روی development نصب شد. سلامت، asset جدید و حفاظت مسیرهای خصوصی بررسی شدند؛
 ورود کامل SSO و اتصال مالی زنده دوباره آزموده نشدند.
 [شواهد و قرارداد آمادگی سابقه](docs/WORKSPACE-EMPTY-STATES-2026-10-24.md).
+
+ادغام محلی مالی و محدودیت بودجهٔ ترکیبی کاتالوگ/مالی در
+[بازبینی مستقل](docs/INTEGRATION-REVIEW-2026-10-24.md) ثبت شده است. دو مجموعهٔ
+BillingIntegration.Tests و BillingWorkspace.Tests در solution و workflow
+ثبت‌اند و آزمون JavaScript حساب نیز در CI فهرست شده است؛ این ثبت، اجرای موفق
+GitHub Actions یا فعال‌شدن گزارش زنده را اثبات نمی‌کند.
+تازه‌سازی عمومی کاتالوگ نیز در برابر fetch یا خواندن بدنهٔ بی‌پاسخ مهلت مستقل
+دارد و دکمه و وضعیت انتظار آن با تازه‌سازی فضای کار هماهنگ‌اند.
+[اصلاح کاتالوگ عمومی](docs/PUBLIC-CATALOG-REFRESH-2026-10-25.md).
 
 محصولات فعلی:
 
@@ -109,7 +121,10 @@ dotnet run --project products/Fanasa.UnifiedPortal/tests/Portal.Tests -c Release
 
 ```powershell
 dotnet run --project products/Fanasa.UnifiedPortal/tests/Portal.Tests -c Release
+dotnet run --project products/Fanasa.UnifiedPortal/tests/BillingIntegration.Tests -c Release
+dotnet run --project products/Fanasa.UnifiedPortal/tests/BillingWorkspace.Tests -c Release
 node --test products/Fanasa.UnifiedPortal/tests/portal-client.test.cjs
+node --test products/Fanasa.UnifiedPortal/tests/service-catalog.test.cjs products/Fanasa.UnifiedPortal/tests/consumer-billing.test.cjs
 node --test --test-isolation=none products/Fanasa.UnifiedPortal/tests/workspace-ui.test.cjs
 node products/Fanasa.UnifiedPortal/tests/workspace-transport.test.cjs
 node products/Fanasa.UnifiedPortal/tests/workspace-browser-check.cjs
