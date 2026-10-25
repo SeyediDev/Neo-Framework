@@ -23,8 +23,9 @@ membership یا `billing.read` نمی‌توان سازمان انتخابی ر�
   scope پیشنهادی `consumer.financial.read` فقط یک Audience mapper دارد.
 - `review-plan.json`: قرارداد claim، انتساب **Optional به فقط همین کلاینت**،
   تنظیمات غیرفعال Portal/PCC و دروازه‌های پذیرش. این فایل realm import نیست.
-- `portal-request-scope.patch`: اصلاح سه‌خطی پیشنهادی برای مالک پنجره واحد؛ هنوز
-  روی Program.cs اعمال نشده. فقط با پیکربندی معتبر و Enabled، scope درخواست می‌شود.
+- درخواست scope در `ConsumerBillingOidc.ConfigureScopes` پیاده شده و Program همان
+  snapshot تنظیمات ثبت‌شده در DI را به آن می‌دهد. فقط با پیکربندی معتبر و Enabled،
+  scope درخواست می‌شود؛ patch پیشنهادی قبلی با این پیاده‌سازی جایگزین و حذف شد.
 - `review.py`: بررسی آفلاین پیشنهاد و اثرانگشت کد؛ شبکه و قابلیت apply ندارد.
 - `test_review.py`: آزمون جلوگیری از گسترش ناخواستهٔ همین پیشنهاد، نه آزمون IdP.
 
@@ -70,19 +71,19 @@ hardcoded، user-attribute برای identity/time یا alias به جای sid ا�
    در سورس وجود دارند؛ ثبت **فرادادهٔ همین کلاینت موجود** به معنی ساخت کلاینت
    Keycloak نیست. مقدار Key همین clientId، نوع public و AllowedScopes شامل
    scope پیشنهادی باشد؛ RedirectUris فقط از تنظیم واقعی تأییدشده کپی شود.
-   **این مسیر هنوز مسیر مدیریتیِ تأییدشده محسوب نمی‌شود:** متد فاقد annotation
-   محلی PlatformAdmin و antiforgery است. Program.cs صرفاً authorization عمومی
-   روی controllerها دارد. مالک مرکز راهبری باید اثر filterهای سراسری، محدودیت
-   ادمین و CSRF را بررسی/تکمیل کند؛ از این نقص برای ثبت استفاده نکنید و SQL ننویسید.
+   مسیر در سورس با `AccessBoundaryFilter` سراسری محافظت می‌شود؛ ثبت این filter
+   در `FabricServices` انجام می‌شود. ثبت client به نشست احرازشده با `platform.admin`
+   و CSRF معتبر نیاز دارد. نبود annotation محلی به معنی نبود این کنترل نیست؛
+   پذیرش runtime و ثبت واقعی همچنان باید از مسیر مدیریتی موجود انجام شود.
 4. ایجاد scope واقعی و Optional assignment از **کنسول مدیریتی خود Keycloak**
    است؛ فرم مرکز راهبری فعلی چنین عملیاتی ندارد. پس از تصویب جداگانه، Client
    scopes → تعریف scope با Audience mapper فایل JSON → Clients → همان کلاینت
    موجود → Client scopes → Add client scope → Optional. آن را Realm Default
    یا منتسب به کلاینت‌های دیگر نکنید. سازوکار Optional مطابق
    [راهنمای رسمی Keycloak](https://www.keycloak.org/docs/latest/server_admin/index.html#_client_scopes) است.
-5. سورس Portal در هر دو checkout فقط `openid profile` را درخواست می‌کند؛
-   بدون اصلاح پیشنهادی، scope جدید وارد درخواست نمی‌شود. نوشتن env به‌تنهایی
-   این نقیصه را رفع نمی‌کند. تغییر این فایل متعلق به مالک Portal است.
+5. اصلاح درخواست scope در commit `cb4629b` پذیرفته و در تجمیع وارد شده است؛
+   شش سناریو با handler واقعی OIDC و metadata مصنوعی موفق‌اند. نصب همان سورس
+   و ورود انسانی تازه هنوز برای دریافت scope واقعی لازم است.
 6. `ConsumerBilling:Audience` باید با API برابر باشد؛ `fanasa-api` در تست‌های
    ساختگی نمونه است، نه audience فعلی API. `ConsumerUsageReport:PortalProductKey`
    هم باید پس از ثبت مرکزی با کلید مصوب پر شود؛ عمداً در پیشنهاد مقدار ندارد.
@@ -108,7 +109,6 @@ fail closed بماند و تجربهٔ ورود دوباره را مالک Porta
 ```powershell
 python -B -m unittest discover -s deploy/neo-identity/portal-financial-read -p test_review.py -v
 python -B deploy/neo-identity/portal-financial-read/review.py
-git apply --check deploy/neo-identity/portal-financial-read/portal-request-scope.patch
 ```
 
 برای بررسی checkout دیگر از `--repo-root <absolute-checkout>` استفاده کنید.

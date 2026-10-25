@@ -14,7 +14,8 @@ builder.Services.AddScoped<IWorkspaceJourneySource, NotConnectedWorkspaceJourney
 // Disabled by default. Human financial reads use only the explicitly approved Gateway.
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddSingleton(ConsumerBillingOptions.Read(builder.Configuration));
+var consumerBillingOptions = ConsumerBillingOptions.Read(builder.Configuration);
+builder.Services.AddSingleton(consumerBillingOptions);
 builder.Services.AddSingleton<ConsumerBillingSessionVault>();
 builder.Services.AddScoped<IConsumerUsageHumanCredentialProvider, SessionConsumerUsageCredentialProvider>();
 builder.Services.AddScoped<IWorkspaceConsumerBillingReader, GatewayWorkspaceConsumerBillingReader>();
@@ -53,9 +54,7 @@ builder.Services.AddAuthentication(options =>
         return Task.CompletedTask;
     };
     options.GetClaimsFromUserInfoEndpoint = true;
-    options.Scope.Clear();
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
+    ConsumerBillingOidc.ConfigureScopes(options, consumerBillingOptions);
 });
 
 builder.Services.AddAuthorization();

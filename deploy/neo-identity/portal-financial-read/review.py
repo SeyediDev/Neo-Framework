@@ -65,16 +65,23 @@ def source_review(root):
         "bearer": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Program.cs",
         "boundary": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/ConsumerBillingAuthorization.cs",
         "form": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/Pages/ProductRegistration.cshtml.cs",
-        "clientApi": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessApi.cs"
+        "clientApi": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessApi.cs",
+        "accessFilter": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/AccessBoundaryFilter.cs",
+        "services": "products/Fanasa.AccessManagement/src/Fanasa.AccessManagement.Web/FabricServices.cs"
     }
     code = {key: (root / path).read_text(encoding="utf-8-sig") for key, path in paths.items()}
     findings = []
-    if 'options.Scope.Add("profile")' in code["portal"] and 'options.Scope.Add(consumerBilling.Scope)' not in code["portal"]:
+    if not ('ConsumerBillingOidc.ConfigureScopes(options, consumerBillingOptions)' in code["portal"]
+            and 'if (billing.IsConfigured) options.Scope.Add(billing.Scope)' in code["vault"]):
         findings.append("REVIEW_REQUIRED: no reviewed configured-financial-scope request in Portal Program.cs; inspect before activation.")
     if 'RegisterClient(' not in code["form"]:
         findings.append("GAP: ProductRegistration creates product only, not client metadata or Keycloak scopes.")
-    if '[HttpPost("catalog/products/{productId:guid}/clients")]' in code["clientApi"]:
-        findings.append("SECURITY_REVIEW: client metadata POST lacks local PlatformAdmin/antiforgery annotations; check global filters and approved admin route before use.")
+    admin_boundary = ('Filters.Add<Api.AccessBoundaryFilter>()' in code["services"]
+        and 'user.HasClaim("permission", "platform.admin")' in code["accessFilter"]
+        and 'if (!admin &&' in code["accessFilter"]
+        and 'antiforgery.ValidateRequestAsync(context.HttpContext)' in code["accessFilter"])
+    if not admin_boundary:
+        findings.append("SECURITY_REVIEW: verify the global client-registration admin/CSRF boundary before use.")
     findings.append("UNVERIFIED: effective Keycloak mappers, deployed revision, approved tenant/product binding and human OIDC acceptance.")
     boundary = code["boundary"]
     return {
@@ -84,6 +91,7 @@ def source_review(root):
             "apiAudience": 'options.Audience = "fanasa-access-management-web"' in code["bearer"],
             "noTokensInPortalCookie": 'options.SaveTokens = false' in code["portal"],
             "portalPkce": 'options.UsePkce = true' in code["portal"],
+            "clientRegistrationAdminAndCsrf": admin_boundary,
             "vaultFiveMinuteCap": 'now.AddMinutes(5)' in code["vault"],
             "tenantBillingGrant": 'x.Permission == "billing.read"' in boundary,
             "activeClientScope": 'clients[0].AllowedScopes?.Contains(scope' in boundary,

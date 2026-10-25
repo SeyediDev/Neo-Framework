@@ -69,7 +69,7 @@
     "Review directAccessGrantsEnabled, implicitFlowEnabled, token-exchange permissions and PKCE enforcement; observation does not establish these.",
     "Review competing audience/claim mappers without altering unrelated scopes.",
     "Approve scope creation/optional assignment and deployment separately.",
-    "Make Portal request configured optional financial scope only when configured and enabled.",
+    "Deploy the accepted Portal implementation that requests the optional financial scope only when configured and enabled.",
     "Test human OIDC and negative authorization without exporting credentials."
   ],
   "keycloakSourceBaseline": "26.4.7 source reference only; installed version needs review",

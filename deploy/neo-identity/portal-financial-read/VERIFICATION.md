@@ -1,7 +1,9 @@
 # Preparation verification — 2026-10-25
 
 State: **proposal only; no runtime changes or live human acceptance**.
-Source baseline: `c4211dbbfb1fedf46dfcf996bf1facc2ec35c27b`.
+Historical proposal baseline: `c4211dbbfb1fedf46dfcf996bf1facc2ec35c27b`.
+The scope-request implementation is now accepted in `cb4629b`; the c421 checks
+below remain historical preparation evidence and are not live SSO acceptance.
 
 - Five proposal tests pass, including mutation cases for assignment, audience,
   issuer, mapper, enabled state and fabricated organization/product bindings.
@@ -9,7 +11,10 @@ Source baseline: `c4211dbbfb1fedf46dfcf996bf1facc2ec35c27b`.
   checkout and the `fanasa-billing-integration-20261024` coordinator worktree.
   The checked files have identical hashes; `review.py` prints their SHA-256.
   Its reported gaps remain open and do not count as operational readiness.
-- `git apply --check` accepts `portal-request-scope.patch`; it is not applied.
+- The proposed scope-request patch was superseded by the implemented
+  `ConsumerBillingOidc.ConfigureScopes` and removed during integration.
+  Six focused real-handler authorization-request cases pass (36 assertions);
+  the Portal Release build has zero warnings and errors. Metadata is synthetic.
 - Portal `BillingIntegration.Tests` passes 67 checks using signed synthetic
   credentials and accounting fixtures in memory. This is not live OIDC.
 - PCC `ConsumerUsage.Api.Tests` passes 111 checks against isolated local fixtures
@@ -37,10 +42,10 @@ tenant, grant, trust or deployment was changed by this preparation.
 
 Activation still requires an explicitly selected consumer organization, approved
 product owner and official center, durable central product/client registration,
-review of the administrative client-registration route, effective installed
-Keycloak mappers/flows, the Portal scope-request change, Gateway/TLS binding and
+runtime verification of the administrative client-registration route, effective
+installed Keycloak mappers/flows, deployment of the Portal fix, Gateway/TLS binding and
 live human positive/negative acceptance. Preserve the existing five-minute vault
 cap and current issuer policy; longer central SSO does not extend this vault.
 
-No shared Portal/PCC source or Skill/MCP contract changed. The README documents
-the proposed configuration and current implementation limits.
+The original preparation changed no shared Portal/PCC source. The integrated
+Portal fix is recorded separately above; no Skill/MCP contract changed.
