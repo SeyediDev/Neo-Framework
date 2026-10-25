@@ -11,6 +11,10 @@
 خواندن مصرف، حساب و صورتحساب از Gateway پیاده و در سورس ادغام شده، ولی پیش‌فرض
 آن خاموش است. فقط پس از تنظیمات و مجوز مالی مصوب، نشست انسانی معتبر و سازمان
 تأییدشده دادهٔ دقیق نمایش داده می‌شود؛ تنظیمات خالی به معنای حساب صفر نیست.
+هنگام کامل و فعال‌بودن تنظیمات `ConsumerBilling`، ورود OIDC همان scope مالی
+پیکربندی‌شده را در کنار `openid profile` درخواست می‌کند. حالت خاموش یا ناقص
+scope مالی درخواست نمی‌کند؛ دریافت آن نیازمند تعریف و انتساب مصوب در Keycloak
+و ورود انسانی تازه است و به‌تنهایی مجوز سازمانی ایجاد نمی‌کند.
 لینک حساب مرکز راهبری نیز پس از تأیید سازمان نمایش داده می‌شود؛ مقصد نشست
 انسانی و مجوز مالی را مستقل بررسی می‌کند. پاسخ آیندهٔ
 درخواست/عرضه باید به subject و سازمان نشست متصل باشد و ردیف‌های سابقهٔ «من» نیز
@@ -122,6 +126,7 @@ GitHub Actions یا فعال‌شدن گزارش زنده را اثبات نمی
 ```powershell
 dotnet run --project products/Fanasa.UnifiedPortal/tests/Portal.Tests -c Release
 dotnet run --project products/Fanasa.UnifiedPortal/tests/BillingIntegration.Tests -c Release
+dotnet run --project products/Fanasa.UnifiedPortal/tests/BillingIntegration.Tests -c Release -- --oidc-scopes
 dotnet run --project products/Fanasa.UnifiedPortal/tests/BillingWorkspace.Tests -c Release
 node --test products/Fanasa.UnifiedPortal/tests/portal-client.test.cjs
 node --test products/Fanasa.UnifiedPortal/tests/service-catalog.test.cjs products/Fanasa.UnifiedPortal/tests/consumer-billing.test.cjs

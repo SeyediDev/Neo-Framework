@@ -101,6 +101,14 @@ public sealed class SessionConsumerUsageCredentialProvider(IHttpContextAccessor 
 
 public static class ConsumerBillingOidc
 {
+    public static void ConfigureScopes(OpenIdConnectOptions options, ConsumerBillingOptions billing)
+    {
+        options.Scope.Clear();
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        if (billing.IsConfigured) options.Scope.Add(billing.Scope);
+    }
+
     public static async Task PurgeAsync(CookieSigningOutContext context)
     {
         var vault = context.HttpContext.RequestServices.GetRequiredService<ConsumerBillingSessionVault>();

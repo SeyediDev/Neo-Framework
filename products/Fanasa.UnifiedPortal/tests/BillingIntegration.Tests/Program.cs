@@ -18,6 +18,9 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 
+await OidcScopeChecks.RunAsync();
+if (args.Contains("--oidc-scopes")) return;
+
 var now = DateTimeOffset.Parse("2026-10-24T10:00:00Z", CultureInfo.InvariantCulture);
 var clock = new Clock(now); var checks = 0;
 const string subject = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee", session = "11111111-2222-4333-8444-555555555555";
