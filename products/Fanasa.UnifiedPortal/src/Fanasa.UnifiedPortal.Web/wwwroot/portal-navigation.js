@@ -35,7 +35,12 @@
         for (const link of loginLinks) link.setAttribute('href', target);
     }
     function setSection(section) {
-        selectedSection = section;
+        const fragment = typeof section === 'string' ? section.replace(/^#/, '') : '';
+        const allowed = document.body.dataset.portalPage === 'workspace'
+            ? ['catalog', 'requests', 'services', 'usage', 'publish', 'review'] : ['top', 'workspace', 'centers'];
+        // Skip/scroll anchors do not change the active workspace tab.
+        if (!allowed.includes(fragment)) return;
+        selectedSection = fragment;
         updateSignInLinks();
     }
     function setOrganization(organizationId) {

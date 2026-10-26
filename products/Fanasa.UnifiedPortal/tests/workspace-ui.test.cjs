@@ -299,6 +299,7 @@ function renderWorkspace(data) {
         const link = new Element('a'); link.dataset.portalLink = key; return [key, link];
     }));
     const location = new URL('http://workspace.test/Workspace#requests');
+    const windowEvents = {};
     let loader;
     const financialCalls = [];
     function financialRenderer(kind) {
@@ -313,7 +314,8 @@ function renderWorkspace(data) {
     }
     const context = vm.createContext({
         URL, Intl, structuredClone, location,
-        history: { replaceState(_, __, value) { location.href = new URL(value, location).href; } }, window: { addEventListener() {}, sessionStorage: memory() },
+        history: { replaceState(_, __, value) { location.href = new URL(value, location).href; } },
+        window: { addEventListener(name, callback) { (windowEvents[name] ||= []).push(callback); }, sessionStorage: memory() },
         document: { body: { dataset: { portalPage: 'workspace', portalOrganization: '' } },
             querySelectorAll: selector => selector === '[data-portal-link]' ? Object.values(navigationLinks)
                 : selector === '[data-portal-login]' ? [get('workspace-login')] : [],
@@ -326,7 +328,8 @@ function renderWorkspace(data) {
     vm.runInContext(navigationSource, context, { timeout: 5000 });
     vm.runInContext(source, context, { timeout: 5000 });
     assert.equal(get('service-workspace').dataset.ready, 'true');
-    return { get, loader, financialCalls, navigationLinks };
+    return { get, loader, financialCalls, navigationLinks,
+        setHash(hash) { location.hash = hash; for (const listener of windowEvents.hashchange || []) listener(); } };
 }
 
 function consumerUsage(overrides = {}) {
@@ -416,6 +419,10 @@ test('workspace recovery keeps the current tab and accepted organization without
     assert.equal(target(), '/Workspace?tenantId=' + orgA + '#requests');
     app.get('tab-requests').listeners.keydown({ key: 'ArrowLeft', preventDefault() {} });
     assert.equal(app.get('tab-services').attributes['aria-selected'], 'true');
+    assert.equal(target(), '/Workspace?tenantId=' + orgA + '#services');
+    app.setHash('#top');
+    assert.equal(target(), '/Workspace?tenantId=' + orgA + '#services');
+    app.setHash('#main-content');
     assert.equal(target(), '/Workspace?tenantId=' + orgA + '#services');
     app.loader.onStart(); assert.equal(target(), '/Workspace#services');
     app.loader.onError(false); app.loader.onEnd();
