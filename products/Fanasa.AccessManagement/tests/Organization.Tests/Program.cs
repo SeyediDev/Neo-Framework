@@ -27,6 +27,7 @@ OrgCommand Command(string operation, long? revision = null) => new(revision ?? s
 OrgState Run(OrgCommand command) => store.Execute(tenant, command, "actor");
 async Task RunPipOperational()
 {
+    PipSourceSettingsTests.Run(directory, Check);
     PipOperatorTests.Run(directory, Check);
     PipEducationalJourneyTests.Run(directory, Check);
     PipDiagnosticsTests.Run(directory, Check);

@@ -216,6 +216,8 @@ def validate_plan(plan) -> dict:
         check(_reference(oauth["reference"]), "oauth.reference-invalid")
         check(_reference(oauth["clientId"]), "oauth.client-invalid")
         check(_reference(oauth["clientSecretReference"]), "oauth.secret-reference-invalid")
+        check(type(oauth["clientSecretReference"]) is str and "__" not in oauth["clientSecretReference"],
+              "oauth.secret-reference-environment-separator")
         check(type(oauth["scopes"]) is list and oauth["scopes"] == [READ_SCOPE], "oauth.scopes-invalid")
         check(_integer(oauth["timeoutSeconds"], 1, 120), "oauth.timeout-invalid")
     if binding:
@@ -223,6 +225,9 @@ def validate_plan(plan) -> dict:
     if secret_mount:
         check(_reference(secret_mount["reference"]), "secretMount.reference-invalid")
         check(type(secret_mount["environmentKey"]) is str and _reference(secret_mount["environmentKey"]), "secretMount.environment-key-invalid")
+        if consumer and consumer["runtime"] == "systemd":
+            check(type(secret_mount["environmentKey"]) is str and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", secret_mount["environmentKey"], re.ASCII) is not None,
+                  "secretMount.systemd-environment-key-invalid")
     if source:
         check(_guid(source["tenantId"]), "source.tenant-invalid")
         check(_https(source["endpoint"]) is not None, "source.endpoint-invalid")

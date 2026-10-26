@@ -56,7 +56,7 @@ Replace synthetic IDs and host/address placeholders with approved deployment val
       "Reference": "organization-hr-reader",
       "TokenEndpoint": "https://sso.fanasa.net.local/realms/fanasa/protocol/openid-connect/token",
       "ClientId": "fanasa-organization-pip-reader",
-      "ClientSecretReference": "organization-hr-client-secret",
+      "ClientSecretReference": "organization_hr_client_secret",
       "Scopes": ["organization.hr.attributes.read"],
       "AllowedPrivateAddresses": ["10.20.0.10"],
       "CaFile": "/certs/fanasa-root-ca.crt",
@@ -73,7 +73,9 @@ Replace synthetic IDs and host/address placeholders with approved deployment val
 }
 ```
 
-The injected environment key `Pip__Secrets__organization-hr-client-secret` contains the real secret; never place its value in source JSON, Fabric, screenshots or logs. OAuth client credentials are posted to the exact deployment token endpoint. Tokens live only in memory, concurrent refreshes are serialized, and refresh begins before expiry. Returned scope, when supplied, must equal the requested scope set. Static secret references remain supported. Profile references are unique and bound to one tenant; startup rejects cross-tenant use. Configure separate profiles for separate tenants.
+The injected environment key `Pip__Secrets__organization_hr_client_secret` contains the real secret; never place its value in source JSON, Fabric, screenshots or logs. OAuth client credentials are posted to the exact deployment token endpoint. Tokens live only in memory, concurrent refreshes are serialized, and refresh begins before expiry. Returned scope, when supplied, must equal the requested scope set. Static secret references remain supported. Profile references are unique and bound to one tenant; startup rejects cross-tenant use. Configure separate profiles for separate tenants.
+
+For systemd injection, environment variable names must use ASCII letters, digits and underscores and must not start with a digit; use `organization_hr_client_secret` as the secret reference. Do not put `__` inside an environment-backed secret reference: ASP.NET converts it to the `:` configuration separator, so the original reference no longer resolves.
 
 Each endpoint/profile may use its own CA file. Certificate hostname, validity, chain and serverAuth purpose are verified. AIA certificate downloading is disabled. The custom CA replaces system roots only for that exact binding. Restart after changing bindings, credentials or CA files to invalidate token/client caches. Public addresses are eligible; private addresses require an exact deployment-owned RFC1918/ULA exception. Loopback/link-local addresses, redirects, proxy use and DNS results outside this boundary remain rejected. Network policy must explicitly permit both the token endpoint and gateway; do not relax global egress.
 

@@ -17,7 +17,7 @@
       "reference": "organization-hr-reader",
       "tokenEndpoint": "https://sso.example.test/realms/fanasa/protocol/openid-connect/token",
       "clientId": "fanasa-organization-pip-reader",
-      "clientSecretReference": "organization-hr-client-secret",
+      "clientSecretReference": "organization_hr_client_secret",
       "scopes": ["organization.hr.attributes.read"],
       "caFile": "/certs/fanasa-root-ca.crt",
       "allowedPrivateAddresses": ["10.20.0.10"],
@@ -31,8 +31,8 @@
       "allowedPrivateAddresses": ["10.20.0.11"]
     },
     "secretMount": {
-      "reference": "organization-hr-client-secret",
-      "environmentKey": "Pip__Secrets__organization-hr-client-secret"
+      "reference": "organization_hr_client_secret",
+      "environmentKey": "Pip__Secrets__organization_hr_client_secret"
     },
     "egressEndpoints": [
       "https://sso.example.test/realms/fanasa/protocol/openid-connect/token",

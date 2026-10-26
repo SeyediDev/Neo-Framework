@@ -23,6 +23,7 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
         catch (KeyNotFoundException) { return NotFound(); }
         catch (ArgumentException error) { return BadRequest(new { error = error.Message }); }
         catch (InvalidDataException error) { return BadRequest(new { error = error.Message }); }
+        catch (PipSourceSettingsConflictException error) { return Conflict(new { errorCode = error.ErrorCode, error = error.Message }); }
         catch (InvalidOperationException error) { return Conflict(new { error = error.Message }); }
     }
     [HttpGet("sources")]
@@ -44,6 +45,14 @@ public sealed class PipApi(PipStore store, PipSyncService sync, PipTransportOpti
                 command.SchemaVersion, command.MaxAgeSeconds, command.TimeoutSeconds, command.MaxResponseBytes, command.Enabled,
                 command.Definitions, command.SyncSubjects, command.PollIntervalSeconds, Actor, command.Reason);
         });
+    }
+    [HttpPost("sources/{sourceId:guid}/settings"), ValidateAntiForgeryToken]
+    public IActionResult Settings(Guid tenantId, Guid sourceId, UpdatePipSourceSettingsCommand command)
+    {
+        if (Guard(tenantId) is { } denied) return denied;
+        return Execute(() => store.UpdateSettings(tenantId, sourceId, command.ExpectedGeneration, command.Name,
+            command.MaxAgeSeconds, command.TimeoutSeconds, command.MaxResponseBytes, command.SyncSubjects,
+            command.PollIntervalSeconds, Actor, command.Reason));
     }
     [HttpPost("sources/{sourceId:guid}/enabled"), ValidateAntiForgeryToken]
     public IActionResult Enable(Guid tenantId, Guid sourceId, PipEnableCommand command)
@@ -111,5 +120,7 @@ public sealed record RegisterPipSourceCommand(string Name, string Endpoint, stri
     int SchemaVersion = 1, int MaxAgeSeconds = 300, int TimeoutSeconds = 10, int MaxResponseBytes = 262144,
     bool Enabled = false, PipAttributeDefinition[]? Definitions = null, string[]? SyncSubjects = null, int PollIntervalSeconds = 0, string Reason = "");
 public sealed record PipEnableCommand(bool Enabled, string Reason = "");
+public sealed record UpdatePipSourceSettingsCommand(long ExpectedGeneration, string Name, int MaxAgeSeconds = 300,
+    int TimeoutSeconds = 10, int MaxResponseBytes = 262144, string[]? SyncSubjects = null, int PollIntervalSeconds = 0, string Reason = "");
 public sealed record PipSyncCommand(string Subject, string Reason = "");
 public sealed record PipExampleCommand(string Reason);

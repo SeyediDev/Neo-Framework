@@ -9,11 +9,12 @@
  const issueNames={'transport-failed':'اتصال برقرار نشد؛ نشانی مصوب، شبکه و گواهی TLS سرویس را بررسی کنید.','timeout':'سرویس در مهلت تعیین‌شده پاسخ نداد.','invalid-response':'پاسخ با قرارداد سازگار نیست؛ نوع، هویت، سازمان، نسخه و زمان مشاهده را بررسی کنید.','source-unavailable':'منبع یا تنظیمات اتصال و مرجع رمز در دسترس نیست.','cancelled':'دریافت لغو شد؛ در صورت نیاز دوباره اجرا کنید.','sync-failed':'دریافت معتبر کامل نشد؛ سوابق را بررسی کنید.','no-enabled-source':'منبع فعال در دسترس نیست.','no-snapshot':'هنوز داده‌ای برای این هویت ثبت نشده است.','snapshot-expired':'عمر داده پایان یافته؛ دریافت تازه لازم است.','invalid-snapshot':'دادهٔ ذخیره‌شده با قرارداد معتبر تطبیق ندارد.','invalid-snapshot-metadata':'مشخصات نسخه یا منشأ داده معتبر نیست.'};
  const explain=code=>issueNames[code]||code;
  let sources=[],overview=null,loadGeneration=0,historyGeneration=0;
- const remembered=new Map();
+ const remembered=new Map(),settingsDrafts=new Map(),sourceActionEpochs=new Map();
  const actionNames={'configure-deployment-binding':'از مدیر استقرار بخواهید اتصال دقیق همین سازمان، نشانی و مرجع رمز را در تنظیمات سرور ثبت کند.','test-connection':'شناسهٔ یک هویت معلوم و دلیل را وارد کنید و آزمون اتصال را اجرا کنید.','enable-source':'آزمون معتبر است؛ منبع را فعال کنید و سپس دادهٔ تصمیم را دریافت کنید.','sync-subject':'دادهٔ این هویت را دریافت کنید و تازگی و مقادیر آن را بررسی کنید.','simulate-policy':'شرط سیاست و تصمیم این هویت را در بخش سیاست آزمایش کنید.','simulate':'سناریوی آموزشی را بدون انتشار سیاست اجرا کنید.'};
  const nextAction=code=>actionNames[code]||code||'وضعیت منبع و قرارداد را بررسی کنید.';
  Object.assign(issueNames,{'deployment-required':'اتصال دقیق این سازمان هنوز در تنظیمات استقرار مصوب نیست.','deployment-not-approved':'اتصال دقیق این سازمان هنوز در تنظیمات استقرار مصوب نیست.','deployment-binding-required':'اتصال دقیق همین سازمان در تنظیمات استقرار مصوب نیست.','valid-connection-test-required':'برای فعال‌سازی، آزمون موفق و تازهٔ همین نسخه لازم است.','deployment-binding-changed':'تنظیم اتصال هنگام آزمون تغییر کرد؛ پس از تأیید تنظیمات، آزمون را تکرار کنید.','source-disabled':'منبع غیرفعال است؛ مسیر آزمون و فعال‌سازی را کامل کنید.','invalid-test-request':'شناسهٔ هویت و دلیل آزمون معتبر را وارد کنید.','test-not-available':'تنظیم اتصال و وضعیت منبع را بررسی کنید؛ ممکن است آزمون دیگری در حال اجرا باشد.','setup-test-required':'پیش از فعال‌سازی، آزمون موفق و تازه برای همین نسخهٔ منبع لازم است.','test-required':'آزمون اتصال برای همین نسخهٔ منبع لازم است.','test-expired':'اعتبار آزمون پایان یافته است؛ آزمون اتصال را تکرار کنید.','source-changed':'تعریف یا وضعیت منبع عوض شده است؛ وضعیت را تازه و دوباره آزمایش کنید.','required-policy-attribute-missing':'ویژگی لازم برای این سیاست در دادهٔ این هویت موجود نیست.','ambiguous-source':'بیش از یک منبع با درخواست تطبیق دارد؛ منبع مشخص را انتخاب کنید.'});
  function status(text,error=false){$('org-pip-message').textContent=text;$('org-pip-message').className=error?'org-error':'org-success';}
+ Object.assign(issueNames,{'source-generation-conflict':'نسخهٔ منبع تغییر کرده است. متن ویرایش شما حفظ شد؛ نسخهٔ تازه را بررسی کنید و سپس تغییرات را دوباره وارد کنید.','source-must-be-disabled':'منبع اکنون فعال است؛ ابتدا آن را غیرفعال کنید و نسخهٔ تازهٔ تنظیمات را بخوانید.','educational-source-read-only':'منبع آموزشی قابل ویرایش نیست؛ برنامهٔ دریافت را در منبع واقعی سازمان خود تنظیم کنید.'});
  async function request(path,body){const response=await fetch(base+path,body?{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-TOKEN':root.querySelector('[name=__RequestVerificationToken]').value},body:JSON.stringify(body)}:undefined);if(!response.ok){let value;try{value=await response.json();}catch{}if(value?.error==='PIP endpoint and secret are not approved for this tenant by the deployment configuration.')throw Error('این اتصال هنوز در تنظیمات استقرار برای همین سازمان مصوب نشده است. مدیر استقرار باید نشانی دقیق و مرجع رمز را ثبت کند؛ منبع غیرفعال می‌ماند.');throw Error(value?.errorCode?(issueNames[value.errorCode]||value.error||value.errorCode):value?.error||({400:'داده یا نشست معتبر نیست؛ قرارداد و فرم را بررسی کنید.',403:'اجازهٔ مدیریت دادهٔ این سازمان را ندارید.',404:'منبع در همین سازمان پیدا نشد.',409:'وضعیت منبع مناسب نیست؛ تازه‌سازی کنید.'}[response.status]||'ارتباط با مخزن اطلاعات برقرار نشد.'));}if(!response.headers.get('content-type')?.includes('application/json'))throw Error('نشست پایان یافته است؛ دوباره وارد شوید.');return response.json();}
  function line(label,value){const p=node('p'),bdi=node('bdi',String(value));bdi.dir='ltr';p.append(node('span',label),bdi);return p;}
  function control(label,tag,value){const wrapper=node('label',label),input=node(tag);input.value=value||'';wrapper.append(input);return {wrapper,input};}
@@ -59,25 +60,82 @@
  function sourceActions(card,source){
   const saved=remembered.get(source.id)||{},actionForm=node('form',null,'org-pip-action'),identity=control('شناسهٔ هویت برای بررسی یا دریافت','input',saved.subject||source.syncSubjects?.[0]||''),reason=control('دلیل عملیات','input',saved.reason),check=node('button','بررسی تازگی دادهٔ این هویت','button secondary'),result=node('div',null,'org-reason org-pip-subject-result');
   identity.input.maxLength=200;identity.input.dir='ltr';check.type='submit';check.id='pip-source-'+source.id+'-inspect';actionForm.append(identity.wrapper,check,result);let generation=0;
-  const remember=extra=>remembered.set(source.id,{...remembered.get(source.id),subject:identity.input.value.trim(),reason:reason.input.value.trim(),...extra});
+  const epoch=sourceActionEpochs.get(source.id)||0,isCurrent=()=>epoch===(sourceActionEpochs.get(source.id)||0);
+  const remember=extra=>{if(isCurrent())remembered.set(source.id,{...remembered.get(source.id),subject:identity.input.value.trim(),reason:reason.input.value.trim(),...extra});};
   identity.input.oninput=()=>{generation++;result.replaceChildren();remember({result:null});};reason.input.oninput=()=>remember({});
   if(saved.result&&saved.subject===identity.input.value)renderSubject(result,saved.result,saved.isTest);
-  actionForm.onsubmit=async event=>{event.preventDefault();const subject=identity.input.value.trim(),current=++generation;if(!subject){status('شناسهٔ پایدار هویت را وارد کنید.',true);return;}check.disabled=true;try{const item=await request('/sources/'+encodeURIComponent(source.id)+'/status?subject='+encodeURIComponent(subject));if(current!==generation)return;remember({result:item,isTest:false});renderSubject(result,item);}catch(error){if(current===generation)result.replaceChildren(node('p',error.message,'org-error'));}finally{check.disabled=false;}};
+  actionForm.onsubmit=async event=>{event.preventDefault();if(!isCurrent())return;const subject=identity.input.value.trim(),current=++generation;if(!subject){status('شناسهٔ پایدار هویت را وارد کنید.',true);return;}check.disabled=true;try{const item=await request('/sources/'+encodeURIComponent(source.id)+'/status?subject='+encodeURIComponent(subject));if(!isCurrent()||current!==generation)return;remember({result:item,isTest:false});renderSubject(result,item);}catch(error){if(isCurrent()&&current===generation)result.replaceChildren(node('p',error.message,'org-error'));}finally{if(isCurrent())check.disabled=false;}};
   if(manage&&!source.educational){
    reason.input.maxLength=1000;const test=node('button','آزمون اتصال و قرارداد','button secondary'),sync=node('button','دریافت اطلاعات این هویت','button primary'),toggle=node('button',source.enabled?'غیرفعال‌کردن منبع':'فعال‌سازی منبع','button secondary');
    test.type=sync.type=toggle.type='button';test.id='pip-source-'+source.id+'-test';sync.id='pip-source-'+source.id+'-sync';toggle.id='pip-source-'+source.id+'-enabled';sync.disabled=!source.enabled;test.disabled=source.deploymentApproved===false;toggle.disabled=!source.enabled&&source.setup?.canEnable!==true;
    async function operate(path,body){
+    if(!isCurrent())return;
     const why=reason.input.value.trim();if(!why){status('دلیل عملیات منبع را وارد کنید.',true);reason.input.focus();return;}remember({});const current=++generation;sync.disabled=toggle.disabled=test.disabled=true;
-    try{const response=await request('/sources/'+encodeURIComponent(source.id)+path,{...body,reason:why});if(current!==generation)return;
-     if(path==='/test'){remember({result:response,isTest:true});await load();status(response.status==='succeeded'?'آزمون اتصال و قرارداد موفق شد؛ دادهٔ تصمیم هنوز دریافت نشده است.':'آزمون ناموفق است؛ علت و اقدام بعدی را در کارت منبع ببینید.',response.status!=='succeeded');}
-     else{remember({result:null});await load();if(path==='/sync'){status(response.status==='failed'?'دریافت ناموفق بود؛ دادهٔ قبلی فقط تا پایان اعتبار قابل استفاده است.':'دریافت ثبت شد؛ مقادیر و تازگی داده را برای همین هویت بررسی کنید.',response.status==='failed');await history(source);}else status('وضعیت منبع ذخیره شد؛ سیاستی منتشر نشد.');}
-    }catch(error){status(error.message,true);}finally{sync.disabled=!source.enabled;test.disabled=source.deploymentApproved===false;toggle.disabled=!source.enabled&&source.setup?.canEnable!==true;}
+    try{const response=await request('/sources/'+encodeURIComponent(source.id)+path,{...body,reason:why});if(!isCurrent()||current!==generation)return;
+     if(path==='/test'){remember({result:response,isTest:true});await load();if(!isCurrent())return;status(response.status==='succeeded'?'آزمون اتصال و قرارداد موفق شد؛ دادهٔ تصمیم هنوز دریافت نشده است.':'آزمون ناموفق است؛ علت و اقدام بعدی را در کارت منبع ببینید.',response.status!=='succeeded');}
+     else{remember({result:null});await load();if(!isCurrent())return;if(path==='/sync'){status(response.status==='failed'?'دریافت ناموفق بود؛ دادهٔ قبلی فقط تا پایان اعتبار قابل استفاده است.':'دریافت ثبت شد؛ مقادیر و تازگی داده را برای همین هویت بررسی کنید.',response.status==='failed');await history(source);}else status('وضعیت منبع ذخیره شد؛ سیاستی منتشر نشد.');}
+    }catch(error){if(isCurrent())status(error.message,true);}finally{if(isCurrent()){sync.disabled=!source.enabled;test.disabled=source.deploymentApproved===false;toggle.disabled=!source.enabled&&source.setup?.canEnable!==true;}}
    }
    const forSubject=path=>{const subject=identity.input.value.trim();if(!subject){status('شناسهٔ پایدار هویت را وارد کنید.',true);return;}return operate(path,{subject});};
    test.onclick=()=>forSubject('/test');sync.onclick=()=>forSubject('/sync');toggle.onclick=()=>operate('/enabled',{enabled:!source.enabled});
    actionForm.append(reason.wrapper,test,sync,toggle,node('p','آزمون اتصال دادهٔ سیاست را ذخیره نمی‌کند. فعال‌سازی به آزمون موفق و تازهٔ همین نسخه نیاز دارد؛ دریافت، دادهٔ قابل ارزیابی را ثبت می‌کند.','org-reason muted'));
   }
   card.append(actionForm);const link=node('a','تعریف و آزمایش سیاست با این داده','button secondary');link.href='/Governance?tenant='+encodeURIComponent(root.dataset.tenant)+'#decision-workbench';card.append(link);
+ }
+ function sourceSettings(card,source){
+  if(!manage||source.educational)return;
+  const area=node('section',null,'org-pip-settings');area.setAttribute('aria-label','برنامهٔ دریافت '+source.name);card.append(area);
+  function draw(){
+   area.replaceChildren();const draft=settingsDrafts.get(source.id),edit=node('button','ویرایش برنامهٔ دریافت','button secondary');edit.type='button';edit.disabled=source.enabled;edit.setAttribute('aria-expanded',String(Boolean(draft)));area.append(edit);
+   if(source.enabled)area.append(node('p','برای ویرایش برنامهٔ دریافت، ابتدا منبع را غیرفعال کنید. این کار استفاده از دادهٔ آن در تصمیم‌های جدید را متوقف می‌کند؛ پس از ویرایش، آزمون اتصال و دریافت دوباره لازم است.','org-calendar-note'));
+   edit.onclick=()=>{
+    if(source.enabled||settingsDrafts.has(source.id))return;
+    settingsDrafts.set(source.id,{expectedGeneration:source.generation,name:source.name,maxAgeSeconds:String(source.maxAgeSeconds),timeoutSeconds:String(source.timeoutSeconds??10),maxResponseBytes:String(source.maxResponseBytes??262144),pollIntervalSeconds:String(source.pollIntervalSeconds??0),syncSubjects:(source.syncSubjects||[]).join('\n'),reason:''});draw();
+   };
+   if(!draft)return;
+   edit.disabled=true;draft.render=draw;const editor=node('form',null,'org-pip-settings-form'),fields={},note=node('p',draft.message||'شناسهٔ منبع و اتصال سیاست‌ها حفظ می‌شوند. ذخیره، منبع را غیرفعال نگه می‌دارد و رسید آزمون و دادهٔ نسل قبلی را برای استفادهٔ تازه نامعتبر می‌کند.','org-reason '+(draft.message?'org-error':'org-calendar-note'));
+   note.setAttribute('role','status');note.setAttribute('aria-live','polite');
+   const fixed=node('details',null,'org-reason');fixed.append(node('summary','اتصال و قرارداد ثابت این منبع'),line('نشانی: ',source.endpoint),line('مرجع اعتبارنامه: ',source.secretReference||'بدون مرجع'),line('نسخهٔ قرارداد: ',source.schemaVersion??1),line('نسل در حال ویرایش: ',draft.expectedGeneration));
+   for(const item of source.definitions||[])fixed.append(line((item.required?'لازم · ':'اختیاری · ')+item.dataType+' · ',(item.externalName||item.name)+' → '+item.name));
+   fixed.append(node('p','نشانی، مرجع اعتبارنامه و نگاشت ویژگی‌ها در این فرم تغییر نمی‌کنند. تغییر قرارداد اتصال به تعریف و بررسی جداگانه نیاز دارد.','muted'));editor.append(note,fixed);
+   for(const [key,label,tag,min,max]of [['name','نام منبع','input'],['maxAgeSeconds','حداکثر عمر داده (ثانیه)','input',1,86400],['timeoutSeconds','مهلت پاسخ (ثانیه)','input',1,120],['maxResponseBytes','سقف پاسخ (بایت)','input',1024,10485760],['pollIntervalSeconds','فاصلهٔ دریافت (ثانیه؛ صفر یعنی دستی)','input',0,86400],['syncSubjects','هویت‌های برنامهٔ دریافت؛ هر شناسه در یک خط','textarea'],['reason','دلیل تغییر برنامهٔ دریافت','input']]){
+    const field=control(label,tag,draft[key]);field.input.name=key;fields[key]=field.input;
+    if(min!==undefined){field.input.type='number';field.input.min=String(min);field.input.max=String(max);field.input.step='1';field.input.required=true;field.input.dir='ltr';}
+    else if(key==='syncSubjects'){field.input.rows=4;field.input.maxLength=20100;field.input.dir='ltr';field.wrapper.className='org-reason';}
+    else{field.input.required=true;field.input.maxLength=key==='reason'?1000:200;}
+    field.input.oninput=()=>{if(!draft.pending)draft[key]=field.input.value;};editor.append(field.wrapper);
+   }
+   editor.append(node('p','مثال: عمر داده ۶۰ ثانیه و دریافت هر ۳۰ ثانیه. فاصلهٔ دریافت خودکار باید از عمر داده کمتر باشد و حداقل یک هویت مشخص داشته باشد. حداکثر ۱۰۰ شناسه مجاز است. صفر یعنی دریافت فقط با اقدام دستی انجام می‌شود.','org-reason muted'));
+   const save=node('button','ذخیرهٔ برنامه و نیاز به آزمون مجدد','button primary'),cancel=node('button','انصراف از ویرایش','button secondary'),reload=node('button','تازه‌سازی و کنارگذاشتن تغییرات','button secondary'),actions=node('div',null,'org-reason org-calendar-actions');save.type='submit';cancel.type=reload.type='button';reload.hidden=!draft.message;actions.append(save,cancel,reload);editor.append(actions);area.append(editor);
+   const capture=()=>{for(const key of Object.keys(fields))draft[key]=fields[key].value;};
+   const setBusy=value=>{draft.pending=value;editor.setAttribute('aria-busy',String(value));for(const input of Object.values(fields))input.disabled=value;save.disabled=value||source.enabled;cancel.disabled=reload.disabled=value;};setBusy(Boolean(draft.pending));
+   const showError=message=>{draft.message=message;note.textContent=message;note.className='org-reason org-error';reload.hidden=false;};
+   cancel.onclick=()=>{if(draft.pending)return;settingsDrafts.delete(source.id);draw();area.querySelector('button')?.focus();};
+   reload.onclick=async()=>{if(draft.pending)return;settingsDrafts.delete(source.id);await load();};
+   editor.onsubmit=async event=>{
+    event.preventDefault();if(draft.pending)return;capture();let operation;
+    try{
+     if(source.enabled)throw Error(issueNames['source-must-be-disabled']);
+     if(!Number.isSafeInteger(draft.expectedGeneration)||draft.expectedGeneration<1||draft.expectedGeneration!==source.generation)throw Error(issueNames['source-generation-conflict']);
+     const command={expectedGeneration:draft.expectedGeneration,name:draft.name.trim(),reason:draft.reason.trim()};
+     if(!command.name||command.name.length>200||!command.reason||command.reason.length>1000||/[\u0000-\u001f\u007f]/.test(command.name+command.reason))throw Error('نام منبع و دلیل تغییر معتبر را وارد کنید.');
+     for(const [key,min,max]of [['maxAgeSeconds',1,86400],['timeoutSeconds',1,120],['maxResponseBytes',1024,10485760],['pollIntervalSeconds',0,86400]]){
+      const text=draft[key].trim(),value=Number(text);if(!/^\d+$/.test(text)||!Number.isSafeInteger(value)||value<min||value>max)throw Error('حدود زمان و اندازهٔ پاسخ باید عدد صحیح در بازهٔ درج‌شده باشند.');command[key]=value;
+     }
+     command.syncSubjects=draft.syncSubjects.split(/\r?\n/).map(value=>value.trim()).filter(Boolean);
+     if(command.syncSubjects.length>100||command.syncSubjects.some(value=>value.length>200||/[\u0000-\u001f\u007f]/.test(value)))throw Error('حداکثر ۱۰۰ شناسهٔ معتبر، هرکدام تا ۲۰۰ نویسه وارد کنید.');
+     if(new Set(command.syncSubjects).size!==command.syncSubjects.length)throw Error('شناسهٔ هویت تکراری است؛ هر هویت را یک بار وارد کنید.');
+     if(command.pollIntervalSeconds!==0&&(command.pollIntervalSeconds<30||command.pollIntervalSeconds>=command.maxAgeSeconds||!command.syncSubjects.length))throw Error('دریافت خودکار به حداقل یک هویت و فاصلهٔ حداقل ۳۰ ثانیه و کمتر از عمر داده نیاز دارد.');
+     operation={};draft.operation=operation;setBusy(true);await request('/sources/'+encodeURIComponent(source.id)+'/settings',command);if(settingsDrafts.get(source.id)!==draft||draft.operation!==operation)return;settingsDrafts.delete(source.id);remembered.delete(source.id);
+     // A committed settings generation invalidates older action views even if the next read fails.
+     sourceActionEpochs.set(source.id,(sourceActionEpochs.get(source.id)||0)+1);loadGeneration++;
+     const currentCard=$('org-pip-sources').children[sources.findIndex(item=>item.id===source.id)]||card,recovery=node('button','تازه‌سازی وضعیت منبع','button secondary'),notice=node('p','برنامه ذخیره شد؛ در حال خواندن وضعیت تازه…','org-success');recovery.type='button';recovery.disabled=true;recovery.onclick=async()=>{recovery.disabled=true;if(!await load())recovery.disabled=false;};currentCard.replaceChildren(node('h4',command.name),notice,recovery);
+     overview=null;$('org-pip-overview')?.replaceChildren(node('p','آمار قبلی پس از تغییر برنامه معتبر نیست؛ وضعیت تازه را بخوانید.','org-calendar-note'));
+     const refreshed=await load();if(!refreshed){notice.textContent='برنامه ذخیره شده و منبع غیرفعال است. شاهد و رسید قبلی نامعتبرند؛ برای آزمون دوباره، ابتدا وضعیت تازه را بخوانید.';notice.className='org-calendar-note';recovery.disabled=false;}status(refreshed?'برنامهٔ دریافت با همان شناسه ذخیره شد؛ منبع غیرفعال است. آزمون اتصال را دوباره اجرا کنید، سپس فعال‌سازی و دریافت را انجام دهید.':'برنامه ذخیره شد، اما خواندن وضعیت تازه کامل نشد. پیش از عملیات بعدی، وضعیت را تازه‌سازی کنید.',!refreshed);
+    }catch(error){if(settingsDrafts.get(source.id)===draft)showError(error.message);}finally{if(settingsDrafts.get(source.id)===draft&&(!operation||draft.operation===operation)){setBusy(false);if(draft.render!==draw)draft.render?.();}}
+   };
+  }
+  draw();
  }
  function render(){
   renderOverview();const box=$('org-pip-sources');box.replaceChildren();
@@ -87,7 +145,7 @@
    if(source.educational)card.append(node('p','منبع آموزشی با دادهٔ مصنوعی؛ اتصال واقعی منابع انسانی نیست.','org-calendar-note'));if(source.schemaVersion===2)card.append(node('p','قرارداد ۲: پایان اعتبار داده، زودترینِ عمر مجاز و validUntil اعلام‌شدهٔ مرجع است.','org-calendar-note'));if(source.lastError)card.append(node('p','آخرین خطا: '+explain(source.lastError),'org-error'));
    const definitions=node('details');definitions.id='pip-source-'+source.id+'-contract';definitions.append(node('summary','قرارداد و نگاشت ویژگی‌ها'));for(const item of source.definitions||[])definitions.append(line((item.required?'لازم · ':'اختیاری · ')+item.dataType+' · ',(item.externalName||item.name)+' → '+item.name));if(!source.definitions?.length)definitions.append(node('p','تعریف نوع‌دار ویژگی در پاسخ منبع موجود نیست.'));card.append(definitions);
    if(source.subjects?.length){const subjects=node('details');subjects.append(node('summary','وضعیت '+source.subjects.length+' هویت برنامهٔ دریافت'));for(const item of source.subjects){const entry=node('div',null,'org-pip-subject-summary');entry.append(line('هویت: ',item.subject),node('p',statuses[item.status]||item.status));if(item.error)entry.append(node('p',explain(item.error)));if(item.nextDueAt)entry.append(node('small','موعد بعدی: '+dates(item.nextDueAt)));subjects.append(entry);}card.append(subjects);}
-   const runs=node('button','دیدن سوابق دریافت','button secondary');runs.type='button';runs.onclick=()=>history(source);card.append(runs);sourceActions(card,source);box.append(card);
+   const runs=node('button','دیدن سوابق دریافت','button secondary');runs.type='button';runs.onclick=()=>history(source);card.append(runs);sourceActions(card,source);sourceSettings(card,source);box.append(card);
   }
   if(!sources.length)box.append(node('p','منبع خارجی ثبت نشده است. ابتدا مسئول داده و قرارداد ویژگی‌ها را مشخص کنید؛ دادهٔ اعضا، چارت و تقویم فعلی همچنان از مخزن محلی خوانده می‌شود.','org-calendar-note'));
  }
