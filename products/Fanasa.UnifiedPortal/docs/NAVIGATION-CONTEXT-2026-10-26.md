@@ -61,3 +61,29 @@ reader مرکزی پاسخ 503 داشت؛ آزمون مرورگر جدید رف�
 مالی زنده همچنان به قراردادها و تنظیمات مصوب مالکان مرکزی وابسته‌اند.
 این اصلاح، scope، grant، SSO، پایگاه داده یا تنظیم مالی را تغییر نمی‌دهد.
 پیش‌فرض ConsumerBilling خاموش می‌ماند. وضعیت نصب همین اصلاح جداگانه ثبت می‌شود.
+
+## تحویل development
+
+کامیت `6c968f3741cf82b7376caf6d2f16cdc029d9ea0e` از snapshot ثابت Git بسته‌بندی
+و در `2026-10-26T13:07:07Z` فقط روی development نصب شد. ۹۵ فایل ZIP بررسی شدند؛
+آزمون، fixture، میزبان پیش‌نمایش، environment و کلید در بسته نیستند. manifest
+همین کامیت را مشخص می‌کند. پیش‌فرض مالی بسته خاموش است.
+
+- ZIP SHA256: `3fcb0fa4c7f8f934b390cdcaf587a5c75939d79bc32e265a5d996de1595c82d3`
+- Web DLL SHA256: `1bebf55805205e62f97327ae9243b8c82320c0e8d212cec0bc9f574f3dec6742`
+
+checksum helper نصب، archive، manifest، DLL و پنج asset با snapshot تطبیق
+داده شدند. سلامت و فایل‌های portal.js، portal-navigation.js، workspace.js،
+workspace.css و service-catalog.js پاسخ 200 و hash یکسان با بسته داشتند.
+Workspace و Snapshot برای ناشناس 302 مستقیم به Keycloak مرکزی دادند.
+release قبلی `715ad39eb002e8a132de013b9099001ffef58097` برای بازگشت محفوظ است؛
+hash فایل environment توسعه و symlink production پیش و پس از نصب یکسان‌اند.
+receiptها و خروجی نصب در `.artifacts/portal-navigation-20261026/` محفوظ‌اند.
+
+پس از نصب، صفحهٔ واقعی در مرورگر reload شد: اسکریپت نسخه‌دار جدید در سند بود،
+خطای JavaScript ثبت نشد و در وضعیت شکست reader هیچ شناسهٔ سازمانی در لینک‌های
+خروجی نبود. لینک خدمات در خود Workspace به `#top` می‌رود. بررسی دوبارهٔ موبایل
+عرض viewport و محتوا را هر دو ۳۷۵ پیکسل نشان داد؛ تصویر خصوصی
+`07-development-installed-mobile.png` شاهد همین نسخه است. میزبان نمونه پس از
+پذیرش متوقف و تب آن بسته شد. آزمون موفق سازمان واقعی همچنان وابسته به reader
+مرکزی است؛ این نصب، اتصال مرکزی یا گزارش مالی را تکمیل‌شده اعلام نمی‌کند.
