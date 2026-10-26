@@ -41,63 +41,79 @@ internal static class PortalSignInTests
         var loginQuery = QueryHelpers.ParseQuery(new Uri("https://portal.example.invalid" + PortalSignIn.LoginUrl("/Workspace?tenantId=" + organization + "#usage")).Query);
         Check(loginQuery["returnUrl"] == "/Workspace?tenantId=" + organization + "#usage", "rendered login URL retains one encoded local destination");
 
-        var metadata = new OpenIdConnectConfiguration
+        foreach (var usePar in new[] { false, true })
         {
-            Issuer = "https://identity.example.invalid/realms/fanasa",
-            AuthorizationEndpoint = "https://identity.example.invalid/realms/fanasa/protocol/openid-connect/auth"
-        };
-        var network = new RejectNetwork();
-        var services = new ServiceCollection().AddLogging();
-        services.AddDataProtection().UseEphemeralDataProtectionProvider();
-        services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme).AddCookie().AddOpenIdConnect(options =>
-        {
-            options.Authority = metadata.Issuer;
-            options.ClientId = "synthetic-portal";
-            options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.ResponseType = "code";
-            options.UsePkce = true;
-            options.SaveTokens = false;
-            options.ConfigurationManager = new StaticConfigurationManager<OpenIdConnectConfiguration>(metadata);
-            options.Backchannel = new HttpClient(network);
-        });
-        await using var provider = services.BuildServiceProvider();
-        foreach (var (query, expected) in new[]
-        {
-            ("?returnUrl=" + Uri.EscapeDataString("/Workspace?tenantId=" + organization + "#usage"), "/Workspace?tenantId=" + organization + "#usage"),
-            ("?returnUrl=https%3A%2F%2Foutside.example%2F", "/"),
-            ("?returnUrl=%2FWorkspace&returnUrl=%2Flogout", "/"),
-            ("", "/")
-        })
-        {
-            await using var requestScope = provider.CreateAsyncScope();
-            var context = new DefaultHttpContext { RequestServices = requestScope.ServiceProvider };
-            context.Request.Scheme = "https";
-            context.Request.Host = new HostString("portal.example.invalid");
-            context.Request.Path = "/login";
-            context.Request.QueryString = new QueryString(query);
-            await PortalSignIn.Challenge(context).ExecuteAsync(context);
-            var target = new Uri(context.Response.Headers.Location.ToString());
-            var fields = QueryHelpers.ParseQuery(target.Query);
-            var options = provider.GetRequiredService<IOptionsMonitor<OpenIdConnectOptions>>().Get(OpenIdConnectDefaults.AuthenticationScheme);
-            var properties = options.StateDataFormat.Unprotect(fields["state"].ToString());
-            Check(context.Response.StatusCode == 302 && target.GetLeftPart(UriPartial.Path) == metadata.AuthorizationEndpoint,
-                "actual challenge goes directly to the identity provider");
-            Check(properties?.RedirectUri == expected, "protected OIDC state contains the sanitized return path");
-            Check(fields["redirect_uri"] == "https://portal.example.invalid/signin-oidc" && fields["code_challenge_method"] == "S256"
-                && fields["response_type"] == "code" && fields["code_challenge"].ToString().Length > 0,
-                "callback and PKCE remain fixed independently of the return path");
+            var metadata = new OpenIdConnectConfiguration
+            {
+                Issuer = "https://identity.example.invalid/realms/fanasa",
+                AuthorizationEndpoint = "https://identity.example.invalid/realms/fanasa/protocol/openid-connect/auth",
+                PushedAuthorizationRequestEndpoint = usePar ? SyntheticBackchannel.ParEndpoint : null
+            };
+            var network = new SyntheticBackchannel(usePar);
+            var services = new ServiceCollection().AddLogging();
+            services.AddDataProtection().UseEphemeralDataProtectionProvider();
+            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme).AddCookie().AddOpenIdConnect(options =>
+            {
+                options.Authority = metadata.Issuer;
+                options.ClientId = "synthetic-portal";
+                options.ClientSecret = "synthetic-test-only";
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.ResponseType = "code";
+                options.UsePkce = true;
+                options.SaveTokens = false;
+                options.ConfigurationManager = new StaticConfigurationManager<OpenIdConnectConfiguration>(metadata);
+                options.Backchannel = new HttpClient(network);
+            });
+            await using var provider = services.BuildServiceProvider();
+            foreach (var (query, expected) in new[]
+            {
+                ("?returnUrl=" + Uri.EscapeDataString("/Workspace?tenantId=" + organization + "#usage"), "/Workspace?tenantId=" + organization + "#usage"),
+                ("?returnUrl=https%3A%2F%2Foutside.example%2F", "/"),
+                ("?returnUrl=%2FWorkspace&returnUrl=%2Flogout", "/"),
+                ("", "/")
+            })
+            {
+                await using var requestScope = provider.CreateAsyncScope();
+                var context = new DefaultHttpContext { RequestServices = requestScope.ServiceProvider };
+                context.Request.Scheme = "https";
+                context.Request.Host = new HostString("portal.example.invalid");
+                context.Request.Path = "/login";
+                context.Request.QueryString = new QueryString(query);
+                await PortalSignIn.Challenge(context).ExecuteAsync(context);
+                var target = new Uri(context.Response.Headers.Location.ToString());
+                var fields = QueryHelpers.ParseQuery(target.Query);
+                Check(usePar ? fields.ContainsKey("request_uri") && !fields.ContainsKey("state") && !fields.ContainsKey("redirect_uri")
+                    : !fields.ContainsKey("request_uri"), "browser redirect follows the advertised direct or PAR protocol");
+                var authorizationFields = usePar ? network.LastRequest! : fields;
+                var options = provider.GetRequiredService<IOptionsMonitor<OpenIdConnectOptions>>().Get(OpenIdConnectDefaults.AuthenticationScheme);
+                var properties = options.StateDataFormat.Unprotect(authorizationFields["state"].ToString());
+                Check(context.Response.StatusCode == 302 && target.GetLeftPart(UriPartial.Path) == metadata.AuthorizationEndpoint,
+                    "actual challenge goes directly to the identity provider");
+                Check(properties?.RedirectUri == expected, "protected OIDC state contains the sanitized return path");
+                Check(authorizationFields["redirect_uri"] == "https://portal.example.invalid/signin-oidc" && authorizationFields["code_challenge_method"] == "S256"
+                    && authorizationFields["response_type"] == "code" && authorizationFields["code_challenge"].ToString().Length > 0,
+                    "callback and PKCE remain fixed independently of the return path");
+            }
+            Check(network.Calls == (usePar ? 4 : 0), "only synthetic PAR handler is used; no external network or issued tokens");
         }
-        Check(network.Calls == 0, "synthetic checks issue no network requests or tokens");
         return checks;
     }
 
-    private sealed class RejectNetwork : HttpMessageHandler
+    private sealed class SyntheticBackchannel(bool allowPar) : HttpMessageHandler
     {
+        internal const string ParEndpoint = "https://identity.example.invalid/realms/fanasa/protocol/openid-connect/ext/par/request";
         internal int Calls { get; private set; }
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        internal Dictionary<string, Microsoft.Extensions.Primitives.StringValues>? LastRequest { get; private set; }
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Calls++;
-            throw new InvalidOperationException("Sign-in return checks must not use the network.");
+            if (!allowPar || request.Method != HttpMethod.Post || request.RequestUri?.AbsoluteUri != ParEndpoint)
+                throw new InvalidOperationException("Sign-in checks allow only the in-memory synthetic PAR handler.");
+            LastRequest = QueryHelpers.ParseQuery(await request.Content!.ReadAsStringAsync(cancellationToken));
+            return new HttpResponseMessage(System.Net.HttpStatusCode.Created)
+            {
+                Content = new StringContent("{\"request_uri\":\"urn:ietf:params:oauth:request_uri:synthetic\",\"expires_in\":90}", System.Text.Encoding.UTF8, "application/json")
+            };
         }
     }
 }
