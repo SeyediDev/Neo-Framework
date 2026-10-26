@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @{
     ViewData["Title"] = "پنجره واحد";
+    ViewData["NavigationOrganizationId"] = Model.Status == CatalogStatus.Ready ? Model.ActiveOrganizationId : null;
     var authenticated = User.Identity?.IsAuthenticated == true;
     var centers = new[]
     {

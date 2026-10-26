@@ -4,6 +4,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const navigation = require('../src/Fanasa.UnifiedPortal.Web/wwwroot/portal-navigation.js');
+const navigationSource = fs.readFileSync(path.join(__dirname, '../src/Fanasa.UnifiedPortal.Web/wwwroot/portal-navigation.js'), 'utf8');
 
 // Execute the shipped script without adding a browser/DOM package to the product.
 // This models request and control state, not layout; real layout is checked separately.
@@ -67,10 +69,15 @@ function setup(options = {}) {
     });
     const location = new URL(options.location || 'https://portal.test/?tenantId=tenant-a#workspace');
     const history = [];
-    vm.runInNewContext(source, {
+    const navigationLinks = Object.fromEntries(['home', 'workspace', 'services', 'centers'].map(key => {
+        const link = new Element('a'); link.dataset.portalLink = key; return [key, link];
+    }));
+    const context = vm.createContext({
         document: {
+            body: { dataset: { portalPage: 'home', portalOrganization: options.initialOrganization || '' } },
             getElementById: id => elements[id], querySelectorAll: selector =>
-                selector === '.center-card' ? cards : selector === '[data-filter]' ? buttons : [],
+                selector === '.center-card' ? cards : selector === '[data-filter]' ? buttons
+                    : selector === '[data-portal-link]' ? Object.values(navigationLinks) : [],
             createElement: tag => new Element(tag)
         }, Option, URL, AbortController, location,
         history: { replaceState: (_, __, url) => history.push(String(url)) },
@@ -82,7 +89,9 @@ function setup(options = {}) {
             if (!ignoresAbort) options.signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })), { once: true });
         })
     });
-    return { elements, requests, timers, history, cards, buttons,
+    vm.runInContext(navigationSource, context);
+    vm.runInContext(source, context);
+    return { elements, requests, timers, history, cards, buttons, navigationLinks,
         start: () => elements['workspace-refresh'].dispatch('click'),
         expire: () => { const [id, timer] = timers.entries().next().value; timers.delete(id); timer.callback(); }
     };
@@ -95,6 +104,52 @@ const payload = (tenant = 'tenant-a') => ({
 function response(data, json = () => Promise.resolve(data)) {
     return { ok: true, headers: { get: () => 'application/json; charset=utf-8' }, json };
 }
+
+test('navigation retains the selected organization between documents and stays on the document for local sections', () => {
+    const organization = '11111111-1111-4111-8111-111111111111';
+    assert.deepEqual(navigation.routesFor(organization, 'home'), {
+        home: '#top', workspace: '#workspace', centers: '#centers', services: '/Workspace?tenantId=' + organization
+    });
+    assert.deepEqual(navigation.routesFor(organization, 'workspace'), {
+        home: '/?tenantId=' + organization, workspace: '/?tenantId=' + organization + '#workspace',
+        centers: '/?tenantId=' + organization + '#centers', services: '#top'
+    });
+});
+
+test('navigation accepts only a canonical nonempty organization identifier and never an arbitrary destination', () => {
+    for (const value of [undefined, null, '', 'tenant-a', '00000000-0000-0000-0000-000000000000',
+        'https://other.example/', '//other.example/', '11111111-1111-4111-8111-111111111111&handler=Secret',
+        ' 11111111-1111-4111-8111-111111111111', {}]) {
+        assert.equal(navigation.routesFor(value, 'home').services, '/Workspace');
+        assert.equal(navigation.routesFor(value, 'workspace').workspace, '/#workspace');
+    }
+    assert.equal(navigation.routesFor('AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA', 'home').services,
+        '/Workspace?tenantId=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+});
+
+test('shipped home navigation clears its previous organization on refresh and follows only the accepted response', async () => {
+    const orgA = '11111111-1111-4111-8111-111111111111', orgB = '22222222-2222-4222-8222-222222222222';
+    const app = setup({ initialOrganization: orgA });
+    assert.equal(app.navigationLinks.services.attributes.href, '/Workspace?tenantId=' + orgA);
+    const pending = app.start();
+    assert.equal(app.navigationLinks.services.attributes.href, '/Workspace');
+    app.requests[0].resolve(response(payload(orgB))); await pending;
+    assert.equal(app.navigationLinks.services.attributes.href, '/Workspace?tenantId=' + orgB);
+    const denied = app.start();
+    app.requests[1].resolve(response({ ...payload(orgA), status: 'Forbidden' })); await denied;
+    assert.equal(app.navigationLinks.services.attributes.href, '/Workspace');
+    const failed = app.start(); app.requests[2].reject(new Error('offline')); await failed;
+    assert.equal(app.navigationLinks.services.attributes.href, '/Workspace');
+});
+
+test('a late organization response cannot change navigation after the newer selection has completed', async () => {
+    const orgA = '11111111-1111-4111-8111-111111111111', orgB = '22222222-2222-4222-8222-222222222222';
+    const app = setup({ initialOrganization: orgA, ignoresAbort: true });
+    const old = app.start(), current = app.start();
+    app.requests[1].resolve(response(payload(orgB))); await current;
+    app.requests[0].resolve(response(payload(orgA))); await old;
+    assert.equal(app.navigationLinks.services.attributes.href, '/Workspace?tenantId=' + orgB);
+});
 
 test('refresh is no-store and removes stale links while retaining the verified selection', async () => {
     const app = setup();

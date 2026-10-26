@@ -1,6 +1,11 @@
 @using System.Security.Claims
 @{
     var isPortalHome = string.Equals(ViewContext.RouteData.Values["page"]?.ToString(), "/Index", StringComparison.OrdinalIgnoreCase);
+    var isServiceWorkspace = string.Equals(ViewContext.RouteData.Values["page"]?.ToString(), "/Workspace", StringComparison.OrdinalIgnoreCase);
+    var navigationOrganization = ViewData["NavigationOrganizationId"] is Guid organization && organization != Guid.Empty ? (Guid?)organization : null;
+    var organizationQuery = navigationOrganization.HasValue ? "?tenantId=" + navigationOrganization.Value.ToString("D") : "";
+    var homeUrl = "/" + organizationQuery;
+    var servicesUrl = "/Workspace" + organizationQuery;
 }
 <!doctype html>
 <html lang="fa" dir="rtl">
@@ -12,13 +17,14 @@
     <title>@ViewData["Title"] · فن آسا</title>
     <link rel="icon" href="~/brand/fanasa-horizontal-fa.svg" />
     <link rel="stylesheet" href="~/portal.css" asp-append-version="true" />
+    <script src="~/portal-navigation.js" asp-append-version="true" defer></script>
 </head>
-<body id="top">
+<body id="top" data-portal-page="@(isPortalHome ? "home" : isServiceWorkspace ? "workspace" : "other")" data-portal-organization="@navigationOrganization">
     <a class="skip-link" href="#main-content">رفتن به محتوای اصلی</a>
     <div class="portal-shell">
         <nav class="portal-nav" aria-label="ناوبری اصلی">
-            <a class="brand" href="@(isPortalHome ? "#top" : "/")" aria-label="صفحه اصلی پنجره واحد فن آسا"><img src="~/brand/fanasa-horizontal-fa.svg" alt="فن آسا" width="164" height="56" /></a>
-            <div class="nav-links"><a href="@(isPortalHome ? "#workspace" : "/#workspace")">فضای کار</a><a href="/Workspace">خدمات سازمان</a><a href="@(isPortalHome ? "#centers" : "/#centers")">خدمات فن آسا</a></div>
+            <a class="brand" data-portal-link="home" href="@(isPortalHome ? "#top" : homeUrl)" aria-label="صفحه اصلی پنجره واحد فن آسا"><img src="~/brand/fanasa-horizontal-fa.svg" alt="فن آسا" width="164" height="56" /></a>
+            <div class="nav-links"><a data-portal-link="workspace" href="@(isPortalHome ? "#workspace" : homeUrl + "#workspace")">فضای کار</a><a data-portal-link="services" href="@(isServiceWorkspace ? "#top" : servicesUrl)">خدمات سازمان</a><a data-portal-link="centers" href="@(isPortalHome ? "#centers" : homeUrl + "#centers")">خدمات فن آسا</a></div>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="account"><span class="account-name">@(User.FindFirstValue("preferred_username") ?? User.Identity.Name ?? "حساب سازمانی")</span><a href="/logout">خروج</a></div>

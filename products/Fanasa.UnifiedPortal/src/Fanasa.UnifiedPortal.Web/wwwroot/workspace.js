@@ -584,6 +584,7 @@
     }
     function installSnapshot(data) {
         bootstrap = data; preview = data.mode === 'synthetic-preview';
+        globalThis.FanasaPortalNavigation?.setOrganization(data.workspaceLoading !== true && data.catalogStatus === 'ready' ? data.organizationId : null);
         const financialSignIn = data.catalogStatus === 'ready' && isOrganization(data.organizationId) && data.billingReadStatus === 'signInRequired';
         get('workspace-login').hidden = preview || data.workspaceLoading === true || !(data.catalogStatus === 'signInRequired' || financialSignIn);
         let storage = null; if (preview) try { storage = window.sessionStorage; } catch { /* Preview stays in memory. */ }

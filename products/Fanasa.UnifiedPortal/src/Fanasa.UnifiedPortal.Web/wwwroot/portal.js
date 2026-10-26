@@ -105,6 +105,7 @@
         } catch { return null; }
     };
     const render = data => {
+        globalThis.FanasaPortalNavigation?.setOrganization(data.status === 'Ready' ? data.activeOrganizationId : null);
         select.replaceChildren(new Option(data.presentation.organizationPlaceholder, ''));
         data.organizations.forEach(organization => select.add(new Option(organization.name, organization.id, false, organization.id === data.activeOrganizationId)));
         grid.replaceChildren();
@@ -153,6 +154,7 @@
             requestController.abort();
         }, workspaceTimeoutMs);
         const requested = select.value;
+        globalThis.FanasaPortalNavigation?.setOrganization(null);
         globalThis.FanasaServiceCatalog?.invalidate();
         panel.setAttribute('aria-busy', 'true');
         refresh.disabled = submit.disabled = select.disabled = true;

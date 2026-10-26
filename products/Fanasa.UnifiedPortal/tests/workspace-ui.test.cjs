@@ -294,6 +294,10 @@ function renderWorkspace(data) {
     get('publish-form').append(get('publish-submit'));
     get('workspace-bootstrap').textContent = JSON.stringify(data);
     const source = fs.readFileSync(path.join(__dirname, '../src/Fanasa.UnifiedPortal.Web/wwwroot/workspace.js'), 'utf8');
+    const navigationSource = fs.readFileSync(path.join(__dirname, '../src/Fanasa.UnifiedPortal.Web/wwwroot/portal-navigation.js'), 'utf8');
+    const navigationLinks = Object.fromEntries(['home', 'workspace', 'services', 'centers'].map(key => {
+        const link = new Element('a'); link.dataset.portalLink = key; return [key, link];
+    }));
     let loader;
     const financialCalls = [];
     function financialRenderer(kind) {
@@ -306,17 +310,21 @@ function renderWorkspace(data) {
             }
         };
     }
-    vm.runInNewContext(source, {
+    const context = vm.createContext({
         URL, Intl, structuredClone, location: new URL('http://workspace.test/Workspace#requests'),
         history: { replaceState() {} }, window: { addEventListener() {}, sessionStorage: memory() },
-        document: { getElementById: get, createElement: tag => new Element(tag) },
+        document: { body: { dataset: { portalPage: 'workspace', portalOrganization: '' } },
+            querySelectorAll: selector => selector === '[data-portal-link]' ? Object.values(navigationLinks) : [],
+            getElementById: get, createElement: tag => new Element(tag) },
         Option: class extends Element { constructor(text, value) { super('option'); this.textContent = text; this.value = value; } },
         FanasaConsumerUsageReport: { renderUsageReport: financialRenderer('usage') },
         FanasaConsumerBilling: { renderConsumerAccount: financialRenderer('account') },
         FanasaWorkspaceTransport: { createLoader(options) { loader = options; return { load() {} }; } }
-    }, { timeout: 5000 });
+    });
+    vm.runInContext(navigationSource, context, { timeout: 5000 });
+    vm.runInContext(source, context, { timeout: 5000 });
     assert.equal(get('service-workspace').dataset.ready, 'true');
-    return { get, loader, financialCalls };
+    return { get, loader, financialCalls, navigationLinks };
 }
 
 function consumerUsage(overrides = {}) {
@@ -439,4 +447,18 @@ test('an expired financial session offers sign-in while received services remain
         const untrusted = renderWorkspace(bootstrap({ mode: 'connected', billingReadStatus: 'signInRequired', ...overrides }));
         assert.equal(untrusted.get('workspace-login').hidden, true);
     }
+});
+
+test('workspace navigation preserves the verified selection and clears it throughout a failed or pending switch', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected' }));
+    assert.equal(app.navigationLinks.workspace.attributes.href, '/?tenantId=' + orgA + '#workspace');
+    assert.equal(app.navigationLinks.services.attributes.href, '#top');
+    app.loader.onStart();
+    assert.equal(app.navigationLinks.workspace.attributes.href, '/#workspace');
+    app.loader.onData(bootstrap({ mode: 'connected', organizationId: orgB })); app.loader.onEnd();
+    assert.equal(app.navigationLinks.workspace.attributes.href, '/?tenantId=' + orgB + '#workspace');
+    app.loader.onStart(); app.loader.onError(false); app.loader.onEnd();
+    assert.equal(app.navigationLinks.workspace.attributes.href, '/#workspace');
+    const denied = renderWorkspace(bootstrap({ mode: 'connected', catalogStatus: 'forbidden' }));
+    assert.equal(denied.navigationLinks.workspace.attributes.href, '/#workspace');
 });
