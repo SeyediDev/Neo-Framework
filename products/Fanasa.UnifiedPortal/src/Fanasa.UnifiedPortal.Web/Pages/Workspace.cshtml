@@ -32,7 +32,10 @@
             <button class="workspace-refresh" id="workspace-refresh" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.8-1L20 9M4 15l2.1 3A7 7 0 0 0 17.9 17"/></svg>تازه‌سازی</button>
         </form>
     </div>
-    <p id="workspace-message" class="workspace-message" role="status" aria-live="polite">@Model.Message</p>
+    <div class="workspace-feedback">
+        <p id="workspace-message" class="workspace-message" role="status" aria-live="polite">@Model.Message</p>
+        <a id="workspace-login" class="workspace-inline-link" href="/login" hidden="@(Model.IsPreview || Model.Status != CatalogStatus.SignInRequired)">ورود دوباره به حساب فن آسا <span aria-hidden="true">←</span></a>
+    </div>
 
     <noscript><div class="workspace-noscript">برای جست‌وجو و نمایش بخش‌های این فضای کار، جاوااسکریپت مرورگر لازم است. سامانه‌های مجاز خود را در <a href="/#workspace">پنجره واحد</a> ببینید.</div></noscript>
 

@@ -392,3 +392,51 @@ test('connected mode never promotes legacy preview usage into an authorized fina
     assert.equal(app.get('consumer-account-report').children.length, 0);
     assert.equal(app.get('consumer-billing-reports').hidden, true);
 });
+
+test('workspace offers direct sign-in for a reported expired session without treating a central outage as expiry', () => {
+    for (const catalogStatus of ['ready', 'unavailable', 'forbidden', 'notConfigured', 'signInRequired']) {
+        const app = renderWorkspace(bootstrap({ mode: 'connected', catalogStatus }));
+        assert.equal(app.get('workspace-login').hidden, catalogStatus !== 'signInRequired');
+    }
+});
+
+test('failed refresh offers optional sign-in and a successful retry hides it without reviving old cards', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected' }));
+    app.loader.onStart();
+    assert.equal(app.get('workspace-login').hidden, true);
+    app.loader.onError(false); app.loader.onEnd();
+    assert.equal(app.get('workspace-login').hidden, false);
+    assert.equal(app.get('active-services').children.length, 0);
+    assert.equal(app.get('workspace-refresh').disabled, false);
+    app.loader.onStart();
+    assert.equal(app.get('workspace-login').hidden, true);
+    app.loader.onData(bootstrap({ mode: 'connected' })); app.loader.onEnd();
+    assert.equal(app.get('workspace-login').hidden, true);
+    assert.equal(app.get('active-services').children.length, 1);
+});
+
+test('timeouts and synthetic preview do not prompt an unnecessary central sign-in', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected' }));
+    app.loader.onStart(); app.loader.onError(false); app.loader.onEnd();
+    assert.equal(app.get('workspace-login').hidden, false);
+    app.loader.onStart(); app.loader.onError(true); app.loader.onEnd();
+    assert.equal(app.get('workspace-login').hidden, true);
+    const preview = renderWorkspace(bootstrap({ catalogStatus: 'signInRequired' }));
+    assert.equal(preview.get('workspace-login').hidden, true);
+    preview.loader.onStart(); preview.loader.onError(false); preview.loader.onEnd();
+    assert.equal(preview.get('workspace-login').hidden, true);
+});
+
+test('an expired financial session offers sign-in while received services remain usable', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected', billingReadStatus: 'signInRequired' }));
+    assert.equal(app.get('workspace-login').hidden, false);
+    assert.equal(app.get('active-services').children.length, 1);
+    app.loader.onStart();
+    assert.equal(app.get('workspace-login').hidden, true);
+    app.loader.onData(bootstrap({ mode: 'connected', billingReadStatus: 'ready' })); app.loader.onEnd();
+    assert.equal(app.get('workspace-login').hidden, true);
+    for (const overrides of [{ organizationId: null }, { catalogStatus: 'unavailable' }, { workspaceLoading: true }]) {
+        const untrusted = renderWorkspace(bootstrap({ mode: 'connected', billingReadStatus: 'signInRequired', ...overrides }));
+        assert.equal(untrusted.get('workspace-login').hidden, true);
+    }
+});

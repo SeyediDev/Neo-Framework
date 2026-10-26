@@ -584,6 +584,8 @@
     }
     function installSnapshot(data) {
         bootstrap = data; preview = data.mode === 'synthetic-preview';
+        const financialSignIn = data.catalogStatus === 'ready' && isOrganization(data.organizationId) && data.billingReadStatus === 'signInRequired';
+        get('workspace-login').hidden = preview || data.workspaceLoading === true || !(data.catalogStatus === 'signInRequired' || financialSignIn);
         let storage = null; if (preview) try { storage = window.sessionStorage; } catch { /* Preview stays in memory. */ }
         session = createPreviewSession(bootstrap, { storage });
         try { writesAllowed = preview && sectionFeedback(bootstrap, 'requests').ready && !!storageScope(bootstrap); } catch { writesAllowed = false; }
@@ -617,6 +619,9 @@
         },
         onError(timedOut) {
             installSnapshot({ ...bootstrap, workspaceLoading: false });
+            // A blocked SSO redirect and a network failure are indistinguishable
+            // with redirect:'error'. Offer sign-in without claiming it expired.
+            get('workspace-login').hidden = preview || timedOut;
             if (organization.options[0]) organization.options[0].textContent = 'دریافت فهرست کامل نشد؛ دوباره تلاش کنید';
             message(timedOut ? 'دریافت اطلاعات بیش از حد طول کشید. دوباره تلاش کنید.' : 'اطلاعات دریافت نشد. دوباره تلاش کنید یا وارد حساب شوید.', 'error');
         },

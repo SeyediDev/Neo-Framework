@@ -18,6 +18,9 @@
 .workspace-refresh{display:flex;align-items:center;gap:7px;padding:10px 8px;min-height:44px;border:0;border-radius:8px;background:transparent;color:var(--lapis);font-size:11px;font-weight:700}
 .workspace-refresh:hover{background:var(--workspace-soft)}
 .workspace-message{min-height:22px;margin:12px 4px 22px;color:var(--muted);font-size:11px;overflow-wrap:anywhere}
+.workspace-feedback{display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin:12px 4px 22px}
+.workspace-feedback .workspace-message{flex:1 1 240px;margin:0}
+.workspace-feedback .workspace-inline-link{display:inline-flex;align-items:center;gap:8px;min-height:44px}
 .workspace-message.is-error,.workspace-form-message.is-error{background:#fff3ef;border:1px solid #edcec6;border-radius:10px;color:var(--workspace-danger);padding:11px 14px}
 .workspace-message.is-success,.workspace-form-message.is-success{background:#edf9f5;border:1px solid #c3e6d9;border-radius:10px;color:var(--workspace-success);padding:11px 14px}
 .workspace-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
