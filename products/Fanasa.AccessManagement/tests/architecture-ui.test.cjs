@@ -21,7 +21,7 @@ test('architecture selection, future actions, filters and unknown deep links',()
   assert.equal(elements.get('arch-local').href,'/Platform');assert.equal(elements.get('arch-local').hidden,false);
   assert.equal(elements.get('arch-capabilities').children.length,3);
   buttons.find(b=>b.dataset.system==='developer').listeners.click();
-  assert.equal(elements.get('arch-stage').textContent,'پذیرش‌نشده');
+  assert.equal(elements.get('arch-stage').textContent,'پذیرش جزئی');
   assert.match(elements.get('arch-evidence').textContent,/localhost فقط محیط توسعه/);
   assert.equal(elements.get('arch-local').href,'https://developer.fanasa.net.local/?workspace=studio&view=roadmap');
   buttons.find(b=>b.dataset.system==='policy').listeners.click();
@@ -45,6 +45,6 @@ test('reference architecture contains planes, contract mapping and safe policy d
   for(const key of ['policy','limits','backend','accounting'])assert.ok(page.includes(`data-system="${key}"`),key);
   assert.match(page,/لینک‌ها از رجیستری مرکزی/);
   assert.doesNotMatch(page,/https:\/\/api\.fanasa\.net\.local/);
-  assert.match(page,/۱۵ اکتبر ۲۰۲۶/);
+  assert.match(page,/۲۶ اکتبر ۲۰۲۶/);
   assert.match(page,/آزمون مصنوعی و smoke محدود جای پذیرش کامل عملیاتی/);
 });

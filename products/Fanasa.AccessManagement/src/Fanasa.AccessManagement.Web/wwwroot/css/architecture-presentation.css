@@ -1,0 +1,77 @@
+.arch-briefing { line-height: 1.95; margin-bottom: 44px; }
+.arch-briefing p { overflow-wrap: anywhere; }
+.briefing-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 18px 0; border-block: 1px solid var(--arch-line); }
+.briefing-controls > p { margin: 0; font-size: 13px; font-weight: 700; }
+.briefing-controls > p span { display: block; color: var(--muted); font-size: 11px; font-weight: 400; }
+.briefing-controls > div { display: flex; gap: 8px; flex-wrap: wrap; }
+.briefing-nav { display: flex; flex-wrap: wrap; gap: 8px 20px; padding-block: 18px; border-bottom: 1px solid var(--arch-line); }
+.briefing-nav a { color: var(--blue); text-decoration: none; font-size: 13px; padding-block: 5px; }
+.briefing-section { padding-block: 38px; border-bottom: 1px solid var(--arch-line); scroll-margin-top: 24px; }
+.briefing-section h3 { margin: 8px 0 18px; font-size: clamp(22px, 2.7vw, 34px); letter-spacing: -.6px; line-height: 1.65; max-width: 920px; }
+.briefing-section h4 { margin: 0 0 8px; font-size: 16px; line-height: 1.8; }
+.briefing-section p { margin: 0; color: var(--muted); font-size: 14px; }
+.briefing-section .briefing-lead { max-width: 920px; font-size: 16px; line-height: 2; }
+.briefing-values { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 26px; }
+.briefing-values article { border-inline-start: 2px solid var(--teal); padding-inline-start: 18px; }
+.briefing-journey { margin-top: 32px; padding: 24px; background: #edf5f6; border-radius: 12px; }
+.briefing-journey ol { list-style: none; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; padding: 0; margin: 18px 0; counter-reset: journey; }
+.briefing-journey li { counter-increment: journey; font-size: 12px; background: #fff; padding: 14px 10px; border: 1px solid var(--arch-line); border-radius: 6px; }
+.briefing-journey li::before { content: counter(journey, persian); display: block; color: var(--teal); font-weight: 700; font-size: 18px; margin-bottom: 5px; }
+.briefing-responsibilities { margin-top: 30px; }
+.briefing-responsibilities .briefing-architecture-note { margin-top: 20px; font-size: 12px; }
+.briefing-architecture-note a { color: var(--blue); }
+.briefing-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.briefing-results article { padding: 24px; border: 1px solid var(--arch-line); background: white; border-radius: 12px; }
+.briefing-results h4 { margin-top: 14px; }
+.briefing-status { display: inline-block; font-size: 11px; padding: 3px 9px; background: #edf3f8; color: #315776; border-radius: 5px; }
+.briefing-status[data-state="operational"] { background: #e2f4ed; color: #17634c; }
+.briefing-status[data-state="local"], .briefing-status[data-state="package"] { background: #fff3d9; color: #79551e; }
+.arch-stage[data-status="پذیرش جزئی"] { background: #fff3d9; color: #79551e; }
+.briefing-results .briefing-next { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--arch-line); font-size: 12px; }
+.briefing-evidence { margin-top: 22px; padding: 16px 0; }
+.briefing-evidence summary { cursor: pointer; color: var(--blue); font-size: 13px; font-weight: 700; }
+.briefing-evidence ul, .briefing-success ul { padding-inline-start: 22px; color: var(--muted); font-size: 13px; }
+.briefing-evidence li, .briefing-success li { padding-block: 5px; }
+.briefing-current { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 28px; }
+.briefing-current article { display: flex; gap: 16px; align-items: flex-start; }
+.briefing-current b { display: grid; place-items: center; flex-shrink: 0; width: 34px; height: 34px; background: #e1efef; color: #08796f; border-radius: 6px; }
+.briefing-principle { padding: 22px 24px; margin-top: 28px; background: #edf3f8; border-radius: 10px; }
+.briefing-principle strong { display: block; margin-bottom: 6px; font-size: 14px; }
+.briefing-roadmap { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }
+.briefing-roadmap li { padding-inline-start: 20px; border-inline-start: 2px solid var(--teal); }
+.briefing-roadmap li > span { display: block; color: var(--teal); font-size: 12px; margin-bottom: 7px; }
+.briefing-roadmap small { display: block; color: var(--muted); font-size: 12px; border-top: 1px solid var(--arch-line); margin-top: 14px; padding-top: 12px; }
+.briefing-success { margin-top: 30px; }
+.briefing-success p { font-size: 12px; }
+body.arch-presenting .sidebar, body.arch-presenting .topbar, body.arch-presenting .arch-technical, body.arch-presenting .arch-intro > a { display: none !important; }
+body.arch-presenting .shell { margin: 0; }
+body.arch-presenting .content { max-width: 1320px; margin-inline: auto; padding: 32px; }
+body.arch-presenting .briefing-section { padding-block: 44px; }
+body.arch-presenting .briefing-section .briefing-lead { font-size: 19px; }
+@media (max-width: 900px) {
+  .briefing-journey ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .briefing-values { grid-template-columns: 1fr; gap: 18px; }
+}
+@media (max-width: 600px) {
+  .briefing-results, .briefing-current, .briefing-roadmap { grid-template-columns: 1fr; }
+  .briefing-section { padding-block: 28px; }
+  .briefing-results article { padding: 20px; }
+  .briefing-journey { padding: 18px; }
+  .briefing-journey ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .briefing-controls > div { width: 100%; }
+  .briefing-controls .button { white-space: normal; }
+  body.arch-presenting .content { padding: 20px 14px; }
+}
+@media print {
+  .briefing-controls > div, .briefing-nav, .arch-intro > a { display: none !important; }
+  .briefing-architecture-note a { display: none; }
+  .shell { margin: 0 !important; }
+  .briefing-section { padding-block: 20px; }
+  .briefing-section h3 { font-size: 20pt; }
+  .briefing-section p, .briefing-section .briefing-lead, body.arch-presenting .briefing-section .briefing-lead { font-size: 11pt; }
+  .briefing-results article, .briefing-current article, .briefing-roadmap li, .briefing-values article, .briefing-principle { break-inside: avoid; }
+  .briefing-evidence:not([open]) { display: none; }
+  .briefing-section { break-inside: auto; }
+  .arch-briefing { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  body.arch-presenting .content { padding: 0; max-width: none; }
+}

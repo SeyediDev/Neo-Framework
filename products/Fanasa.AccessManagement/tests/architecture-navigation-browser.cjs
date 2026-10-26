@@ -51,6 +51,51 @@ const output=path.resolve(process.argv[2]||'../../../../NeoCluster/.build/roadma
         await page.screenshot({path:path.join(output,`platform-architecture-${label}.png`)});
       }
     });
+    await check('management briefing presentation, keyboard exit, technical link and print layout',async()=>{
+      await page.setViewportSize({width:1440,height:1000});
+      await page.goto(origin+'/Architecture');
+      await page.evaluate(()=>document.fonts.ready);
+      for(const id of ['briefing-purpose','briefing-results','briefing-current','briefing-plan','briefing-decisions']){
+        assert.equal(await page.locator('#'+id).count(),1);
+      }
+      await page.screenshot({path:path.join(output,'architecture-briefing-desktop.png')});
+      const present=page.getByRole('button',{name:'نمای ارائه',exact:true});
+      await present.click();
+      assert.equal(await page.locator('#arch-present').getAttribute('aria-pressed'),'true');
+      assert.equal(await page.locator('.sidebar').isVisible(),false);
+      assert.equal(await page.locator('.arch-technical').isVisible(),false);
+      await page.screenshot({path:path.join(output,'architecture-presentation-desktop.png')});
+      await page.locator('#briefing-results').scrollIntoViewIfNeeded();
+      await page.screenshot({path:path.join(output,'architecture-presentation-results.png')});
+      await page.keyboard.press('Escape');
+      assert.equal(await page.locator('#arch-present').getAttribute('aria-pressed'),'false');
+      assert.equal(await page.locator('.sidebar').isVisible(),true);
+      assert.equal(await page.locator('#arch-present').evaluate(el=>el===document.activeElement),true);
+      await page.locator('#arch-present').click();
+      await page.locator('.briefing-architecture-note a').click();
+      assert.equal(await page.locator('#arch-present').getAttribute('aria-pressed'),'false');
+      assert.equal(await page.locator('.arch-technical').isVisible(),true);
+      assert.equal(new URL(page.url()).hash,'#architecture-technical');
+      for(const width of [390,320]){
+        await page.setViewportSize({width,height:844});
+        await page.locator('#arch-present').click();
+        await page.locator('#briefing-purpose').scrollIntoViewIfNeeded();
+        const layout=await page.evaluate(()=>({width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+        assert.ok(layout.scroll<=layout.width,JSON.stringify(layout));
+        await page.screenshot({path:path.join(output,`architecture-presentation-${width}.png`)});
+        await page.keyboard.press('Escape');
+      }
+      await page.setViewportSize({width:1440,height:1000});
+      await page.locator('#arch-present').click();
+      await page.emulateMedia({media:'print'});
+      assert.equal(await page.locator('.briefing-controls button').first().isVisible(),false);
+      assert.equal(await page.locator('.briefing-nav').isVisible(),false);
+      assert.equal(await page.locator('.arch-technical').isVisible(),false);
+      assert.equal(await page.locator('#briefing-plan').isVisible(),true);
+      await page.locator('#briefing-plan').scrollIntoViewIfNeeded();
+      await page.screenshot({path:path.join(output,'architecture-presentation-print.png')});
+      await page.emulateMedia({media:'screen'});
+    });
     assert.deepEqual(blocked,[]);assert.deepEqual(errors,[]);
     fs.writeFileSync(path.join(output,'platform-browser-results.json'),JSON.stringify({fixtureOnly:true,operationalAcceptance:false,checks,blocked,errors},null,2));
   }finally{await browser.close()}

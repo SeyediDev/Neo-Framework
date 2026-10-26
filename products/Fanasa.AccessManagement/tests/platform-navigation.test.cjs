@@ -22,8 +22,11 @@ test('mobile disclosure initially closes, desktop opens, resize restores accessi
     media.matches=!mobile;change();assert.equal(menu.open,mobile);
   }
 });
-test('architecture exposes dated delivery boundaries and the real developer roadmap route',()=>{
+test('architecture exposes dated per-product delivery boundaries and the real developer roadmap route',()=>{
   const page=fs.readFileSync(path.join(root,'Pages/Architecture.cshtml'),'utf8');
-  for(const phrase of ['۲۳ اکتبر ۲۰۲۶','CI/CD خودکار هنوز پذیرش نهایی نشده','localhost فقط محیط موقت','نه پایش زنده','مدیریت قراردادها با GitLab CI','NeoAgA با Jenkins','view=roadmap'])assert.ok(page.includes(phrase),phrase);
+  for(const phrase of ['۲۶ اکتبر ۲۰۲۶','localhost فقط محیط موقت','نه پایش زنده','view=roadmap'])assert.ok(page.includes(phrase),phrase);
+  assert.match(page,/شکست واقعی CI28/);
+  assert.match(page,/بازیابی سالم CI29/);
+  assert.match(page,/این نتیجه به پنجره واحد، مدیریت قراردادها یا NeoAgA تعمیم داده نمی‌شود/);
   for(const gate of ['G1','G2','G3','G4'])assert.ok(page.includes(gate));
 });
