@@ -5,6 +5,7 @@
     var navigationOrganization = Model.Status == CatalogStatus.Ready ? Model.ActiveOrganizationId : null;
     ViewData["NavigationOrganizationId"] = navigationOrganization;
     var homeWorkspaceUrl = "/" + (navigationOrganization.HasValue ? "?tenantId=" + navigationOrganization.Value.ToString("D") : "") + "#workspace";
+    var loginUrl = Fanasa.UnifiedPortal.Web.PortalSignIn.LoginUrl("/Workspace" + (navigationOrganization.HasValue ? "?tenantId=" + navigationOrganization.Value.ToString("D") : "") + "#catalog");
     var mode = Model.IsPreview ? "synthetic-preview" : "connected";
 }
 <link rel="stylesheet" href="~/workspace.css" asp-append-version="true" />
@@ -37,7 +38,7 @@
     </div>
     <div class="workspace-feedback">
         <p id="workspace-message" class="workspace-message" role="status" aria-live="polite">@Model.Message</p>
-        <a id="workspace-login" class="workspace-inline-link" href="/login" hidden="@(Model.IsPreview || Model.Status != CatalogStatus.SignInRequired)">ورود دوباره به حساب فن آسا <span aria-hidden="true">←</span></a>
+        <a id="workspace-login" class="workspace-inline-link" data-portal-login href="@loginUrl" hidden="@(Model.IsPreview || Model.Status != CatalogStatus.SignInRequired)">ورود دوباره به حساب فن آسا <span aria-hidden="true">←</span></a>
     </div>
 
     <noscript><div class="workspace-noscript">برای جست‌وجو و نمایش بخش‌های این فضای کار، جاوااسکریپت مرورگر لازم است. سامانه‌های مجاز خود را در <a href="@homeWorkspaceUrl">پنجره واحد</a> ببینید.</div></noscript>

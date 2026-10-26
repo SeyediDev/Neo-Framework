@@ -72,14 +72,16 @@ function setup(options = {}) {
     const navigationLinks = Object.fromEntries(['home', 'workspace', 'services', 'centers'].map(key => {
         const link = new Element('a'); link.dataset.portalLink = key; return [key, link];
     }));
+    const windowEvents = {};
     const context = vm.createContext({
         document: {
             body: { dataset: { portalPage: 'home', portalOrganization: options.initialOrganization || '' } },
             getElementById: id => elements[id], querySelectorAll: selector =>
                 selector === '.center-card' ? cards : selector === '[data-filter]' ? buttons
-                    : selector === '[data-portal-link]' ? Object.values(navigationLinks) : [],
+                    : selector === '[data-portal-link]' ? Object.values(navigationLinks)
+                        : selector === '[data-portal-login]' ? [elements['workspace-login']] : [],
             createElement: tag => new Element(tag)
-        }, Option, URL, AbortController, location,
+        }, Option, URL, AbortController, location, window: { addEventListener: (name, callback) => { windowEvents[name] = callback; } },
         history: { replaceState: (_, __, url) => history.push(String(url)) },
         setTimeout: (callback, delay) => { const id = ++timerId; timers.set(id, { callback, delay }); return id; },
         clearTimeout: id => timers.delete(id),
@@ -92,6 +94,7 @@ function setup(options = {}) {
     vm.runInContext(navigationSource, context);
     vm.runInContext(source, context);
     return { elements, requests, timers, history, cards, buttons, navigationLinks,
+        setHash: hash => { location.hash = hash; windowEvents.hashchange?.(); },
         start: () => elements['workspace-refresh'].dispatch('click'),
         expire: () => { const [id, timer] = timers.entries().next().value; timers.delete(id); timer.callback(); }
     };
@@ -125,6 +128,30 @@ test('navigation accepts only a canonical nonempty organization identifier and n
     }
     assert.equal(navigation.routesFor('AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA', 'home').services,
         '/Workspace?tenantId=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+});
+
+test('sign-in links retain only the known page, allowed section and canonical organization', () => {
+    const org = 'AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA';
+    const target = value => new URL(value, 'https://portal.test').searchParams.get('returnUrl');
+    for (const section of ['catalog', 'requests', 'services', 'usage', 'publish', 'review'])
+        assert.equal(target(navigation.signInUrlFor(org, 'workspace', '#' + section)), '/Workspace?tenantId=' + org.toLowerCase() + '#' + section);
+    assert.equal(target(navigation.signInUrlFor(org, 'home', '#centers')), '/?tenantId=' + org.toLowerCase() + '#centers');
+    for (const value of ['https://outside.test', '//outside.test', 'javascript:alert(1)', 'usage&handler=Secret'])
+        assert.equal(target(navigation.signInUrlFor(null, 'workspace', value)), '/Workspace#catalog');
+    assert.equal(target(navigation.signInUrlFor('tenant-a', 'home', '#usage')), '/#workspace');
+});
+
+test('home recovery follows section changes and accepted organization while clearing old context during refresh', async () => {
+    const orgA = '11111111-1111-4111-8111-111111111111', orgB = '22222222-2222-4222-8222-222222222222';
+    const app = setup({ initialOrganization: orgA });
+    const target = () => new URL(app.elements['workspace-login'].attributes.href, 'https://portal.test').searchParams.get('returnUrl');
+    assert.equal(target(), '/?tenantId=' + orgA + '#workspace');
+    app.setHash('#centers'); assert.equal(target(), '/?tenantId=' + orgA + '#centers');
+    const pending = app.start(); assert.equal(target(), '/#centers');
+    app.requests[0].resolve(response(payload(orgB))); await pending;
+    assert.equal(target(), '/?tenantId=' + orgB + '#centers');
+    const failed = app.start(); app.requests[1].reject(new Error('offline')); await failed;
+    assert.equal(target(), '/#centers');
 });
 
 test('shipped home navigation clears its previous organization on refresh and follows only the accepted response', async () => {

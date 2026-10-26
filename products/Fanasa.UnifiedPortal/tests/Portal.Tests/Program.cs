@@ -143,6 +143,7 @@ await model.OnGetAsync(second.Id, default);
 Check(model.Products.Count == 0 && model.Status == CatalogStatus.Unavailable,
     "page rejects mismatched consumer envelope as a failure, not a successful empty catalog");
 checks += await WorkspaceTests.RunAsync();
+checks += await PortalSignInTests.RunAsync();
 Console.WriteLine($"{checks} checks passed.");
 
 // Explicit local-only preview of authorized UI states. Never part of the web product.

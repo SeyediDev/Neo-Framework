@@ -289,6 +289,7 @@
         for (const tab of tabs) { const selected = tab === active; tab.setAttribute('aria-selected', String(selected)); tab.tabIndex = selected ? 0 : -1; }
         for (const panel of panels) panel.hidden = panel.dataset.workspacePanel !== name;
         history.replaceState(null, '', '#' + name); if (focus) active.focus();
+        globalThis.FanasaPortalNavigation?.setSection(name);
     }
     root.addEventListener('click', event => {
         const button = event.target.closest?.('[data-workspace-tab]');

@@ -6,6 +6,7 @@
     var organizationQuery = navigationOrganization.HasValue ? "?tenantId=" + navigationOrganization.Value.ToString("D") : "";
     var homeUrl = "/" + organizationQuery;
     var servicesUrl = "/Workspace" + organizationQuery;
+    var loginUrl = Fanasa.UnifiedPortal.Web.PortalSignIn.LoginUrl(isServiceWorkspace ? servicesUrl + "#catalog" : homeUrl + "#workspace");
 }
 <!doctype html>
 <html lang="fa" dir="rtl">
@@ -29,7 +30,7 @@
             {
                 <div class="account"><span class="account-name">@(User.FindFirstValue("preferred_username") ?? User.Identity.Name ?? "حساب سازمانی")</span><a href="/logout">خروج</a></div>
             }
-            else { <a class="nav-login" href="/login">ورود به حساب <span aria-hidden="true">←</span></a> }
+            else { <a class="nav-login" data-portal-login href="@loginUrl">ورود به حساب <span aria-hidden="true">←</span></a> }
         </nav>
         <main id="main-content">@RenderBody()</main>
     </div>

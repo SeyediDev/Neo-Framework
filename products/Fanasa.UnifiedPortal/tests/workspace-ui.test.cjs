@@ -298,6 +298,7 @@ function renderWorkspace(data) {
     const navigationLinks = Object.fromEntries(['home', 'workspace', 'services', 'centers'].map(key => {
         const link = new Element('a'); link.dataset.portalLink = key; return [key, link];
     }));
+    const location = new URL('http://workspace.test/Workspace#requests');
     let loader;
     const financialCalls = [];
     function financialRenderer(kind) {
@@ -311,10 +312,11 @@ function renderWorkspace(data) {
         };
     }
     const context = vm.createContext({
-        URL, Intl, structuredClone, location: new URL('http://workspace.test/Workspace#requests'),
-        history: { replaceState() {} }, window: { addEventListener() {}, sessionStorage: memory() },
+        URL, Intl, structuredClone, location,
+        history: { replaceState(_, __, value) { location.href = new URL(value, location).href; } }, window: { addEventListener() {}, sessionStorage: memory() },
         document: { body: { dataset: { portalPage: 'workspace', portalOrganization: '' } },
-            querySelectorAll: selector => selector === '[data-portal-link]' ? Object.values(navigationLinks) : [],
+            querySelectorAll: selector => selector === '[data-portal-link]' ? Object.values(navigationLinks)
+                : selector === '[data-portal-login]' ? [get('workspace-login')] : [],
             getElementById: get, createElement: tag => new Element(tag) },
         Option: class extends Element { constructor(text, value) { super('option'); this.textContent = text; this.value = value; } },
         FanasaConsumerUsageReport: { renderUsageReport: financialRenderer('usage') },
@@ -406,6 +408,21 @@ test('workspace offers direct sign-in for a reported expired session without tre
         const app = renderWorkspace(bootstrap({ mode: 'connected', catalogStatus }));
         assert.equal(app.get('workspace-login').hidden, catalogStatus !== 'signInRequired');
     }
+});
+
+test('workspace recovery keeps the current tab and accepted organization without reviving it during a failed switch', () => {
+    const app = renderWorkspace(bootstrap({ mode: 'connected', billingReadStatus: 'signInRequired' }));
+    const target = () => new URL(app.get('workspace-login').attributes.href, 'https://portal.test').searchParams.get('returnUrl');
+    assert.equal(target(), '/Workspace?tenantId=' + orgA + '#requests');
+    app.get('tab-requests').listeners.keydown({ key: 'ArrowLeft', preventDefault() {} });
+    assert.equal(app.get('tab-services').attributes['aria-selected'], 'true');
+    assert.equal(target(), '/Workspace?tenantId=' + orgA + '#services');
+    app.loader.onStart(); assert.equal(target(), '/Workspace#services');
+    app.loader.onError(false); app.loader.onEnd();
+    assert.equal(target(), '/Workspace#services');
+    app.loader.onStart();
+    app.loader.onData(bootstrap({ mode: 'connected', organizationId: orgB })); app.loader.onEnd();
+    assert.equal(target(), '/Workspace?tenantId=' + orgB + '#services');
 });
 
 test('failed refresh offers optional sign-in and a successful retry hides it without reviving old cards', () => {

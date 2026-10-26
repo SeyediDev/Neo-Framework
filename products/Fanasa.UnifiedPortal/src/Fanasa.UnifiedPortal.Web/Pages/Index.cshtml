@@ -5,6 +5,7 @@
     ViewData["Title"] = "پنجره واحد";
     ViewData["NavigationOrganizationId"] = Model.Status == CatalogStatus.Ready ? Model.ActiveOrganizationId : null;
     var authenticated = User.Identity?.IsAuthenticated == true;
+    var loginUrl = Fanasa.UnifiedPortal.Web.PortalSignIn.LoginUrl("/" + (Model.Status == CatalogStatus.Ready && Model.ActiveOrganizationId.HasValue ? "?tenantId=" + Model.ActiveOrganizationId.Value.ToString("D") : "") + "#workspace");
     var centers = new[]
     {
         new { Number = "01", Icon = "◈", Name = "ابرگان", Pillar = "کسب‌وکار و بازار", Description = "لایه کسب‌وکار دیجیتال و نقطه تماس آدم‌ها با فن‌آسا", Url = "https://fanasa.net/fa/centers/abrgan", Logo = "/brand/center-abrgan-mark-color.svg", Color = "business" },
@@ -29,7 +30,7 @@
         <h1>همه ابزارهای کارتان،<br /><em>در یک پنجره.</em></h1>
         <p>به سامانه‌های سازمان خود دسترسی پیدا کنید و خدمات موردنیازتان را در میان قابلیت‌های فن آسا بیابید. یک حساب، یک مسیر روشن برای شروع کار.</p>
         <div class="hero-actions">
-            @if (!authenticated) { <a class="button" href="/login">ورود به فضای کار <span aria-hidden="true">←</span></a> }
+            @if (!authenticated) { <a class="button" data-portal-login href="@loginUrl">ورود به فضای کار <span aria-hidden="true">←</span></a> }
             else { <a class="button" href="#workspace">مشاهده سامانه‌های من <span aria-hidden="true">←</span></a> }
             <a class="text-link" href="#centers">آشنایی با خدمات <span aria-hidden="true">↓</span></a>
         </div>
@@ -71,7 +72,7 @@
         <span class="empty-symbol" aria-hidden="true">◇</span>
         <strong id="empty-title">@Model.Presentation.EmptyTitle</strong>
         <p id="empty-description">@Model.Message</p>
-        <a class="button button-secondary" id="workspace-login" href="/login" hidden="@(!Model.Presentation.NeedsSignIn)">ورود به حساب فن آسا</a>
+        <a class="button button-secondary" id="workspace-login" data-portal-login href="@loginUrl" hidden="@(!Model.Presentation.NeedsSignIn)">ورود به حساب فن آسا</a>
     </div>
     <div class="product-grid" id="product-grid" hidden="@(Model.Products.Count == 0)">
         @foreach (var product in Model.Products)
