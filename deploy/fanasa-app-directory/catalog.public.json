@@ -1,0 +1,152 @@
+{
+  "generatedAt": "2026-10-27",
+  "source": "Derived public entry points from active Fanasa ingress; no identity, membership or grant data.",
+  "groups": [
+    {
+      "key": "organization",
+      "title": "سازمان و حاکمیت",
+      "description": "از فضای کار سازمان تا مدیریت پلتفرم و قراردادها.",
+      "apps": [
+        {
+          "key": "unified-portal",
+          "name": "پنجره واحد",
+          "subtitle": "فضای کار فن‌آسا",
+          "description": "ورود به فضای کار و دسترسی به سامانه‌ها و خدمات سازمان شما.",
+          "url": "https://app.fanasacloud.ir/"
+        },
+        {
+          "key": "platform",
+          "name": "مرکز راهبردی فن‌آسا",
+          "subtitle": "Platform Control Center",
+          "description": "نمای یکپارچه پلتفرم، معماری، سیاست‌ها و تنظیمات حاکمیتی.",
+          "url": "https://platform.app.fanasacloud.ir/Platform",
+          "status": "setup",
+          "note": "ورود با دامنهٔ جدید در حال تکمیل است."
+        },
+        {
+          "key": "access",
+          "name": "مدیریت هویت و دسترسی",
+          "subtitle": "Access Management",
+          "description": "مدیریت کاربران، نقش‌ها و دسترسی‌های سامانه‌های فن‌آسا.",
+          "url": "https://access.app.fanasacloud.ir/",
+          "status": "setup",
+          "note": "ورود با دامنهٔ جدید در حال تکمیل است."
+        },
+        {
+          "key": "organization-hr",
+          "name": "ساختار سازمان و منابع انسانی",
+          "subtitle": "Organization & HR",
+          "description": "تعریف ساختار سازمانی و ارتباط سمت‌ها با نقش‌ها و دسترسی‌ها.",
+          "url": "https://platform.app.fanasacloud.ir/Organization",
+          "status": "setup",
+          "note": "ورود با دامنهٔ جدید در حال تکمیل است."
+        },
+        {
+          "key": "contracts",
+          "name": "مدیریت قراردادها",
+          "subtitle": "NeoContract",
+          "description": "فضای مدیریت و پیگیری قراردادهای سازمان.",
+          "url": "https://contracts.app.fanasacloud.ir/"
+        },
+        {
+          "key": "decisions",
+          "name": "تصمیم‌گیری و قواعد",
+          "subtitle": "Decisions",
+          "description": "محیط آزمایشی طراحی تصمیم‌ها و قواعد کسب‌وکار.",
+          "url": "https://app.fanasacloud.ir/decisions/",
+          "note": "نسخهٔ آزمایشی"
+        }
+      ]
+    },
+    {
+      "key": "intelligence",
+      "title": "هوش مصنوعی و عامل‌ها",
+      "description": "گفت‌وگو با مدل‌ها و پیشبرد کار با عامل‌های هوشمند.",
+      "apps": [
+        {
+          "key": "ai",
+          "name": "دستیار هوش مصنوعی",
+          "subtitle": "Open WebUI",
+          "description": "محیط گفت‌وگو و کار با مدل‌های هوش مصنوعی.",
+          "url": "https://ai.app.fanasacloud.ir/"
+        },
+        {
+          "key": "agentic",
+          "name": "مدیریت عامل‌های هوشمند",
+          "subtitle": "Agentic Workspace",
+          "description": "فضای تعریف، اجرا و پیگیری کار عامل‌های هوشمند.",
+          "url": "https://agentic.app.fanasacloud.ir/"
+        }
+      ]
+    },
+    {
+      "key": "engineering",
+      "title": "ساخت و عملیات",
+      "description": "ابزارهای توسعه، انتشار و مدیریت زیرساخت.",
+      "apps": [
+        {
+          "key": "developer",
+          "name": "پرتال توسعه‌دهندگان",
+          "subtitle": "Developer Portal",
+          "description": "نقطهٔ شروع ساخت محصول و پیگیری مسیر توسعه و تحویل.",
+          "url": "https://developer.app.fanasacloud.ir/"
+        },
+        {
+          "key": "gitlab",
+          "name": "مخازن و همکاری توسعه",
+          "subtitle": "GitLab",
+          "description": "مدیریت کد، همکاری تیمی و فرایندهای یکپارچه‌سازی و انتشار.",
+          "url": "https://gitlab.app.fanasacloud.ir/"
+        },
+        {
+          "key": "argocd",
+          "name": "انتشار و استقرار",
+          "subtitle": "Argo CD",
+          "description": "مشاهده و مدیریت استقرار برنامه‌ها در زیرساخت.",
+          "url": "https://argocd.app.fanasacloud.ir/"
+        },
+        {
+          "key": "rancher",
+          "name": "مدیریت خوشه‌ها",
+          "subtitle": "Rancher",
+          "description": "مدیریت خوشه‌های Kubernetes و محیط‌های اجرای برنامه.",
+          "url": "https://rancher.app.fanasacloud.ir/"
+        },
+        {
+          "key": "admin",
+          "name": "مدیریت کانتینرها",
+          "subtitle": "Portainer",
+          "description": "پنل مدیریت محیط‌های کانتینری و سرویس‌های زیرساخت.",
+          "url": "https://admin.app.fanasacloud.ir/",
+          "status": "unavailable",
+          "note": "این مسیر فعلاً در دسترس نیست."
+        }
+      ]
+    },
+    {
+      "key": "connections",
+      "title": "اتصال سامانه‌ها",
+      "description": "نشانی‌های فنی برای تیم‌های یکپارچه‌سازی و توسعه.",
+      "apps": [
+        {
+          "key": "api",
+          "name": "درگاه API",
+          "subtitle": "API Gateway",
+          "description": "نشانی پایهٔ ارتباط نرم‌افزارها با سرویس‌های فن‌آسا؛ صفحهٔ کاربری ندارد.",
+          "url": "https://api.app.fanasacloud.ir/",
+          "note": "برای فراخوانی نرم‌افزاری، مسیر سرویس و مجوز لازم است.",
+          "linkLabel": "نشانی درگاه"
+        },
+        {
+          "key": "sso",
+          "name": "ورود یکپارچه",
+          "subtitle": "Fanasa SSO · OpenID Connect",
+          "description": "مشخصات اتصال سامانه‌ها به سرویس مرکزی احراز هویت فن‌آسا.",
+          "url": "https://sso.app.fanasacloud.ir/realms/fanasa/.well-known/openid-configuration",
+          "note": "مشاهدهٔ مشخصات اتصال؛ ورود کاربران از داخل سامانه‌ها انجام می‌شود.",
+          "linkLabel": "مشاهدهٔ مشخصات اتصال"
+        }
+      ]
+    }
+  ]
+}
