@@ -18,26 +18,8 @@
           "key": "platform",
           "name": "مرکز راهبردی فن‌آسا",
           "subtitle": "Platform Control Center",
-          "description": "نمای یکپارچه پلتفرم، معماری، سیاست‌ها و تنظیمات حاکمیتی.",
-          "url": "https://platform.app.fanasacloud.ir/Platform",
-          "status": "setup",
-          "note": "ورود با دامنهٔ جدید در حال تکمیل است."
-        },
-        {
-          "key": "access",
-          "name": "مدیریت هویت و دسترسی",
-          "subtitle": "Access Management",
-          "description": "مدیریت کاربران، نقش‌ها و دسترسی‌های سامانه‌های فن‌آسا.",
-          "url": "https://access.app.fanasacloud.ir/",
-          "status": "setup",
-          "note": "ورود با دامنهٔ جدید در حال تکمیل است."
-        },
-        {
-          "key": "organization-hr",
-          "name": "ساختار سازمان و منابع انسانی",
-          "subtitle": "Organization & HR",
-          "description": "تعریف ساختار سازمانی و ارتباط سمت‌ها با نقش‌ها و دسترسی‌ها.",
-          "url": "https://platform.app.fanasacloud.ir/Organization",
+          "description": "مرکز یکپارچهٔ راهبری پلتفرم؛ مدیریت هویت و دسترسی، ساختار سازمان و منابع انسانی، سیاست‌ها و حاکمیت.",
+          "url": "https://platform.app.fanasacloud.ir/",
           "status": "setup",
           "note": "ورود با دامنهٔ جدید در حال تکمیل است."
         },
