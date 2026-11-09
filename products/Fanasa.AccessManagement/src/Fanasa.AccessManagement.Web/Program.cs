@@ -69,14 +69,7 @@ builder.Services.AddAuthentication(options => { options.DefaultScheme = CookieAu
     options.RequireHttpsMetadata = true;
     if (builder.Configuration["Platform:CaFile"] is string caFile)
     {
-        var ca = X509CertificateLoader.LoadCertificateFromFile(caFile);
-        options.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = (_, certificate, _, errors) =>
-        {
-            if (certificate is null || (errors & System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch) != 0) return false;
-            using var chain = new X509Chain(); chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
-            chain.ChainPolicy.CustomTrustStore.Add(ca); chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-            return chain.Build(certificate);
-        } };
+        options.BackchannelHttpHandler = PlatformEndpointTls.CreateHandler(caFile);
     }
  });
 builder.Services.AddAuthorization(options => {

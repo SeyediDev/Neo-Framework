@@ -105,8 +105,8 @@ public sealed class PlatformRegistry
             throw new ArgumentException("اطلاعات سامانه و مرکز رسمی الزامی است.");
         if (product.TenantId.HasValue && !Tenants().Any(x => x.Id == product.TenantId)) throw new ArgumentException("سازمان معتبر نیست.");
         if (product.Url is not null && (!Uri.TryCreate(product.Url, UriKind.Absolute, out var uri) || uri.Scheme != "https"
-            || !uri.Host.EndsWith(".fanasa.net.local", StringComparison.OrdinalIgnoreCase) || !string.IsNullOrEmpty(uri.UserInfo) || uri.Port != 443))
-            throw new ArgumentException("دامنه HTTPS داخلی فن‌آسا لازم است.");
+            || !ManagedApplicationUrls.IsManagedHost(uri.IdnHost) || !string.IsNullOrEmpty(uri.UserInfo) || uri.Port != 443))
+            throw new ArgumentException("دامنه HTTPS مصوب فن‌آسا لازم است.");
         using var connection = Open(); using var command = connection.CreateCommand();
         using var transaction = connection.BeginTransaction(deferred: false);
         command.Transaction = transaction;

@@ -38,7 +38,7 @@ public sealed class PlatformApi(PlatformRegistry registry, IConfiguration config
         if (product.Key is null || !product.Key.StartsWith("developer-", StringComparison.Ordinal)
             || !Guid.TryParseExact(product.Key[10..], "N", out var appId)
             || product.Center != "fanasa.rayan" || product.Audience != "fanasa.app." + appId.ToString("N")
-            || product.Url != "https://developer.fanasa.net.local/runtime/" + appId + "/"
+            || !ManagedApplicationUrls.IsDeveloperRuntime(product.Url, appId, configuration)
             || string.IsNullOrWhiteSpace(product.Owner))
             return BadRequest(new { error = "Developer service may only register its own runtime applications." });
         if (!product.TenantId.HasValue || !registry.Allows(product.Owner, product.TenantId.Value, "developer.launch")) return Forbid();

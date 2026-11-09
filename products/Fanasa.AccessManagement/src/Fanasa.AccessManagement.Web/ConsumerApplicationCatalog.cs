@@ -154,7 +154,7 @@ public sealed class ConsumerApplicationCatalog(FabricDatabase database, Persiste
                     if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme != "https"
                         || uri.Port != 443 || uri.UserInfo.Length != 0 || uri.Fragment.Length != 0
                         || url.Contains('\\') || uri.HostNameType != UriHostNameType.Dns
-                        || origin == "managed" && !uri.Host.EndsWith(".fanasa.net.local", StringComparison.OrdinalIgnoreCase))
+                        || origin == "managed" && !ManagedApplicationUrls.IsManagedHost(uri.IdnHost))
                         throw new InvalidDataException();
                 }
                 if (origin == "external" && url is null) throw new InvalidDataException();

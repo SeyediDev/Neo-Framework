@@ -94,14 +94,14 @@ public sealed class ProductRegistrationModel(PlatformRegistry registry, IDataPro
             ModelState.AddModelError("Input.Key", "محصول‌های استودیو توسعه از مسیر اختصاصی خود ثبت می‌شوند.");
         if (!CapabilityCatalog.All.Any(x => x.Audience == Input.Center)) ModelState.AddModelError("Input.Center", "مرکز رسمی را انتخاب کنید.");
         if (!Tenants.Any(x => x.Id == Input.TenantId)) ModelState.AddModelError("Input.TenantId", "سازمان فعال را انتخاب کنید.");
-        if (!SafeUrl(Input.Url, out var canonical)) ModelState.AddModelError("Input.Url", "نشانی HTTPS داخلی، بدون رمز، query یا fragment لازم است.");
+        if (!SafeUrl(Input.Url, out var canonical)) ModelState.AddModelError("Input.Url", "نشانی HTTPS مصوب، بدون رمز، query یا fragment لازم است.");
         if (!string.IsNullOrEmpty(Input.BoardUrl) && (!SafeUrl(Input.BoardUrl, out var board) || canonical is null
             || !string.Equals(board?.Host, canonical.Host, StringComparison.OrdinalIgnoreCase)))
             ModelState.AddModelError("Input.BoardUrl", "لینک کانبان باید امن و روی همان دامنهٔ سامانه باشد.");
         return ModelState.IsValid;
     }
     public static bool SafeUrl(string? value, out Uri? uri) => Uri.TryCreate(value, UriKind.Absolute, out uri)
-        && uri.Scheme == "https" && uri.Host.EndsWith(".fanasa.net.local", StringComparison.OrdinalIgnoreCase)
+        && uri.Scheme == "https" && ManagedApplicationUrls.IsManagedHost(uri.IdnHost)
         && uri.Port == 443 && uri.UserInfo.Length == 0 && uri.Query.Length == 0 && uri.Fragment.Length == 0;
     private IActionResult Invalid(int status) { Response.StatusCode = status; IsPreview = false; return Page(); }
     private IActionResult ReceiptError()

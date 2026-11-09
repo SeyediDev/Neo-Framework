@@ -111,6 +111,20 @@ await using (var f = await Fixture.Start())
         Check(json.RootElement.GetArrayLength() == 1 && json.RootElement[0].GetProperty("id").GetGuid() == f.Consumer,
             "only own active consumer tenant");
     await Keys(f, [f.Saas.Key, f.Dedicated.Key, f.Linked.Key], "self applications");
+    foreach (var publicUrl in new[] { "https://sample.app.fanasacloud.ir/board", "https://app.fanasacloud.ir/" })
+    {
+        f.ChangeProduct(f.Saas, value => value["url"] = publicUrl);
+        var publicApps = await Expect(f, apps, HttpStatusCode.OK, "approved public launch URL", f.Token());
+        using var publicJson = JsonDocument.Parse(publicApps);
+        Check(publicJson.RootElement.EnumerateArray().Single(x => x.GetProperty("key").GetString() == f.Saas.Key)
+            .GetProperty("url").GetString() == publicUrl, "catalog preserves approved public launch URL");
+    }
+    foreach (var unsafeUrl in new[] { "https://sample.app.fanasacloud.ir.evil.test/", "https://nested.sample.app.fanasacloud.ir/", "https://fanasacloud.ir/" })
+    {
+        f.ChangeProduct(f.Saas, value => value["url"] = unsafeUrl);
+        await Expect(f, apps, HttpStatusCode.ServiceUnavailable, "foreign or nested public launch URL fails closed", f.Token());
+    }
+    f.ChangeProduct(f.Saas, value => value["url"] = f.Saas.Url);
     await Keys(f, [], "second user's token cannot see first user's apps", f.Token(subject: Fixture.UnentitledSubject));
     var appBody = await Expect(f, apps, HttpStatusCode.OK, "redacted app transport", f.Token());
     using (var json = JsonDocument.Parse(appBody))

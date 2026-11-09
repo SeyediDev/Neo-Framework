@@ -1,5 +1,7 @@
 # مرکز راهبری پلتفرم فن‌آسا (Fanasa Platform Control Center)
 
+پشتیبانی سورس از دامنه عمومی `app.fanasacloud.ir` و یک سطح زیر آن، سازگاری نام‌های داخلی و تنظیم مبدأ توسعه‌دهنده در [قرارداد دامنه‌های عمومی](docs/PUBLIC-APP-DOMAINS.md) آمده است. این تغییر محلی، انتشار یا تغییر DNS، TLS و SSO زنده نیست.
+
 API شخصی اندروید در `GET /api/mobile/catalog/tenants` و `GET /api/mobile/catalog/tenants/{tenantId}/apps` افزوده شده است؛ bearer کاربر با scope مستقل `platform.catalog.self` و public client ثبت‌شده فقط کاتالوگ subject خود را می‌خواند. مسیر delegation سرویس تغییر نکرده است. قابلیت پیش‌فرض غیرفعال است؛ [قرارداد، ثبت مرکزی و نمونه تنظیمات IdP](docs/MOBILE-CATALOG.fa.md) و [آزمون HTTP محلی](tests/MobileApplicationCatalog.Tests/README.md) وضعیت پیاده‌سازی و حدود پذیرش را مشخص می‌کنند. این تغییر ثبت واقعی client، grant، انتشار یا پذیرش ورود دستگاه نیست.
 
 ماژول Contract Policy در DI همین میزبان ثبت شده است: ingress قرارداد با JWT اختصاصی producer، projection/receipt اتمی در Fabric، reader معتبر، سیاست نسخه‌دار مستقل و انتساب صریح نقش محصول. ادامه `0.4.0`، endpoint اختصاصی `POST /api/gateway/decision` و گیرندهٔ مستقیم mTLS/HMAC را اضافه می‌کند؛ guard داخل تراکنش از اجرای درخواست منقضی یا ابطال‌شده جلوگیری می‌کند. فعال‌سازی نیازمند پیکربندی و ثبت‌های معتبر است؛ executor پیش‌فرض Gateway بسته می‌ماند. [راهنمای پایه](../../docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/PCC-INTEGRATION.md) و [اتصال Gateway](../../docs/fanasa-platform-control-center/workstreams/contract-policy/implementation/PCC-GATEWAY.md).

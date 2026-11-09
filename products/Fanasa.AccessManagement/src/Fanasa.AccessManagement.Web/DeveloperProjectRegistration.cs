@@ -80,7 +80,7 @@ public static class DeveloperProjectRegistration
             throw new InvalidOperationException("Deployment slot application identity cannot be replaced.");
         if (slot is null)
             entries.Add(new(request.ComponentId, request.ComponentName, request.ApplicationId, request.Environment,
-                "https://developer.fanasa.net.local/runtime/" + request.ApplicationId.ToString("D") + "/"));
+                ManagedApplicationUrls.DeveloperBase(configuration) + "/runtime/" + request.ApplicationId.ToString("D") + "/"));
         if (entries.Select(x => x.ComponentId).Distinct().Count() > 32 || entries.Count > 96)
             throw new ArgumentException("A project supports at most 32 components and three environments per component.");
         var attributes = new Dictionary<string, string>(existing?.Attributes ?? [])
@@ -90,7 +90,7 @@ public static class DeveloperProjectRegistration
         };
         var productResult = new PlatformProduct(existing?.Id ?? Guid.NewGuid(), key, request.DisplayName,
             "fanasa.app." + request.ProjectId.ToString("N"), "fanasa.rayan",
-            "https://developer.fanasa.net.local/?project=" + request.ProjectId.ToString("D"),
+            ManagedApplicationUrls.DeveloperBase(configuration) + "/?project=" + request.ProjectId.ToString("D"),
             request.Repository, request.TenantId, request.Owner, attributes);
         using var save = connection.CreateCommand(); save.Transaction = transaction;
         save.CommandText = "INSERT INTO platform_products(id,key,data) VALUES($id,$key,$data) ON CONFLICT(key) DO UPDATE SET data=excluded.data";
